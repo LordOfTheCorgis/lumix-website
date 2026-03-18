@@ -1,0 +1,175 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { leadership, teams, siteConfig } from "../data/site";
+---
+
+<Layout title="Our Team" description="Meet the team behind Lumix Solutions. Our leadership and dedicated teams work around the clock to deliver reliable infrastructure.">
+  <!-- Page Header -->
+  <section class="py-16 lg:py-24 border-b border-terminal-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <span class="text-mono text-xs text-lumix-gray mb-4 block animate-fade-in">
+          <span class="text-lumix-red">$</span> cat /team/README.md
+        </span>
+        <h1 class="heading-xl text-lumix-white mb-6 animate-fade-in-up animate-delay-100">
+          Our<br/>
+          <span class="text-lumix-red">team</span>
+        </h1>
+        <p class="body-lg text-lumix-gray animate-fade-in-up animate-delay-200">
+          Meet the people behind Lumix Solutions. A dedicated team of engineers 
+          and specialists committed to delivering reliable, high-performance 
+          infrastructure.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Leadership Section -->
+  <section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="text-mono text-xs text-lumix-gray mb-4 block">// LEADERSHIP</span>
+      <h2 class="heading-lg text-lumix-white mb-12">
+        Executive Team
+      </h2>
+      
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {leadership.map((member, index) => (
+          <div class={`staff-card card p-6 animate-fade-in-up animate-delay-${(index + 1) * 100}`}>
+            <div class="flex flex-col items-center text-center">
+              <div class="staff-image-container mb-6">
+                <img 
+                  src={member.image} 
+                  alt={member.name}
+                  class="staff-image w-32 h-32 object-cover"
+                />
+                <div class="staff-image-border"></div>
+              </div>
+              <span class="text-mono text-xs text-lumix-red mb-2">
+                {member.title.split(' ').map(w => w[0]).join('')}
+              </span>
+              <h3 class="text-lg font-semibold text-lumix-white mb-1">
+                {member.name}
+              </h3>
+              <p class="text-sm text-lumix-gray mb-4">
+                {member.title}
+              </p>
+              <p class="text-sm text-lumix-gray leading-relaxed">
+                {member.description}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  
+  <div class="section-divider"></div>
+  
+  <!-- Teams Section -->
+  <section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="text-mono text-xs text-lumix-gray mb-4 block">// TEAMS</span>
+      <h2 class="heading-lg text-lumix-white mb-4">
+        Our Teams
+      </h2>
+      <p class="body-lg text-lumix-gray mb-12 max-w-2xl">
+        Behind every service is a dedicated team working around the clock to 
+        ensure your infrastructure stays online and performs at its best.
+      </p>
+      
+      <div class="grid sm:grid-cols-2 gap-6">
+        {teams.map((team, index) => (
+          <div class={`card p-6 animate-fade-in-up animate-delay-${(index + 1) * 100}`}>
+            <div class="flex items-start gap-4">
+              <div class="flex-shrink-0 w-12 h-12 flex items-center justify-center border border-terminal-border bg-lumix-black">
+                {team.icon === "code" && (
+                  <svg class="w-6 h-6 text-lumix-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                )}
+                {team.icon === "headset" && (
+                  <svg class="w-6 h-6 text-lumix-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                )}
+                {team.icon === "shield" && (
+                  <svg class="w-6 h-6 text-lumix-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                )}
+                {team.icon === "server" && (
+                  <svg class="w-6 h-6 text-lumix-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                  </svg>
+                )}
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-lumix-white mb-2">
+                  {team.name}
+                </h3>
+                <p class="text-sm text-lumix-gray leading-relaxed">
+                  {team.description}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  
+  <div class="section-divider"></div>
+  
+  <!-- Join Us CTA -->
+  <section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="card p-8 lg:p-12 text-center">
+        <span class="text-mono text-xs text-lumix-gray mb-4 block">// JOIN_US</span>
+        <h2 class="heading-lg text-lumix-white mb-4">
+          Want to join our team?
+        </h2>
+        <p class="body-lg text-lumix-gray mb-8 max-w-2xl mx-auto">
+          We're always looking for talented individuals who are passionate about 
+          infrastructure and networking. Get in touch if you'd like to be part of 
+          the Lumix team.
+        </p>
+        <a href="/contact" class="btn-primary">
+          Get in Touch
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .staff-image-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .staff-image {
+    border-radius: 50%;
+    border: 2px solid var(--color-terminal-border);
+    transition: border-color 0.3s ease;
+  }
+  
+  .staff-card:hover .staff-image {
+    border-color: var(--color-lumix-red);
+  }
+  
+  .staff-image-border {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid var(--color-terminal-border);
+    opacity: 0.5;
+  }
+  
+  .staff-card:hover .staff-image-border {
+    border-color: var(--color-lumix-red);
+    opacity: 0.3;
+  }
+</style>

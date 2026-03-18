@@ -1,0 +1,115 @@
+---
+import { announcementBanner } from "../data/site";
+
+const { enabled, announcements } = announcementBanner;
+
+// Duplicate for seamless loop
+const tickerContent = enabled && announcements ? [...announcements, ...announcements] : [];
+---
+
+{enabled && announcements && announcements.length > 0 && (
+<div class="announcement-banner fixed top-0 left-0 right-0 z-[60] bg-[#1a0a0a] border-b border-lumix-red/20 overflow-hidden">
+    <div class="ticker-wrapper">
+        <div class="ticker-content">
+            {tickerContent.map((announcement) => (
+                <span class="ticker-item">
+                    {announcement.link ? (
+                        <a 
+                            href={announcement.link} 
+                            class="hover:text-lumix-white transition-colors"
+                            target={announcement.link.startsWith("http") ? "_blank" : undefined}
+                            rel={announcement.link.startsWith("http") ? "noopener noreferrer" : undefined}
+                        >
+                            {announcement.text}
+                        </a>
+                    ) : (
+                        <span>{announcement.text}</span>
+                    )}
+                    <span class="ticker-separator">•</span>
+                </span>
+            ))}
+        </div>
+    </div>
+</div>
+)}
+
+<style>
+    .announcement-banner {
+        height: 36px;
+        display: flex;
+        align-items: center;
+    }
+
+    .ticker-wrapper {
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .ticker-content {
+        display: inline-flex;
+        white-space: nowrap;
+        animation: ticker 60s linear infinite;
+    }
+
+    .ticker-item {
+        display: inline-flex;
+        align-items: center;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        color: #ff4c4c;
+        padding: 0 0.5rem;
+    }
+
+    .ticker-item a {
+        color: #ff4c4c;
+        text-decoration: none;
+    }
+
+    .ticker-item a:hover {
+        color: #ffffff;
+        text-decoration: underline;
+    }
+
+    .ticker-separator {
+        margin-left: 1.5rem;
+        margin-right: 1rem;
+        color: #ff4c4c40;
+    }
+
+    @keyframes ticker {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+
+    /* Pause on hover */
+    .announcement-banner:hover .ticker-content {
+        animation-play-state: paused;
+    }
+
+    /* Fade edges */
+    .ticker-wrapper::before,
+    .ticker-wrapper::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 60px;
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .ticker-wrapper::before {
+        left: 0;
+        background: linear-gradient(to right, #0a0a0a, transparent);
+    }
+
+    .ticker-wrapper::after {
+        right: 0;
+        background: linear-gradient(to left, #0a0a0a, transparent);
+    }
+</style>

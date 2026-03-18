@@ -1,0 +1,186 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+interface ChangelogEntry {
+    version: string;
+    date: string;
+    title: string;
+    type: "feature" | "improvement" | "fix" | "announcement";
+    description: string;
+    items?: string[];
+}
+
+const changelog: ChangelogEntry[] = [
+    {
+        version: "2026.01.4",
+        date: "January 30, 2026",
+        title: "Dallas Datacenter Launch",
+        type: "feature",
+        description: "Expanded infrastructure with a new Dallas, TX datacenter for improved coverage across the US.",
+        items: [
+            "Added Dallas, TX as our second location",
+            "Reduced latency for central US clients",
+            "Full application, game, and voice hosting support available",
+            "DDoS protection enabled by default",
+        ],
+    },
+    {
+        version: "2026.01.3",
+        date: "January 22, 2026",
+        title: "Website Redesign Complete",
+        type: "improvement",
+        description: "Finished a complete overhaul of all Lumix Solutions websites with a fresh modern look.",
+        items: [
+            "Redesigned main website with new branding",
+            "Improved navigation and user experience",
+            "Added changelog, status, and services pages",
+            "Mobile-responsive design across all pages",
+        ],
+    },
+    {
+        version: "2026.01.2",
+        date: "January 18, 2026",
+        title: "Website Rebuild Begins",
+        type: "announcement",
+        description: "Started the process of rebuilding all Lumix Solutions websites from the ground up.",
+        items: [
+            "New tech stack adopted for better performance",
+            "Modernized design language and branding",
+            "Improved page load times",
+        ],
+    },
+    {
+        version: "2026.01.1",
+        date: "January 14, 2026",
+        title: "Game Server Hosting Launched",
+        type: "feature",
+        description: "Introduced game server hosting to our Miami location, expanding beyond application and voice hosting.",
+        items: [
+            "Game server hosting now available",
+            "Support for popular titles and custom game servers",
+            "One-click deployment from the control panel",
+            "Integrated with existing DDoS protection",
+        ],
+    },
+    {
+        version: "2025.12.1",
+        date: "December 12, 2025",
+        title: "Lumix Solutions Founded",
+        type: "announcement",
+        description: "Lumix Solutions officially launched with our first datacenter in Miami, FL, offering application hosting and voice servers.",
+        items: [
+            "Miami, FL datacenter live as our founding location",
+            "Application hosting available at launch",
+            "Voice server infrastructure available at launch",
+            "DDoS protection included on all services",
+        ],
+    },
+];
+
+const typeColors = {
+    feature: "bg-green-500/20 text-green-400 border-green-500/30",
+    improvement: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+    fix: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+    announcement: "bg-lumix-red/20 text-lumix-red border-lumix-red/30",
+};
+
+const typeLabels = {
+    feature: "New Feature",
+    improvement: "Improvement",
+    fix: "Bug Fix",
+    announcement: "Announcement",
+};
+---
+
+<Layout title="Changelog">
+    <!-- Header -->
+    <section class="relative py-20 overflow-hidden">
+        <div class="absolute inset-0 grid-overlay pointer-events-none"></div>
+        
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="text-mono text-xs text-lumix-gray mb-4">
+                    <span class="text-lumix-red">[</span> CHANGELOG <span class="text-lumix-red">]</span> // updates & announcements
+                </div>
+                
+                <h1 class="heading-lg text-lumix-white mb-6">
+                    What's <span class="text-lumix-red">New</span>
+                </h1>
+                
+                <p class="body-lg text-lumix-gray max-w-2xl mx-auto">
+                    Stay up to date with the latest features, improvements, and fixes 
+                    across the Lumix Solutions platform.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Changelog Timeline -->
+    <section class="py-12 pb-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="relative">
+                <!-- Timeline line -->
+                <div class="absolute left-0 md:left-8 top-0 bottom-0 w-px bg-terminal-border"></div>
+                
+                <!-- Changelog entries -->
+                <div class="space-y-12">
+                    {changelog.map((entry, index) => (
+                        <div class="relative pl-8 md:pl-20" data-animate>
+                            <!-- Timeline dot -->
+                            <div class="absolute left-0 md:left-8 -translate-x-1/2 w-3 h-3 rounded-full bg-lumix-red border-2 border-lumix-black"></div>
+                            
+                            <!-- Entry card -->
+                            <div class="terminal-card p-6">
+                                <!-- Header -->
+                                <div class="flex flex-wrap items-center gap-3 mb-4">
+                                    <span class={`px-2 py-1 text-xs font-mono rounded border ${typeColors[entry.type]}`}>
+                                        {typeLabels[entry.type]}
+                                    </span>
+                                    <span class="text-mono text-xs text-lumix-gray">
+                                        v{entry.version}
+                                    </span>
+                                    <span class="text-mono text-xs text-lumix-gray">
+                                        •
+                                    </span>
+                                    <span class="text-mono text-xs text-lumix-gray">
+                                        {entry.date}
+                                    </span>
+                                </div>
+                                
+                                <!-- Title -->
+                                <h3 class="text-lg font-semibold text-lumix-white mb-2">
+                                    {entry.title}
+                                </h3>
+                                
+                                <!-- Description -->
+                                <p class="text-lumix-gray text-sm mb-4">
+                                    {entry.description}
+                                </p>
+                                
+                                <!-- Items -->
+                                {entry.items && entry.items.length > 0 && (
+                                    <ul class="space-y-2">
+                                        {entry.items.map((item) => (
+                                            <li class="flex items-start gap-2 text-sm text-lumix-gray">
+                                                <span class="text-lumix-red mt-1">→</span>
+                                                <span>{item}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                
+                <!-- End marker -->
+                <div class="relative pl-8 md:pl-20 pt-8">
+                    <div class="absolute left-0 md:left-8 -translate-x-1/2 w-3 h-3 rounded-full bg-terminal-border border-2 border-lumix-black"></div>
+                    <p class="text-mono text-xs text-lumix-gray">
+                        <span class="text-lumix-red">$</span> git log --end-of-history
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</Layout>

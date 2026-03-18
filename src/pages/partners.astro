@@ -1,0 +1,218 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Terminal from "../components/Terminal.astro";
+
+const partners = [
+  {
+    // name: "Hugo's Workshop",
+    // description: "A trusted name in EUP texturing and modelling. We offer EUP Texturing, Badge Commissions, Vest Commissions, and more custom work. Professional, reliable approach with attention to detail and clear communication.",
+    // logo: "https://cdn.lumixsolutions.org/images/hugoworkshop.png",
+    // url: "https://hugosworkshop.uk/",
+    // discord: "https://discord.gg/dQptg54AzS",
+    // founder: "Hugo"
+    name: "N/A",
+    description: "N/A",
+    logo: "",
+    url: "",
+    discord: "",
+    founder: "N/A"
+  }
+];
+
+const openToPartnership = [
+  "Infrastructure providers",
+  "Network and security platforms",
+  "Software vendors",
+  "Strategic integrations"
+];
+---
+
+<Layout title="Partners" description="Organizations and platforms we work alongside to deliver reliable infrastructure and services.">
+  <!-- Page Header -->
+  <section class="py-16 lg:py-24 border-b border-terminal-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <span class="text-mono text-xs text-lumix-gray mb-4 block animate-fade-in">
+          <span class="text-lumix-red">$</span> cat /partners/status.conf
+        </span>
+        <h1 class="heading-xl text-lumix-white mb-6 animate-fade-in-up animate-delay-100">
+          Partners
+        </h1>
+        <p class="body-lg text-lumix-gray animate-fade-in-up animate-delay-200">
+          Organizations and platforms we work alongside to deliver reliable infrastructure and services.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Terminal Status Block -->
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-md">
+        <Terminal 
+          title="partnership.conf"
+          showCursor={false}
+          lines={[
+            { output: "PARTNERSHIP_STATUS: OPEN", type: "success" },
+            { output: "EVALUATION_MODE: TECHNICAL_ALIGNMENT", type: "info" },
+            { output: "MARKETING_AFFILIATES: DISABLED", type: "error" },
+          ]}
+        />
+      </div>
+    </div>
+  </section>
+  
+  <!-- Partner Grid -->
+  <section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="text-mono text-xs text-lumix-gray mb-8 block">// ACTIVE_PARTNERS</span>
+      
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {partners.map(partner => (
+          <div class="group p-6 bg-lumix-black-light border border-terminal-border hover:border-lumix-gray-dark transition-all duration-200">
+            <div class="flex flex-col h-full">
+              <!-- Partner name -->
+              <h3 class="text-lumix-white font-medium mb-1">
+                {partner.name}
+              </h3>
+              
+              <!-- Founder -->
+              {partner.founder && (
+                <p class="text-xs text-lumix-gray-dark mb-3">
+                  <span class="text-mono">Founder: {partner.founder}</span>
+                </p>
+              )}
+              
+              <!-- Description -->
+              <p class="text-sm text-lumix-gray flex-1 mb-4">
+                {partner.description}
+              </p>
+              
+              <!-- Links -->
+              <div class="pt-4 border-t border-terminal-border">
+                <div class="flex gap-6">
+                  {partner.url && (
+                    <a 
+                      href={partner.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="flex items-center gap-2 text-xs text-lumix-gray hover:text-lumix-red transition-colors"
+                    >
+                      <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                      </svg>
+                      <span class="text-mono">{new URL(partner.url).hostname}</span>
+                    </a>
+                  )}
+                  
+                  {partner.discord && (
+                    <a 
+                      href={partner.discord}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="flex items-center gap-2 text-xs text-lumix-gray hover:text-lumix-red transition-colors"
+                    >
+                      <svg class="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                      </svg>
+                      <span class="text-mono">Discord</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  
+  <!-- Divider -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-4">
+      <div class="flex-1 h-px bg-terminal-border"></div>
+      <span class="text-mono text-xs text-lumix-gray-dark">END_PARTNERS // BEGIN_COLLABORATION</span>
+      <div class="flex-1 h-px bg-terminal-border"></div>
+    </div>
+  </div>
+  
+  <!-- Partnership Inquiries Section -->
+  <section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+        <!-- Left: Info -->
+        <div>
+          <span class="text-mono text-xs text-lumix-gray mb-4 block">// PARTNERSHIP_INQUIRIES</span>
+          <h2 class="heading-lg text-lumix-white mb-6">
+            Partnership inquiries
+          </h2>
+          
+          <div class="space-y-6">
+            <p class="text-lumix-gray">
+              Lumix Solutions partners with platforms, providers, and organizations that share a focus on reliability, security, and long-term infrastructure thinking.
+            </p>
+            <p class="text-lumix-gray">
+              We are selective about partnerships and prioritize technical alignment over marketing arrangements.
+            </p>
+            
+            <div class="mt-8">
+              <h3 class="text-sm text-lumix-white font-medium mb-4">What we're open to</h3>
+              <ul class="space-y-2">
+                {openToPartnership.map(item => (
+                  <li class="flex items-center gap-3 text-sm text-lumix-gray">
+                    <span class="w-1 h-1 bg-lumix-red flex-shrink-0"></span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right: Contact Block -->
+        <div class="lg:sticky lg:top-24">
+          <div class="p-6 bg-lumix-black-light border border-terminal-border">
+            <span class="text-mono text-xs text-lumix-gray mb-4 block">// OPEN_CHANNEL</span>
+            <h3 class="text-lumix-white font-medium mb-4">Contact</h3>
+            <p class="text-sm text-lumix-gray mb-6">
+              To discuss a potential partnership, reach out at:
+            </p>
+            
+            <div class="space-y-3">
+              <a 
+                href="mailto:partners@lumixsolutions.org"
+                class="flex items-center gap-2 text-mono text-sm text-lumix-red hover:underline"
+              >
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
+                partners@lumixsolutions.org
+              </a>
+              <a 
+                href="mailto:contact@lumixsolutions.org"
+                class="flex items-center gap-2 text-mono text-sm text-lumix-gray hover:text-lumix-red hover:underline transition-colors"
+              >
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
+                contact@lumixsolutions.org
+              </a>
+            </div>
+            
+            <div class="mt-6 pt-6 border-t border-terminal-border">
+              <a 
+                href="/contact"
+                class="inline-flex items-center gap-2 text-sm text-lumix-gray hover:text-lumix-white transition-colors"
+              >
+                <span>Or visit our contact page</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

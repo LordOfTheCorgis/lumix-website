@@ -1,0 +1,546 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Terminal from "../../components/Terminal.astro";
+---
+
+<Layout
+    title="Apply - Careers"
+    description="Apply to join the Lumix Solutions team. Submit your application for IT, Public Relations, or R&D positions."
+>
+    <!-- Page Header -->
+    <section class="py-16 lg:py-24 border-b border-terminal-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl">
+                <span
+                    class="text-mono text-xs text-lumix-gray mb-4 block animate-fade-in"
+                >
+                    <span class="text-lumix-red">$</span> lumix apply --start
+                </span>
+                <h1
+                    class="heading-xl text-lumix-white mb-6 animate-fade-in-up animate-delay-100"
+                >
+                    Submit your <span class="text-lumix-red">application</span>
+                </h1>
+                <p
+                    class="body-lg text-lumix-gray animate-fade-in-up animate-delay-200"
+                >
+                    Tell us about yourself. We review every application and will
+                    get back to you within a few business days.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Form -->
+    <section class="py-16 lg:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+                <!-- Left: Form -->
+                <div>
+                    <span class="text-mono text-xs text-lumix-gray mb-6 block"
+                        >// APPLICATION_FORM</span
+                    >
+                    
+                    <!-- Success Message (hidden by default) -->
+                    <div id="success-message" class="hidden">
+                        <div class="card p-8 text-center">
+                            <div class="w-16 h-16 mx-auto mb-6 border border-lumix-red/50 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-lumix-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lumix-white text-xl font-medium mb-3">Application Submitted!</h3>
+                            <p class="text-lumix-gray mb-6">
+                                Thanks for applying to Lumix Solutions. We'll review your application and get back to you within a few business days.
+                            </p>
+                            <a href="/career" class="btn-primary inline-flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"></path>
+                                </svg>
+                                Back to Careers
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <form
+                        action="https://formspree.io/f/xjgebaal"
+                        method="POST"
+                        class="space-y-6"
+                        id="application-form"
+                    >
+                        <!-- Hidden field for form identification -->
+                        <input
+                            type="hidden"
+                            name="_subject"
+                            value="New Job Application - Lumix Solutions"
+                        />
+
+                        <!-- Personal Information -->
+                        <div class="space-y-4">
+                            <h3
+                                class="text-lumix-white font-medium text-sm flex items-center gap-2"
+                            >
+                                <span class="text-lumix-red text-mono">01</span>
+                                Personal Information
+                            </h3>
+
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label
+                                        for="firstName"
+                                        class="block text-sm text-lumix-gray mb-2"
+                                        >First Name *</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="firstName"
+                                        name="firstName"
+                                        required
+                                        class="w-full px-4 py-3 bg-lumix-black border border-terminal-border text-lumix-white text-sm focus:border-lumix-red focus:outline-none transition-colors"
+                                        placeholder="John"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        for="lastName"
+                                        class="block text-sm text-lumix-gray mb-2"
+                                        >Last Name *</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="lastName"
+                                        name="lastName"
+                                        required
+                                        class="w-full px-4 py-3 bg-lumix-black border border-terminal-border text-lumix-white text-sm focus:border-lumix-red focus:outline-none transition-colors"
+                                        placeholder="Doe"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label
+                                    for="email"
+                                    class="block text-sm text-lumix-gray mb-2"
+                                    >Email Address *</label
+                                >
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    required
+                                    class="w-full px-4 py-3 bg-lumix-black border border-terminal-border text-lumix-white text-sm focus:border-lumix-red focus:outline-none transition-colors"
+                                    placeholder="john@example.com"
+                                />
+                            </div>
+
+                            <div>
+                                <label
+                                    for="discord"
+                                    class="block text-sm text-lumix-gray mb-2"
+                                    >Discord Username</label
+                                >
+                                <input
+                                    type="text"
+                                    id="discord"
+                                    name="discord"
+                                    class="w-full px-4 py-3 bg-lumix-black border border-terminal-border text-lumix-white text-sm focus:border-lumix-red focus:outline-none transition-colors"
+                                    placeholder="username#0000 or username"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Position -->
+                        <div class="space-y-4">
+                            <h3
+                                class="text-lumix-white font-medium text-sm flex items-center gap-2"
+                            >
+                                <span class="text-lumix-red text-mono">02</span>
+                                Position Details
+                            </h3>
+
+                            <div>
+                                <label
+                                    for="department"
+                                    class="block text-sm text-lumix-gray mb-2"
+                                    >Department *</label
+                                >
+                                <select
+                                    id="department"
+                                    name="department"
+                                    required
+                                    class="w-full px-4 py-3 bg-lumix-black border border-terminal-border text-lumix-white text-sm focus:border-lumix-red focus:outline-none transition-colors"
+                                >
+                                    <option value="" class="text-lumix-gray"
+                                        >Select a department</option
+                                    >
+                                    <option value="IT">IT Department</option>
+                                    <option value="Public Relations"
+                                        >Public Relations</option
+                                    >
+                                    <option value="R&D"
+                                        >Research & Development</option
+                                    >
+                                </select>
+                            </div>
+
+                            <div>
+                                <label
+                                    for="position"
+                                    class="block text-sm text-lumix-gray mb-2"
+                                    >Position Applying For *</label
+                                >
+                                <input
+                                    type="text"
+                                    id="position"
+                                    name="position"
+                                    required
+                                    class="w-full px-4 py-3 bg-lumix-black border border-terminal-border text-lumix-white text-sm focus:border-lumix-red focus:outline-none transition-colors"
+                                    placeholder="e.g., Systems Administrator, Community Manager"
+                                />
+                            </div>
+
+                            <div>
+                                <label
+                                    for="availability"
+                                    class="block text-sm text-lumix-gray mb-2"
+                                    >Availability (hours/week) *</label
+                                >
+                                <select
+                                    id="availability"
+                                    name="availability"
+                                    required
+                                    class="w-full px-4 py-3 bg-lumix-black border border-terminal-border text-lumix-white text-sm focus:border-lumix-red focus:outline-none transition-colors"
+                                >
+                                    <option value="" class="text-lumix-gray"
+                                        >Select availability</option
+                                    >
+                                    <option value="10-20"
+                                        >10-20 hours/week</option
+                                    >
+                                    <option value="20-30"
+                                        >20-30 hours/week</option
+                                    >
+                                    <option value="30-40"
+                                        >30-40 hours/week</option
+                                    >
+                                    <option value="40+"
+                                        >40+ hours/week (Full-time)</option
+                                    >
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Experience -->
+                        <div class="space-y-4">
+                            <h3
+                                class="text-lumix-white font-medium text-sm flex items-center gap-2"
+                            >
+                                <span class="text-lumix-red text-mono">03</span>
+                                Experience & Skills
+                            </h3>
+
+                            <div>
+                                <label
+                                    for="experience"
+                                    class="block text-sm text-lumix-gray mb-2"
+                                    >Relevant Experience *</label
+                                >
+                                <textarea
+                                    id="experience"
+                                    name="experience"
+                                    rows="4"
+                                    required
+                                    class="w-full px-4 py-3 bg-lumix-black border border-terminal-border text-lumix-white text-sm focus:border-lumix-red focus:outline-none transition-colors resize-none"
+                                    placeholder="Tell us about your relevant experience, previous roles, and accomplishments..."
+                                ></textarea>
+                            </div>
+
+                            <div>
+                                <label
+                                    for="skills"
+                                    class="block text-sm text-lumix-gray mb-2"
+                                    >Key Skills *</label
+                                >
+                                <textarea
+                                    id="skills"
+                                    name="skills"
+                                    rows="3"
+                                    required
+                                    class="w-full px-4 py-3 bg-lumix-black border border-terminal-border text-lumix-white text-sm focus:border-lumix-red focus:outline-none transition-colors resize-none"
+                                    placeholder="List your technical skills, tools, languages, certifications..."
+                                ></textarea>
+                            </div>
+
+                            <div>
+                                <label
+                                    for="portfolio"
+                                    class="block text-sm text-lumix-gray mb-2"
+                                    >Portfolio / Links</label
+                                >
+                                <input
+                                    type="text"
+                                    id="portfolio"
+                                    name="portfolio"
+                                    class="w-full px-4 py-3 bg-lumix-black border border-terminal-border text-lumix-white text-sm focus:border-lumix-red focus:outline-none transition-colors"
+                                    placeholder="GitHub, LinkedIn, personal website, etc."
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Additional -->
+                        <div class="space-y-4">
+                            <h3
+                                class="text-lumix-white font-medium text-sm flex items-center gap-2"
+                            >
+                                <span class="text-lumix-red text-mono">04</span>
+                                Additional Information
+                            </h3>
+
+                            <div>
+                                <label
+                                    for="whyLumix"
+                                    class="block text-sm text-lumix-gray mb-2"
+                                    >Why do you want to join Lumix? *</label
+                                >
+                                <textarea
+                                    id="whyLumix"
+                                    name="whyLumix"
+                                    rows="4"
+                                    required
+                                    class="w-full px-4 py-3 bg-lumix-black border border-terminal-border text-lumix-white text-sm focus:border-lumix-red focus:outline-none transition-colors resize-none"
+                                    placeholder="What interests you about Lumix Solutions and this role?"
+                                ></textarea>
+                            </div>
+
+                            <div>
+                                <label
+                                    for="additionalInfo"
+                                    class="block text-sm text-lumix-gray mb-2"
+                                    >Anything else we should know?</label
+                                >
+                                <textarea
+                                    id="additionalInfo"
+                                    name="additionalInfo"
+                                    rows="3"
+                                    class="w-full px-4 py-3 bg-lumix-black border border-terminal-border text-lumix-white text-sm focus:border-lumix-red focus:outline-none transition-colors resize-none"
+                                    placeholder="Additional information, questions, or comments..."
+                                ></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="pt-4">
+                            <button
+                                type="submit"
+                                class="btn-primary w-full sm:w-auto flex items-center justify-center gap-2"
+                            >
+                                <span>Submit Application</span>
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                                    ></path>
+                                </svg>
+                            </button>
+                            <p class="text-xs text-lumix-gray mt-4">
+                                By submitting, you agree to our
+                                <a
+                                    href="/privacy"
+                                    class="text-lumix-red hover:underline"
+                                    >Privacy Policy</a
+                                >. We'll only use your information for
+                                recruitment purposes.
+                            </p>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Right: Terminal + Info -->
+                <div class="space-y-8 lg:sticky lg:top-24 lg:self-start">
+                    <Terminal
+                        title="apply --help"
+                        showCursor={false}
+                        lines={[
+                            { prompt: "$", command: "lumix apply --help" },
+                            { output: "" },
+                            { output: "APPLICATION PROCESS", type: "info" },
+                            {
+                                output: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+                                type: "info",
+                            },
+                            { output: "" },
+                            {
+                                output: "1. Submit application form",
+                                type: "info",
+                            },
+                            {
+                                output: "2. Initial review (1-3 days)",
+                                type: "info",
+                            },
+                            {
+                                output: "3. Interview via Discord/call",
+                                type: "info",
+                            },
+                            {
+                                output: "4. Skills assessment (if applicable)",
+                                type: "info",
+                            },
+                            {
+                                output: "5. Final decision & offer",
+                                type: "success",
+                            },
+                            { output: "" },
+                            {
+                                output: "Contact: career@lumixsolutions.org",
+                                type: "info",
+                            },
+                        ]}
+                    />
+
+                    <!-- Tips -->
+                    <div class="card p-6">
+                        <span
+                            class="text-mono text-xs text-lumix-gray mb-4 block"
+                            >// APPLICATION_TIPS</span
+                        >
+                        <h3 class="text-lumix-white font-medium mb-4">
+                            Tips for a strong application
+                        </h3>
+                        <ul class="space-y-3 text-sm text-lumix-gray">
+                            <li class="flex items-start gap-2">
+                                <span class="text-lumix-red">→</span>
+                                <span
+                                    >Be specific about your experience and
+                                    achievements</span
+                                >
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-lumix-red">→</span>
+                                <span
+                                    >Include links to your work (GitHub,
+                                    portfolio, etc.)</span
+                                >
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-lumix-red">→</span>
+                                <span>Show genuine interest in what we do</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-lumix-red">→</span>
+                                <span
+                                    >Be honest about your availability and
+                                    expectations</span
+                                >
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Back link -->
+                    <a
+                        href="/career"
+                        class="inline-flex items-center gap-2 text-sm text-lumix-gray hover:text-lumix-white transition-colors"
+                    >
+                        <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"></path>
+                        </svg>
+                        Back to open positions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</Layout>
+
+<style>
+    /* Custom select arrow */
+    select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+        padding-right: 40px;
+    }
+
+    select option {
+        background-color: #0a0a0a;
+        color: #ffffff;
+    }
+    
+    .hidden {
+        display: none;
+    }
+</style>
+
+<script>
+    const form = document.getElementById('application-form') as HTMLFormElement;
+    const successMessage = document.getElementById('success-message');
+    const submitButton = form?.querySelector('button[type="submit"]');
+    
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Disable button and show loading state
+        if (submitButton) {
+            submitButton.setAttribute('disabled', 'true');
+            submitButton.innerHTML = `
+                <span>Submitting...</span>
+                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            `;
+        }
+        
+        const formData = new FormData(form);
+        
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                // Hide form, show success message
+                form.classList.add('hidden');
+                successMessage?.classList.remove('hidden');
+                
+                // Scroll to top of success message
+                successMessage?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                throw new Error('Form submission failed');
+            }
+        } catch (error) {
+            // Re-enable button on error
+            if (submitButton) {
+                submitButton.removeAttribute('disabled');
+                submitButton.innerHTML = `
+                    <span>Submit Application</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+                    </svg>
+                `;
+            }
+            alert('There was an error submitting your application. Please try again or email us directly at career@lumixsolutions.org');
+        }
+    });
+</script>

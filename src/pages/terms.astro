@@ -1,0 +1,297 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { siteConfig } from "../data/site";
+
+const lastUpdated = "January 30, 2026";
+---
+
+<Layout title="Terms of Service" description="Terms of Service for Lumix Solutions - Read our terms and conditions for using our web hosting services.">
+  <section class="py-16 lg:py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-12">
+        <span class="text-mono text-xs text-lumix-gray mb-4 block">
+          <span class="text-lumix-red">$</span> cat /legal/terms.md
+        </span>
+        <h1 class="heading-xl text-lumix-white mb-4">
+          Terms of <span class="text-lumix-red">Service</span>
+        </h1>
+        <p class="text-lumix-gray">
+          Last updated: {lastUpdated}
+        </p>
+      </div>
+
+      <div class="prose prose-invert max-w-none space-y-8">
+        <!-- Acceptance -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">1. Acceptance of Terms</h2>
+          <div class="text-lumix-gray space-y-4 text-sm">
+            <p>
+              By accessing or using the services provided by Lumix Solutions ("Company," "we," 
+              "our," or "us"), you agree to be bound by these Terms of Service ("Terms"). If 
+              you do not agree to these Terms, you may not use our services.
+            </p>
+            <p>
+              These Terms apply to all users, including customers, visitors, and anyone who 
+              accesses or uses our web hosting services, APIs, websites, and related products.
+            </p>
+          </div>
+        </section>
+
+        <!-- Service Description -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">2. Service Description</h2>
+          <div class="text-lumix-gray space-y-4 text-sm">
+            <p>Lumix Solutions provides web hosting and related services, including but not limited to:</p>
+            <ul class="list-disc list-inside space-y-2 ml-4">
+              <li>Shared, VPS, and dedicated server hosting</li>
+              <li>Domain registration and DNS management</li>
+              <li>DDoS protection and mitigation</li>
+              <li>Website management tools and control panels</li>
+              <li>Technical support and maintenance</li>
+              <li>Backup and disaster recovery services</li>
+            </ul>
+            <p class="mt-4">
+              We reserve the right to modify, suspend, or discontinue any service at any time 
+              with reasonable notice to affected customers.
+            </p>
+          </div>
+        </section>
+
+        <!-- Account Registration -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">3. Account Registration</h2>
+          <div class="text-lumix-gray space-y-4 text-sm">
+            <p>To use our services, you must:</p>
+            <ul class="list-disc list-inside space-y-2 ml-4">
+              <li>Be at least 18 years of age or the legal age of majority in your jurisdiction</li>
+              <li>Provide accurate, current, and complete registration information</li>
+              <li>Maintain the security of your account credentials</li>
+              <li>Notify us immediately of any unauthorized account access</li>
+              <li>Accept responsibility for all activities under your account</li>
+            </ul>
+            <p class="mt-4">
+              We reserve the right to suspend or terminate accounts that provide false information 
+              or violate these Terms.
+            </p>
+          </div>
+        </section>
+
+        <!-- Acceptable Use -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">4. Acceptable Use Policy</h2>
+          <div class="text-lumix-gray space-y-4 text-sm">
+            <p>You agree NOT to use our services to:</p>
+            <ul class="list-disc list-inside space-y-2 ml-4">
+              <li>Host, transmit, or distribute illegal content</li>
+              <li>Engage in spamming, phishing, or malware distribution</li>
+              <li>Conduct DDoS attacks or other malicious network activities</li>
+              <li>Infringe on intellectual property rights of others</li>
+              <li>Host content involving child exploitation</li>
+              <li>Engage in cryptocurrency mining without explicit permission</li>
+              <li>Circumvent security measures or access unauthorized systems</li>
+              <li>Resell services without authorization</li>
+              <li>Violate any applicable laws or regulations</li>
+            </ul>
+            <div class="mt-6 p-4 bg-lumix-red/10 border border-lumix-red/30">
+              <p class="text-lumix-white font-medium text-sm">
+                <span class="text-lumix-red">⚠</span> Violations may result in immediate service termination 
+                without refund and may be reported to law enforcement.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Payment Terms -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">5. Payment Terms</h2>
+          <div class="text-lumix-gray space-y-4 text-sm">
+            <h3 class="text-lumix-white font-medium">Billing</h3>
+            <ul class="list-disc list-inside space-y-2 ml-4">
+              <li>Services are billed according to the selected plan (monthly, annually, etc.)</li>
+              <li>All prices are in USD unless otherwise specified</li>
+              <li>Applicable taxes will be added based on your location</li>
+              <li>Payment is due at the beginning of each billing cycle</li>
+            </ul>
+
+            <h3 class="text-lumix-white font-medium mt-6">Late Payments</h3>
+            <ul class="list-disc list-inside space-y-2 ml-4">
+              <li>Services may be suspended after 7 days of non-payment</li>
+              <li>Accounts may be terminated after 30 days of non-payment</li>
+              <li>Data may be deleted 14 days after termination</li>
+            </ul>
+
+            <h3 class="text-lumix-white font-medium mt-6">Refund Policy</h3>
+            <p>
+              New customers may request a refund within 30 days of initial purchase. Refunds 
+              are not available for domain registrations, setup fees, or services already rendered.
+            </p>
+          </div>
+        </section>
+
+        <!-- Uptime & SLA -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">6. Service Level Agreement (SLA)</h2>
+          <div class="text-lumix-gray space-y-4 text-sm">
+            <p>
+              We strive to maintain 99.9% uptime for our hosting services. Our SLA terms:
+            </p>
+            <ul class="list-disc list-inside space-y-2 ml-4">
+              <li>Network uptime guaranteed at 99.9% monthly</li>
+              <li>Scheduled maintenance excluded from uptime calculations</li>
+              <li>Credits issued for verified downtime exceeding SLA</li>
+              <li>Claims must be submitted within 7 days of incident</li>
+            </ul>
+            <div class="mt-4 p-4 bg-lumix-black border border-terminal-border text-mono text-sm">
+              <span class="text-lumix-gray"># SLA Credit Structure</span><br/>
+              99.9% - 99.0% = 10% credit<br/>
+              99.0% - 95.0% = 25% credit<br/>
+              Below 95.0% = 50% credit
+            </div>
+            <p class="mt-4 text-xs text-lumix-gray">
+              Maximum credit per month is 50% of monthly service fee. Credits are applied to 
+              future invoices and are not redeemable for cash.
+            </p>
+          </div>
+        </section>
+
+        <!-- Data & Backups -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">7. Data and Backups</h2>
+          <div class="text-lumix-gray space-y-4 text-sm">
+            <p>
+              <strong class="text-lumix-white">Your Responsibility:</strong> You are solely 
+              responsible for maintaining backups of your data. While we may provide backup 
+              services, these are offered as a convenience and should not be your only backup.
+            </p>
+            <p>
+              <strong class="text-lumix-white">No Liability:</strong> We are not responsible 
+              for any data loss due to hardware failure, software issues, security breaches, 
+              account termination, or any other cause.
+            </p>
+            <p>
+              <strong class="text-lumix-white">Data Portability:</strong> You may export your 
+              data at any time through standard tools and methods provided with your service.
+            </p>
+          </div>
+        </section>
+
+        <!-- Intellectual Property -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">8. Intellectual Property</h2>
+          <div class="text-lumix-gray space-y-4 text-sm">
+            <p>
+              <strong class="text-lumix-white">Your Content:</strong> You retain ownership of 
+              all content you host on our services. By using our services, you grant us a 
+              limited license to host, transmit, and display your content as necessary to 
+              provide the services.
+            </p>
+            <p>
+              <strong class="text-lumix-white">Our Property:</strong> Lumix Solutions, our 
+              logos, trademarks, website content, and software are our intellectual property. 
+              You may not use these without our written permission.
+            </p>
+            <p>
+              <strong class="text-lumix-white">DMCA:</strong> We respond to valid DMCA takedown 
+              notices. Repeat infringers will have their accounts terminated.
+            </p>
+          </div>
+        </section>
+
+        <!-- Limitation of Liability -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">9. Limitation of Liability</h2>
+          <div class="text-lumix-gray space-y-4 text-sm">
+            <p>
+              TO THE MAXIMUM EXTENT PERMITTED BY LAW:
+            </p>
+            <ul class="list-disc list-inside space-y-2 ml-4">
+              <li>Services are provided "AS IS" and "AS AVAILABLE"</li>
+              <li>We make no warranties, express or implied, regarding the services</li>
+              <li>We are not liable for any indirect, incidental, special, consequential, or punitive damages</li>
+              <li>Our total liability shall not exceed the amount paid by you in the 12 months preceding the claim</li>
+              <li>We are not liable for any third-party content hosted on our services</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Indemnification -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">10. Indemnification</h2>
+          <div class="text-lumix-gray space-y-4 text-sm">
+            <p>
+              You agree to indemnify, defend, and hold harmless Lumix Solutions and its 
+              officers, directors, employees, and agents from any claims, damages, losses, 
+              liabilities, and expenses (including legal fees) arising from:
+            </p>
+            <ul class="list-disc list-inside space-y-2 ml-4">
+              <li>Your use of our services</li>
+              <li>Your violation of these Terms</li>
+              <li>Your content hosted on our services</li>
+              <li>Your violation of any third-party rights</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Termination -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">11. Termination</h2>
+          <div class="text-lumix-gray space-y-4 text-sm">
+            <p>
+              <strong class="text-lumix-white">By You:</strong> You may terminate your account 
+              at any time through the control panel or by contacting support. Refunds are 
+              subject to our refund policy.
+            </p>
+            <p>
+              <strong class="text-lumix-white">By Us:</strong> We may suspend or terminate your 
+              account immediately if you violate these Terms, engage in illegal activity, or 
+              fail to pay for services.
+            </p>
+            <p>
+              <strong class="text-lumix-white">Effect of Termination:</strong> Upon termination, 
+              your right to use the services ceases immediately. We may delete your data after 
+              a reasonable retention period.
+            </p>
+          </div>
+        </section>
+
+        <!-- Governing Law -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">12. Governing Law</h2>
+          <div class="text-lumix-gray space-y-4 text-sm">
+            <p>
+              These Terms are governed by and construed in accordance with the laws of the 
+              State of Delaware, United States, without regard to conflict of law principles. 
+              Any disputes shall be resolved in the courts of Delaware.
+            </p>
+          </div>
+        </section>
+
+        <!-- Changes to Terms -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">13. Changes to Terms</h2>
+          <div class="text-lumix-gray space-y-4 text-sm">
+            <p>
+              We reserve the right to modify these Terms at any time. We will provide notice 
+              of material changes through email or our website. Continued use of services 
+              after changes constitutes acceptance of the modified Terms.
+            </p>
+          </div>
+        </section>
+
+        <!-- Contact -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">14. Contact Information</h2>
+          <div class="text-lumix-gray space-y-4 text-sm">
+            <p>For questions about these Terms, contact us:</p>
+            <div class="mt-4 p-4 bg-lumix-black border border-terminal-border">
+              <p class="text-mono text-sm">
+                <span class="text-lumix-gray">Email:</span> <a href={`mailto:${siteConfig.contact.email}`} class="text-lumix-red">{siteConfig.contact.email}</a><br/>
+                <span class="text-lumix-gray">Website:</span> <span class="text-lumix-white">lumixsolutions.org</span>
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+</Layout>

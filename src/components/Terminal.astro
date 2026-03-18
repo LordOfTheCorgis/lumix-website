@@ -1,0 +1,65 @@
+---
+interface Props {
+    title?: string;
+    lines: Array<{
+        prompt?: string;
+        command?: string;
+        output?: string;
+        type?: "success" | "error" | "warning" | "info";
+    }>;
+    showCursor?: boolean;
+}
+
+const { title = "terminal", lines, showCursor = true } = Astro.props;
+---
+
+<div class="terminal-window">
+    <div class="terminal-header">
+        <span class="terminal-dot bg-lumix-red"></span>
+        <span class="terminal-dot bg-terminal-yellow"></span>
+        <span class="terminal-dot bg-terminal-green"></span>
+        <span class="text-mono text-xs text-lumix-gray ml-3">{title}</span>
+    </div>
+    <div class="terminal-body">
+        {
+            lines.map((line, index) => (
+                <div class="mb-1">
+                    {line.prompt && (
+                        <span class="terminal-prompt">{line.prompt}</span>
+                    )}
+                    {line.command && (
+                        <span class="text-lumix-white ml-1">
+                            {line.command}
+                        </span>
+                    )}
+                    {line.output && (
+                        <div
+                            class={`mt-0.5 ${
+                                line.type === "success"
+                                    ? "terminal-success"
+                                    : line.type === "error"
+                                        ? "terminal-error"
+                                        : line.type === "warning"
+                                            ? "terminal-warning"
+                                            : "text-terminal-text"
+                            }`}
+                        >
+                            {line.output}
+                        </div>
+                    )}
+                    {index === lines.length - 1 &&
+                        showCursor &&
+                        !line.output && <span class="terminal-cursor" />}
+                </div>
+            ))
+        }
+        {
+            showCursor && lines[lines.length - 1]?.output && (
+                <div>
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-cursor" />
+                </div>
+            )
+        }
+    </div>
+</div>

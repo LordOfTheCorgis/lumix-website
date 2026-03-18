@@ -1,0 +1,233 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Terminal from "../../components/Terminal.astro";
+---
+
+<Layout title="Careers" description="Join the Lumix Solutions team. Explore open positions in IT, Public Relations, and Research & Development.">
+  <!-- Page Header -->
+  <section class="py-16 lg:py-24 border-b border-terminal-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <span class="text-mono text-xs text-lumix-gray mb-4 block animate-fade-in">
+          <span class="text-lumix-red">$</span> cat /careers/README.md
+        </span>
+        <h1 class="heading-xl text-lumix-white mb-6 animate-fade-in-up animate-delay-100">
+          Join <span class="text-lumix-red">our team</span>
+        </h1>
+        <p class="body-lg text-lumix-gray animate-fade-in-up animate-delay-200">
+          We're building infrastructure that developers actually want to use. 
+          If you're passionate about technology and want to work with a team 
+          that values engineering excellence, we'd love to hear from you.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Open Positions -->
+  <section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+        <!-- Left: Positions -->
+        <div>
+          <span class="text-mono text-xs text-lumix-gray mb-6 block">// OPEN_POSITIONS</span>
+          
+          <div class="space-y-6">
+            <!-- IT Department -->
+            <div class="card p-6">
+              <div class="flex items-start gap-4">
+                <div class="p-3 bg-lumix-black border border-terminal-border">
+                  <svg class="w-5 h-5 text-lumix-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <h3 class="text-lumix-white font-medium">IT Department</h3>
+                    <span class="text-xs text-mono px-2 py-0.5 bg-lumix-red/10 text-lumix-red border border-lumix-red/20">HIRING</span>
+                  </div>
+                  <p class="text-sm text-lumix-gray mb-4">
+                    Build and maintain the infrastructure that powers thousands of applications. 
+                    Work with cutting-edge networking, virtualization, and security technologies.
+                  </p>
+                  <div class="space-y-2 text-sm text-lumix-gray mb-4">
+                    <div class="flex items-center gap-2">
+                      <span class="text-lumix-red">→</span>
+                      <span>Systems Administrator</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-lumix-red">→</span>
+                      <span>Network Engineer</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-lumix-red">→</span>
+                      <span>DevOps Engineer</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-lumix-red">→</span>
+                      <span>Security Analyst</span>
+                    </div>
+                  </div>
+                  <p class="text-xs text-lumix-gray">
+                    <span class="text-lumix-white">Requirements:</span> Experience with Linux, networking, 
+                    and infrastructure automation. Problem-solving mindset.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Public Relations -->
+            <div class="card p-6">
+              <div class="flex items-start gap-4">
+                <div class="p-3 bg-lumix-black border border-terminal-border">
+                  <svg class="w-5 h-5 text-lumix-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <h3 class="text-lumix-white font-medium">Public Relations</h3>
+                    <span class="text-xs text-mono px-2 py-0.5 bg-lumix-red/10 text-lumix-red border border-lumix-red/20">HIRING</span>
+                  </div>
+                  <p class="text-sm text-lumix-gray mb-4">
+                    Shape how the world sees Lumix. Manage our brand presence, 
+                    community engagement, and customer communications.
+                  </p>
+                  <div class="space-y-2 text-sm text-lumix-gray mb-4">
+                    <div class="flex items-center gap-2">
+                      <span class="text-lumix-red">→</span>
+                      <span>Community Manager</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-lumix-red">→</span>
+                      <span>Content Writer</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-lumix-red">→</span>
+                      <span>Social Media Specialist</span>
+                    </div>
+                  </div>
+                  <p class="text-xs text-lumix-gray">
+                    <span class="text-lumix-white">Requirements:</span> Excellent communication skills, 
+                    understanding of tech communities, creative mindset.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- R&D -->
+            <div class="card p-6">
+              <div class="flex items-start gap-4">
+                <div class="p-3 bg-lumix-black border border-terminal-border">
+                  <svg class="w-5 h-5 text-lumix-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <h3 class="text-lumix-white font-medium">Research & Development</h3>
+                    <span class="text-xs text-mono px-2 py-0.5 bg-lumix-red/10 text-lumix-red border border-lumix-red/20">HIRING</span>
+                  </div>
+                  <p class="text-sm text-lumix-gray mb-4">
+                    Push the boundaries of what's possible. Research new technologies, 
+                    develop innovative solutions, and shape our product roadmap.
+                  </p>
+                  <div class="space-y-2 text-sm text-lumix-gray mb-4">
+                    <div class="flex items-center gap-2">
+                      <span class="text-lumix-red">→</span>
+                      <span>Software Engineer</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-lumix-red">→</span>
+                      <span>Platform Architect</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-lumix-red">→</span>
+                      <span>Research Engineer</span>
+                    </div>
+                  </div>
+                  <p class="text-xs text-lumix-gray">
+                    <span class="text-lumix-white">Requirements:</span> Strong software development skills, 
+                    curiosity, and ability to tackle complex technical challenges.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Apply CTA -->
+          <div class="mt-8">
+            <a 
+              href="/career/application" 
+              class="btn-primary inline-flex items-center gap-2"
+            >
+              Apply Now
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Right: Terminal + Benefits -->
+        <div class="space-y-8">
+          <Terminal 
+            title="careers --info"
+            showCursor={false}
+            lines={[
+              { prompt: "$", command: "lumix careers --info" },
+              { output: "" },
+              { output: "LUMIX SOLUTIONS - CAREERS", type: "info" },
+              { output: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", type: "info" },
+              { output: "" },
+              { output: "Open departments:", type: "info" },
+              { output: "  • IT Department        [3 roles]", type: "success" },
+              { output: "  • Public Relations     [3 roles]", type: "success" },
+              { output: "  • R&D                  [3 roles]", type: "success" },
+              { output: "" },
+              { output: "Work style: Remote-first", type: "info" },
+              { output: "Contact: career@lumixsolutions.org", type: "info" },
+              { output: "" },
+              { output: "Run: lumix apply --start", type: "info" },
+            ]}
+          />
+          
+          <!-- Why Work Here -->
+          <div class="card p-6">
+            <span class="text-mono text-xs text-lumix-gray mb-4 block">// WHY_LUMIX</span>
+            <h3 class="text-lumix-white font-medium mb-4">Why work with us</h3>
+            <div class="space-y-3 text-sm text-lumix-gray">
+              <div class="flex items-start gap-3">
+                <span class="text-lumix-red text-mono">01</span>
+                <div>
+                  <span class="text-lumix-white">Remote-first culture</span><br/>
+                  Work from anywhere. We care about results, not hours in a chair.
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="text-lumix-red text-mono">02</span>
+                <div>
+                  <span class="text-lumix-white">Real impact</span><br/>
+                  Small team, big influence. Your work directly shapes our products.
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="text-lumix-red text-mono">03</span>
+                <div>
+                  <span class="text-lumix-white">Learn & grow</span><br/>
+                  Work with industry veterans and access resources to level up your skills.
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="text-lumix-red text-mono">04</span>
+                <div>
+                  <span class="text-lumix-white">No corporate BS</span><br/>
+                  Flat hierarchy. Clear communication. We trust you to do your job.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

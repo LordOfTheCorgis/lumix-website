@@ -1,0 +1,556 @@
+---
+import Layout from "../layouts/Layout.astro";
+import StatusCard from "../components/StatusCard.astro";
+import { statusServices } from "../data/site";
+---
+
+<Layout
+    title="System Status"
+    description="Real-time status of Lumix Solutions infrastructure and services."
+>
+    <!-- Page Header -->
+    <section class="py-16 lg:py-20 border-b border-terminal-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div
+                class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6"
+            >
+                <div>
+                    <span
+                        class="text-mono text-xs text-lumix-gray mb-4 block animate-fade-in"
+                    >
+                        <span class="text-lumix-red">$</span> lumix status --monitor
+                    </span>
+                    <h1
+                        class="heading-xl text-lumix-white mb-4 animate-fade-in-up animate-delay-100"
+                    >
+                        System <span class="text-lumix-red">status</span>
+                    </h1>
+                    <p
+                        class="text-lumix-gray animate-fade-in-up animate-delay-200"
+                    >
+                        Real-time infrastructure status and service health
+                    </p>
+                </div>
+
+                <!-- Overall Status -->
+                <div
+                    class="card p-6 lg:min-w-[280px] animate-fade-in-up animate-delay-300"
+                    id="overall-status"
+                >
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="status-dot status-operational status-pulse w-4 h-4"
+                            id="overall-status-dot"
+                        >
+                        </div>
+                        <div>
+                            <div
+                                class="text-lg font-medium text-lumix-white"
+                                id="overall-status-text"
+                            >
+                                Checking Services...
+                            </div>
+                            <div
+                                class="text-mono text-xs text-lumix-gray"
+                                id="last-updated"
+                            >
+                                Last updated: checking...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ping All Button -->
+            <div class="mt-6">
+                <button id="ping-all-btn" class="btn-primary">
+                    <svg
+                        class="w-4 h-4 animate-spin hidden"
+                        id="ping-all-spinner"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        ></path>
+                    </svg>
+                    <span id="ping-all-text">Ping All Services</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Status Grid -->
+    <section class="py-16 lg:py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-8 flex items-center justify-between">
+                <span class="text-mono text-xs text-lumix-gray"
+                    >// SERVICES</span
+                >
+                <span
+                    class="text-mono text-xs text-lumix-gray"
+                    id="services-summary">0/0 operational</span
+                >
+            </div>
+
+            <div
+                class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
+                id="services-grid"
+            >
+                {statusServices.map((service) => <StatusCard {...service} />)}
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Ping Tool -->
+    <section class="py-16 lg:py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-8">
+                <span class="text-mono text-xs text-lumix-gray"
+                    >// NETWORK_TOOLS</span
+                >
+                <h2 class="heading-lg text-lumix-white mt-4">Ping any URL</h2>
+                <p class="text-sm text-lumix-gray mt-2">
+                    Check connectivity to any service (must support HTTPS)
+                </p>
+            </div>
+
+            <div class="max-w-2xl">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <span class="terminal-dot bg-lumix-red"></span>
+                        <span class="terminal-dot bg-terminal-yellow"></span>
+                        <span class="terminal-dot bg-terminal-green"></span>
+                        <span class="text-mono text-xs text-lumix-gray ml-3"
+                            >ping_tool</span
+                        >
+                    </div>
+                    <div class="terminal-body">
+                        <div class="flex gap-2 mb-4">
+                            <span class="terminal-prompt">$</span>
+                            <span class="text-terminal-text">ping</span>
+                            <input
+                                type="text"
+                                id="ping-url"
+                                class="flex-1 bg-transparent border-none outline-none text-lumix-white text-sm font-mono"
+                                placeholder="https://example.com"
+                            />
+                        </div>
+                        <button id="ping-btn" class="btn-primary text-xs">
+                            Execute
+                        </button>
+
+                        <div id="ping-output" class="mt-6 hidden">
+                            <div class="border-t border-terminal-border pt-4">
+                                <div id="ping-results"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Recent Incidents -->
+    <section class="py-16 lg:py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-8">
+                <span class="text-mono text-xs text-lumix-gray"
+                    >// INCIDENT_LOG</span
+                >
+                <h2 class="heading-lg text-lumix-white mt-4">
+                    Recent incidents
+                </h2>
+            </div>
+
+            <div class="max-w-3xl">
+                <div class="card p-6">
+                    <div class="flex items-center gap-3 text-terminal-green">
+                        <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            ></path>
+                        </svg>
+                        <span class="text-sm"
+                            >No incidents reported in the last 90 days</span
+                        >
+                    </div>
+                </div>
+
+                <div class="mt-8 space-y-4">
+                    <div class="text-mono text-xs text-lumix-gray">
+                        UPTIME HISTORY (90 DAYS)
+                    </div>
+                    <div class="flex gap-1 flex-wrap">
+                        {
+                            Array.from({ length: 90 }, (_, i) => (
+                                <div
+                                    class="w-2 h-8 bg-terminal-green opacity-80 hover:opacity-100 transition-opacity"
+                                    title={`${90 - i} days ago: 100% uptime`}
+                                />
+                            ))
+                        }
+                    </div>
+                    <div
+                        class="flex justify-between text-mono text-xs text-lumix-gray"
+                    >
+                        <span>90 days ago</span>
+                        <span>Today</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</Layout>
+
+<script>
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Real Ping Implementation
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    interface PingResult {
+        success: boolean;
+        responseTime: number;
+        status: "operational" | "degraded" | "down";
+        error?: string;
+    }
+
+    // Ping a URL and measure response time
+    async function pingUrl(url: string): Promise<PingResult> {
+        const startTime = performance.now();
+
+        try {
+            // Use no-cors mode to avoid CORS errors in console
+            // This won't give us response details, but we can detect if the server responds
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
+            await fetch(url, {
+                method: "HEAD",
+                mode: "no-cors",
+                signal: controller.signal,
+                cache: "no-store",
+            });
+
+            clearTimeout(timeout);
+            const endTime = performance.now();
+            const responseTime = Math.round(endTime - startTime);
+
+            // no-cors returns opaque response, but if we get here without error, server is reachable
+            return {
+                success: true,
+                responseTime,
+                status: responseTime < 500 ? "operational" : "degraded",
+            };
+        } catch (error) {
+            const endTime = performance.now();
+            const responseTime = Math.round(endTime - startTime);
+            
+            // Check if it was a timeout
+            if (error instanceof Error && error.name === 'AbortError') {
+                return {
+                    success: false,
+                    responseTime,
+                    status: "down",
+                    error: "Request timeout",
+                };
+            }
+            
+            return {
+                success: false,
+                responseTime,
+                status: "down",
+                error: error instanceof Error ? error.message : "Connection failed",
+            };
+        }
+    }
+
+    // Update a service card with ping results
+    function updateServiceCard(card: Element, result: PingResult): void {
+        const statusDot = card.querySelector("[data-status-dot]");
+        const statusLabel = card.querySelector("[data-status-label]");
+        const responseTimeEl = card.querySelector("[data-response-time]");
+        const pingText = card.querySelector("[data-ping-text]");
+
+        // Update status dot
+        if (statusDot) {
+            statusDot.className = "status-dot status-pulse";
+            if (result.status === "operational") {
+                statusDot.classList.add("status-operational");
+            } else if (result.status === "degraded") {
+                statusDot.classList.add("status-degraded");
+            } else {
+                statusDot.classList.add("status-down");
+            }
+        }
+
+        // Update status label
+        if (statusLabel) {
+            const labels: Record<string, string> = {
+                operational: "Operational",
+                degraded: "Degraded",
+                down: "Down",
+            };
+            const colors: Record<string, string> = {
+                operational: "text-terminal-green",
+                degraded: "text-terminal-yellow",
+                down: "text-lumix-red",
+            };
+
+            statusLabel.textContent = labels[result.status];
+            statusLabel.className = `text-xs font-medium ${colors[result.status]}`;
+        }
+
+        // Update response time
+        if (responseTimeEl) {
+            responseTimeEl.textContent = `${result.responseTime}ms`;
+        }
+
+        // Update ping button text
+        if (pingText) {
+            pingText.textContent = result.success ? "Ping Again" : "Retry Ping";
+        }
+    }
+
+    // Update overall status based on all services
+    function updateOverallStatus(): void {
+        const cards = document.querySelectorAll("[data-service-id]");
+        let operational = 0;
+        let degraded = 0;
+        let down = 0;
+
+        cards.forEach((card) => {
+            const statusDot = card.querySelector("[data-status-dot]");
+            if (statusDot?.classList.contains("status-operational"))
+                operational++;
+            else if (statusDot?.classList.contains("status-degraded"))
+                degraded++;
+            else if (statusDot?.classList.contains("status-down")) down++;
+        });
+
+        const total = cards.length;
+        const overallDot = document.getElementById("overall-status-dot");
+        const overallText = document.getElementById("overall-status-text");
+        const lastUpdated = document.getElementById("last-updated");
+        const summary = document.getElementById("services-summary");
+
+        if (summary) {
+            summary.textContent = `${operational}/${total} operational`;
+        }
+
+        if (overallDot && overallText) {
+            overallDot.className = "status-dot status-pulse w-4 h-4";
+
+            if (down > 0) {
+                overallDot.classList.add("status-down");
+                overallText.textContent = "Service Disruption";
+            } else if (degraded > 0) {
+                overallDot.classList.add("status-degraded");
+                overallText.textContent = "Degraded Performance";
+            } else if (operational === total) {
+                overallDot.classList.add("status-operational");
+                overallText.textContent = "All Systems Operational";
+            } else {
+                overallDot.classList.add("status-degraded");
+                overallText.textContent = "Checking Services...";
+            }
+        }
+
+        if (lastUpdated) {
+            lastUpdated.textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+        }
+    }
+
+    // Ping a single service
+    async function pingService(card: Element): Promise<void> {
+        const serviceUrl = card.getAttribute("data-ping-url");
+        const pingBtn = card.querySelector("[data-ping-btn]");
+        const pingText = card.querySelector("[data-ping-text]");
+        const pingIcon = card.querySelector("[data-ping-icon]");
+
+        if (!serviceUrl || !pingBtn) return;
+
+        // Show loading state
+        pingBtn.setAttribute("disabled", "true");
+        if (pingText) pingText.textContent = "Pinging...";
+        if (pingIcon) pingIcon.classList.add("animate-pulse");
+
+        const result = await pingUrl(serviceUrl);
+
+        // Update card
+        updateServiceCard(card, result);
+
+        // Reset button
+        pingBtn.removeAttribute("disabled");
+        if (pingIcon) pingIcon.classList.remove("animate-pulse");
+
+        updateOverallStatus();
+    }
+
+    // Ping all services
+    async function pingAllServices(): Promise<void> {
+        const cards = document.querySelectorAll("[data-service-id]");
+        const pingAllBtn = document.getElementById("ping-all-btn");
+        const pingAllText = document.getElementById("ping-all-text");
+        const pingAllSpinner = document.getElementById("ping-all-spinner");
+
+        if (pingAllBtn) {
+            pingAllBtn.setAttribute("disabled", "true");
+            pingAllBtn.classList.add("opacity-50");
+        }
+        if (pingAllText) pingAllText.textContent = "Pinging...";
+        if (pingAllSpinner) pingAllSpinner.classList.remove("hidden");
+
+        // Ping all services in parallel
+        const promises = Array.from(cards).map(async (card) => {
+            const url = card.getAttribute("data-ping-url");
+            if (!url) return;
+
+            const pingText = card.querySelector("[data-ping-text]");
+            if (pingText) pingText.textContent = "Pinging...";
+
+            const result = await pingUrl(url);
+            updateServiceCard(card, result);
+        });
+
+        await Promise.all(promises);
+
+        // Reset button
+        if (pingAllBtn) {
+            pingAllBtn.removeAttribute("disabled");
+            pingAllBtn.classList.remove("opacity-50");
+        }
+        if (pingAllText) pingAllText.textContent = "Ping All Services";
+        if (pingAllSpinner) pingAllSpinner.classList.add("hidden");
+
+        updateOverallStatus();
+    }
+
+    // Custom URL ping tool
+    async function pingCustomUrl(url: string): Promise<void> {
+        const pingOutput = document.getElementById("ping-output");
+        const pingResults = document.getElementById("ping-results");
+
+        if (!pingOutput || !pingResults) return;
+
+        // Ensure URL has protocol
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            url = "https://" + url;
+        }
+
+        pingOutput.classList.remove("hidden");
+        pingResults.innerHTML = `<div class="text-lumix-gray">Pinging ${url}...</div>`;
+
+        // Perform multiple pings
+        const results: PingResult[] = [];
+        for (let i = 0; i < 4; i++) {
+            const result = await pingUrl(url);
+            results.push(result);
+
+            // Update display incrementally
+            const lines = results.map((r, idx) => {
+                if (r.success) {
+                    return `<div class="text-terminal-text">seq=${idx + 1} time=${r.responseTime}ms status=${r.status}</div>`;
+                } else {
+                    return `<div class="terminal-error">seq=${idx + 1} failed: ${r.error}</div>`;
+                }
+            });
+
+            pingResults.innerHTML = `
+        <div class="text-terminal-text mb-2">PING ${url}</div>
+        ${lines.join("")}
+        ${i < 3 ? '<div class="text-lumix-gray mt-2">...</div>' : ""}
+      `;
+
+            // Small delay between pings
+            if (i < 3) await new Promise((resolve) => setTimeout(resolve, 300));
+        }
+
+        // Show summary
+        const successful = results.filter((r) => r.success).length;
+        const avgTime = Math.round(
+            results.reduce((sum, r) => sum + r.responseTime, 0) /
+                results.length,
+        );
+        const loss = Math.round((1 - successful / results.length) * 100);
+
+        pingResults.innerHTML = `
+      <div class="text-terminal-text mb-2">PING ${url}</div>
+      ${results
+          .map((r, idx) => {
+              if (r.success) {
+                  return `<div class="text-terminal-text">seq=${idx + 1} time=${r.responseTime}ms status=${r.status}</div>`;
+              } else {
+                  return `<div class="terminal-error">seq=${idx + 1} failed: ${r.error}</div>`;
+              }
+          })
+          .join("")}
+      <div class="mt-4 text-terminal-text">--- ${url} ping statistics ---</div>
+      <div class="text-terminal-text">${results.length} requests, ${successful} successful, ${loss}% loss, avg ${avgTime}ms</div>
+      ${
+          successful === results.length
+              ? '<div class="terminal-success mt-2">Connection successful ✓</div>'
+              : successful > 0
+                ? '<div class="terminal-warning mt-2">Connection unstable ⚠</div>'
+                : '<div class="terminal-error mt-2">Connection failed ✗</div>'
+      }
+    `;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Event Listeners
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    // Individual service ping buttons
+    document.querySelectorAll("[data-ping-btn]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            const card = (e.target as Element).closest("[data-service-id]");
+            if (card) pingService(card);
+        });
+    });
+
+    // Ping all button
+    document
+        .getElementById("ping-all-btn")
+        ?.addEventListener("click", pingAllServices);
+
+    // Custom URL ping
+    const pingBtn = document.getElementById("ping-btn");
+    const pingUrlInput = document.getElementById(
+        "ping-url",
+    ) as HTMLInputElement;
+
+    pingBtn?.addEventListener("click", () => {
+        const url = pingUrlInput?.value || "https://google.com";
+        pingCustomUrl(url);
+    });
+
+    pingUrlInput?.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            const url = pingUrlInput?.value || "https://google.com";
+            pingCustomUrl(url);
+        }
+    });
+
+    // Auto-ping all services on page load
+    document.addEventListener("DOMContentLoaded", () => {
+        // Slight delay to let the page render first
+        setTimeout(pingAllServices, 500);
+    });
+</script>

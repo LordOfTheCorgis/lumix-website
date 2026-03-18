@@ -1,0 +1,166 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ServiceCard from "../components/ServiceCard.astro";
+import Terminal from "../components/Terminal.astro";
+import { services, siteConfig } from "../data/site";
+---
+
+<Layout title="Services" description="DDoS protection, compute infrastructure, game servers, voice servers, and managed services from Lumix Solutions.">
+  <!-- Page Header -->
+  <section class="py-16 lg:py-24 border-b border-terminal-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <span class="text-mono text-xs text-lumix-gray mb-4 block animate-fade-in">
+          <span class="text-lumix-red">$</span> cat /services/README.md
+        </span>
+        <h1 class="heading-xl text-lumix-white mb-6 animate-fade-in-up animate-delay-100">
+          Infrastructure<br/>
+          <span class="text-lumix-red">services</span>
+        </h1>
+        <p class="body-lg text-lumix-gray animate-fade-in-up animate-delay-200">
+          Everything you need to run reliable infrastructure. From DDoS protection 
+          to managed services, we handle the complexity so you can focus on your 
+          applications.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Services Grid -->
+  <section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {services.map(service => (
+          <ServiceCard {...service} />
+        ))}
+      </div>
+    </div>
+  </section>
+  
+  <div class="section-divider"></div>
+  
+  <!-- Why Choose Us -->
+  <section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+        <!-- Left: Features -->
+        <div>
+          <span class="text-mono text-xs text-lumix-gray mb-4 block">// WHY_LUMIX</span>
+          <h2 class="heading-lg text-lumix-white mb-8">
+            Built different
+          </h2>
+          
+          <div class="space-y-6">
+            <div class="flex gap-4">
+              <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center border border-terminal-border">
+                <span class="text-lumix-red text-mono text-sm">01</span>
+              </div>
+              <div>
+                <h3 class="text-lumix-white font-medium mb-2">No overselling</h3>
+                <p class="text-sm text-lumix-gray">
+                  Resources are dedicated, not shared. When you pay for 4 cores, 
+                  you get 4 cores—not "up to 4 cores."
+                </p>
+              </div>
+            </div>
+            
+            <div class="flex gap-4">
+              <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center border border-terminal-border">
+                <span class="text-lumix-red text-mono text-sm">02</span>
+              </div>
+              <div>
+                <h3 class="text-lumix-white font-medium mb-2">Real DDoS protection</h3>
+                <p class="text-sm text-lumix-gray">
+                  10Tbps+ scrubbing capacity with intelligent traffic analysis. 
+                  Not just a marketing checkbox.
+                  <a href="/ddos-protection.pdf" target="_blank" class="text-lumix-red hover:underline ml-1">Learn more →</a>
+                </p>
+              </div>
+            </div>
+            
+            <div class="flex gap-4">
+              <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center border border-terminal-border">
+                <span class="text-lumix-red text-mono text-sm">03</span>
+              </div>
+              <div>
+                <h3 class="text-lumix-white font-medium mb-2">Engineers on call</h3>
+                <p class="text-sm text-lumix-gray">
+                  Support tickets answered by people who actually understand 
+                  networking, not script readers.
+                </p>
+              </div>
+            </div>
+            
+            <div class="flex gap-4">
+              <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center border border-terminal-border">
+                <span class="text-lumix-red text-mono text-sm">04</span>
+              </div>
+              <div>
+                <h3 class="text-lumix-white font-medium mb-2">Transparent billing</h3>
+                <p class="text-sm text-lumix-gray">
+                  Hourly billing, no hidden fees, no long-term contracts. 
+                  Pay for what you use, cancel anytime.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right: Terminal -->
+        <div class="lg:sticky lg:top-24">
+          <Terminal 
+            title="specs.json"
+            showCursor={false}
+            lines={[
+              { output: "{", type: "info" },
+              { output: '  "network": {', type: "info" },
+              { output: '    "bandwidth": "100Gbps",', type: "info" },
+              { output: '    "ddos_capacity": "10Tbps+",', type: "info" },
+              { output: '    "locations": 12,', type: "info" },
+              { output: '    "latency": "<10ms avg"', type: "info" },
+              { output: '  },', type: "info" },
+              { output: '  "compute": {', type: "info" },
+              { output: '    "cpu": "AMD EPYC / Intel Xeon",', type: "info" },
+              { output: '    "storage": "NVMe SSD",', type: "info" },
+              { output: '    "memory": "ECC DDR4"', type: "info" },
+              { output: '  },', type: "info" },
+              { output: '  "sla": "99.99%",', type: "success" },
+              { output: '  "support": "24/7"', type: "success" },
+              { output: "}", type: "info" },
+            ]}
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <div class="section-divider"></div>
+  
+  <!-- CTA -->
+  <section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-8 items-center">
+        <div>
+          <h2 class="heading-lg text-lumix-white mb-4">
+            Ready to get started?
+          </h2>
+          <p class="text-lumix-gray">
+            Access our billing portal to configure your services. All products 
+            are available for instant deployment with hourly billing.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-4 lg:justify-end">
+          <a href={siteConfig.links.billing} target="_blank" rel="noopener noreferrer" class="btn-primary">
+            Access Billing Portal
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </a>
+          <a href="/contact" class="btn-outline">
+            Contact Sales
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
