@@ -269,6 +269,13 @@ export const leadership: StaffMember[] = [
         image: "/images/staff/lucas-d.jpg",
         description: "Leading Lumix Solutions with commitment to innovation and operational excellence.",
     },
+    {
+        id: "coo-leah",
+        name: "Leah H.",
+        title: "Chief Operating Officer",
+        image: "/images/staff/leah-h.png",
+        description: "Overseeing day-to-day operations and ensuring smooth, reliable service delivery across the organization.",
+    },
 ];
 
 export interface Team {
