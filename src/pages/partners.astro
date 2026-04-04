@@ -4,18 +4,24 @@ import Terminal from "../components/Terminal.astro";
 
 const partners = [
   {
-    // name: "Hugo's Workshop",
-    // description: "A trusted name in EUP texturing and modelling. We offer EUP Texturing, Badge Commissions, Vest Commissions, and more custom work. Professional, reliable approach with attention to detail and clear communication.",
-    // logo: "https://cdn.lumixsolutions.org/images/hugoworkshop.png",
-    // url: "https://hugosworkshop.uk/",
-    // discord: "https://discord.gg/dQptg54AzS",
-    // founder: "Hugo"
-    name: "N/A",
-    description: "N/A",
-    logo: "",
-    url: "",
-    discord: "",
-    founder: "N/A"
+    name: "Elite Modification",
+    founder: "EM Team",
+    description: "Elite Modification is back and focused on helping communities level up with premium, practical server assets. Their work is built for immersive gameplay, clean branding, and dependable performance.",
+    services: [
+      "Livery development",
+      "EUP packages",
+      "Patches and badges",
+      "Server-sided sirens",
+      "Custom scripts",
+      "Graphics and branding",
+      "Website development",
+      "Discord bots and automation"
+    ],
+    hiringNote: "They are currently growing their support team. Interested applicants can open a support ticket in their Discord to connect with the team.",
+    offerCode: "LSXEM",
+    offerText: "15% off at checkout",
+    url: "https://elitemodification.com/",
+    discord: "https://discord.gg/tW2Ybp5UDt"
   }
 ];
 
@@ -87,6 +93,35 @@ const openToPartnership = [
               <p class="text-sm text-lumix-gray flex-1 mb-4">
                 {partner.description}
               </p>
+
+              {partner.services && partner.services.length > 0 && (
+                <div class="mb-4">
+                  <p class="text-[11px] text-lumix-gray-dark uppercase tracking-wide mb-2 text-mono">Services</p>
+                  <ul class="space-y-1">
+                    {partner.services.map(service => (
+                      <li class="flex items-center gap-2 text-xs text-lumix-gray">
+                        <span class="w-1 h-1 bg-lumix-red flex-shrink-0"></span>
+                        <span>{service}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {partner.hiringNote && (
+                <p class="text-xs text-lumix-gray mb-4">
+                  {partner.hiringNote}
+                </p>
+              )}
+
+              {partner.offerCode && (
+                <div class="mb-4 p-3 border border-lumix-red/30 bg-lumix-red/5">
+                  <p class="text-[11px] text-lumix-gray-dark uppercase tracking-wide text-mono">Offer</p>
+                  <p class="text-sm text-lumix-white mt-1">
+                    Use code <span class="text-mono text-lumix-red">{partner.offerCode}</span> for {partner.offerText}.
+                  </p>
+                </div>
+              )}
               
               <!-- Links -->
               <div class="pt-4 border-t border-terminal-border">

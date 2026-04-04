@@ -259,22 +259,15 @@ export const leadership: StaffMember[] = [
         id: "ceo-paul",
         name: "Paul C.",
         title: "Chief Executive Officer",
-        image: "https://cdn.lumixsolutions.org/images/IMG_0789.jpg",
+        image: "/images/staff/paul-c.jpg",
         description: "Leading Lumix Solutions with a focus on resilient, high-performance infrastructure.",
     },
     {
         id: "ceo-lucas",
         name: "Lucas D.",
         title: "Chief Executive Officer",
-        image: "https://cdn.lumixsolutions.org/images/midwest-logo.png",
+        image: "/images/staff/lucas-d.jpg",
         description: "Leading Lumix Solutions with commitment to innovation and operational excellence.",
-    },
-    {
-        id: "coo",
-        name: "Leah H.",
-        title: "Chief Operating Officer",
-        image: "https://cdn.lumixsolutions.org/images/IMG_3566.jpg",
-        description: "Overseeing daily operations and ensuring efficient organizational performance.",
     },
 ];
 

@@ -32,14 +32,16 @@ import { leadership, teams, siteConfig } from "../data/site";
         Executive Team
       </h2>
       
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="flex flex-wrap justify-center gap-8">
         {leadership.map((member, index) => (
-          <div class={`staff-card card p-6 animate-fade-in-up animate-delay-${(index + 1) * 100}`}>
+          <div class={`staff-card card p-6 w-full sm:w-[340px] animate-fade-in-up animate-delay-${(index + 1) * 100}`}>
             <div class="flex flex-col items-center text-center">
               <div class="staff-image-container mb-6">
                 <img 
                   src={member.image} 
                   alt={member.name}
+                  loading="lazy"
+                  onerror="this.onerror=null;this.src='/images/logo.png';"
                   class="staff-image w-32 h-32 object-cover"
                 />
                 <div class="staff-image-border"></div>
