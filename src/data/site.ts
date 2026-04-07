@@ -297,6 +297,13 @@ export const leadership: StaffMember[] = [
         image: "/images/staff/jamal-j.png",
         description: "Supporting infrastructure reliability, performing system maintenance, and helping keep services running smoothly.",
     },
+    {
+        id: "marketing-santiago",
+        name: "Santiago G.",
+        title: "Marketing Manager",
+        image: "/images/staff/santiago-g.jpg",
+        description: "Leading brand strategy, campaigns, and communications to grow the Lumix Solutions presence.",
+    },
 ];
 
 export interface Team {
