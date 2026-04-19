@@ -62,8 +62,9 @@ const websiteSchema = {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     
-    <!-- Keep one canonical favicon so crawlers don't choose the wrong asset -->
-    <link rel="icon" href="/favicon.ico" />
+    <!-- Versioned favicon URLs help bust stale crawler and CDN caches -->
+    <link rel="icon" href="/favicon.ico?v=20260419" sizes="any" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/images/logo.png?v=20260419" />
 
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
