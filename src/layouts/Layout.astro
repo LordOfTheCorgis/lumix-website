@@ -14,6 +14,13 @@ const { title, description = "Infrastructure built by engineers. Node.js servers
 const bannerEnabled = announcementBanner.enabled && announcementBanner.announcements?.length > 0;
 const absoluteSiteUrl = `https://${siteConfig.domain}`;
 const absoluteLogoUrl = `${absoluteSiteUrl}${siteConfig.logo}`;
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Lumix Solutions",
+  url: absoluteSiteUrl,
+  logo: absoluteLogoUrl
+};
 ---
 
 <!DOCTYPE html>
@@ -40,12 +47,10 @@ const absoluteLogoUrl = `${absoluteSiteUrl}${siteConfig.logo}`;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     
-    <!-- Favicon -->
-    <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
-    <link rel="shortcut icon" href="/favicon.ico?v=2" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/logo.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/images/logo.png" />
-    <link rel="apple-touch-icon" href="/images/logo.png" />
+    <!-- Keep one canonical favicon so crawlers don't choose the wrong asset -->
+    <link rel="icon" href="/favicon.ico" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
     
     <title>{title} | Lumix Solutions</title>
   </head>
