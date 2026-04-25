@@ -28,7 +28,7 @@ export const announcementBanner = {
         {
             id: "5",
             text: "Join our Discord for updates, support, and collaboration.",
-            link: "https://discord.com/invite/VnfZEMQ6JT"
+            link: "https://discord.com/invite/uaNYBJQtvn"
         }
     ],
 };
@@ -44,7 +44,7 @@ export const siteConfig = {
         panel: "https://panel.lumixsolutions.org",
         status: "/status",
         github: "https://github.com/lumixsolutions",
-        discord: "https://discord.com/invite/VnfZEMQ6JT",
+        discord: "https://discord.com/invite/uaNYBJQtvn",
     },
     contact: {
         email: "contact@lumixsolutions.org",
