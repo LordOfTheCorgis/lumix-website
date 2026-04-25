@@ -33,4 +33,4 @@ jobs:
 
       - name: Deploy via rsync
         run: |
-          rsync -avz --delete dist/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/var/www/lumixsolutions.org/
+          rsync -avz --delete dist/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/srv/www/lumixsolutions.org/
