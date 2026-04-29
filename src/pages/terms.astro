@@ -1,11 +1,14 @@
+---
 import Layout from "../layouts/Layout.astro";
 import { siteConfig } from "../data/site";
-const lastUpdated = "April 28, 2026";
 
-<Layout 
-  title="Terms of Service" 
-  description="Terms of Service for Lumix Solutions - Game Server & Application Hosting">
-  
+const lastUpdated = "April 28, 2026";
+---
+
+<Layout
+  title="Terms of Service"
+  description="Terms of Service for Lumix Solutions - Game Server & Application Hosting"
+>
   <section class="py-16 lg:py-24">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="mb-12">
@@ -27,12 +30,12 @@ const lastUpdated = "April 28, 2026";
           <h2 class="heading-md text-lumix-white mb-6">1. Acceptance of Terms</h2>
           <div class="text-lumix-gray space-y-4 text-sm">
             <p>
-              By accessing or using the services provided by Lumix Solutions ("Company," "we," "our," or "us"), 
-              you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, 
+              By accessing or using the services provided by Lumix Solutions ("Company," "we," "our," or "us"),
+              you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms,
               you may not use our services.
             </p>
             <p>
-              These Terms apply to all users of our game server hosting, application hosting, VPS, dedicated servers, 
+              These Terms apply to all users of our game server hosting, application hosting, VPS, dedicated servers,
               and related services.
             </p>
           </div>
@@ -82,40 +85,32 @@ const lastUpdated = "April 28, 2026";
         <section class="card p-6 lg:p-8">
           <h2 class="heading-md text-lumix-white mb-6">4. Acceptable Use Policy</h2>
           <div class="text-lumix-gray space-y-5 text-sm">
-
             <p class="font-medium">You agree not to use our services to:</p>
-
             <div class="space-y-6">
               <div>
                 <h3 class="text-lumix-white font-medium mb-1">4.1 Illegal or Harmful Activities</h3>
                 <p>Host, transmit, or distribute any illegal content or engage in any unlawful activity.</p>
               </div>
-
               <div>
                 <h3 class="text-lumix-white font-medium mb-1">4.2 Intellectual Property Infringement</h3>
                 <p>Upload, host, or use any leaked, cracked, pirated, stolen, or unauthorized assets, scripts, mods, or resources, including leaked FiveM resources or paid Minecraft plugins/mods.</p>
               </div>
-
               <div>
                 <h3 class="text-lumix-white font-medium mb-1">4.3 Game Platform Compliance</h3>
                 <p>Use our services in violation of the Cfx.re / FiveM Platform License Agreement, Rockstar Games terms, Mojang / Minecraft EULA, or any other game developer’s licensing terms.</p>
               </div>
-
               <div>
                 <h3 class="text-lumix-white font-medium mb-1">4.4 Resource Abuse</h3>
                 <p>Excessively consume CPU, RAM, storage, or network resources in a way that impacts other customers. This includes poorly optimized scripts, infinite loops, or unoptimized Minecraft/FiveM resources.</p>
               </div>
-
               <div>
                 <h3 class="text-lumix-white font-medium mb-1">4.5 Network Abuse & DDoS</h3>
                 <p>Engage in DDoS attacks, port scanning, or any malicious network activity. Servers involved in attacks may be suspended immediately to protect network stability.</p>
               </div>
-
               <div>
                 <h3 class="text-lumix-white font-medium mb-1">4.6 Prohibited Content</h3>
                 <p>Host content involving child exploitation, extreme violence, terrorism, or any material that promotes illegal activity.</p>
               </div>
-
               <div>
                 <h3 class="text-lumix-white font-medium mb-1">4.7 Cryptocurrency Mining</h3>
                 <p>Engage in cryptocurrency mining without our explicit written permission.</p>
@@ -145,7 +140,6 @@ const lastUpdated = "April 28, 2026";
                 <li>Payment is due at the beginning of each billing cycle.</li>
               </ul>
             </div>
-
             <div>
               <h3 class="text-lumix-white font-medium mb-3">5.2 Late Payments</h3>
               <ul class="list-disc list-inside space-y-2 ml-4">
@@ -154,7 +148,6 @@ const lastUpdated = "April 28, 2026";
                 <li>Data may be deleted 14 days after termination.</li>
               </ul>
             </div>
-
             <div>
               <h3 class="text-lumix-white font-medium mb-3">5.3 Refund Policy</h3>
               <p>
@@ -271,9 +264,11 @@ const lastUpdated = "April 28, 2026";
             <p>For questions about these Terms, contact us:</p>
             <div class="mt-4 p-4 bg-lumix-black border border-terminal-border">
               <p class="text-mono text-sm">
-                <span class="text-lumix-gray">Email:</span> 
-                <a href={`mailto:${siteConfig.contact.email}`} class="text-lumix-red">{siteConfig.contact.email}</a><br/>
-                <span class="text-lumix-gray">Website:</span> 
+                <span class="text-lumix-gray">Email:</span>
+                <a href={`mailto:${siteConfig.contact.email}`} class="text-lumix-red">
+                  {siteConfig.contact.email}
+                </a><br/>
+                <span class="text-lumix-gray">Website:</span>
                 <span class="text-lumix-white">lumixsolutions.org</span>
               </p>
             </div>
