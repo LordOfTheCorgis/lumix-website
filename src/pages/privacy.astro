@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { siteConfig } from "../data/site";
 
-const lastUpdated = "January 30, 2026";
+const lastUpdated = "May 1, 2026";
 ---
 
 <Layout title="Privacy Policy" description="Privacy Policy for Lumix Solutions - Learn how we collect, use, and protect your data.">
@@ -21,220 +21,202 @@ const lastUpdated = "January 30, 2026";
       </div>
 
       <div class="prose prose-invert max-w-none space-y-8">
-        <!-- Introduction -->
+
+        <!-- 1 -->
         <section class="card p-6 lg:p-8">
           <h2 class="heading-md text-lumix-white mb-4">1. Introduction</h2>
-          <div class="text-lumix-gray space-y-4 text-sm">
+          <div class="text-lumix-gray text-sm space-y-4">
             <p>
-              Lumix Solutions ("we," "our," or "us") is committed to protecting your privacy. 
-              This Privacy Policy explains how we collect, use, disclose, and safeguard your 
-              information when you use our web hosting services, visit our website at 
-              lumixsolutions.org, or interact with us in any way.
+              Lumix Solutions ("we," "our," or "us") provides web hosting and related infrastructure services. 
+              This Privacy Policy explains how we collect, use, disclose, and safeguard your information.
             </p>
             <p>
-              By using our services, you agree to the collection and use of information in 
-              accordance with this policy. If you do not agree with the terms of this privacy 
-              policy, please do not access our services.
+              By using our services, you agree to this policy. If you do not agree, do not use our services.
             </p>
           </div>
         </section>
 
-        <!-- Information We Collect -->
+        <!-- 2 -->
         <section class="card p-6 lg:p-8">
           <h2 class="heading-md text-lumix-white mb-4">2. Information We Collect</h2>
-          <div class="text-lumix-gray space-y-4 text-sm">
-            <h3 class="text-lumix-white font-medium mt-4">Personal Information</h3>
-            <p>We may collect personal information that you voluntarily provide, including:</p>
-            <ul class="list-disc list-inside space-y-2 ml-4">
-              <li>Name and contact information (email address, phone number)</li>
-              <li>Billing information (credit card details, billing address)</li>
-              <li>Account credentials (username, password)</li>
-              <li>Company information (if applicable)</li>
-              <li>Support ticket communications</li>
+          <div class="text-lumix-gray text-sm space-y-4">
+
+            <h3 class="text-lumix-white">Personal Information</h3>
+            <ul class="list-disc list-inside ml-4 space-y-2">
+              <li>Name, email, phone number</li>
+              <li>Billing details (address, payment info)</li>
+              <li>Account credentials</li>
+              <li>Support communications</li>
             </ul>
 
-            <h3 class="text-lumix-white font-medium mt-6">Automatically Collected Information</h3>
-            <p>When you access our services, we automatically collect:</p>
-            <ul class="list-disc list-inside space-y-2 ml-4">
-              <li>IP addresses and geolocation data</li>
-              <li>Browser type and version</li>
-              <li>Operating system information</li>
-              <li>Access times and dates</li>
-              <li>Pages viewed and actions taken</li>
-              <li>Referring URLs</li>
+            <h3 class="text-lumix-white mt-4">Automatically Collected</h3>
+            <ul class="list-disc list-inside ml-4 space-y-2">
+              <li>IP address and approximate location</li>
+              <li>Device and browser data</li>
+              <li>Usage activity and timestamps</li>
+              <li>Referring/exit pages</li>
             </ul>
 
-            <h3 class="text-lumix-white font-medium mt-6">Server and Service Data</h3>
-            <p>For the operation of hosting services, we may collect:</p>
-            <ul class="list-disc list-inside space-y-2 ml-4">
-              <li>Server logs and performance metrics</li>
-              <li>Network traffic data (for DDoS protection)</li>
-              <li>Resource usage statistics</li>
-              <li>Error logs and diagnostic information</li>
+            <h3 class="text-lumix-white mt-4">Service Data</h3>
+            <ul class="list-disc list-inside ml-4 space-y-2">
+              <li>Server logs and diagnostics</li>
+              <li>Traffic patterns (for DDoS mitigation)</li>
+              <li>Resource usage</li>
             </ul>
           </div>
         </section>
 
-        <!-- How We Use Information -->
+        <!-- 3 -->
         <section class="card p-6 lg:p-8">
-          <h2 class="heading-md text-lumix-white mb-4">3. How We Use Your Information</h2>
-          <div class="text-lumix-gray space-y-4 text-sm">
-            <p>We use collected information for the following purposes:</p>
-            <ul class="list-disc list-inside space-y-2 ml-4">
-              <li>Providing, operating, and maintaining our services</li>
-              <li>Processing transactions and billing</li>
-              <li>Responding to support requests and communications</li>
-              <li>Detecting and preventing fraud, abuse, and security threats</li>
-              <li>Providing DDoS mitigation and network protection</li>
-              <li>Improving and optimizing our services</li>
-              <li>Sending service-related notifications and updates</li>
-              <li>Complying with legal obligations</li>
-            </ul>
-          </div>
+          <h2 class="heading-md text-lumix-white mb-4">3. How We Use Information</h2>
+          <ul class="text-lumix-gray text-sm list-disc list-inside ml-4 space-y-2">
+            <li>Provide and maintain services</li>
+            <li>Process billing</li>
+            <li>Respond to support requests</li>
+            <li>Prevent abuse, fraud, and attacks</li>
+            <li>Improve performance and reliability</li>
+            <li>Comply with legal obligations</li>
+          </ul>
         </section>
 
-        <!-- Data Sharing -->
+        <!-- 4 -->
         <section class="card p-6 lg:p-8">
-          <h2 class="heading-md text-lumix-white mb-4">4. Information Sharing and Disclosure</h2>
-          <div class="text-lumix-gray space-y-4 text-sm">
-            <p>We do not sell your personal information. We may share information with:</p>
-            <ul class="list-disc list-inside space-y-2 ml-4">
-              <li><strong class="text-lumix-white">Service Providers:</strong> Third-party vendors who assist in operating our services (payment processors, data centers, support tools)</li>
-              <li><strong class="text-lumix-white">Legal Requirements:</strong> When required by law, subpoena, or government request</li>
-              <li><strong class="text-lumix-white">Protection of Rights:</strong> To protect our rights, privacy, safety, or property</li>
-              <li><strong class="text-lumix-white">Business Transfers:</strong> In connection with a merger, acquisition, or sale of assets</li>
-            </ul>
-          </div>
+          <h2 class="heading-md text-lumix-white mb-4">4. Information Sharing</h2>
+          <ul class="text-lumix-gray text-sm list-disc list-inside ml-4 space-y-2">
+            <li>Service providers (payments, infrastructure, support tools)</li>
+            <li>Legal authorities when required</li>
+            <li>Business transfers (mergers, acquisitions)</li>
+          </ul>
+          <p class="text-lumix-gray text-sm mt-4">
+            We do not sell personal data.
+          </p>
         </section>
 
-        <!-- Data Security -->
+        <!-- 5 -->
         <section class="card p-6 lg:p-8">
           <h2 class="heading-md text-lumix-white mb-4">5. Data Security</h2>
-          <div class="text-lumix-gray space-y-4 text-sm">
-            <p>
-              We implement industry-standard security measures to protect your information, including:
-            </p>
-            <ul class="list-disc list-inside space-y-2 ml-4">
-              <li>Encryption of data in transit (TLS/SSL) and at rest</li>
-              <li>Regular security audits and vulnerability assessments</li>
-              <li>Access controls and authentication mechanisms</li>
-              <li>Network monitoring and intrusion detection</li>
-              <li>Physical security at data center facilities</li>
+          <div class="text-lumix-gray text-sm space-y-4">
+            <ul class="list-disc list-inside ml-4 space-y-2">
+              <li>Encryption (TLS/SSL)</li>
+              <li>Access controls</li>
+              <li>Monitoring and intrusion detection</li>
+              <li>Security audits</li>
             </ul>
-            <p class="mt-4">
-              While we strive to protect your information, no method of transmission over the 
-              Internet is 100% secure. We cannot guarantee absolute security.
+            <p>
+              In case of a breach, we will notify affected users as required by law.
             </p>
           </div>
         </section>
 
-        <!-- Data Retention -->
+        <!-- 6 -->
         <section class="card p-6 lg:p-8">
           <h2 class="heading-md text-lumix-white mb-4">6. Data Retention</h2>
-          <div class="text-lumix-gray space-y-4 text-sm">
-            <p>
-              We retain your information for as long as necessary to provide our services and 
-              fulfill the purposes described in this policy. Specifically:
-            </p>
-            <ul class="list-disc list-inside space-y-2 ml-4">
-              <li>Account information: Retained while your account is active and for 30 days after termination</li>
-              <li>Billing records: Retained for 7 years for tax and legal compliance</li>
-              <li>Server logs: Retained for 90 days for security and troubleshooting</li>
-              <li>Support tickets: Retained for 2 years after resolution</li>
-            </ul>
-          </div>
+          <ul class="text-lumix-gray text-sm list-disc list-inside ml-4 space-y-2">
+            <li>Accounts: active + 30 days</li>
+            <li>Billing: up to 7 years</li>
+            <li>Logs: up to 90 days</li>
+            <li>Support tickets: 2 years</li>
+          </ul>
+          <p class="text-lumix-gray text-sm mt-4">
+            Data may be deleted or anonymized upon request unless legally required.
+          </p>
         </section>
 
-        <!-- Your Rights -->
+        <!-- 7 -->
         <section class="card p-6 lg:p-8">
           <h2 class="heading-md text-lumix-white mb-4">7. Your Rights</h2>
-          <div class="text-lumix-gray space-y-4 text-sm">
-            <p>Depending on your location, you may have the following rights:</p>
-            <ul class="list-disc list-inside space-y-2 ml-4">
-              <li><strong class="text-lumix-white">Access:</strong> Request a copy of your personal information</li>
-              <li><strong class="text-lumix-white">Correction:</strong> Request correction of inaccurate information</li>
-              <li><strong class="text-lumix-white">Deletion:</strong> Request deletion of your personal information</li>
-              <li><strong class="text-lumix-white">Portability:</strong> Request transfer of your data to another service</li>
-              <li><strong class="text-lumix-white">Opt-out:</strong> Opt out of marketing communications</li>
-            </ul>
-            <p class="mt-4">
-              To exercise these rights, contact us at <a href={`mailto:${siteConfig.contact.email}`} class="text-lumix-red hover:underline">{siteConfig.contact.email}</a>
-            </p>
-          </div>
+          <ul class="text-lumix-gray text-sm list-disc list-inside ml-4 space-y-2">
+            <li>Access your data</li>
+            <li>Correct inaccuracies</li>
+            <li>Request deletion</li>
+            <li>Data portability</li>
+            <li>Opt-out of communications</li>
+          </ul>
+          <p class="text-sm mt-4">
+            Contact: <a href={`mailto:${siteConfig.contact.email}`} class="text-lumix-red">{siteConfig.contact.email}</a>
+          </p>
         </section>
 
-        <!-- Cookies -->
+        <!-- 8 -->
         <section class="card p-6 lg:p-8">
-          <h2 class="heading-md text-lumix-white mb-4">8. Cookies and Tracking</h2>
-          <div class="text-lumix-gray space-y-4 text-sm">
-            <p>
-              We use cookies and similar tracking technologies to improve your experience. 
-              These include:
-            </p>
-            <ul class="list-disc list-inside space-y-2 ml-4">
-              <li><strong class="text-lumix-white">Essential Cookies:</strong> Required for service functionality</li>
-              <li><strong class="text-lumix-white">Analytics Cookies:</strong> Help us understand how you use our services</li>
-              <li><strong class="text-lumix-white">Preference Cookies:</strong> Remember your settings and preferences</li>
+          <h2 class="heading-md text-lumix-white mb-4">8. Cookies</h2>
+          <div class="text-lumix-gray text-sm space-y-4">
+            <p>We use cookies for functionality, analytics, and preferences.</p>
+            <ul class="list-disc list-inside ml-4 space-y-2">
+              <li>Session cookies</li>
+              <li>Persistent cookies</li>
+              <li>Analytics tools</li>
             </ul>
-            <p class="mt-4">
-              You can control cookies through your browser settings. Disabling certain cookies 
-              may affect service functionality.
-            </p>
           </div>
         </section>
 
-        <!-- International Transfers -->
+        <!-- 9 -->
         <section class="card p-6 lg:p-8">
-          <h2 class="heading-md text-lumix-white mb-4">9. International Data Transfers</h2>
-          <div class="text-lumix-gray space-y-4 text-sm">
-            <p>
-              Your information may be transferred to and processed in countries other than your 
-              own. Our data centers are located in multiple regions to provide optimal service. 
-              We ensure appropriate safeguards are in place for international transfers.
-            </p>
-          </div>
+          <h2 class="heading-md text-lumix-white mb-4">9. International Transfers</h2>
+          <p class="text-lumix-gray text-sm">
+            Data may be processed in multiple regions with safeguards in place.
+          </p>
         </section>
 
-        <!-- Children -->
+        <!-- 10 -->
         <section class="card p-6 lg:p-8">
           <h2 class="heading-md text-lumix-white mb-4">10. Children's Privacy</h2>
-          <div class="text-lumix-gray space-y-4 text-sm">
-            <p>
-              Our services are not intended for individuals under 18 years of age. We do not 
-              knowingly collect personal information from children. If you believe we have 
-              collected information from a minor, please contact us immediately.
-            </p>
-          </div>
+          <p class="text-lumix-gray text-sm">
+            Services are not intended for users under 18.
+          </p>
         </section>
 
-        <!-- Changes -->
+        <!-- 11 -->
         <section class="card p-6 lg:p-8">
-          <h2 class="heading-md text-lumix-white mb-4">11. Changes to This Policy</h2>
-          <div class="text-lumix-gray space-y-4 text-sm">
-            <p>
-              We may update this Privacy Policy from time to time. We will notify you of any 
-              changes by posting the new policy on this page and updating the "Last updated" 
-              date. Continued use of our services after changes constitutes acceptance of the 
-              updated policy.
-            </p>
-          </div>
+          <h2 class="heading-md text-lumix-white mb-4">11. Changes</h2>
+          <p class="text-lumix-gray text-sm">
+            Continued use after updates means acceptance of changes.
+          </p>
         </section>
 
-        <!-- Contact -->
+        <!-- 12 -->
         <section class="card p-6 lg:p-8">
-          <h2 class="heading-md text-lumix-white mb-4">12. Contact Us</h2>
-          <div class="text-lumix-gray space-y-4 text-sm">
-            <p>
-              If you have questions about this Privacy Policy or our data practices, contact us:
-            </p>
-            <div class="mt-4 p-4 bg-lumix-black border border-terminal-border">
-              <p class="text-mono text-sm">
-                <span class="text-lumix-gray">Email:</span> <a href={`mailto:${siteConfig.contact.email}`} class="text-lumix-red">{siteConfig.contact.email}</a><br/>
-                <span class="text-lumix-gray">Website:</span> <span class="text-lumix-white">lumixsolutions.org</span>
-              </p>
-            </div>
-          </div>
+          <h2 class="heading-md text-lumix-white mb-4">12. Contact</h2>
+          <p class="text-lumix-gray text-sm">
+            Email: <a href={`mailto:${siteConfig.contact.email}`} class="text-lumix-red">{siteConfig.contact.email}</a>
+          </p>
         </section>
+
+        <!-- 13 -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">13. Customer Data</h2>
+          <p class="text-lumix-gray text-sm">
+            Customers are responsible for data they host. We act as a processor.
+          </p>
+        </section>
+
+        <!-- 14 -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">14. Legal Basis</h2>
+          <ul class="text-lumix-gray text-sm list-disc list-inside ml-4 space-y-2">
+            <li>Contract</li>
+            <li>Legal obligation</li>
+            <li>Legitimate interest</li>
+            <li>Consent</li>
+          </ul>
+        </section>
+
+        <!-- 15 -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">15. U.S. Rights</h2>
+          <p class="text-lumix-gray text-sm">
+            Users may request access, deletion, or correction of personal data.
+          </p>
+        </section>
+
+        <!-- 16 -->
+        <section class="card p-6 lg:p-8">
+          <h2 class="heading-md text-lumix-white mb-4">16. Subprocessors</h2>
+          <p class="text-lumix-gray text-sm">
+            We use third-party providers bound by data protection agreements.
+          </p>
+        </section>
+
       </div>
     </div>
   </section>
