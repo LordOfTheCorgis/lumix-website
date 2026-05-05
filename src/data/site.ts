@@ -270,6 +270,13 @@ export const leadership: StaffMember[] = [
         description: "Leading Lumix Solutions with commitment to innovation and operational excellence.",
     },
     {
+        id: "coo-elijah",
+        name: "Elijah V.",
+        title: "Chief Operating Officer",
+        image: "/images/staff/elijah-clinton-demarion-vinson.jpg",
+        description: "Overseeing operational efficiency, strategic planning, and cross-team coordination across Lumix Solutions.",
+    },
+    {
         id: "sysadmin-david",
         name: "David Z.",
         title: "Systems Administrator",
@@ -282,20 +289,6 @@ export const leadership: StaffMember[] = [
         title: "Systems Administrator",
         image: "/images/staff/zachary-c.jpg",
         description: "Maintaining server health, hardening configurations, and supporting day-to-day operations.",
-    },
-    {
-        id: "sysadmin-jamal",
-        name: "Jamal J.",
-        title: "Systems Administrator",
-        image: "/images/staff/jamal-j.png",
-        description: "Supporting infrastructure reliability, performing system maintenance, and helping keep services running smoothly.",
-    },
-    {
-        id: "marketing-santiago",
-        name: "Santiago G.",
-        title: "Marketing Manager",
-        image: "/images/staff/santiago-g.jpg",
-        description: "Leading brand strategy, campaigns, and communications to grow the Lumix Solutions presence.",
     },
 ];
 
