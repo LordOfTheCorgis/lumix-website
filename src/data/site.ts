@@ -270,18 +270,18 @@ export const leadership: StaffMember[] = [
         description: "Leading Lumix Solutions with commitment to innovation and operational excellence.",
     },
     {
-        id: "cmo-landon",
-        name: "Landon R.",
-        title: "Chief Marketing Officer",
-        image: "/images/staff/landon-r.jpg",
-        description: "Driving marketing strategy and brand growth for Lumix Solutions.",
-    },
-    {
         id: "coo-elijah",
         name: "Elijah V.",
         title: "Chief Operating Officer",
         image: "/images/staff/elijah-clinton-demarion-vinson.png",
         description: "Overseeing operational efficiency, strategic planning, and cross-team coordination across Lumix Solutions.",
+    },
+    {
+        id: "cmo-landon",
+        name: "Landon R.",
+        title: "Chief Marketing Officer",
+        image: "/images/staff/landon-r.jpg",
+        description: "Driving marketing strategy and brand growth for Lumix Solutions.",
     },
     {
         id: "sysadmin-david",
