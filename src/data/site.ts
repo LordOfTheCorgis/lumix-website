@@ -256,18 +256,25 @@ export interface StaffMember {
 
 export const leadership: StaffMember[] = [
     {
-        id: "ceo-paul",
-        name: "Paul C.",
+        id: "ceo-evan",
+        name: "Evan V.",
         title: "Chief Executive Officer",
-        image: "/images/staff/paul-c.jpg",
+        image: "/images/staff/evan-v.png",
         description: "Leading Lumix Solutions with a focus on resilient, high-performance infrastructure.",
     },
     {
-        id: "ceo-lucas",
-        name: "Lucas D.",
+        id: "ceo-keaghan",
+        name: "Keaghan G.",
         title: "Chief Executive Officer",
-        image: "/images/staff/lucas-d.jpg",
+        image: "/images/staff/keaghan-g.png",
         description: "Leading Lumix Solutions with commitment to innovation and operational excellence.",
+    },
+    {
+        id: "cmo-landon",
+        name: "Landon R.",
+        title: "Chief Marketing Officer",
+        image: "/images/staff/landon-r.jpg",
+        description: "Driving marketing strategy and brand growth for Lumix Solutions.",
     },
     {
         id: "coo-elijah",
