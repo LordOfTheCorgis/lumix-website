@@ -280,7 +280,7 @@ export const leadership: StaffMember[] = [
         id: "coo-elijah",
         name: "Elijah V.",
         title: "Chief Operating Officer",
-        image: "/images/staff/elijah-clinton-demarion-vinson.jpg",
+        image: "/images/staff/elijah-clinton-demarion-vinson.png",
         description: "Overseeing operational efficiency, strategic planning, and cross-team coordination across Lumix Solutions.",
     },
     {
