@@ -283,20 +283,20 @@ export const leadership: StaffMember[] = [
         image: "/images/staff/landon-r.jpg",
         description: "Driving marketing strategy and brand growth for Lumix Solutions.",
     },
-    {
-        id: "sysadmin-david",
-        name: "David Z.",
-        title: "Systems Administrator",
-        image: "/images/staff/david-z.jpg",
-        description: "Managing core systems, automation, and platform reliability across production infrastructure.",
-    },
-    {
-        id: "sysadmin-zachary",
-        name: "Zachary C.",
-        title: "Systems Administrator",
-        image: "/images/staff/zachary-c.jpg",
-        description: "Maintaining server health, hardening configurations, and supporting day-to-day operations.",
-    },
+    // {
+    //     id: "sysadmin-david",
+    //     name: "David Z.",
+    //     title: "Systems Administrator",
+    //     image: "/images/staff/david-z.jpg",
+    //     description: "Managing core systems, automation, and platform reliability across production infrastructure.",
+    // },
+    // {
+    //     id: "sysadmin-zachary",
+    //     name: "Zachary C.",
+    //     title: "Systems Administrator",
+    //     image: "/images/staff/zachary-c.jpg",
+    //     description: "Maintaining server health, hardening configurations, and supporting day-to-day operations.",
+    // },
 ];
 
 export interface Team {
