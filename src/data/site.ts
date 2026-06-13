@@ -45,6 +45,10 @@ export const siteConfig = {
         status: "/status",
         github: "https://github.com/lumixsolutions",
         discord: "https://discord.com/invite/uaNYBJQtvn",
+        instagram: "https://www.instagram.com/lumixsolutionsllc/",
+        tiktok: "https://tiktok.com/@lumix.solutions",
+        youtube: "https://youtube.com/@officiallumixsolutions", 
+        twitter: "https://x.com/LumixSolutions",
     },
     contact: {
         email: "contact@lumixsolutions.org",
