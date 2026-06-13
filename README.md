@@ -64,7 +64,8 @@ PUBLIC_EXAMPLE_KEY=value
 
 ## 8. Project Structure
 
-Key folders:
+ZAch waszz here 676767
+Key folders: 
 
 - `public/`: Static assets served as-is (images, icons, etc.)
 - `src/components/`: Reusable UI components
