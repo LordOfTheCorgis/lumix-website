@@ -21,7 +21,7 @@ const partners = [
     offerCode: "LSXEM",
     offerText: "15% off at checkout",
     url: "https://elitemodification.com/",
-    discord: "https://discord.gg/uaNYBJQtvn"
+    discord: "https://discord.gg/tW2Ybp5UDt"
   },
   {
     name: "Kez Modifications",
@@ -37,7 +37,53 @@ const partners = [
     ],
     hiringNote: "Currently accepting EUP commissions and listings. Join the Discord to view current work and connect directly.",
     discord: "https://discord.gg/AMSrHMZRhW"
-  }
+  },
+  {
+    name: "Natural Light Enhanced",
+    founder: "NLE",
+    description: "NLE specializes in creating realistic, performance-friendly graphics mods for FiveM focused on natural lighting. Their mission is to continually improve and refine visuals for everyone to enjoy.",
+    services: [
+      "High-quality ENB graphics",
+      "Custom mod packs",
+      "Realistic lighting enhancements",
+      "Optimized performance",
+      "Constant updates & improvements",
+    ],
+    url: "https://naturallightenhanced.com/",
+    discord: "https://discord.gg/F5rvPwNJc2"
+  },
+  {
+    name: "Marco's Presets",
+    founder: "Marco",
+    description: "Marco's Presets offers high-quality ENB and Reshade products for FiveM, enhancing visual fidelity and performance while preserving the freedom of custom media configurations. With a focus on reliability and customer satisfaction, they provide tailored solutions to elevate your server's aesthetics.",
+    services: [
+      "High quality ENB graphics",
+      "High quality Reshade products",
+    ],
+    url: "https://www.patreon.com/cw/marcopresets/shop",
+    discord: "https://discord.gg/marco"
+  },
+  {
+    name: "Valerisn Upfitting",
+    founder: "Valerisn",
+    description: "Focused on creating clean, high quality Non-ELS vehicles for FiveM with realistic designs, optimized builds, and attention to detail, Valerisn's mission is to provide communities with reliable, immersive vehicle assets that enhance gameplay and fit seamlessly into any server.",
+    services: [
+      "Non-ELS FiveM Vehicles",
+      "Optimized Vehicles",
+      "Custom Commission Work",
+    ],
+    discord: "https://discord.gg/esfvwXEzG7"
+  },
+  {
+    name: "Centrix Development Hub",
+    founder: "Mike",
+    description: "Centrix Development Hub is a versatile FiveM development team offering a wide range of services, including custom vehicle modifications and graphics design. With a focus on quality and client satisfaction, they provide tailored solutions to enhance your server's experience.",
+    services: [
+      "Custom Leo's Vehicles",
+      "Custom GFX for YOUR server",
+    ],
+    discord: "https://discord.gg/zamxskR2fQ"
+  },
 ];
 
 const openToPartnership = [
@@ -105,7 +151,7 @@ const openToPartnership = [
               )}
               
               <!-- Description -->
-              <p class="text-sm text-lumix-gray flex-1 mb-4">
+              <p class="text-sm text-lumix-gray mb-4">
                 {partner.description}
               </p>
 
@@ -139,7 +185,7 @@ const openToPartnership = [
               )}
               
               <!-- Links -->
-              <div class="pt-4 border-t border-terminal-border">
+              <div class="mt-auto pt-4 border-t border-terminal-border">
                 <div class="flex gap-6">
                   {partner.url && (
                     <a 
