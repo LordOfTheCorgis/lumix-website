@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://lumixsolutions.org/sitemap-index.xml
+Sitemap: https://lumixsolutions.org/sitemap.xml

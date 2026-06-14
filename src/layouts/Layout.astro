@@ -13,14 +13,16 @@ interface Props {
 
 const {
   title,
-  description = "Infrastructure built by engineers. Node.js servers, game services, voice infrastructure, and enterprise DDoS protection.",
+  description = siteConfig.description,
   noindex = false
 } = Astro.props;
 const bannerEnabled = announcementBanner.enabled && announcementBanner.announcements?.length > 0;
 const absoluteSiteUrl = `https://${siteConfig.domain}`;
 const absoluteLogoUrl = `${absoluteSiteUrl}${siteConfig.logo}`;
+const absoluteSocialImageUrl = `${absoluteSiteUrl}${siteConfig.socialImage ?? siteConfig.logo}`;
 const canonicalUrl = new URL(Astro.url.pathname, absoluteSiteUrl).href;
 const robotsContent = noindex ? "noindex, nofollow" : "index, follow";
+const pageTitle = title.includes(siteConfig.name) ? title : `${title} | ${siteConfig.name}`;
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -45,17 +47,23 @@ const websiteSchema = {
     <meta name="robots" content={robotsContent} />
     <meta name="theme-color" content="#ff4c4c" />
     <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="Lumix Solutions" />
-    <meta property="og:title" content={`${title} | Lumix Solutions`} />
+    <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:image" content={absoluteLogoUrl} />
-    <meta property="og:image:alt" content="Lumix Solutions logo" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content={`${title} | Lumix Solutions`} />
+    <meta property="og:image" content={absoluteSocialImageUrl} />
+    <meta property="og:image:secure_url" content={absoluteSocialImageUrl} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Lumix Solutions branded preview image" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={absoluteLogoUrl} />
+    <meta name="twitter:image" content={absoluteSocialImageUrl} />
+    <meta name="twitter:image:alt" content="Lumix Solutions branded preview image" />
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -69,7 +77,7 @@ const websiteSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
     
-    <title>{title} | Lumix Solutions</title>
+    <title>{pageTitle}</title>
   </head>
   <body class:list={["min-h-screen flex flex-col bg-lumix-black text-lumix-white", bannerEnabled ? "pt-25" : "pt-16"]}>
     <AnnouncementBanner />

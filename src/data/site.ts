@@ -39,6 +39,7 @@ export const siteConfig = {
     domain: "lumixsolutions.org",
     description: "Infrastructure built by engineers. Node.js servers, game services, voice infrastructure, and enterprise DDoS protection.",
     logo: "/images/logo.png",
+    socialImage: "/images/og-image.png",
     links: {
         billing: "https://billing.lumixsolutions.org",
         panel: "https://panel.lumixsolutions.org",
