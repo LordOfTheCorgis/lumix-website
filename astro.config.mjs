@@ -13,8 +13,9 @@ function copySitemapAlias() {
       'astro:build:done': async (context) => {
         /** @type {{ dir: URL }} */
         const buildContext = context;
-        const outputDir = fileURLToPath(buildContext.dir);
-        await copyFile(`${outputDir}\\sitemap-index.xml`, `${outputDir}\\sitemap.xml`);
+        const sitemapIndexPath = fileURLToPath(new URL('sitemap-index.xml', buildContext.dir));
+        const sitemapAliasPath = fileURLToPath(new URL('sitemap.xml', buildContext.dir));
+        await copyFile(sitemapIndexPath, sitemapAliasPath);
       }
     }
   };
