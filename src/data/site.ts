@@ -66,7 +66,6 @@ export const navigation = [
     { name: "Careers", href: "/career" },
     { name: "Status", href: "/status" },
     { name: "Contact", href: "/contact" },
-    { name: "Spotlight", href: "/spotlight" },
 ];
 
 export const services = [
