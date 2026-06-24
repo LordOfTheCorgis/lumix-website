@@ -338,3 +338,39 @@ export const teams: Team[] = [
         icon: "server",
     },
 ];
+
+
+export const spotlight = {
+  name: "Elite Modification",
+  abbreviation: "EM",
+  founder: "EM Team",
+  description: "Elite Modification is back and focused on helping communities level up with premium, practical server assets. Their work is built for immersive gameplay, clean branding, and dependable performance.",
+  services: [
+    "Livery development",
+    "EUP packages",
+    "Patches and badges",
+    "Server-sided sirens",
+    "Custom scripts",
+    "Graphics and branding",
+    "Website development",
+    "Discord bots and automation"
+  ],
+  ads: [
+    "Remote-first culture",
+    "Real impact",
+    "Learn & grow",
+    "No corporate BS"
+  ],
+  adLong: [
+    "Work from anywhere. We care about results, not hours in a chair.",
+    "Small team, big influence. Your work directly shapes our products.",
+    "Work with industry veterans and access resources to level up your skills.",
+    "Flat hierarchy. Clear communication. We trust you to do your job."
+  ],
+  hiringNote: "They are currently growing their support team. Interested applicants can open a support ticket in their Discord to connect with the team.",
+  offerCode: "LSXEM",
+  offerText: "15% off at checkout",
+  youtube: "",
+  url: "https://elitemodification.com/",
+  discord: "https://discord.gg/tW2Ybp5UDt"
+};
