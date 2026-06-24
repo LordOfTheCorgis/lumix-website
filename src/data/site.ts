@@ -217,7 +217,7 @@ export const statusServices: StatusService[] = [
         endpoint: "lumixsolutions.org (protected edge)",
         pingUrl: "https://lumixsolutions.org",
         status: "operational",
-        uptime: 100.0,
+        uptime: 99.99,
         responseTime: 5,
     },
     {
@@ -282,11 +282,11 @@ export const leadership: StaffMember[] = [
         description: "Overseeing operational efficiency, strategic planning, and cross-team coordination across Lumix Solutions.",
     },
     {
-        id: "cmo-landon",
-        name: "Landon R.",
-        title: "Chief Marketing Officer",
-        image: "/images/staff/landon-r.jpg",
-        description: "Driving marketing strategy and brand growth for Lumix Solutions.",
+        id: "clo-aaliyah",
+        name: "Aaliyah",
+        title: "Chief Legal Officer",
+        image: "/images/staff/aaliyah.png",
+        description: "Guiding legal strategy, compliance, and risk management across Lumix Solutions.",
     },
     // {
     //     id: "sysadmin-david",
