@@ -370,7 +370,7 @@ export const spotlight = {
   hiringNote: "They are currently growing their support team. Interested applicants can open a support ticket in their Discord to connect with the team.",
   offerCode: "LSXEM",
   offerText: "15% off at checkout",
-  youtube: "",
+  youtube: "https://youtu.be/dQw4w9WgXcQ?si=B1bUy_X7M_stzdBr",
   url: "https://elitemodification.com/",
   discord: "https://discord.gg/tW2Ybp5UDt"
 };
