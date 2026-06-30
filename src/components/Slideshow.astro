@@ -1,0 +1,111 @@
+---
+interface Props {
+    title?: string;
+    images: string[];
+}
+
+// Pass an array of image paths relative to the public folder, 
+// e.g., ['/images/spotlight/pic1.jpg', '/images/spotlight/pic2.jpg']
+const { title = "slideshow", images = [] } = Astro.props;
+---
+
+<slideshow-component data-images={JSON.stringify(images)} class="group relative block h-full w-full p-[1px] bg-lumix-grey to-terminal-border rounded">
+    
+    <div class="terminal-window relative flex flex-col h-full w-full bg-black overflow-hidden rounded-[calc(0.25rem-1px)]">
+        <div class="terminal-header">
+            <span class="terminal-dot bg-lumix-red"></span>
+            <span class="terminal-dot bg-terminal-yellow"></span>
+            <span class="terminal-dot bg-terminal-green"></span>
+            <span class="text-mono text-xs text-lumix-gray ml-3">{title}</span>
+        </div>
+
+        <div class="relative w-full flex-1 h-full flex items-center justify-center">
+            {images.length > 0 ? (
+                <img
+                    class="slide-display w-full h-full object-cover transition-opacity duration-300 absolute inset-0"
+                    src={images[0]}
+                    alt="Slideshow image"
+                />
+            ) : (
+                <span class="text-lumix-gray text-sm">No images found</span>
+            )}
+
+            <div class="absolute bottom-4 left-0 w-full flex justify-center gap-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-10">
+                <button class="prev-btn bg-black/60 text-white rounded-full p-2 hover:bg-black/90 transition-colors focus:outline-none">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <button class="next-btn bg-black/60 text-white rounded-full p-2 hover:bg-black/90 transition-colors focus:outline-none">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</slideshow-component>
+
+<script>
+    class SlideshowComponent extends HTMLElement {
+        connectedCallback() {
+            // Read the image array passed from the Astro frontmatter
+            const images = JSON.parse(this.dataset.images || "[]");
+            if (images.length <= 1) return; // Do nothing if there's no need to cycle
+
+            const display = this.querySelector('.slide-display') as HTMLImageElement;
+            const prevBtn = this.querySelector('.prev-btn');
+            const nextBtn = this.querySelector('.next-btn');
+            
+            let currentIndex = 0;
+            let intervalId: number;
+
+            // Updates the image source with a quick fade effect
+            const updateImage = () => {
+                if (display) {
+                    display.style.opacity = '0';
+                    setTimeout(() => {
+                        display.src = images[currentIndex];
+                        display.style.opacity = '1';
+                    }, 200); 
+                }
+            };
+
+            const nextSlide = () => {
+                currentIndex = (currentIndex + 1) % images.length;
+                updateImage();
+            };
+
+            const prevSlide = () => {
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                updateImage();
+            };
+
+            const startInterval = () => {
+                intervalId = window.setInterval(nextSlide, 5000);
+            };
+
+            // Reset the 5s timer if the user clicks an arrow so it doesn't immediately skip
+            const resetInterval = () => {
+                clearInterval(intervalId);
+                startInterval();
+            };
+
+            prevBtn?.addEventListener('click', () => {
+                prevSlide();
+                resetInterval();
+            });
+
+            nextBtn?.addEventListener('click', () => {
+                nextSlide();
+                resetInterval();
+            });
+
+            // Start the auto-scroll
+            startInterval();
+        }
+    }
+
+    // Register the custom element
+    customElements.define('slideshow-component', SlideshowComponent);
+</script>

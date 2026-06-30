@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { spotlight } from "../data/site";
-import Terminal from "../components/Terminal.astro";
+import Slideshow from '../components/Slideshow.astro';
 
 // SMART YOUTUBE PARSER
 function getEmbedUrl(url: string | undefined) {
@@ -14,6 +14,12 @@ function getEmbedUrl(url: string | undefined) {
 
 const videoEmbedUrl = getEmbedUrl(spotlight.youtube);
 
+const spotlightImages = [
+  '/images/spotlight/image1.jpg',
+  '/images/spotlight/image2.jpg',
+  '/images/spotlight/image3.jpg'
+];
+
 const openToPartnership = [
   "Infrastructure providers",
   "Network and security platforms",
@@ -23,23 +29,6 @@ const openToPartnership = [
 ---
 
 <Layout title="Spotlight" description="Each month, Lumix Solutions highlights a notable community-led server that demonstrates innovation, creativity, and dedication. These spotlights showcase the best of what the community has to offer and celebrate the hard work and dedication of server owners and developers.">
-  <!-- Page Header -->
-  <section class="py-16 lg:py-24 border-b border-terminal-border">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl">
-        <span class="text-mono text-xs text-lumix-gray mb-4 block animate-fade-in">
-          <span class="text-lumix-red">$</span> cat /community/spotlight.conf
-        </span>
-        <h1 class="heading-xl text-lumix-white mb-6 animate-fade-in-up animate-delay-100">
-          Server<br/>
-          <span class="text-lumix-red">spotlight</span>
-        </h1>
-        <p class="body-lg text-lumix-gray animate-fade-in-up animate-delay-200">
-          Each month, Lumix Solutions highlights a notable community-led server that demonstrates innovation, creativity, and dedication. These spotlights showcase the best of what the community has to offer and celebrate the hard work and dedication of server owners and developers.
-        </p>
-      </div>
-    </div>
-  </section>
   
   <!-- Partner Grid (Current Spotlight) -->
  <div class="relative">
@@ -47,31 +36,46 @@ const openToPartnership = [
 
     <section class="py-16 lg:py-24 relative z-10">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <span class="text-mono text-xs text-lumix-gray mb-8 block">// CURRENT_SPOTLIGHT</span>
+    <span class="text-mono text-xs text-lumix-gray mb-8 block animate-fade-in">// CURRENT_SPOTLIGHT</span>
     
     <div class="grid grid-cols-1 gap-8 items-start">
       
-      <div class="group p-6 bg-lumix-black-light border border-terminal-border hover:border-lumix-gray-dark transition-all duration-200">
+      <div class="group p-6 bg-lumix-black-light border border-terminal-border hover:border-lumix-gray-dark transition-all duration-200 animate-fade-in-up animate-delay-200">
         <div class="flex flex-col h-full">
-          <h3 class="text-lumix-white font-medium mb-1 text-center text-xl">
+          <h3 class="text-lumix-white font-medium mb-1 text-center text-3xl">
+            <img style="display: block;-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 90%);transition: background-color 300ms;" src="https://p19-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/0338d853cc51cddbdcff451e92cd7593~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=9640&amp;refresh_token=91186d4d&amp;x-expires=1783029600&amp;x-signature=URob58bIfUu%2BsN%2BWYkJEneiUnME%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=81f88b70&amp;idc=useast5" width="200" height="200">
             {spotlight.name}
           </h3>
           
           {spotlight.founder && (
             <p class="text-xs text-lumix-gray-dark mb-3 text-center">
-              <span class="text-mono">Founder: {spotlight.founder}</span>
+              <span class="text-mono">Directors: {spotlight.founder}</span>
             </p>
           )}
           
-          <p class="text-sm text-lumix-gray mb-4 mt-2">
+          <p class="text-sm text-lumix-gray mb-4 text-center mt-2">
             {spotlight.description}
           </p>
 
           {spotlight.services && spotlight.services.length > 0 && (
             <div class="mb-4">
-              <p class="text-[11px] text-lumix-gray-dark uppercase tracking-wide mb-2 text-mono">Services</p>
+              <p class="text-[11px] text-lumix-gray-dark uppercase tracking-wide mb-2 text-mono">Departments</p>
               <ul class="space-y-1">
                 {spotlight.services.map(service => (
+                  <li class="flex items-center gap-2 text-xs text-lumix-gray">
+                    <span class="w-1 h-1 bg-lumix-red flex-shrink-0"></span>
+                    <span>{service}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {spotlight.comingSoon && spotlight.comingSoon.length > 0 && (
+            <div class="mb-4">
+              <p class="text-[11px] text-lumix-gray-dark uppercase tracking-wide mb-2 text-mono">Coming Soon</p>
+              <ul class="space-y-1">
+                {spotlight.comingSoon.map(service => (
                   <li class="flex items-center gap-2 text-xs text-lumix-gray">
                     <span class="w-1 h-1 bg-lumix-red flex-shrink-0"></span>
                     <span>{service}</span>
@@ -86,15 +90,6 @@ const openToPartnership = [
               {spotlight.hiringNote}
             </p>
           )}
-
-          {spotlight.offerCode && (
-            <div class="mb-4 p-3 border border-lumix-red/30 bg-lumix-red/5">
-              <p class="text-[11px] text-lumix-gray-dark uppercase tracking-wide text-mono">Offer</p>
-              <p class="text-sm text-lumix-white mt-1">
-                Use code <span class="text-mono text-lumix-red">{spotlight.offerCode}</span> for {spotlight.offerText}.
-              </p>
-            </div>
-          )}
           
           <div class="mt-auto pt-4 border-t border-terminal-border">
             <div class="flex justify-center gap-8">
@@ -108,6 +103,42 @@ const openToPartnership = [
                 <a href={spotlight.discord} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-xs text-lumix-gray hover:text-lumix-red transition-colors">
                   <svg class="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
                   <span class="text-mono">Discord</span>
+                </a>
+              )}
+              {spotlight.tiktok && (
+                <a href={spotlight.tiktok} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-xs text-lumix-gray hover:text-lumix-red transition-colors">
+                  <svg class="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                  <span class="text-mono">Tiktok</span>
+                </a>
+              )}
+              {spotlight.youtubeChannel && (
+                <a href={spotlight.youtubeChannel} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-xs text-lumix-gray hover:text-lumix-red transition-colors">
+                  <svg class="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                  <span class="text-mono">Youtube</span>
+                </a>
+              )}
+              {spotlight.x && (
+                <a href={spotlight.x} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-xs text-lumix-gray hover:text-lumix-red transition-colors">
+                  <svg class="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg>
+                  <span class="text-mono">Twitter/X</span>
+                </a>
+              )}
+              {spotlight.instagram && (
+                <a href={spotlight.instagram} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-xs text-lumix-gray hover:text-lumix-red transition-colors">
+                            <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                             >
+                            <rect x="3" y="3" width="18" height="18" rx="5" ry="5"></rect>
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"></circle>
+                        </svg>
+                 <span class="text-mono">Instagram</span>
                 </a>
               )}
             </div>
@@ -143,40 +174,48 @@ const openToPartnership = [
 
   <!-- Community Evaluation & Culture Block -->
   <section class="pb-16 lg:pb-24 relative z-10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div class="w-full max-w-md">
-            <Terminal 
-              title="community.conf"
-              showCursor={false}
-              lines={[
-                { output: "BEGINNING COMMUNITY EVALUATION...", type: "info" },
-                { output: "COMMUNITY_STATUS: EXEMPLARY", type: "success" },
-                { output: "COMMUNITY_TYPE: THRIVING", type: "success" },
-                { output: "RUN SYNERGY_TEST: ALIGNED", type: "success" },
-                { output: "EVALUATION COMPLETE...", type: "success" },
-                { output: "EVALUATION_TYPE: TECHNICAL_CREATIVE_ENGAGING", type: "info" },
-              ]}
-            />
-          </div>
-          
-          <div class="card p-6 bg-lumix-black-light border border-terminal-border">
-            <span class="text-mono text-xs text-lumix-gray mb-4 block">// WHY_{spotlight.abbreviation}</span>
-            <h3 class="text-lumix-white font-medium mb-4">Why {spotlight.name}?</h3>
-            <div class="space-y-3 text-sm text-lumix-gray">
-              {spotlight.ads.map((adTitle, index) => (
-                <div class="flex items-start gap-3">
-                  <span class="text-lumix-red text-mono">0{index + 1}</span>
-                  <div>
-                    <span class="text-lumix-white">{adTitle}</span><br/>
-                    {spotlight.adLong[index]}
-                  </div>
-                </div>
-              ))}
+          <div class="grid lg:grid-cols-2 gap-25 items-stretch">
+            
+            <div class="w-full h-full relative z-10">
+                <Slideshow title="spotlight-viewer" images={spotlightImages} />
             </div>
-          </div>
+            
+            <div class="card p-6 bg-lumix-black-light border border-terminal-border h-full relative z-10">
+              <span class="text-mono text-xs text-lumix-gray mb-4 block">// WHY_{spotlight.abbreviation}</span>
+              <h3 class="text-lumix-white font-medium mb-4">Why {spotlight.name}?</h3>
+              <div class="space-y-3 text-sm text-lumix-gray">
+                {spotlight.ads.map((adTitle, index) => (
+                  <div class="flex items-start gap-3">
+                    <span class="text-lumix-red text-mono">0{index + 1}</span>
+                    <div>
+                      <span class="text-lumix-white">{adTitle}</span><br/>
+                      {spotlight.adLong[index]}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
+        </div>
+      </div>
+    </section>
+
+<!-- Page Header (Moved to bottom of page for more attention to the server) --> 
+<section class="py-16 lg:py-24 ">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <span class="text-mono text-xs text-lumix-gray mb-4 block animate-fade-in">
+          <span class="text-lumix-red">$</span> cat /community/spotlight.conf
+        </span>
+        <h1 class="heading-xl text-lumix-white mb-6 animate-fade-in-up animate-delay-100">
+          Server<br/>
+          <span class="text-lumix-red">spotlight</span>
+        </h1>
+        <p class="body-lg text-lumix-gray animate-fade-in-up animate-delay-200">
+          Each month, Lumix Solutions highlights a notable community-led server that demonstrates innovation, creativity, and dedication. These spotlights showcase the best of what the community has to offer and celebrate the hard work and dedication of server owners and developers.
+        </p>
       </div>
     </div>
   </section>
