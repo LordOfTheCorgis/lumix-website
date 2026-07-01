@@ -9,17 +9,18 @@ interface Props {
 const { title = "slideshow", images = [] } = Astro.props;
 ---
 
-<slideshow-component data-images={JSON.stringify(images)} class="group relative block h-full w-full p-[1px] bg-lumix-grey to-terminal-border rounded">
+<slideshow-component data-images={JSON.stringify(images)} class="group relative block w-full aspect-video p-[1px] bg-lumix-grey to-terminal-border rounded">
     
-    <div class="terminal-window relative flex flex-col h-full w-full bg-black overflow-hidden rounded-[calc(0.25rem-1px)]">
-        <div class="terminal-header">
+    <div class="terminal-window relative w-full h-full bg-black overflow-hidden rounded-[calc(0.25rem-1px)] flex flex-col">
+        
+        <div class="terminal-header shrink-0">
             <span class="terminal-dot bg-lumix-red"></span>
             <span class="terminal-dot bg-terminal-yellow"></span>
             <span class="terminal-dot bg-terminal-green"></span>
             <span class="text-mono text-xs text-lumix-gray ml-3">{title}</span>
         </div>
 
-        <div class="relative w-full flex-1 h-full flex items-center justify-center">
+        <div class="relative w-full flex-grow flex items-center justify-center overflow-hidden">
             {images.length > 0 ? (
                 <img
                     class="slide-display w-full h-full object-cover transition-opacity duration-300 absolute inset-0"
