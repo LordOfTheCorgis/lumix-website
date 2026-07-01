@@ -57,39 +57,59 @@ const openToPartnership = [
             {spotlight.description}
           </p>
 
-          {spotlight.services && spotlight.services.length > 0 && (
-            <div class="mb-4">
-              <p class="text-[11px] text-lumix-gray-dark uppercase tracking-wide mb-2 text-mono">Departments</p>
-              <ul class="space-y-1">
-                {spotlight.services.map(service => (
-                  <li class="flex items-center gap-2 text-xs text-lumix-gray">
-                    <span class="w-1 h-1 bg-lumix-red flex-shrink-0"></span>
-                    <span>{service}</span>
-                  </li>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 mb-6">
+            <div>
+              <span class="text-mono text-xs text-lumix-gray mb-2 block">// WHY_{spotlight.abbreviation}</span>
+              <h4 class="text-lumix-white font-medium mb-3">Why {spotlight.name}?</h4>
+              <div class="space-y-4 text-sm text-lumix-gray leading-relaxed">
+                {spotlight.ads.map((adTitle, index) => (
+                  <div class="flex items-start gap-3">
+                    <span class="w-2 h-2 bg-lumix-red flex-shrink-0 mt-1"></span>
+                    <div>
+                      <div class="text-sm text-lumix-white font-medium">{adTitle}</div>
+                      <p class="text-sm text-lumix-gray mt-1">{spotlight.adLong[index]}</p>
+                    </div>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
-          )}
 
-          {spotlight.comingSoon && spotlight.comingSoon.length > 0 && (
-            <div class="mb-4">
-              <p class="text-[11px] text-lumix-gray-dark uppercase tracking-wide mb-2 text-mono">Coming Soon</p>
-              <ul class="space-y-1">
-                {spotlight.comingSoon.map(service => (
-                  <li class="flex items-center gap-2 text-xs text-lumix-gray">
-                    <span class="w-1 h-1 bg-lumix-red flex-shrink-0"></span>
-                    <span>{service}</span>
-                  </li>
-                ))}
-              </ul>
+            <div>
+              {spotlight.services && spotlight.services.length > 0 && (
+                <div class="mb-4">
+                  <p class="text-sm text-lumix-white uppercase tracking-wide mb-2 text-mono font-medium">Departments</p>
+                  <ul class="space-y-2">
+                    {spotlight.services.map(service => (
+                      <li class="flex items-start gap-3">
+                        <span class="w-2 h-2 bg-lumix-red flex-shrink-0 mt-1"></span>
+                        <span class="text-sm text-lumix-gray">{service}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {spotlight.comingSoon && spotlight.comingSoon.length > 0 && (
+                <div class="mb-4">
+                  <p class="text-sm text-lumix-white uppercase tracking-wide mb-2 text-mono font-medium">Coming Soon</p>
+                  <ul class="space-y-2">
+                    {spotlight.comingSoon.map(service => (
+                      <li class="flex items-start gap-3">
+                        <span class="w-2 h-2 bg-lumix-red flex-shrink-0 mt-1"></span>
+                        <span class="text-sm text-lumix-gray">{service}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {spotlight.hiringNote && (
+                <p class="text-xs text-lumix-gray mb-4">
+                  {spotlight.hiringNote}
+                </p>
+              )}
             </div>
-          )}
-
-          {spotlight.hiringNote && (
-            <p class="text-xs text-lumix-gray mb-4">
-              {spotlight.hiringNote}
-            </p>
-          )}
+          </div>
           
           <div class="mt-auto pt-4 border-t border-terminal-border">
             <div class="flex justify-center gap-8">
@@ -176,26 +196,16 @@ const openToPartnership = [
   <section class="pb-16 lg:pb-24 relative z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div class="grid lg:grid-cols-2 gap-25 items-stretch">
+          <div class="grid lg:grid-cols-3 gap-25 items-stretch">
             
-            <div class="w-full h-full relative z-10">
-                <Slideshow title="spotlight-viewer" images={spotlightImages} />
+            <div class="w-full h-full relative z-10 lg:col-span-2">
+                <Slideshow title="spotlight-viewer" images={spotlightImages} size="large" />
             </div>
             
-            <div class="card p-6 bg-lumix-black-light border border-terminal-border h-full relative z-10">
-              <span class="text-mono text-xs text-lumix-gray mb-4 block">// WHY_{spotlight.abbreviation}</span>
-              <h3 class="text-lumix-white font-medium mb-4">Why {spotlight.name}?</h3>
-              <div class="space-y-3 text-sm text-lumix-gray">
-                {spotlight.ads.map((adTitle, index) => (
-                  <div class="flex items-start gap-3">
-                    <span class="text-lumix-red text-mono">0{index + 1}</span>
-                    <div>
-                      <span class="text-lumix-white">{adTitle}</span><br/>
-                      {spotlight.adLong[index]}
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div class="card p-6 bg-lumix-black-light border border-terminal-border h-full relative z-10 lg:col-span-1">
+              <span class="text-mono text-xs text-lumix-gray mb-4 block">// LUMIX_REVIEW</span>
+              <h3 class="text-lumix-white font-medium mb-3">{spotlight.name}</h3>
+              <p class="text-sm text-lumix-gray mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
             </div>
 
         </div>

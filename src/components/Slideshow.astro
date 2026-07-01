@@ -2,14 +2,15 @@
 interface Props {
     title?: string;
     images: string[];
+    size?: 'default' | 'large';
 }
 
 // Pass an array of image paths relative to the public folder, 
 // e.g., ['/images/spotlight/pic1.jpg', '/images/spotlight/pic2.jpg']
-const { title = "slideshow", images = [] } = Astro.props;
+const { title = "slideshow", images = [], size = 'default' } = Astro.props as Props;
 ---
 
-<slideshow-component data-images={JSON.stringify(images)} class="group relative block w-full aspect-video p-[1px] bg-lumix-grey to-terminal-border rounded">
+<slideshow-component data-images={JSON.stringify(images)} class={size === 'large' ? "group relative block w-full h-full p-[1px] bg-lumix-grey to-terminal-border rounded" : "group relative block w-full aspect-video p-[1px] bg-lumix-grey to-terminal-border rounded"}>
     
     <div class="terminal-window relative w-full h-full bg-black overflow-hidden rounded-[calc(0.25rem-1px)] flex flex-col">
         
