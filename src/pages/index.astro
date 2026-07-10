@@ -2,10 +2,37 @@
 import Layout from "../layouts/Layout.astro";
 import Terminal from "../components/Terminal.astro";
 import ServiceCard from "../components/ServiceCard.astro";
+import { spotlight } from "../data/site";
 import { siteConfig, services, stats } from "../data/site";
 ---
 
 <Layout title="Lumix">
+
+  <div class="bg-lumix-black-light border-b border-terminal-border py-2.5 text-xs">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-y-1 gap-x-4">
+    
+    <div class="flex items-center gap-3">
+      <span class="relative flex h-2 w-2 flex-shrink-0">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-lumix-red opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-lumix-red"></span>
+      </span>
+      <span class="text-mono text-lumix-gray-dark hidden sm:inline">// BROADCAST:</span>
+      <p class="text-lumix-gray">
+        Featured monthly spotlight: <span class="text-lumix-white font-medium">{spotlight.name}</span>
+      </p>
+    </div>
+
+    <a 
+      href="/spotlight" 
+      class="text-mono text-lumix-red hover:text-lumix-white transition-colors flex items-center gap-1 ml-auto sm:ml-0 group"
+    >
+      <span>Read more</span>
+      <span class="text-lumix-gray group-hover:translate-x-0.5 transition-transform duration-150">&rarr;</span>
+    </a>
+
+  </div>
+</div>
+
   <!-- Hero Section -->
   <section class="relative min-h-[90vh] flex items-center overflow-hidden">
     <!-- Grid Background -->

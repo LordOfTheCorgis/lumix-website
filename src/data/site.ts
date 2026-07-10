@@ -337,3 +337,53 @@ export const teams: Team[] = [
         icon: "server",
     },
 ];
+
+
+export const spotlight = {
+//Be sure to update spotlight images under public/images/spotlight when updating this section 
+  name: "Project Bartow Roleplay",
+  abbreviation: "PBRP",
+  founder: "D. Lawson, H. Wallace, A. DiNozzo",
+  description: "Looking for a structured and realistic FiveM community? Join Project Bartow Roleplay, a fully 1:1 whitelisted Bartow County community focused on professionalism, realism, and quality roleplay.",
+  services: [
+    "Georgia Department of Public Safety",
+    "Georgia State Patrol",
+    "Commercial Vehicle Enforcement",
+    "Bartow County Sheriff's Office",
+    "Municipal Police Department",
+    "Cartersville Police Department",
+    "Emerson Police Department",
+    "Adairsville Police Department",
+    "White Police Department",
+  ], 
+  comingSoon: [
+    "Georgia Bureau of Investigations",
+    "Georgia Department of Natural Resources LE Division",
+    "Metro Atlanta Ambulance Service",
+    "Bartow County Fire & Rescue",
+  ],
+  ads: [
+    "Professional and structured community",
+    "Focused on quality and realistic roleplay",
+    "Active and dedicated development team",
+    "Custom made assets and unique features",
+    "1:1 Realistic Policy's and structured departments",
+  ],
+  adLong: [
+    "Join a highly organized, mature environment built on clear standards and a welcoming atmosphere.",
+    "Immerse yourself in authentic, high-caliber scenarios driven by realistic storytelling.",
+    "Enjoy a constantly evolving server backed by rapid updates and passionate developers.",
+    "Experience exclusive, custom-built content and mechanics tailored entirely to our world.",
+    "Operate within organized departments utilizing true-to-life, real-world protocols.",
+  ],
+  hiringNote: "Requirements To Join: Complete the whitelisted application/or open recruitment, must be 16 years old.",
+  offerCode: "",
+  offerText: "",
+  youtube: "",
+  youtubeChannel: "",
+  url: "",
+  discord: "https://discord.gg/pgcmcBZA7Y",
+  tiktok: "https://www.tiktok.com/@projectbartowrp",
+  x: "",
+  instagram: "",
+};
