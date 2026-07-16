@@ -270,7 +270,7 @@ export const leadership: StaffMember[] = [
     {
         id: "ceo-keaghan",
         name: "Keaghan G.",
-        title: "Chief Executive Officer",
+        title: "Chief Technology Officer",
         image: "/images/staff/keaghan-g.png",
         description: "Leading Lumix Solutions with commitment to innovation and operational excellence.",
     },
@@ -284,7 +284,7 @@ export const leadership: StaffMember[] = [
     {
         id: "clo-aaliyah",
         name: "Aaliyah",
-        title: "Chief Legal Officer",
+        title: "Chief Human Resource Officer",
         image: "/images/staff/aaliyah.png",
         description: "Guiding legal strategy, compliance, and risk management across Lumix Solutions.",
     },
