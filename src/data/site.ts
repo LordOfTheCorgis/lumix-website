@@ -63,7 +63,7 @@ export const navigation = [
     { name: "Services", href: "/services" },
     { name: "Partners", href: "/partners" },
     { name: "Staff", href: "/staff" },
-    { name: "Careers", href: "/career" },
+    { name: "Careers", href: "https://careers.lumixsolutions.org/" },
     { name: "Status", href: "/status" },
     { name: "Contact", href: "/contact" },
 ];
