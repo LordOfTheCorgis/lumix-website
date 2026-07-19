@@ -64,7 +64,6 @@ PUBLIC_EXAMPLE_KEY=value
 
 ## 8. Project Structure
 
-ZAch waszz here 676767
 Key folders: 
 
 - `public/`: Static assets served as-is (images, icons, etc.)
