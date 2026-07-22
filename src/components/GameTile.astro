@@ -1,0 +1,138 @@
+---
+import type { GameCategory } from "../data/catalog";
+import { startingPrice } from "../data/catalog";
+import { formatPrice } from "../lib/whmcs";
+
+interface Props {
+  category: GameCategory;
+  /** Art on the first row loads eagerly; everything below the fold is lazy. */
+  eager?: boolean;
+}
+
+const { category, eager = false } = Astro.props;
+
+const isLive = category.status === "live" && category.plans.length > 0;
+const from = startingPrice(category);
+const href = isLive ? `/games/${category.slug}` : undefined;
+const Tag = isLive ? "a" : "div";
+---
+
+<Tag
+  href={href}
+  class:list={[
+    "group relative flex flex-col overflow-hidden border border-terminal-border bg-lumix-black-light transition-all duration-200",
+    isLive
+      ? "hover:-translate-y-1 hover:border-lumix-red/60 hover:shadow-[0_12px_40px_-12px_var(--color-lumix-red-glow)]"
+      : "opacity-55",
+  ]}
+  style={`--tile-accent: ${category.accent};`}
+  aria-label={isLive ? `Configure ${category.label}` : `${category.label}, coming soon`}
+>
+  <!-- Key art: real image when provided, generated tile otherwise -->
+  <div class="relative aspect-[16/9] overflow-hidden bg-lumix-black">
+    {
+      category.image ? (
+        <img
+          src={category.image}
+          alt=""
+          width="400"
+          height="225"
+          loading={eager ? "eager" : "lazy"}
+          decoding="async"
+          class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+      ) : (
+        <div class="game-tile-art absolute inset-0">
+          <span class="game-tile-mark text-mono">{category.mark}</span>
+        </div>
+      )
+    }
+
+    <div class="absolute inset-0 bg-gradient-to-t from-lumix-black-light via-transparent to-transparent"></div>
+
+    {
+      !isLive && (
+        <span class="absolute top-3 right-3 text-mono text-[10px] uppercase tracking-[0.14em] border border-terminal-border bg-lumix-black/85 px-2 py-1 text-lumix-gray">
+          Coming Soon
+        </span>
+      )
+    }
+  </div>
+
+  <div class="flex flex-1 flex-col p-5">
+    <h3 class="heading-md text-lumix-white">{category.shortLabel}</h3>
+    <p class="body-sm mt-2 flex-1 text-lumix-gray">{category.tagline}</p>
+
+    <div class="mt-5 flex items-end justify-between gap-3 border-t border-terminal-border pt-4">
+      {
+        isLive && from !== null ? (
+          <div>
+            <div class="text-mono text-[10px] uppercase tracking-[0.14em] text-lumix-gray-dark">
+              Starting at
+            </div>
+            <div class="text-mono text-xl font-bold text-lumix-white">
+              {formatPrice(from)}
+              <span class="text-sm font-normal text-lumix-gray">/mo</span>
+            </div>
+          </div>
+        ) : (
+          <div class="text-mono text-xs text-lumix-gray-dark">Pricing TBA</div>
+        )
+      }
+
+      {
+        isLive && (
+          <span class="text-mono flex items-center gap-1.5 text-xs text-lumix-red transition-transform duration-200 group-hover:translate-x-0.5">
+            Configure
+            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </span>
+        )
+      }
+    </div>
+  </div>
+</Tag>
+
+<style>
+  /* Generated key-art. Keeps every catalog entry looking deliberate before real
+     game logos land in /public/images/games/. Set `image` on the category to
+     replace it. */
+  .game-tile-art {
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(
+        circle at 30% 20%,
+        color-mix(in srgb, var(--tile-accent) 42%, transparent) 0%,
+        transparent 62%
+      ),
+      radial-gradient(
+        circle at 78% 88%,
+        color-mix(in srgb, var(--tile-accent) 22%, transparent) 0%,
+        transparent 55%
+      ),
+      linear-gradient(160deg, #141414 0%, #0a0a0a 100%);
+  }
+
+  /* Terminal grid motif, carried over from the homepage hero. */
+  .game-tile-art::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--color-terminal-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-terminal-border) 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: 0.32;
+  }
+
+  .game-tile-mark {
+    position: relative;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--tile-accent);
+    text-shadow: 0 0 28px color-mix(in srgb, var(--tile-accent) 45%, transparent);
+  }
+</style>
