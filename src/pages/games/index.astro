@@ -1,0 +1,76 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import GameTile from "../../components/GameTile.astro";
+import { comingSoonCategories, liveCategories } from "../../data/catalog";
+import { siteConfig } from "../../data/site";
+---
+
+<Layout
+  title="Game Server Hosting"
+  description="Deploy FiveM, Minecraft, Terraria, and application servers on Lumix infrastructure. Pick a plan, pick a location, and you are online in minutes."
+>
+  <!-- Header -->
+  <section class="border-b border-terminal-border py-16 lg:py-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <span class="text-mono mb-4 block animate-fade-in text-xs text-lumix-gray">
+          <span class="text-lumix-red">$</span> lumix catalog --list
+        </span>
+        <h1 class="heading-xl mb-6 animate-fade-in-up animate-delay-100 text-lumix-white">
+          Build your<br />
+          <span class="text-lumix-red">server</span>
+        </h1>
+        <p class="body-lg animate-fade-in-up animate-delay-200 text-lumix-gray">
+          Pick a game, size your plan, choose a location. Your configuration carries
+          straight through to checkout with nothing to re-select.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Available now -->
+  <section class="py-16 lg:py-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="mb-10 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <span class="text-mono mb-3 block text-xs text-lumix-gray">// AVAILABLE_NOW</span>
+          <h2 class="heading-lg text-lumix-white">Deploy today</h2>
+        </div>
+        <span class="text-mono text-xs text-lumix-gray-dark">
+          {liveCategories.length} categories online
+        </span>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {liveCategories.map((category, index) => <GameTile category={category} eager={index < 3} />)}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Coming soon -->
+  <section class="py-16 lg:py-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="mb-10 max-w-2xl">
+        <span class="text-mono mb-3 block text-xs text-lumix-gray">// ROADMAP</span>
+        <h2 class="heading-lg mb-4 text-lumix-white">Coming soon</h2>
+        <p class="text-lumix-gray">
+          Titles we are building images and hardware profiles for. Want one of these
+          sooner? Tell us in Discord and we will prioritise by demand.
+        </p>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {comingSoonCategories.map((category) => <GameTile category={category} />)}
+      </div>
+
+      <div class="mt-10 flex flex-wrap gap-4">
+        <a href={siteConfig.links.discord} target="_blank" rel="noopener noreferrer" class="btn-outline">
+          Request a game
+        </a>
+        <a href="/contact" class="btn-outline">Contact sales</a>
+      </div>
+    </div>
+  </section>
+</Layout>

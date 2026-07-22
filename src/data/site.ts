@@ -60,6 +60,7 @@ export const siteConfig = {
 };
 
 export const navigation = [
+    { name: "Game Hosting", href: "/games" },
     { name: "Services", href: "/services" },
     { name: "Partners", href: "/partners" },
     { name: "Staff", href: "/staff" },

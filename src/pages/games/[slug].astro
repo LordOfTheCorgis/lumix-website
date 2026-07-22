@@ -1,0 +1,202 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ServerBuilder from "../../components/ServerBuilder.astro";
+import { liveCategories, startingPrice, type GameCategory } from "../../data/catalog";
+import { formatPrice } from "../../lib/whmcs";
+import { siteConfig } from "../../data/site";
+
+// Only orderable categories get a builder page. Coming-soon entries stay on
+// /games as catalog cards until they have a WHMCS product behind them.
+export function getStaticPaths() {
+  return liveCategories.map((category) => ({
+    params: { slug: category.slug },
+    props: { category },
+  }));
+}
+
+interface Props {
+  category: GameCategory;
+}
+
+const { category } = Astro.props;
+const from = startingPrice(category);
+---
+
+<Layout title={category.label} description={category.description}>
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b border-terminal-border">
+    <div class="grid-overlay pointer-events-none absolute inset-0"></div>
+
+    <div class="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
+      <nav aria-label="Breadcrumb" class="text-mono mb-6 text-xs text-lumix-gray">
+        <a href="/games" class="transition-colors hover:text-lumix-white">games</a>
+        <span class="text-lumix-gray-dark"> / </span>
+        <span class="text-lumix-red">{category.slug}</span>
+      </nav>
+
+      <div class="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_auto]">
+        <div class="max-w-2xl">
+          <h1 class="heading-xl mb-5 text-lumix-white">{category.label}</h1>
+          <p class="body-lg mb-6 text-lumix-gray">{category.description}</p>
+
+          {
+            category.highlights && (
+              <ul class="flex flex-wrap gap-x-6 gap-y-2">
+                {category.highlights.map((highlight) => (
+                  <li class="flex items-center gap-2 text-sm text-lumix-gray-light">
+                    <span class="status-dot status-operational" />
+                    {highlight}
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+        </div>
+
+        {
+          from !== null && (
+            <div class="border border-terminal-border bg-lumix-black-light p-6 lg:min-w-56">
+              <div class="text-mono text-[10px] uppercase tracking-[0.14em] text-lumix-gray-dark">
+                Starting at
+              </div>
+              <div class="text-mono mt-1 text-3xl font-bold text-lumix-white">
+                {formatPrice(from)}
+                <span class="text-base font-normal text-lumix-gray">/mo</span>
+              </div>
+              <div class="mt-3 border-t border-terminal-border pt-3 text-xs text-lumix-gray">
+                {category.plans.length} {category.plans.length === 1 ? "plan" : "plans"} available
+              </div>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Builder -->
+  <section class="py-12 lg:py-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <ServerBuilder category={category} />
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Reassurance -->
+  <section class="py-16 lg:py-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid gap-10 lg:grid-cols-2 lg:gap-20">
+        <div>
+          <span class="text-mono mb-4 block text-xs text-lumix-gray">// WHAT_YOU_GET</span>
+          <h2 class="heading-lg mb-8 text-lumix-white">Every plan, no upsell</h2>
+
+          <div class="space-y-6">
+            <div class="flex gap-4">
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center border border-terminal-border">
+                <span class="text-mono text-sm text-lumix-red">01</span>
+              </div>
+              <div>
+                <h3 class="mb-2 font-medium text-lumix-white">Dedicated resources</h3>
+                <p class="text-sm text-lumix-gray">
+                  The vCores and RAM on the card are yours. We cap stock per node rather
+                  than overselling capacity we do not have.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex gap-4">
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center border border-terminal-border">
+                <span class="text-mono text-sm text-lumix-red">02</span>
+              </div>
+              <div>
+                <h3 class="mb-2 font-medium text-lumix-white">DDoS protection included</h3>
+                <p class="text-sm text-lumix-gray">
+                  Layer 3/4/7 mitigation on every plan at no extra cost.
+                  <a href="/ddos-protection.pdf" target="_blank" class="ml-1 text-lumix-red hover:underline">
+                    Read the spec →
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            <div class="flex gap-4">
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center border border-terminal-border">
+                <span class="text-mono text-sm text-lumix-red">03</span>
+              </div>
+              <div>
+                <h3 class="mb-2 font-medium text-lumix-white">Full panel access</h3>
+                <p class="text-sm text-lumix-gray">
+                  Console, file manager, scheduled tasks, and backups from
+                  <a
+                    href={siteConfig.links.panel}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-lumix-red hover:underline"
+                  >
+                    panel.lumixsolutions.org
+                  </a>.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex gap-4">
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center border border-terminal-border">
+                <span class="text-mono text-sm text-lumix-red">04</span>
+              </div>
+              <div>
+                <h3 class="mb-2 font-medium text-lumix-white">Cancel anytime</h3>
+                <p class="text-sm text-lumix-gray">
+                  No contracts and no cancellation fee. Longer terms are a discount, not a lock-in.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:sticky lg:top-24 lg:self-start">
+          <div class="terminal-window">
+            <div class="terminal-header">
+              <span class="terminal-dot bg-lumix-red"></span>
+              <span class="terminal-dot bg-terminal-yellow"></span>
+              <span class="terminal-dot bg-terminal-green"></span>
+              <span class="text-mono ml-2 text-xs text-lumix-gray">provision.log</span>
+            </div>
+            <div class="terminal-body">
+              <div><span class="terminal-prompt">$</span> lumix provision --game {category.slug}</div>
+              <div class="text-lumix-gray">Reserving node capacity...</div>
+              <div class="terminal-success">✓ Node allocated</div>
+              <div class="terminal-success">✓ DDoS filtering attached</div>
+              <div class="terminal-success">✓ Panel account created</div>
+              <div class="terminal-success">✓ Backups scheduled</div>
+              <div class="text-lumix-gray">&nbsp;</div>
+              <div class="terminal-success">Server online. Average setup: under 60s.</div>
+              <div><span class="terminal-prompt">$</span><span class="terminal-cursor"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Cross-sell -->
+  <section class="py-16 lg:py-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <h2 class="heading-lg mb-3 text-lumix-white">Hosting something else?</h2>
+          <p class="max-w-xl text-lumix-gray">
+            Browse the full catalog, including the titles we are bringing online next.
+          </p>
+        </div>
+        <a href="/games" class="btn-primary">
+          View all games
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
