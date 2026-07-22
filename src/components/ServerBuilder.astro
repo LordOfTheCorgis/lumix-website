@@ -63,6 +63,7 @@ const builderConfig = JSON.stringify({
 
 const uid = `builder-${category.slug}`;
 const initialTotal = defaultPlan.pricing[defaultCycle.key] ?? 0;
+const cartUrl = `${billingBase}/cart.php?a=view`;
 ---
 
 <div class="lx-builder grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]" data-server-builder id={uid}>
@@ -324,6 +325,14 @@ const initialTotal = defaultPlan.pricing[defaultCycle.key] ?? 0;
           </svg>
         </a>
 
+        <!-- WHMCS adds to the cart rather than replacing it, and its cart cannot
+             be cleared from another origin. Warn instead of silently doubling. -->
+        <p class="lx-cart-warn" data-cart-notice hidden>
+          You already sent a configuration to the cart. Deploying again adds a
+          <strong class="text-lumix-white">second server</strong>.
+          <a href={cartUrl} class="text-lumix-red hover:underline" rel="noopener">Review your cart →</a>
+        </p>
+
         <ul class="space-y-1.5 text-xs text-lumix-gray">
           {
             ["Instant setup", "DDoS protection included", "24/7 engineer support", "Automatic backups"].map((item) => (
@@ -542,6 +551,32 @@ const initialTotal = defaultPlan.pricing[defaultCycle.key] ?? 0;
       if ((event.target as HTMLElement | null)?.matches("input[type=radio]")) render();
     });
 
+    // WHMCS stacks cart items and offers no cross-origin way to clear them, so
+    // a returning visitor is told what a second Deploy will actually do.
+    const HANDOFF_KEY = "lumix.cartHandoff";
+
+    function showCartNotice() {
+      root.querySelectorAll<HTMLElement>("[data-cart-notice]").forEach((el) => {
+        el.hidden = false;
+      });
+    }
+
+    try {
+      if (sessionStorage.getItem(HANDOFF_KEY)) showCartNotice();
+    } catch {
+      // Private mode or storage disabled. The notice is an enhancement, not a gate.
+    }
+
+    root.querySelectorAll<HTMLAnchorElement>("[data-deploy]").forEach((link) => {
+      link.addEventListener("click", () => {
+        try {
+          sessionStorage.setItem(HANDOFF_KEY, "1");
+        } catch {
+          // Ignore; the handoff itself still works.
+        }
+      });
+    });
+
     render();
   }
 
@@ -661,6 +696,15 @@ const initialTotal = defaultPlan.pricing[defaultCycle.key] ?? 0;
     padding: 0.1rem 0.4rem;
     font-size: 0.625rem;
     color: var(--color-terminal-green);
+  }
+
+  .lx-cart-warn {
+    border-left: 2px solid var(--color-terminal-yellow);
+    background: color-mix(in srgb, var(--color-terminal-yellow) 8%, transparent);
+    padding: 0.6rem 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--color-lumix-gray-light);
   }
 
   .lx-mobile-bar {

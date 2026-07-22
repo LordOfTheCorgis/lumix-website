@@ -131,6 +131,8 @@ const fivem: GameCategory = {
         "Purpose-built for FiveM communities. Unmetered slots, dedicated vCores, and NVMe storage on RAID 1, so restarts stay fast even with a loaded resource list.",
     accent: "#f5a524",
     mark: "FM",
+    // FiveM is a GTA V modification and has no storefront art of its own.
+    image: "/images/games/fivem.jpg",
     hasLocations: true,
     highlights: [
         "Unmetered player slots on every tier",
@@ -274,6 +276,7 @@ const terraria: GameCategory = {
         "Tuned for vanilla and lightly modded Terraria worlds. Sized for friend groups rather than public servers, and priced accordingly.",
     accent: "#22d3ee",
     mark: "TR",
+    image: "/images/games/terraria.jpg",
     hasLocations: true,
     highlights: ["Instant world provisioning", "tModLoader supported", "Daily backups included"],
     plans: [
@@ -372,10 +375,13 @@ const comingSoonSeeds: ComingSoonSeed[] = [
     { slug: "icarus", label: "Icarus Server Hosting", shortLabel: "Icarus", tagline: "Dedicated prospects, no session limits.", accent: "#2dd4bf", mark: "IC" },
 ];
 
+// Every seed has matching art in /public/images/games/<slug>.jpg. Add the file
+// first when adding a seed, or the tile falls back to the generated mark.
 const comingSoon: GameCategory[] = comingSoonSeeds.map((seed) => ({
     ...seed,
     status: "coming_soon" as const,
     description: seed.tagline,
+    image: `/images/games/${seed.slug}.jpg`,
     hasLocations: true,
     plans: [],
 }));

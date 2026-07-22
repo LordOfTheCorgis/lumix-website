@@ -23,7 +23,7 @@ const Tag = isLive ? "a" : "div";
     "group relative flex flex-col overflow-hidden border border-terminal-border bg-lumix-black-light transition-all duration-200",
     isLive
       ? "hover:-translate-y-1 hover:border-lumix-red/60 hover:shadow-[0_12px_40px_-12px_var(--color-lumix-red-glow)]"
-      : "opacity-55",
+      : "game-tile--pending",
   ]}
   style={`--tile-accent: ${category.accent};`}
   aria-label={isLive ? `Configure ${category.label}` : `${category.label}, coming soon`}
@@ -95,6 +95,19 @@ const Tag = isLive ? "a" : "div";
 </Tag>
 
 <style>
+  /* Unavailable titles sit in the same grid as live ones and are desaturated
+     rather than hidden, so the catalog reads as one shelf. Kept legible on
+     purpose: this is a roadmap signal, not a disabled control. */
+  .game-tile--pending {
+    filter: grayscale(0.85);
+    opacity: 0.75;
+  }
+
+  .game-tile--pending:hover {
+    filter: grayscale(0.55);
+    opacity: 0.9;
+  }
+
   /* Generated key-art. Keeps every catalog entry looking deliberate before real
      game logos land in /public/images/games/. Set `image` on the category to
      replace it. */

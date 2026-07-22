@@ -10,12 +10,12 @@ export const announcementBanner = {
         {
             id: "1", 
             text: "Limited FiveM servers stock available - intentionally capped to maintain performance and reliability.",
-            link: "/services"
+            link: "/games"
         },
         {
             id: "2",
             text: "Miami datacenters are now live - choose your region for lower latency.",
-            link: "/services"
+            link: "/games"
         },
         {
             id: "3",
@@ -61,7 +61,6 @@ export const siteConfig = {
 
 export const navigation = [
     { name: "Game Hosting", href: "/games" },
-    { name: "Services", href: "/services" },
     { name: "Partners", href: "/partners" },
     { name: "Staff", href: "/staff" },
     { name: "Careers", href: "https://careers.lumixsolutions.org/" },
