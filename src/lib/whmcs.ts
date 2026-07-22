@@ -17,6 +17,7 @@
 
 import { siteConfig } from "../data/site";
 import { billingCycles, type BillingCycle, type CycleMeta, type Pricing } from "../data/catalog";
+import { buildOrderUrl as buildOrderUrlCore } from "./orderUrl";
 
 export interface OrderUrlParams {
     /** WHMCS product ID. */
@@ -26,20 +27,13 @@ export interface OrderUrlParams {
     billingcycle: BillingCycle;
 }
 
-export function buildOrderUrl({ pid, configOptions = {}, billingcycle }: OrderUrlParams): string {
-    const search = new URLSearchParams({
-        a: "add",
-        pid: String(pid),
-        billingcycle,
-        skipconfig: "1",
-    });
-
-    for (const [groupId, valueId] of Object.entries(configOptions)) {
-        search.set(`configoption[${groupId}]`, String(valueId));
-    }
-
-    return `${siteConfig.links.billing}/cart.php?${search.toString()}`;
+/** Server-side wrapper binding the billing origin from site config. */
+export function buildOrderUrl(params: OrderUrlParams): string {
+    return buildOrderUrlCore({ billingBase: siteConfig.links.billing, ...params });
 }
+
+/** Origin of the WHMCS install, handed to the client island. */
+export const billingBase = siteConfig.links.billing;
 
 const currency = new Intl.NumberFormat("en-US", {
     style: "currency",
