@@ -131,8 +131,8 @@ const fivem: GameCategory = {
         "Purpose-built for FiveM communities. Unmetered slots, dedicated vCores, and NVMe storage on RAID 1, so restarts stay fast even with a loaded resource list.",
     accent: "#f5a524",
     mark: "FM",
-    // FiveM is a GTA V modification and has no storefront art of its own.
-    image: "/images/games/fivem.jpg",
+    // Official FiveM brand logo (Wikimedia Commons), not GTA V key art.
+    image: "/images/games/fivem.png",
     hasLocations: true,
     highlights: [
         "Unmetered player slots on every tier",
@@ -203,6 +203,7 @@ const minecraft: GameCategory = {
         "Java and Bedrock ready. Every tier ships with unmetered slots and enough allocated heap for modpacks that actually chew memory, not the theoretical minimum.",
     accent: "#4ade80",
     mark: "MC",
+    image: "/images/games/minecraft.png",
     hasLocations: true,
     highlights: [
         "Modpack and plugin installs from the panel",
@@ -291,45 +292,9 @@ const terraria: GameCategory = {
     ],
 };
 
-const applications: GameCategory = {
-    slug: "applications",
-    label: "Application Hosting",
-    shortLabel: "Applications",
-    status: "live",
-    tagline: "Node, Python, and Go runtimes with push-to-deploy.",
-    description:
-        "Managed runtimes for APIs, bots, and services. Deploy from Git, scale without rebuilding your stack, and keep the same panel you use for game servers.",
-    accent: "#ff4c4c",
-    mark: "APP",
-    // Application products have no Location configurable option attached in WHMCS,
-    // so the builder skips the location step entirely for this category.
-    hasLocations: false,
-    highlights: ["Git-based deploys", "Custom domains and SSL", "Zero-downtime restarts"],
-    plans: [
-        {
-            key: "nodejs",
-            name: "Node.js Application",
-            pid: 6,
-            popular: true,
-            specs: { vcores: "2", ramGb: 2, storageGb: 20, slots: "N/A", databases: 1, backups: 3 },
-            pricing: { monthly: 4.0 },
-        },
-        {
-            key: "python",
-            name: "Python Application",
-            pid: 7,
-            specs: { vcores: "2", ramGb: 2, storageGb: 20, slots: "N/A", databases: 1, backups: 3 },
-            pricing: { monthly: 4.0 },
-        },
-        {
-            key: "golang",
-            name: "Golang Application",
-            pid: 8,
-            specs: { vcores: "2", ramGb: 2, storageGb: 20, slots: "N/A", databases: 1, backups: 3 },
-            pricing: { monthly: 4.0 },
-        },
-    ],
-};
+// Application Hosting (Node/Python/Go, pids 6/7/8) is still a live WHMCS
+// product but is intentionally not surfaced on /games — it is not a game
+// category. Re-add a GameCategory entry here to bring it back.
 
 // ───────────────────────────────────────────────────────────────────────────
 // Coming soon
@@ -352,27 +317,14 @@ interface ComingSoonSeed {
 const comingSoonSeeds: ComingSoonSeed[] = [
     // Palworld is already built in WHMCS but hidden. Fill in `plans` and flip
     // status to "live" the moment the category is unhidden.
+    // Palworld is already built in WHMCS but hidden. Fill in `plans` and flip
+    // status to "live" the moment the category is unhidden.
     { slug: "palworld", label: "Palworld Server Hosting", shortLabel: "Palworld", tagline: "Dedicated Pal worlds with room to grow.", accent: "#60a5fa", mark: "PW" },
     { slug: "ark-survival-ascended", label: "ARK: Survival Ascended Hosting", shortLabel: "ARK: SA", tagline: "Clustered maps and heavy mod lists.", accent: "#f97316", mark: "ARK" },
     { slug: "rust", label: "Rust Server Hosting", shortLabel: "Rust", tagline: "Wipe-day ready, high player counts.", accent: "#cd412b", mark: "RS" },
-    { slug: "valheim", label: "Valheim Server Hosting", shortLabel: "Valheim", tagline: "Persistent Viking worlds for your crew.", accent: "#a78bfa", mark: "VH" },
-    { slug: "cs2", label: "Counter-Strike 2 Hosting", shortLabel: "CS2", tagline: "128-tick competitive servers.", accent: "#fbbf24", mark: "CS" },
-    { slug: "garrys-mod", label: "Garry's Mod Hosting", shortLabel: "Garry's Mod", tagline: "DarkRP, sandbox, and everything between.", accent: "#38bdf8", mark: "GM" },
-    { slug: "team-fortress-2", label: "Team Fortress 2 Hosting", shortLabel: "TF2", tagline: "Community servers that stay full.", accent: "#f87171", mark: "TF" },
-    { slug: "satisfactory", label: "Satisfactory Server Hosting", shortLabel: "Satisfactory", tagline: "Megafactories without the frame drops.", accent: "#fb923c", mark: "SF" },
-    { slug: "7-days-to-die", label: "7 Days to Die Hosting", shortLabel: "7DTD", tagline: "Horde night, no stutter.", accent: "#84cc16", mark: "7D" },
-    { slug: "project-zomboid", label: "Project Zomboid Hosting", shortLabel: "Zomboid", tagline: "Long-running apocalypse saves.", accent: "#94a3b8", mark: "PZ" },
-    { slug: "enshrouded", label: "Enshrouded Server Hosting", shortLabel: "Enshrouded", tagline: "Co-op survival with persistent building.", accent: "#c084fc", mark: "EN" },
-    { slug: "core-keeper", label: "Core Keeper Server Hosting", shortLabel: "Core Keeper", tagline: "Underground worlds, always online.", accent: "#facc15", mark: "CK" },
-    { slug: "v-rising", label: "V Rising Server Hosting", shortLabel: "V Rising", tagline: "Castle sieges on dedicated hardware.", accent: "#e11d48", mark: "VR" },
-    { slug: "conan-exiles", label: "Conan Exiles Hosting", shortLabel: "Conan Exiles", tagline: "Large maps, large clans.", accent: "#d97706", mark: "CE" },
-    { slug: "space-engineers", label: "Space Engineers Hosting", shortLabel: "Space Engineers", tagline: "Physics-heavy builds, stable sim speed.", accent: "#0ea5e9", mark: "SE" },
-    { slug: "astroneer", label: "Astroneer Server Hosting", shortLabel: "Astroneer", tagline: "Shared planets for small groups.", accent: "#f472b6", mark: "AS" },
-    { slug: "sons-of-the-forest", label: "Sons of the Forest Hosting", shortLabel: "Sons of the Forest", tagline: "Co-op survival, dedicated uptime.", accent: "#4d7c0f", mark: "SOTF" },
-    { slug: "barotrauma", label: "Barotrauma Server Hosting", shortLabel: "Barotrauma", tagline: "Submarine crews, persistent campaigns.", accent: "#0d9488", mark: "BT" },
-    { slug: "necesse", label: "Necesse Server Hosting", shortLabel: "Necesse", tagline: "Co-op settlements that stay running.", accent: "#818cf8", mark: "NC" },
-    { slug: "soulmask", label: "Soulmask Server Hosting", shortLabel: "Soulmask", tagline: "Tribe servers with real persistence.", accent: "#a16207", mark: "SM" },
-    { slug: "icarus", label: "Icarus Server Hosting", shortLabel: "Icarus", tagline: "Dedicated prospects, no session limits.", accent: "#2dd4bf", mark: "IC" },
+    { slug: "beamng", label: "BeamNG.drive (BeamMP) Hosting", shortLabel: "BeamNG", tagline: "Multiplayer BeamMP servers with real physics.", accent: "#f59e0b", mark: "BNG" },
+    { slug: "arma-reforger", label: "Arma Reforger Server Hosting", shortLabel: "Arma Reforger", tagline: "Milsim-grade dedicated servers.", accent: "#65a30d", mark: "ARR" },
+    { slug: "squad", label: "Squad Server Hosting", shortLabel: "Squad", tagline: "100-player tactical servers, licensed slots.", accent: "#3f6212", mark: "SQ" },
 ];
 
 // Every seed has matching art in /public/images/games/<slug>.jpg. Add the file
@@ -386,7 +338,7 @@ const comingSoon: GameCategory[] = comingSoonSeeds.map((seed) => ({
     plans: [],
 }));
 
-export const catalog: GameCategory[] = [fivem, minecraft, terraria, applications, ...comingSoon];
+export const catalog: GameCategory[] = [fivem, minecraft, terraria, ...comingSoon];
 
 // ───────────────────────────────────────────────────────────────────────────
 // Derived views
