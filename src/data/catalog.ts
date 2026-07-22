@@ -131,8 +131,9 @@ const fivem: GameCategory = {
         "Purpose-built for FiveM communities. Unmetered slots, dedicated vCores, and NVMe storage on RAID 1, so restarts stay fast even with a loaded resource list.",
     accent: "#f5a524",
     mark: "FM",
-    // Official FiveM brand logo (Wikimedia Commons), not GTA V key art.
-    image: "/images/games/fivem.png",
+    // Cinematic GTA V key art, matching how RocketNode/Sparked present FiveM
+    // (FiveM is a GTA V modification, so every host uses GTA V roleplay art).
+    image: "/images/games/fivem.jpg",
     hasLocations: true,
     highlights: [
         "Unmetered player slots on every tier",
@@ -203,7 +204,7 @@ const minecraft: GameCategory = {
         "Java and Bedrock ready. Every tier ships with unmetered slots and enough allocated heap for modpacks that actually chew memory, not the theoretical minimum.",
     accent: "#4ade80",
     mark: "MC",
-    image: "/images/games/minecraft.png",
+    image: "/images/games/minecraft.jpg",
     hasLocations: true,
     highlights: [
         "Modpack and plugin installs from the panel",
