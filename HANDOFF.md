@@ -15,6 +15,36 @@ provisioning, client area). Product browsing and configuration now live on the A
 
 ---
 
+## 0. Repositories — assemble the working directory
+
+Clone (or copy) both into one parent folder:
+
+| Repo | Source | Local copy |
+|------|--------|------------|
+| Astro marketing site (this repo) | `github.com/LordOfTheCorgis/lumix-website` | `…/Github Desktop/lumix-website` |
+| WHMCS billing theme + cart (**private**) | `github.com/LordOfTheCorgis/lumix-billing-theme` | `…/Github Desktop/lumix-billing-theme` |
+
+The billing repo is private — clone with an authenticated `git`/`gh`, or just copy the
+local folder above. It contains both the billing theme and the modified cart/order form.
+
+**The modified cart is the `nexus_cart` order form**, not a stock template — this answers
+the earlier "regular nexus_cart vs modified" question: your customization *lives inside*
+`nexus_cart`. Key paths in the billing repo:
+
+```
+billing/templates/orderform/nexus_cart/
+  ├─ products.tpl          # store product listing (has the lx-order builder markup)
+  ├─ configureproduct.tpl  # product config screen (sessionStorage lxLoc/lxAuto workaround)
+  ├─ viewcart.tpl          # cart → checkout
+  ├─ domainregister.tpl
+  ├─ theme.yaml
+  ├─ css/lumix-order.css
+  └─ js/
+billing/templates/new-theme/   # client-area / storefront skin
+```
+
+---
+
 ## 1. Architecture (target state)
 
 ```
@@ -129,12 +159,14 @@ cart. Deploying again adds a second server."* Bandage, not a cure.
 
 ### Real fix (do this in the combined repo)
 
-**Recommended — clear-on-arrival flag in the modified order form template PHP:**
+**Recommended — clear-on-arrival flag for the `nexus_cart` order form:**
 
 1. Add a query param to every Deploy URL, e.g. `&lxfresh=1` (add it in
    `src/lib/orderUrl.ts` on the Astro side).
-2. In the modified order form template's PHP, when `lxfresh` is present on an `a=add`
-   request, empty `$_SESSION['cart']` **before** the product is added.
+2. When `lxfresh` is present on an `a=add` request, empty `$_SESSION['cart']` **before** the
+   product is added. `.tpl` files are Smarty (view only), so the reset belongs in PHP: a
+   small `hooks.php` on `ShoppingCartValidateProduct` / `ClientAreaPage` (cleanest, no core
+   edits), or the `nexus_cart` order form controller if one is customized.
 3. Result: exactly one server per Deploy, regardless of clicks or back-and-retry.
 
 Alternative: a `ShoppingCart`/cart hook that does the same reset server-side (no template
@@ -161,9 +193,10 @@ edit, but fiddlier). Weakest option: rely on the shipped warning + WHMCS cart Re
 Since the Astro site owns product presentation and configuration, WHMCS no longer needs its
 storefront/browsing layer. Suggested passes for the combined repo:
 
-- **Remove / hide the in-WHMCS builder** (`lx-order` / `order-standard_cart` custom template
-  and its `sessionStorage` `lxLoc`/`lxAuto` workaround). Deploy links land at
-  `cart.php?a=view`, so the builder UI is dead weight.
+- **Remove / hide the in-WHMCS builder** (the `lx-order` markup in
+  `nexus_cart/products.tpl` and the `sessionStorage` `lxLoc`/`lxAuto` workaround in
+  `nexus_cart/configureproduct.tpl`). Deploy links land at `cart.php?a=view`, so the builder
+  UI is dead weight.
 - **Trim storefront browsing** that duplicates `/games` (store category pages, product
   listing/config screens) once nothing links to them.
 - **Add the `lxfresh` clear-on-arrival behavior** to the cart (Section 3).
