@@ -260,10 +260,7 @@ const minecraft: GameCategory = {
             name: "Ultimate Minecraft Plan",
             pid: 30,
             specs: { vcores: "6", ramGb: 18, storageGb: 400, slots: "Unmetered", databases: 5, backups: 5 },
-            // `biennially` is deliberately omitted. WHMCS currently has it at
-            // $15,335.99, which is ~6.6x the triennial price and is a typo.
-            // Fix the product in WHMCS admin, then add `biennially: <price>` back.
-            pricing: { monthly: 67.99, quarterly: 191.99, semiannually: 383.99, annually: 767.99, triennially: 2303.99 },
+            pricing: { monthly: 67.99, quarterly: 191.99, semiannually: 383.99, annually: 767.99, biennially: 1535.99, triennially: 2303.99 },
         },
     ],
 };
