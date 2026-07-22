@@ -1,0 +1,690 @@
+---
+// ═══════════════════════════════════════════════════════════════════════════
+// ServerBuilder — the "build your server" island
+// ═══════════════════════════════════════════════════════════════════════════
+//
+// Renders every step as real radio inputs so the flow is keyboard accessible
+// and selectable before JavaScript runs. The Deploy button carries a valid
+// server-rendered cart URL for the default selection, so the page is still
+// orderable with JS disabled. The script only keeps prices and the URL in sync.
+// ═══════════════════════════════════════════════════════════════════════════
+
+import type { GameCategory } from "../data/catalog";
+import { locationOptions } from "../data/catalog";
+import { availableCycles, billingBase, buildOrderUrl, cycleSavings, formatPrice, perMonth } from "../lib/whmcs";
+
+interface Props {
+  category: GameCategory;
+}
+
+const { category } = Astro.props;
+
+const plans = category.plans;
+const defaultPlan = plans.find((plan) => plan.popular) ?? plans[0];
+const defaultCycle = availableCycles(defaultPlan.pricing)[0];
+const showLocations = category.hasLocations && locationOptions.values.length > 0;
+const defaultLocation = showLocations ? locationOptions.values[0] : undefined;
+const addonGroups = category.addonGroups ?? [];
+
+// Union of cycles across all plans. Every card renders once; the script hides
+// any cycle the currently selected plan does not sell.
+const allCycles = availableCycles(Object.assign({}, ...plans.map((plan) => plan.pricing)));
+
+// Step numbers shift when a category has no location option.
+const steps = [
+  "Plan",
+  ...(showLocations ? ["Location"] : []),
+  ...addonGroups.map((group) => group.label),
+  "Billing Cycle",
+];
+const stepNumber = (name: string) => String(steps.indexOf(name) + 1).padStart(2, "0");
+
+const initialConfigOptions: Record<number, number> = defaultLocation
+  ? { [locationOptions.groupId]: defaultLocation.valueId }
+  : {};
+
+const initialHref = buildOrderUrl({
+  pid: defaultPlan.pid,
+  billingcycle: defaultCycle.key,
+  configOptions: initialConfigOptions,
+});
+
+// Build-time config for the island. `<` is escaped so a future string value can
+// never break out of the script tag.
+const builderConfig = JSON.stringify({
+  billingBase,
+  hasLocations: showLocations,
+  locationGroupId: locationOptions.groupId,
+  cycles: allCycles.map(({ key, label, months }) => ({ key, label, months })),
+  plans: Object.fromEntries(
+    plans.map((plan) => [plan.pid, { name: plan.name, specs: plan.specs, pricing: plan.pricing }])
+  ),
+}).replace(/</g, "\\u003c");
+
+const uid = `builder-${category.slug}`;
+const initialTotal = defaultPlan.pricing[defaultCycle.key] ?? 0;
+---
+
+<div class="lx-builder grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]" data-server-builder id={uid}>
+  <script type="application/json" data-builder-config set:html={builderConfig} />
+
+  <!-- ─────────────────────────── Steps ─────────────────────────── -->
+  <div class="space-y-10">
+    <!-- Step: Plan -->
+    <section aria-labelledby={`${uid}-plan`}>
+      <header class="mb-5 flex items-center gap-3">
+        <span class="lx-step-num text-mono">{stepNumber("Plan")}</span>
+        <h2 id={`${uid}-plan`} class="heading-md text-lumix-white">Choose your plan</h2>
+      </header>
+
+      <div class="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-labelledby={`${uid}-plan`}>
+        {
+          plans.map((plan) => (
+            <label class="lx-card lx-plan-card" data-pid={plan.pid}>
+              <input
+                type="radio"
+                name={`${uid}-plan`}
+                value={plan.pid}
+                class="sr-only"
+                checked={plan.pid === defaultPlan.pid}
+                data-plan-input
+              />
+
+              {plan.popular && <span class="lx-ribbon text-mono">Most Popular</span>}
+
+              <span class="lx-card-head flex items-baseline justify-between gap-3">
+                <span class="font-medium text-lumix-white">{plan.name}</span>
+                <span class="lx-check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+              </span>
+
+              <span class="mt-3 block">
+                <span class="text-mono text-2xl font-bold text-lumix-white" data-plan-price>
+                  {formatPrice(
+                    perMonth(plan.pricing[defaultCycle.key] ?? plan.pricing.monthly ?? 0, defaultCycle.months)
+                  )}
+                </span>
+                <span class="text-sm text-lumix-gray">/mo</span>
+              </span>
+
+              <span class="mt-4 grid gap-1.5 border-t border-terminal-border pt-3 text-xs text-lumix-gray">
+                <span class="lx-spec">
+                  <span class="lx-spec-k">CPU</span>
+                  {plan.specs.vcores} vCores
+                </span>
+                <span class="lx-spec">
+                  <span class="lx-spec-k">RAM</span>
+                  {plan.specs.ramGb} GB
+                </span>
+                <span class="lx-spec">
+                  <span class="lx-spec-k">DISK</span>
+                  {plan.specs.storageGb} GB NVMe
+                </span>
+                <span class="lx-spec">
+                  <span class="lx-spec-k">SLOTS</span>
+                  {plan.specs.slots}
+                </span>
+                <span class="lx-spec">
+                  <span class="lx-spec-k">DB</span>
+                  {plan.specs.databases}
+                </span>
+                <span class="lx-spec">
+                  <span class="lx-spec-k">BACKUP</span>
+                  {plan.specs.backups}
+                </span>
+              </span>
+            </label>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Step: Location -->
+    {
+      showLocations && (
+        <section aria-labelledby={`${uid}-location`}>
+          <header class="mb-5 flex items-center gap-3">
+            <span class="lx-step-num text-mono">{stepNumber("Location")}</span>
+            <h2 id={`${uid}-location`} class="heading-md text-lumix-white">
+              Pick a location
+            </h2>
+          </header>
+
+          <div class="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-labelledby={`${uid}-location`}>
+            {locationOptions.values.map((value) => (
+              <label class="lx-card" data-label={value.label}>
+                <input
+                  type="radio"
+                  name={`${uid}-location`}
+                  value={value.valueId}
+                  class="sr-only"
+                  checked={value.valueId === defaultLocation?.valueId}
+                  data-location-input
+                />
+                <span class="flex items-center justify-between gap-3">
+                  <span class="font-medium text-lumix-white">{value.label}</span>
+                  <span class="lx-check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                </span>
+                {value.note && <span class="mt-1 block text-xs text-lumix-gray">{value.note}</span>}
+              </label>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Step: Add-ons -->
+    {
+      addonGroups.map((group) => (
+        <section aria-labelledby={`${uid}-addon-${group.groupId}`}>
+          <header class="mb-5 flex items-center gap-3">
+            <span class="lx-step-num text-mono">{stepNumber(group.label)}</span>
+            <h2 id={`${uid}-addon-${group.groupId}`} class="heading-md text-lumix-white">
+              {group.label}
+            </h2>
+          </header>
+
+          <div class="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-labelledby={`${uid}-addon-${group.groupId}`}>
+            {group.values.map((value, index) => (
+              <label class="lx-card">
+                <input
+                  type="radio"
+                  name={`${uid}-addon-${group.groupId}`}
+                  value={value.valueId}
+                  class="sr-only"
+                  checked={index === 0}
+                  data-addon-input
+                  data-group-id={group.groupId}
+                />
+                <span class="flex items-center justify-between gap-3">
+                  <span class="font-medium text-lumix-white">{value.label}</span>
+                  <span class="lx-check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                </span>
+                {value.note && <span class="mt-1 block text-xs text-lumix-gray">{value.note}</span>}
+              </label>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <!-- Step: Billing cycle -->
+    <section aria-labelledby={`${uid}-cycle`}>
+      <header class="mb-5 flex items-center gap-3">
+        <span class="lx-step-num text-mono">{stepNumber("Billing Cycle")}</span>
+        <h2 id={`${uid}-cycle`} class="heading-md text-lumix-white">Billing cycle</h2>
+      </header>
+
+      <div class="grid gap-3 sm:grid-cols-3" role="radiogroup" aria-labelledby={`${uid}-cycle`}>
+        {
+          allCycles.map((cycle) => (
+            <label class="lx-card" data-cycle={cycle.key} data-months={cycle.months}>
+              <input
+                type="radio"
+                name={`${uid}-cycle`}
+                value={cycle.key}
+                class="sr-only"
+                checked={cycle.key === defaultCycle.key}
+                data-cycle-input
+              />
+              <span class="flex items-center justify-between gap-2">
+                <span class="text-sm font-medium text-lumix-white">{cycle.label}</span>
+                <span class="lx-check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+              </span>
+              <span class="text-mono mt-2 block text-lg text-lumix-white" data-cycle-price>
+                {formatPrice(defaultPlan.pricing[cycle.key] ?? 0)}
+              </span>
+              <span
+                class="lx-save text-mono mt-2 inline-block"
+                data-cycle-save
+                hidden={cycleSavings(defaultPlan.pricing, cycle) < 1}
+              >
+                Save {cycleSavings(defaultPlan.pricing, cycle)}%
+              </span>
+            </label>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+
+  <!-- ────────────────────── Order summary ────────────────────── -->
+  <aside class="lg:sticky lg:top-24 lg:self-start">
+    <div class="border border-terminal-border bg-lumix-black-light">
+      <div class="terminal-header">
+        <span class="terminal-dot bg-lumix-red"></span>
+        <span class="terminal-dot bg-terminal-yellow"></span>
+        <span class="terminal-dot bg-terminal-green"></span>
+        <span class="text-mono ml-2 text-xs text-lumix-gray">order-summary</span>
+      </div>
+
+      <div class="space-y-4 p-5">
+        <dl class="space-y-3 text-sm">
+          <div class="flex items-start justify-between gap-3">
+            <dt class="text-lumix-gray">Plan</dt>
+            <dd class="text-right font-medium text-lumix-white" data-summary-plan>{defaultPlan.name}</dd>
+          </div>
+          <div class="flex items-start justify-between gap-3">
+            <dt class="text-lumix-gray">Resources</dt>
+            <dd class="text-mono text-right text-xs text-lumix-gray-light" data-summary-specs>
+              {defaultPlan.specs.ramGb} GB · {defaultPlan.specs.vcores} vCores · {defaultPlan.specs.storageGb} GB
+            </dd>
+          </div>
+          {
+            showLocations && (
+              <div class="flex items-start justify-between gap-3">
+                <dt class="text-lumix-gray">Location</dt>
+                <dd class="text-right text-lumix-white" data-summary-location>
+                  {defaultLocation?.label}
+                </dd>
+              </div>
+            )
+          }
+          <div class="flex items-start justify-between gap-3">
+            <dt class="text-lumix-gray">Term</dt>
+            <dd class="text-right text-lumix-white" data-summary-cycle>{defaultCycle.label}</dd>
+          </div>
+        </dl>
+
+        <div class="border-t border-terminal-border pt-4">
+          <div class="flex items-end justify-between gap-3">
+            <span class="text-mono text-xs uppercase tracking-[0.14em] text-lumix-gray">Total</span>
+            <span class="text-mono text-2xl font-bold text-lumix-white" data-summary-total>
+              {formatPrice(initialTotal)}
+            </span>
+          </div>
+          <p class="mt-1 text-right text-xs text-lumix-gray" data-summary-note>
+            {
+              defaultCycle.months > 1
+                ? `${formatPrice(perMonth(initialTotal, defaultCycle.months))}/mo equivalent`
+                : "Billed monthly, cancel anytime"
+            }
+          </p>
+        </div>
+
+        <a href={initialHref} class="btn-primary w-full" data-deploy rel="noopener">
+          Deploy Server
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
+
+        <ul class="space-y-1.5 text-xs text-lumix-gray">
+          {
+            ["Instant setup", "DDoS protection included", "24/7 engineer support", "Automatic backups"].map((item) => (
+              <li class="flex items-center gap-2">
+                <span class="status-dot status-operational" />
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Provisioning preview, extending the homepage terminal motif -->
+      <div class="terminal-body border-t border-terminal-border text-xs">
+        <span class="terminal-prompt">$</span>
+        <span class="text-lumix-gray-light">
+          lumix deploy --game {category.slug} --tier {defaultPlan.key}
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile sticky bar -->
+  <div class="lx-mobile-bar lg:hidden">
+    <div>
+      <div class="text-mono text-[10px] uppercase tracking-[0.14em] text-lumix-gray">Total</div>
+      <div class="text-mono text-lg font-bold text-lumix-white" data-summary-total>
+        {formatPrice(initialTotal)}
+      </div>
+    </div>
+    <a href={initialHref} class="btn-primary flex-1" data-deploy rel="noopener">Deploy Server</a>
+  </div>
+</div>
+
+<script>
+  import { buildOrderUrl } from "../lib/orderUrl";
+
+  interface PlanSpecs {
+    vcores: string;
+    ramGb: number;
+    storageGb: number;
+    slots: string;
+    databases: number;
+    backups: number;
+  }
+
+  interface BuilderPlan {
+    name: string;
+    specs: PlanSpecs;
+    pricing: Record<string, number | undefined>;
+  }
+
+  interface BuilderConfig {
+    billingBase: string;
+    hasLocations: boolean;
+    locationGroupId: number;
+    cycles: { key: string; label: string; months: number }[];
+    plans: Record<string, BuilderPlan>;
+  }
+
+  const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+
+  function initBuilder(root: HTMLElement) {
+    const configEl = root.querySelector<HTMLScriptElement>("[data-builder-config]");
+    if (!configEl?.textContent) return;
+
+    let config: BuilderConfig;
+    try {
+      config = JSON.parse(configEl.textContent) as BuilderConfig;
+    } catch {
+      // Leave the server-rendered defaults in place rather than breaking the page.
+      return;
+    }
+
+    const checked = (selector: string) => root.querySelector<HTMLInputElement>(`${selector}:checked`);
+
+    /** Cheapest per-month term the plan sells, used as the savings baseline. */
+    function baselinePerMonth(plan: BuilderPlan): number | null {
+      for (const cycle of config.cycles) {
+        const price = plan.pricing[cycle.key];
+        if (typeof price === "number") return price / cycle.months;
+      }
+      return null;
+    }
+
+    /** Keep the selected term valid when the new plan does not sell it. */
+    function resolveCycleInput(plan: BuilderPlan): HTMLInputElement | null {
+      const current = checked("[data-cycle-input]");
+      if (current && typeof plan.pricing[current.value] === "number") return current;
+
+      const firstSold = config.cycles.find((cycle) => typeof plan.pricing[cycle.key] === "number");
+      if (!firstSold) return current;
+
+      const fallback = root.querySelector<HTMLInputElement>(
+        `[data-cycle-input][value="${firstSold.key}"]`
+      );
+      if (fallback) fallback.checked = true;
+      return fallback ?? current;
+    }
+
+    function setAll(selector: string, value: string) {
+      root.querySelectorAll<HTMLElement>(selector).forEach((el) => {
+        el.textContent = value;
+      });
+    }
+
+    function renderPlanCards(cycleKey: string, months: number) {
+      root.querySelectorAll<HTMLElement>("[data-pid]").forEach((card) => {
+        const cardPlan = config.plans[card.dataset.pid ?? ""];
+        const priceEl = card.querySelector<HTMLElement>("[data-plan-price]");
+        if (!cardPlan || !priceEl) return;
+
+        const cardTotal = cardPlan.pricing[cycleKey];
+        if (typeof cardTotal === "number") {
+          priceEl.textContent = money.format(cardTotal / months);
+          card.removeAttribute("data-unavailable");
+          return;
+        }
+
+        const fallbackMonthly = cardPlan.pricing.monthly;
+        priceEl.textContent = typeof fallbackMonthly === "number" ? money.format(fallbackMonthly) : "—";
+        card.setAttribute("data-unavailable", "");
+      });
+    }
+
+    function renderCycleCards(plan: BuilderPlan) {
+      const baseline = baselinePerMonth(plan);
+
+      root.querySelectorAll<HTMLElement>("[data-cycle]").forEach((card) => {
+        const key = card.dataset.cycle ?? "";
+        const months = Number(card.dataset.months ?? "1");
+        const price = plan.pricing[key];
+
+        if (typeof price !== "number") {
+          card.hidden = true;
+          return;
+        }
+
+        card.hidden = false;
+
+        const priceEl = card.querySelector<HTMLElement>("[data-cycle-price]");
+        if (priceEl) priceEl.textContent = money.format(price);
+
+        const saveEl = card.querySelector<HTMLElement>("[data-cycle-save]");
+        if (!saveEl) return;
+
+        const save = baseline ? Math.max(0, Math.round(100 - (price / months / baseline) * 100)) : 0;
+        saveEl.textContent = `Save ${save}%`;
+        saveEl.hidden = save < 1;
+      });
+    }
+
+    function collectConfigOptions(): Record<string, number> {
+      const configOptions: Record<string, number> = {};
+
+      const locationInput = checked("[data-location-input]");
+      if (config.hasLocations && locationInput) {
+        configOptions[config.locationGroupId] = Number(locationInput.value);
+        setAll("[data-summary-location]", locationInput.closest<HTMLElement>("[data-label]")?.dataset.label ?? "");
+      }
+
+      root.querySelectorAll<HTMLInputElement>("[data-addon-input]:checked").forEach((input) => {
+        const groupId = input.dataset.groupId;
+        if (groupId) configOptions[groupId] = Number(input.value);
+      });
+
+      return configOptions;
+    }
+
+    function render() {
+      const planInput = checked("[data-plan-input]");
+      if (!planInput) return;
+
+      const plan = config.plans[planInput.value];
+      if (!plan) return;
+
+      const cycleInput = resolveCycleInput(plan);
+      if (!cycleInput) return;
+
+      const cycleKey = cycleInput.value;
+      const cycleMeta = config.cycles.find((cycle) => cycle.key === cycleKey);
+      if (!cycleMeta) return;
+
+      const total = plan.pricing[cycleKey] ?? 0;
+
+      renderPlanCards(cycleKey, cycleMeta.months);
+      renderCycleCards(plan);
+
+      setAll("[data-summary-plan]", plan.name);
+      setAll(
+        "[data-summary-specs]",
+        `${plan.specs.ramGb} GB · ${plan.specs.vcores} vCores · ${plan.specs.storageGb} GB`
+      );
+      setAll("[data-summary-cycle]", cycleMeta.label);
+      setAll("[data-summary-total]", money.format(total));
+      setAll(
+        "[data-summary-note]",
+        cycleMeta.months > 1
+          ? `${money.format(total / cycleMeta.months)}/mo equivalent`
+          : "Billed monthly, cancel anytime"
+      );
+
+      const href = buildOrderUrl({
+        billingBase: config.billingBase,
+        pid: Number(planInput.value),
+        billingcycle: cycleKey,
+        configOptions: collectConfigOptions(),
+      });
+
+      root.querySelectorAll<HTMLAnchorElement>("[data-deploy]").forEach((link) => {
+        link.href = href;
+      });
+    }
+
+    root.addEventListener("change", (event) => {
+      if ((event.target as HTMLElement | null)?.matches("input[type=radio]")) render();
+    });
+
+    render();
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-server-builder]").forEach(initBuilder);
+</script>
+
+<style>
+  .lx-step-num {
+    display: inline-flex;
+    height: 2rem;
+    width: 2rem;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-terminal-border);
+    font-size: 0.75rem;
+    color: var(--color-lumix-red);
+  }
+
+  .lx-card {
+    position: relative;
+    display: block;
+    cursor: pointer;
+    border: 1px solid var(--color-terminal-border);
+    background: var(--color-lumix-black-light);
+    padding: 1rem;
+    transition:
+      border-color 0.18s ease,
+      transform 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+
+  .lx-card:hover {
+    border-color: var(--color-lumix-gray-dark);
+    transform: translateY(-2px);
+  }
+
+  .lx-card:has(input:checked) {
+    border-color: var(--color-lumix-red);
+    box-shadow:
+      inset 0 0 0 1px var(--color-lumix-red),
+      0 0 28px var(--color-lumix-red-glow);
+  }
+
+  .lx-card:has(input:focus-visible) {
+    outline: 2px solid var(--color-lumix-red);
+    outline-offset: 2px;
+  }
+
+  /* A plan not sold on the selected term keeps its place in the grid and just
+     loses emphasis, rather than vanishing mid-flow. */
+  .lx-card[data-unavailable] {
+    opacity: 0.55;
+  }
+
+  .lx-check {
+    display: inline-flex;
+    height: 1.25rem;
+    width: 1.25rem;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-terminal-border);
+    color: transparent;
+    transition:
+      color 0.18s ease,
+      border-color 0.18s ease,
+      background-color 0.18s ease;
+  }
+
+  .lx-check svg {
+    height: 0.7rem;
+    width: 0.7rem;
+  }
+
+  .lx-card:has(input:checked) .lx-check {
+    border-color: var(--color-lumix-red);
+    background: var(--color-lumix-red);
+    color: var(--color-lumix-white);
+  }
+
+  .lx-ribbon {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    background: var(--color-lumix-red);
+    padding: 0.2rem 0.55rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-lumix-white);
+  }
+
+  /* Keep the plan name clear of the ribbon. */
+  .lx-plan-card:has(.lx-ribbon) .lx-card-head {
+    padding-right: 6.5rem;
+  }
+
+  .lx-spec {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .lx-spec-k {
+    display: inline-block;
+    width: 3.75rem;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    color: var(--color-lumix-gray-dark);
+  }
+
+  .lx-save {
+    border: 1px solid color-mix(in srgb, var(--color-terminal-green) 45%, transparent);
+    padding: 0.1rem 0.4rem;
+    font-size: 0.625rem;
+    color: var(--color-terminal-green);
+  }
+
+  .lx-mobile-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-inline: -1rem;
+    border-top: 1px solid var(--color-terminal-border);
+    background: color-mix(in srgb, var(--color-lumix-black) 94%, transparent);
+    padding: 0.75rem 1rem;
+    backdrop-filter: blur(8px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lx-card,
+    .lx-check {
+      transition: none;
+    }
+
+    .lx-card:hover {
+      transform: none;
+    }
+  }
+</style>
