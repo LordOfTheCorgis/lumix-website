@@ -124,10 +124,25 @@ Application Hosting has **no** location option attached, so its links omit `conf
 | Elite | 29 | $58.99 |
 | Ultimate | 30 | $67.99 |
 
+**Palworld** (`/store/palworld-hosting`)
+
+| Tier | pid | Monthly |
+|------|-----|---------|
+| Starter | 31 | $9.99 |
+| Budget | 32 | $14.99 |
+| Standard | 33 | $21.99 |
+| Advanced | 34 | $29.99 |
+| Premium | 36 | $38.99 |
+| Elite | 37 | $48.99 |
+| Ultimate | 38 | $59.99 |
+
+pid `35` is skipped upstream in WHMCS. Palworld ships no MySQL database, so
+`databases` is `0` on every tier and the builder hides the DB spec chip.
+
 **Terraria** (`/store/game-hosting`) — pid `14`, $5.00/mo
 **Application Hosting** (`/store/application-hosting`) — Node.js `6`, Python `7`, Golang `8`, all $4.00/mo (not surfaced on the Astro site; still a live WHMCS product)
 
-Palworld exists in WHMCS but is **hidden**; not yet ordered so pids unknown. More games planned.
+Palworld is now live on the site (pids above, read from the storefront). More games planned.
 
 ---
 
