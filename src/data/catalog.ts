@@ -105,7 +105,7 @@ export const locationOptions: ConfigOptionGroup = {
     values: [
         // Both notes previously read "US East · DDoS protected", which gave a
         // customer nothing to choose on. Each now says who it is actually for.
-        { key: "miami", label: "Miami, FL", valueId: 3, note: "Best for the Southeast US, Caribbean, and Latin America" },
+        { key: "miami", label: "Miami, FL", valueId: 3, note: "Best for the Southeast US, Caribbean, and Latin America", soldOut: true },
         { key: "ashburn", label: "Ashburn, VA", valueId: 5, note: "Best for the Northeast US, Midwest, Canada, and Europe" },
     ],
 };
