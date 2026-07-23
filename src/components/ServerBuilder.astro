@@ -181,7 +181,7 @@ const cartUrl = `${billingBase}/cart.php?a=view`;
                   data-location-input
                 />
                 <span class="flex items-center justify-between gap-3">
-                  <span class="font-medium text-lumix-white">{value.label}</span>
+                  <span class="lx-loc-name font-medium text-lumix-white">{value.label}</span>
                   {value.soldOut ? (
                     <span class="lx-soldout text-mono">Sold Out</span>
                   ) : (
@@ -192,7 +192,11 @@ const cartUrl = `${billingBase}/cart.php?a=view`;
                     </span>
                   )}
                 </span>
-                {value.note && <span class="mt-1 block text-xs text-lumix-gray">{value.note}</span>}
+                {value.note && (
+                  <span class="lx-loc-note mt-1 block text-xs text-lumix-gray">
+                    {value.soldOut ? "Out of capacity — no new deployments" : value.note}
+                  </span>
+                )}
               </label>
             ))}
           </div>
@@ -673,25 +677,56 @@ const cartUrl = `${billingBase}/cart.php?a=view`;
   }
 
   /* A sold-out region keeps its card so the list of regions stays stable
-     between visits. It just stops behaving like a control. */
+     between visits, but it must not read as merely de-emphasised. Dashed
+     border plus a hatched fill marks it as struck from the menu, and every
+     interactive affordance is removed. The radio itself is `disabled`, so
+     this styling matches behaviour rather than faking it. */
   .lx-card[data-sold-out] {
     cursor: not-allowed;
-    opacity: 0.5;
+    border-style: dashed;
+    border-color: color-mix(in srgb, var(--color-terminal-border) 75%, transparent);
+    background:
+      repeating-linear-gradient(
+        135deg,
+        transparent 0 9px,
+        color-mix(in srgb, var(--color-lumix-black) 55%, transparent) 9px 18px
+      ),
+      var(--color-lumix-black);
+  }
+
+  /* Children are inert so no click can reach the label and re-target the
+     input. The label itself stays hit-testable so the cursor still reads
+     not-allowed on hover. */
+  .lx-card[data-sold-out] > * {
+    pointer-events: none;
   }
 
   .lx-card[data-sold-out]:hover {
-    border-color: var(--color-terminal-border);
+    border-color: color-mix(in srgb, var(--color-terminal-border) 75%, transparent);
     transform: none;
+    box-shadow: none;
+  }
+
+  .lx-card[data-sold-out] .lx-loc-name {
+    color: var(--color-lumix-gray-dark);
+    text-decoration: line-through;
+    text-decoration-color: color-mix(in srgb, var(--color-lumix-gray-dark) 65%, transparent);
+  }
+
+  .lx-card[data-sold-out] .lx-loc-note {
+    color: var(--color-lumix-gray-dark);
   }
 
   .lx-soldout {
     flex-shrink: 0;
-    border: 1px solid var(--color-terminal-border);
-    padding: 0.125rem 0.4rem;
+    border: 1px solid color-mix(in srgb, var(--color-lumix-red) 55%, transparent);
+    background: color-mix(in srgb, var(--color-lumix-red) 14%, transparent);
+    padding: 0.15rem 0.45rem;
     font-size: 0.625rem;
-    letter-spacing: 0.14em;
+    font-weight: 700;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--color-lumix-gray);
+    color: var(--color-lumix-red);
   }
 
   .lx-deploy-blocked {
