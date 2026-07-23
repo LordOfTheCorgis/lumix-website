@@ -69,6 +69,17 @@ export interface ConfigOptionValue {
     /** WHMCS configurable option VALUE id, passed as configoption[groupId]=valueId */
     valueId: number;
     note?: string;
+    /**
+     * Takes the option off the market without deleting it. The card still
+     * renders so the region list stays stable, but it is marked "Sold Out",
+     * cannot be selected, and is never the default. When capacity frees up,
+     * flip this back to false — nothing else needs editing.
+     *
+     * Display-only. WHMCS will still accept the valueId from a hand-built cart
+     * URL, so also stop-sell the option in WHMCS admin when you need a hard
+     * block rather than a storefront signal.
+     */
+    soldOut?: boolean;
 }
 
 export interface ConfigOptionGroup {
@@ -85,6 +96,9 @@ export interface ConfigOptionGroup {
 // product. Application hosting products have no location option attached,
 // which is why `hasLocations` is false for that category.
 
+// To take a region off the market, add `soldOut: true` to its entry. The card
+// stays visible but is unselectable, and the builder picks the first region
+// that is still sellable as the default. Remove the flag to bring it back.
 export const locationOptions: ConfigOptionGroup = {
     groupId: 3,
     label: "Location",

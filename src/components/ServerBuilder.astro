@@ -11,6 +11,7 @@
 
 import type { GameCategory } from "../data/catalog";
 import { locationOptions } from "../data/catalog";
+import { siteConfig } from "../data/site";
 import { availableCycles, billingBase, buildOrderUrl, cycleSavings, formatPrice, perMonth } from "../lib/whmcs";
 
 interface Props {
@@ -23,7 +24,15 @@ const plans = category.plans;
 const defaultPlan = plans.find((plan) => plan.popular) ?? plans[0];
 const defaultCycle = availableCycles(defaultPlan.pricing)[0];
 const showLocations = category.hasLocations && locationOptions.values.length > 0;
-const defaultLocation = showLocations ? locationOptions.values[0] : undefined;
+
+// A sold-out region must never be the pre-selected one, or the server-rendered
+// cart URL would quote capacity that does not exist. Fall back to the first
+// region only when every one is out, in which case Deploy is blocked below.
+const sellableLocations = locationOptions.values.filter((value) => !value.soldOut);
+const allLocationsSoldOut = showLocations && sellableLocations.length === 0;
+const defaultLocation = showLocations
+  ? (sellableLocations[0] ?? locationOptions.values[0])
+  : undefined;
 const addonGroups = category.addonGroups ?? [];
 
 // Union of cycles across all plans. Every card renders once; the script hides
@@ -161,27 +170,41 @@ const cartUrl = `${billingBase}/cart.php?a=view`;
 
           <div class="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-labelledby={`${uid}-location`}>
             {locationOptions.values.map((value) => (
-              <label class="lx-card" data-label={value.label}>
+              <label class="lx-card" data-label={value.label} data-sold-out={value.soldOut ? "" : undefined}>
                 <input
                   type="radio"
                   name={`${uid}-location`}
                   value={value.valueId}
                   class="sr-only"
                   checked={value.valueId === defaultLocation?.valueId}
+                  disabled={value.soldOut}
                   data-location-input
                 />
                 <span class="flex items-center justify-between gap-3">
                   <span class="font-medium text-lumix-white">{value.label}</span>
-                  <span class="lx-check" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </span>
+                  {value.soldOut ? (
+                    <span class="lx-soldout text-mono">Sold Out</span>
+                  ) : (
+                    <span class="lx-check" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  )}
                 </span>
                 {value.note && <span class="mt-1 block text-xs text-lumix-gray">{value.note}</span>}
               </label>
             ))}
           </div>
+
+          {allLocationsSoldOut && (
+            <p class="lx-cart-warn mt-4">
+              Every region is at capacity right now, so this game cannot be deployed.
+              <a href={siteConfig.links.discord} class="text-lumix-red hover:underline" target="_blank" rel="noopener noreferrer">
+                Ask in Discord for an ETA →
+              </a>
+            </p>
+          )}
         </section>
       )
     }
@@ -323,12 +346,20 @@ const cartUrl = `${billingBase}/cart.php?a=view`;
           </p>
         </div>
 
+        <!-- With no sellable region the cart URL would carry a sold-out valueId,
+             so Deploy becomes an inert button rather than a broken link. -->
+        {allLocationsSoldOut ? (
+          <span class="btn-primary lx-deploy-blocked w-full" role="link" aria-disabled="true">
+            Sold Out
+          </span>
+        ) : (
         <a href={initialHref} class="btn-primary w-full" data-deploy rel="noopener">
           Deploy Server
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
           </svg>
         </a>
+        )}
 
         <!-- WHMCS adds to the cart rather than replacing it, and its cart cannot
              be cleared from another origin. Warn instead of silently doubling. -->
@@ -368,7 +399,11 @@ const cartUrl = `${billingBase}/cart.php?a=view`;
         {formatPrice(initialTotal)}
       </div>
     </div>
-    <a href={initialHref} class="btn-primary flex-1" data-deploy rel="noopener">Deploy Server</a>
+    {allLocationsSoldOut ? (
+      <span class="btn-primary lx-deploy-blocked flex-1" role="link" aria-disabled="true">Sold Out</span>
+    ) : (
+      <a href={initialHref} class="btn-primary flex-1" data-deploy rel="noopener">Deploy Server</a>
+    )}
   </div>
 </div>
 
@@ -635,6 +670,34 @@ const cartUrl = `${billingBase}/cart.php?a=view`;
      loses emphasis, rather than vanishing mid-flow. */
   .lx-card[data-unavailable] {
     opacity: 0.55;
+  }
+
+  /* A sold-out region keeps its card so the list of regions stays stable
+     between visits. It just stops behaving like a control. */
+  .lx-card[data-sold-out] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .lx-card[data-sold-out]:hover {
+    border-color: var(--color-terminal-border);
+    transform: none;
+  }
+
+  .lx-soldout {
+    flex-shrink: 0;
+    border: 1px solid var(--color-terminal-border);
+    padding: 0.125rem 0.4rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-lumix-gray);
+  }
+
+  .lx-deploy-blocked {
+    cursor: not-allowed;
+    opacity: 0.55;
+    pointer-events: none;
   }
 
   .lx-check {
