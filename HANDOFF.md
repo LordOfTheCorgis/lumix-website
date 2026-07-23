@@ -139,6 +139,23 @@ Application Hosting has **no** location option attached, so its links omit `conf
 pid `35` is skipped upstream in WHMCS. Palworld ships no MySQL database, so
 `databases` is `0` on every tier and the builder hides the DB spec chip.
 
+**BeamMP** (`/store/beammp`, group `gid=9`)
+
+| Tier | pid | Monthly |
+|------|-----|---------|
+| Starter | 40 | $5.99 |
+| Budget | 41 | $8.99 |
+| Standard | 42 | $12.99 |
+| Advanced | 43 | $17.99 |
+| Premium | 44 | $23.99 |
+| Elite | 45 | $29.99 |
+| Ultimate | 46 | $37.99 |
+
+BeamMP is the **only** game category with no location configurable option
+attached, so `hasLocations: false` and its cart URLs carry no `configoption[]`.
+Attach group `3` to pids 40-46 in WHMCS admin to enable region selection, then
+flip the flag. Like Palworld it ships no MySQL database, so `databases` is `0`.
+
 **Terraria** (`/store/game-hosting`) — pid `14`, $5.00/mo
 **Application Hosting** (`/store/application-hosting`) — Node.js `6`, Python `7`, Golang `8`, all $4.00/mo (not surfaced on the Astro site; still a live WHMCS product)
 
