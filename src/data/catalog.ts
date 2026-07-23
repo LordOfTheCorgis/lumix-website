@@ -383,6 +383,86 @@ const palworld: GameCategory = {
     ],
 };
 
+// BeamMP is the multiplayer mod for BeamNG.drive, so the key art is BeamNG's
+// and the file keeps its beamng.jpg name. The storefront, the product names,
+// and what customers actually search for are all "BeamMP", hence the slug.
+//
+// Unlike every other game category, BeamMP has NO location configurable option
+// attached in WHMCS (verified: its storefront page renders no `data-lx-opt`
+// group, where Palworld renders group 3). `hasLocations` is therefore false, or
+// the cart URL would carry a configoption the product does not accept. Attach
+// group 3 to these products in WHMCS admin and flip this to true.
+const beammp: GameCategory = {
+    slug: "beammp",
+    label: "BeamMP Server Hosting",
+    shortLabel: "BeamMP",
+    status: "live",
+    tagline: "Multiplayer BeamNG.drive with the physics headroom to match.",
+    description:
+        "Dedicated BeamMP servers for BeamNG.drive. Vehicle physics are punishing on a single core, so these tiers lead with clock headroom and unmetered slots rather than counting players.",
+    accent: "#f59e0b",
+    mark: "BMP",
+    image: "/images/games/beamng.jpg",
+    hasLocations: false,
+    highlights: [
+        "Unmetered player slots on every tier",
+        "Mod and map uploads straight from the panel",
+        "Dedicated vCores on RAID 1 NVMe, never oversold",
+    ],
+    plans: [
+        {
+            key: "starter",
+            name: "BeamMP Starter Plan",
+            pid: 40,
+            specs: { vcores: "1.5", ramGb: 2, storageGb: 20, slots: "Unmetered", databases: 0, backups: 2 },
+            pricing: { monthly: 5.99, quarterly: 16.99, semiannually: 34.99, annually: 67.99, biennially: 131.99, triennially: 179.99 },
+        },
+        {
+            key: "budget",
+            name: "BeamMP Budget Plan",
+            pid: 41,
+            specs: { vcores: "2", ramGb: 4, storageGb: 30, slots: "Unmetered", databases: 0, backups: 3 },
+            pricing: { monthly: 8.99, quarterly: 25.99, semiannually: 52.99, annually: 101.99, biennially: 203.99, triennially: 287.99 },
+        },
+        {
+            key: "standard",
+            name: "BeamMP Standard Plan",
+            pid: 42,
+            popular: true,
+            specs: { vcores: "2.5", ramGb: 6, storageGb: 40, slots: "Unmetered", databases: 0, backups: 3 },
+            pricing: { monthly: 12.99, quarterly: 36.99, semiannually: 75.99, annually: 143.99, biennially: 311.99, triennially: 431.99 },
+        },
+        {
+            key: "advanced",
+            name: "BeamMP Advanced Plan",
+            pid: 43,
+            specs: { vcores: "3", ramGb: 8, storageGb: 55, slots: "Unmetered", databases: 0, backups: 4 },
+            pricing: { monthly: 17.99, quarterly: 50.99, semiannually: 101.99, annually: 203.99, biennially: 395.99, triennially: 575.99 },
+        },
+        {
+            key: "premium",
+            name: "BeamMP Premium Plan",
+            pid: 44,
+            specs: { vcores: "4", ramGb: 10, storageGb: 70, slots: "Unmetered", databases: 0, backups: 4 },
+            pricing: { monthly: 23.99, quarterly: 68.99, semiannually: 137.99, annually: 275.99, biennially: 551.99, triennially: 791.99 },
+        },
+        {
+            key: "elite",
+            name: "BeamMP Elite Plan",
+            pid: 45,
+            specs: { vcores: "5", ramGb: 12, storageGb: 85, slots: "Unmetered", databases: 0, backups: 5 },
+            pricing: { monthly: 29.99, quarterly: 85.99, semiannually: 173.99, annually: 347.99, biennially: 671.99, triennially: 971.99 },
+        },
+        {
+            key: "ultimate",
+            name: "BeamMP Ultimate Plan",
+            pid: 46,
+            specs: { vcores: "6", ramGb: 16, storageGb: 100, slots: "Unmetered", databases: 0, backups: 5 },
+            pricing: { monthly: 37.99, quarterly: 107.99, semiannually: 221.99, annually: 443.99, biennially: 863.99, triennially: 1295.99 },
+        },
+    ],
+};
+
 // Application Hosting (Node/Python/Go, pids 6/7/8) is still a live WHMCS
 // product but is intentionally not surfaced on /games — it is not a game
 // category. Re-add a GameCategory entry here to bring it back.
@@ -408,7 +488,6 @@ interface ComingSoonSeed {
 const comingSoonSeeds: ComingSoonSeed[] = [
     { slug: "ark-survival-ascended", label: "ARK: Survival Ascended Hosting", shortLabel: "ARK: SA", tagline: "Clustered maps and heavy mod lists.", accent: "#f97316", mark: "ARK" },
     { slug: "rust", label: "Rust Server Hosting", shortLabel: "Rust", tagline: "Wipe-day ready, high player counts.", accent: "#cd412b", mark: "RS" },
-    { slug: "beamng", label: "BeamNG.drive (BeamMP) Hosting", shortLabel: "BeamNG", tagline: "Multiplayer BeamMP servers with real physics.", accent: "#f59e0b", mark: "BNG" },
     { slug: "arma-reforger", label: "Arma Reforger Server Hosting", shortLabel: "Arma Reforger", tagline: "Milsim-grade dedicated servers.", accent: "#65a30d", mark: "ARR" },
     { slug: "squad", label: "Squad Server Hosting", shortLabel: "Squad", tagline: "100-player tactical servers, licensed slots.", accent: "#3f6212", mark: "SQ" },
 ];
@@ -424,7 +503,7 @@ const comingSoon: GameCategory[] = comingSoonSeeds.map((seed) => ({
     plans: [],
 }));
 
-export const catalog: GameCategory[] = [fivem, minecraft, palworld, terraria, ...comingSoon];
+export const catalog: GameCategory[] = [fivem, minecraft, palworld, beammp, terraria, ...comingSoon];
 
 // ───────────────────────────────────────────────────────────────────────────
 // Derived views
