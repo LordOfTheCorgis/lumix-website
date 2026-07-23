@@ -290,6 +290,83 @@ const terraria: GameCategory = {
     ],
 };
 
+// Palworld's player cap is hard-locked at 32 by the game itself, so slots are
+// not a differentiator here the way they are on FiveM/Minecraft. RAM is: the
+// dedicated server is memory-hungry and a full 32-player world wants 16 GB+.
+// The tier ladder is therefore priced on RAM, and every tier ships all 32 slots.
+// Palworld has no MySQL requirement, so `databases` is 0 across the board.
+const palworld: GameCategory = {
+    slug: "palworld",
+    label: "Palworld Server Hosting",
+    shortLabel: "Palworld",
+    status: "live",
+    tagline: "Sized by memory, not by slots. Every tier runs a full 32-player world.",
+    description:
+        "The Palworld dedicated server is memory-hungry, so these tiers scale on RAM rather than player count. All 32 slots are unlocked on every plan, from an 8 GB starter world up to 32 GB for a fully built-out base with heavy Pal breeding.",
+    accent: "#60a5fa",
+    mark: "PW",
+    image: "/images/games/palworld.jpg",
+    hasLocations: true,
+    highlights: [
+        "All 32 player slots on every tier, never an upcharge",
+        "8 GB entry, up to 32 GB for a fully built world",
+        "Dedicated vCores on RAID 1 NVMe, never oversold",
+    ],
+    plans: [
+        {
+            key: "starter",
+            name: "Palworld Starter Plan",
+            pid: 31,
+            specs: { vcores: "2", ramGb: 8, storageGb: 30, slots: "Up to 32", databases: 0, backups: 3 },
+            pricing: { monthly: 9.99, quarterly: 28.49, semiannually: 55.99, annually: 107.99, biennially: 203.99, triennially: 287.99 },
+        },
+        {
+            key: "budget",
+            name: "Palworld Budget Plan",
+            pid: 32,
+            specs: { vcores: "3", ramGb: 12, storageGb: 40, slots: "Up to 32", databases: 0, backups: 3 },
+            pricing: { monthly: 14.99, quarterly: 42.99, semiannually: 83.99, annually: 167.99, biennially: 323.99, triennially: 467.99 },
+        },
+        {
+            key: "standard",
+            name: "Palworld Standard Plan",
+            pid: 33,
+            popular: true,
+            specs: { vcores: "3.5", ramGb: 16, storageGb: 55, slots: "Up to 32", databases: 0, backups: 4 },
+            pricing: { monthly: 21.99, quarterly: 62.99, semiannually: 125.99, annually: 251.99, biennially: 503.99, triennially: 755.99 },
+        },
+        {
+            key: "advanced",
+            name: "Palworld Advanced Plan",
+            pid: 34,
+            specs: { vcores: "4", ramGb: 20, storageGb: 70, slots: "Up to 32", databases: 0, backups: 4 },
+            pricing: { monthly: 29.99, quarterly: 85.99, semiannually: 167.99, annually: 335.99, biennially: 647.99, triennially: 935.99 },
+        },
+        {
+            // pid 35 is skipped in WHMCS. Premium really is 36; this is not a typo.
+            key: "premium",
+            name: "Palworld Premium Plan",
+            pid: 36,
+            specs: { vcores: "4.5", ramGb: 24, storageGb: 85, slots: "Up to 32", databases: 0, backups: 5 },
+            pricing: { monthly: 38.99, quarterly: 110.99, semiannually: 221.99, annually: 443.99, biennially: 863.99, triennially: 1295.99 },
+        },
+        {
+            key: "elite",
+            name: "Palworld Elite Plan",
+            pid: 37,
+            specs: { vcores: "5", ramGb: 28, storageGb: 100, slots: "Up to 32", databases: 0, backups: 5 },
+            pricing: { monthly: 48.99, quarterly: 140.99, semiannually: 281.99, annually: 563.99, biennially: 1151.99, triennially: 1691.99 },
+        },
+        {
+            key: "ultimate",
+            name: "Palworld Ultimate Plan",
+            pid: 38,
+            specs: { vcores: "6", ramGb: 32, storageGb: 120, slots: "Up to 32", databases: 0, backups: 5 },
+            pricing: { monthly: 59.99, quarterly: 170.99, semiannually: 341.99, annually: 683.99, biennially: 1343.99, triennially: 1979.99 },
+        },
+    ],
+};
+
 // Application Hosting (Node/Python/Go, pids 6/7/8) is still a live WHMCS
 // product but is intentionally not surfaced on /games — it is not a game
 // category. Re-add a GameCategory entry here to bring it back.
@@ -313,11 +390,6 @@ interface ComingSoonSeed {
 }
 
 const comingSoonSeeds: ComingSoonSeed[] = [
-    // Palworld is already built in WHMCS but hidden. Fill in `plans` and flip
-    // status to "live" the moment the category is unhidden.
-    // Palworld is already built in WHMCS but hidden. Fill in `plans` and flip
-    // status to "live" the moment the category is unhidden.
-    { slug: "palworld", label: "Palworld Server Hosting", shortLabel: "Palworld", tagline: "Dedicated Pal worlds with room to grow.", accent: "#60a5fa", mark: "PW" },
     { slug: "ark-survival-ascended", label: "ARK: Survival Ascended Hosting", shortLabel: "ARK: SA", tagline: "Clustered maps and heavy mod lists.", accent: "#f97316", mark: "ARK" },
     { slug: "rust", label: "Rust Server Hosting", shortLabel: "Rust", tagline: "Wipe-day ready, high player counts.", accent: "#cd412b", mark: "RS" },
     { slug: "beamng", label: "BeamNG.drive (BeamMP) Hosting", shortLabel: "BeamNG", tagline: "Multiplayer BeamMP servers with real physics.", accent: "#f59e0b", mark: "BNG" },
@@ -336,7 +408,7 @@ const comingSoon: GameCategory[] = comingSoonSeeds.map((seed) => ({
     plans: [],
 }));
 
-export const catalog: GameCategory[] = [fivem, minecraft, terraria, ...comingSoon];
+export const catalog: GameCategory[] = [fivem, minecraft, palworld, terraria, ...comingSoon];
 
 // ───────────────────────────────────────────────────────────────────────────
 // Derived views

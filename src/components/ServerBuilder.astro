@@ -128,10 +128,15 @@ const cartUrl = `${billingBase}/cart.php?a=view`;
                   <span class="lx-spec-k">SLOTS</span>
                   {plan.specs.slots}
                 </span>
-                <span class="lx-spec">
-                  <span class="lx-spec-k">DB</span>
-                  {plan.specs.databases}
-                </span>
+                {/* Games with no MySQL requirement (Palworld) report 0 databases.
+                    Showing "DB 0" reads as a missing feature rather than an
+                    irrelevant one, so the chip is dropped entirely. */}
+                {plan.specs.databases > 0 && (
+                  <span class="lx-spec">
+                    <span class="lx-spec-k">DB</span>
+                    {plan.specs.databases}
+                  </span>
+                )}
                 <span class="lx-spec">
                   <span class="lx-spec-k">BACKUP</span>
                   {plan.specs.backups}
