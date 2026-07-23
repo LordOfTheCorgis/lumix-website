@@ -2,6 +2,7 @@
 import type { GameCategory } from "../data/catalog";
 import { startingPrice } from "../data/catalog";
 import { formatPrice } from "../lib/whmcs";
+import { siteConfig } from "../data/site";
 
 interface Props {
   category: GameCategory;
@@ -66,28 +67,38 @@ const Tag = isLive ? "a" : "div";
     <div class="mt-5 flex items-end justify-between gap-3 border-t border-terminal-border pt-4">
       {
         isLive && from !== null ? (
-          <div>
-            <div class="text-mono text-[10px] uppercase tracking-[0.14em] text-lumix-gray-dark">
-              Starting at
+          <>
+            <div>
+              <div class="text-mono text-[10px] uppercase tracking-[0.14em] text-lumix-gray-dark">
+                Starting at
+              </div>
+              <div class="text-mono text-xl font-bold text-lumix-white">
+                {formatPrice(from)}
+                <span class="text-sm font-normal text-lumix-gray">/mo</span>
+              </div>
             </div>
-            <div class="text-mono text-xl font-bold text-lumix-white">
-              {formatPrice(from)}
-              <span class="text-sm font-normal text-lumix-gray">/mo</span>
-            </div>
-          </div>
-        ) : (
-          <div class="text-mono text-xs text-lumix-gray-dark">Pricing TBA</div>
-        )
-      }
 
-      {
-        isLive && (
-          <span class="text-mono flex items-center gap-1.5 text-xs text-lumix-red transition-transform duration-200 group-hover:translate-x-0.5">
-            Configure
-            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <span class="text-mono flex items-center gap-1.5 text-xs text-lumix-red transition-transform duration-200 group-hover:translate-x-0.5">
+              Configure
+              <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </span>
+          </>
+        ) : (
+          /* No price on unreleased titles. Competitors (Sparked, RocketNode) never
+             advertise an absence, so the slot carries a live signup path instead. */
+          <a
+            href={siteConfig.links.discord}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-mono group/notify flex items-center gap-1.5 text-xs text-lumix-gray transition-colors duration-200 hover:text-lumix-red"
+          >
+            Get notified
+            <svg class="h-3.5 w-3.5 transition-transform duration-200 group-hover/notify:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>
-          </span>
+          </a>
         )
       }
     </div>
