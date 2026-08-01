@@ -268,7 +268,7 @@ export const leadership: StaffMember[] = [
         description: "Leading Lumix Solutions with a focus on resilient, high-performance infrastructure.",
     },
     {
-        id: "ceo-keaghan",
+        id: "cto-keaghan",
         name: "Keaghan G.",
         title: "Chief Technology Officer",
         image: "/images/staff/cto-keaghan-g.png",
