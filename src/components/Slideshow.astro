@@ -26,7 +26,7 @@ const { title = "slideshow", images = [], size = 'default' } = Astro.props as Pr
                 <img
                     class="slide-display w-full h-full object-cover transition-opacity duration-300 absolute inset-0"
                     src={images[0]}
-                    alt="Slideshow image"
+                    alt={`${title} screenshot`}
                 />
             ) : (
                 <span class="text-lumix-gray text-sm">No images found</span>
