@@ -35,7 +35,7 @@ const Tag = isLive ? "a" : "div";
       category.image ? (
         <img
           src={category.image}
-          alt=""
+          alt={category.label}
           width="400"
           height="225"
           loading={eager ? "eager" : "lazy"}
