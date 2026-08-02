@@ -22,18 +22,19 @@ const absoluteLogoUrl = `${absoluteSiteUrl}${siteConfig.logo}`;
 const absoluteSocialImageUrl = `${absoluteSiteUrl}${siteConfig.socialImage ?? siteConfig.logo}`;
 const canonicalUrl = new URL(Astro.url.pathname, absoluteSiteUrl).href;
 const robotsContent = noindex ? "noindex, nofollow" : "index, follow";
-const pageTitle = title.includes(siteConfig.name) ? title : `${title} | ${siteConfig.name}`;
+const brandName = "Lumix Solutions";
+const pageTitle = title.includes(brandName) ? title : `${title} | ${brandName}`;
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "Lumix Solutions",
+  name: brandName,
   url: absoluteSiteUrl,
   logo: absoluteLogoUrl
 };
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "Lumix Solutions",
+  name: brandName,
   url: absoluteSiteUrl
 };
 ---
