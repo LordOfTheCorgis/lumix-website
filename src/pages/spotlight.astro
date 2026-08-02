@@ -57,9 +57,10 @@ const openToPartnership = [
                             >
                                 <img
                                     style="display: block;-webkit-user-select: none;margin: auto; transition: background-color 300ms;"
-                                    src="http://cdn.lumixsolutions.org/assets/uploads/PBRP.png"
+                                    src="https://cdn.lumixsolutions.org/assets/uploads/PBRP.png"
                                     width="200"
                                     height="200"
+                                    alt={`${spotlight.name} logo`}
                                 />
                                 {spotlight.name}
                             </h3>
@@ -384,7 +385,7 @@ const openToPartnership = [
                 <div class="grid lg:grid-cols-3 gap-25 items-stretch">
                     <div class="w-full h-full relative z-10 lg:col-span-2">
                         <Slideshow
-                            title="spotlight-viewer"
+                            title={spotlight.name}
                             images={spotlightImages}
                             size="large"
                         />
