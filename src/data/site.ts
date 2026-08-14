@@ -270,15 +270,8 @@ export const leadership: StaffMember[] = [
     {
         id: "cto-keaghan",
         name: "Keaghan G.",
-        title: "Chief Technology Officer",
-        image: "/images/staff/cto-keaghan-g.png",
-        description: "Leading Lumix Solutions with commitment to innovation and operational excellence.",
-    },
-    {
-        id: "coo-elijah",
-        name: "Elijah V.",
         title: "Chief Operating Officer",
-        image: "/images/staff/coo-elijah-clinton-demarion-vinson.png",
+        image: "/images/staff/cto-keaghan-g.png",
         description: "Overseeing operational efficiency, strategic planning, and cross-team coordination across Lumix Solutions.",
     },
     // {
