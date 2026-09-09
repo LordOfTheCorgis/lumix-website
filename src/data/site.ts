@@ -326,6 +326,10 @@ export const teams: Team[] = [
 
 
 export const spotlight = {
+  // Set to false when there's no server to feature. Kills the homepage broadcast
+  // bar, drops /spotlight out of the sitemap, and swaps the page for a noindex
+  // placeholder so old links still land somewhere sane.
+  enabled: true,
 //Be sure to update spotlight images under public/images/spotlight when updating this section 
   name: "Project Bartow Roleplay",
   abbreviation: "PBRP",

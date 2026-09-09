@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import { copyFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import sitemap from '@astrojs/sitemap';
+import { spotlight } from './src/data/site.ts';
 
 import tailwindcss from '@tailwindcss/vite';
 
@@ -24,7 +25,12 @@ function copySitemapAlias() {
 // https://astro.build/config
 export default defineConfig({
   site: 'https://lumixsolutions.org',
-  integrations: [sitemap(), copySitemapAlias()],
+  integrations: [
+    // no spotlight running means no /spotlight in the sitemap, the page itself
+    // goes noindex at the same time
+    sitemap({ filter: (page) => spotlight.enabled || !page.endsWith('/spotlight/') }),
+    copySitemapAlias()
+  ],
   vite: {
     plugins: [tailwindcss()]
   }
