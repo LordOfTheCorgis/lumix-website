@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import GameTile from "../components/GameTile.astro";
+import LightRays from "../components/LightRays.astro";
 import { price } from "../lib/order";
 
 const games = (await getCollection("games"))
@@ -16,8 +17,10 @@ const cheapest = Math.min(
 <Layout title="Order a game server | Lumix Solutions">
   <!-- One job: get someone into a cart. No positioning copy, no engineering
        story, no stat bar. Those can live further down the page later. -->
-  <section class="section">
-    <div class="shell">
+  <section class="section relative overflow-hidden">
+    <LightRays />
+
+    <div class="shell relative">
       <p class="instrument text-fog">Game servers · Miami &amp; Ashburn</p>
 
       <h1 class="display-xl mt-6 max-w-3xl">Order your game server.</h1>
