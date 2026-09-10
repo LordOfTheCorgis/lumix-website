@@ -1,0 +1,139 @@
+slug: "palworld"
+label: "Palworld Server Hosting"
+shortLabel: "Palworld"
+status: "live"
+tagline: "Sized by memory, not by slots. Every tier runs a full 32-player world."
+description: "The Palworld dedicated server is memory-hungry, so these tiers scale on RAM rather than player count. All 32 slots are unlocked on every plan, from an 8 GB starter world up to 32 GB for a fully built-out base with heavy Pal breeding."
+image: "/images/games/palworld.jpg"
+accent: "#60a5fa"
+mark: "PW"
+highlights:
+  - "8 GB entry, up to 32 GB for a fully built world"
+  - "Dedicated vCores on RAID 1 NVMe, never oversold"
+plans:
+  - key: "starter"
+    name: "Palworld Starter Plan"
+    pid: 31
+    popular: false
+    specs:
+      vcores: "2"
+      ramGb: "8"
+      storageGb: "30"
+      slots: "Up"
+      databases: "0"
+      backups: "3"
+    pricing:
+      monthly: 9.99
+      quarterly: 28.49
+      semiannually: 55.99
+      annually: 107.99
+      biennially: 203.99
+      triennially: 287.99
+  - key: "budget"
+    name: "Palworld Budget Plan"
+    pid: 32
+    popular: false
+    specs:
+      vcores: "3"
+      ramGb: "12"
+      storageGb: "40"
+      slots: "Up"
+      databases: "0"
+      backups: "3"
+    pricing:
+      monthly: 14.99
+      quarterly: 42.99
+      semiannually: 83.99
+      annually: 167.99
+      biennially: 323.99
+      triennially: 467.99
+  - key: "standard"
+    name: "Palworld Standard Plan"
+    pid: 33
+    popular: true
+    specs:
+      vcores: "3.5"
+      ramGb: "16"
+      storageGb: "55"
+      slots: "Up"
+      databases: "0"
+      backups: "4"
+    pricing:
+      monthly: 21.99
+      quarterly: 62.99
+      semiannually: 125.99
+      annually: 251.99
+      biennially: 503.99
+      triennially: 755.99
+  - key: "advanced"
+    name: "Palworld Advanced Plan"
+    pid: 34
+    popular: false
+    specs:
+      vcores: "4"
+      ramGb: "20"
+      storageGb: "70"
+      slots: "Up"
+      databases: "0"
+      backups: "4"
+    pricing:
+      monthly: 29.99
+      quarterly: 85.99
+      semiannually: 167.99
+      annually: 335.99
+      biennially: 647.99
+      triennially: 935.99
+  - key: "premium"
+    name: "Palworld Premium Plan"
+    pid: 36
+    popular: false
+    specs:
+      vcores: "4.5"
+      ramGb: "24"
+      storageGb: "85"
+      slots: "Up"
+      databases: "0"
+      backups: "5"
+    pricing:
+      monthly: 38.99
+      quarterly: 110.99
+      semiannually: 221.99
+      annually: 443.99
+      biennially: 863.99
+      triennially: 1295.99
+  - key: "elite"
+    name: "Palworld Elite Plan"
+    pid: 37
+    popular: false
+    specs:
+      vcores: "5"
+      ramGb: "28"
+      storageGb: "100"
+      slots: "Up"
+      databases: "0"
+      backups: "5"
+    pricing:
+      monthly: 48.99
+      quarterly: 140.99
+      semiannually: 281.99
+      annually: 563.99
+      biennially: 1151.99
+      triennially: 1691.99
+  - key: "ultimate"
+    name: "Palworld Ultimate Plan"
+    pid: 38
+    popular: false
+    specs:
+      vcores: "6"
+      ramGb: "32"
+      storageGb: "120"
+      slots: "Up"
+      databases: "0"
+      backups: "5"
+    pricing:
+      monthly: 59.99
+      quarterly: 170.99
+      semiannually: 341.99
+      annually: 683.99
+      biennially: 1343.99
+      triennially: 1979.99

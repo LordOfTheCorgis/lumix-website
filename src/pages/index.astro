@@ -1,86 +1,66 @@
 ---
+import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
-import Terminal from "../components/terminal/Terminal.astro";
-import TypingAnimation from "../components/terminal/TypingAnimation.astro";
-import AnimatedSpan from "../components/terminal/AnimatedSpan.astro";
+import GameTile from "../components/GameTile.astro";
+import { price } from "../lib/order";
 
-// Placeholder numbers until the content directory is wired up. The real board
-// reads live occupancy, and it has to be allowed to say something unflattering.
-const regions = [
-  { code: "MIA", city: "Miami, FL", ping: 4, open: 9, total: 48 },
-  { code: "IAD", city: "Ashburn, VA", ping: 11, open: 5, total: 48 },
-];
+const games = (await getCollection("games"))
+  .filter((g) => g.data.status === "live")
+  .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
 
-const open = regions.reduce((n, r) => n + r.open, 0);
-const total = regions.reduce((n, r) => n + r.total, 0);
+const cheapest = Math.min(
+  ...games.flatMap((g) => g.data.plans.map((p) => p.pricing.monthly))
+);
 ---
 
-<Layout title="Lumix Solutions">
+<Layout title="Order a game server | Lumix Solutions">
+  <!-- One job: get someone into a cart. No positioning copy, no engineering
+       story, no stat bar. Those can live further down the page later. -->
   <section class="section">
     <div class="shell">
-      <p class="instrument text-fog">
-        {open} of {total} slots open
-        {regions.map((r) => <span class="ml-3">· {r.code} {r.ping}ms</span>)}
+      <p class="instrument text-fog">Game servers · Miami &amp; Ashburn</p>
+
+      <h1 class="display-xl mt-6 max-w-3xl">Order your game server.</h1>
+
+      <p class="lead text-fog mt-6 max-w-lg">
+        Pick your game, pick a size, and it's online in minutes. Plans start at {price(cheapest)} a month.
       </p>
 
-      <h1 class="display-xl mt-8 max-w-4xl">
-        We cap our own servers.<br />That's the whole pitch.
-      </h1>
-
-      <p class="lead text-fog mt-8 max-w-xl">
-        Most hosts sell a node until it buckles. We stop at a number, publish it, and
-        let you watch it move. Miami and Ashburn, and nothing between you and the box.
-      </p>
-
-      <div class="mt-10 flex flex-wrap items-center gap-4">
-        <!-- Ink on red, not white. Paper on red is 3.02:1 and fails AA. Looks wrong
-             for about a minute, then it doesn't. -->
+      <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
         <a
-          href="/games"
-          class="chamfer inline-flex items-center bg-red px-6 py-3 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+          href="#pick"
+          class="chamfer inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
         >
-          See what's open
+          Order now
+          <span aria-hidden="true">&rarr;</span>
         </a>
-        <a href="/status" class="text-fog underline-offset-4 hover:text-paper hover:underline">
-          Live status
-        </a>
+        <p class="small text-fog">No setup fee. Cancel anytime.</p>
       </div>
     </div>
   </section>
 
-  <section class="section border-t border-[var(--edge)]">
-    <div class="shell grid gap-12 lg:grid-cols-2 lg:items-center">
-      <div>
-        <p class="instrument text-fog">What you actually see</p>
-        <h2 class="display-l mt-6">Your console, not a dashboard about your console.</h2>
-        <p class="text-fog mt-6 max-w-md">
-          Full output, full file access, and a restart that takes eleven seconds. The same
-          panel our own engineers use when they're the ones on call.
-        </p>
+  <section id="pick" class="section border-t border-[var(--edge)] pt-12 lg:pt-16">
+    <div class="shell">
+      <h2 class="title">Pick your game</h2>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {games.map((game, i) => (
+          <GameTile
+            slug={game.data.slug}
+            name={game.data.shortLabel}
+            tagline={game.data.tagline}
+            image={game.data.image}
+            from={Math.min(...game.data.plans.map((p) => p.pricing.monthly))}
+            planCount={game.data.plans.length}
+            eager={i < 3}
+          />
+        ))}
       </div>
 
-      <Terminal label="MIA-04 · fivem" class="lg:justify-self-end">
-        <TypingAnimation>./run.sh +exec server.cfg</TypingAnimation>
-        <AnimatedSpan class="text-fog">Loading resources from /txData/CFXDefault</AnimatedSpan>
-        <AnimatedSpan class="text-fog">Started 214 resources in 3.4s</AnimatedSpan>
-        <AnimatedSpan class="text-fog">Authenticating with Cfx.re...</AnimatedSpan>
-        <AnimatedSpan>Server listening on 51.81.44.12:30120</AnimatedSpan>
-        <AnimatedSpan>Slots 0/64 · tick 0.31ms · uptime 00:00:11</AnimatedSpan>
-      </Terminal>
-    </div>
-  </section>
-
-  <section class="section border-t border-[var(--edge)]">
-    <div class="shell grid gap-4 sm:grid-cols-2 lg:max-w-3xl">
-      {regions.map((region) => (
-        <div class="chamfer border border-[var(--edge)] bg-ink-soft p-6">
-          <p class="instrument text-fog">{region.code}</p>
-          <p class="title mt-3">{region.city}</p>
-          <p class="small text-fog mt-2 tabular">
-            {region.ping}ms median · {region.open} of {region.total} slots open
-          </p>
-        </div>
-      ))}
+      <p class="small text-fog mt-8">
+        Every plan includes DDoS protection, full file access, and a choice of
+        Miami or Ashburn.
+      </p>
     </div>
   </section>
 </Layout>

@@ -1,0 +1,115 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { orderUrl, price } from "../../lib/order";
+
+export async function getStaticPaths() {
+  const games = await getCollection("games");
+  return games
+    .filter((g) => g.data.status === "live")
+    .map((game) => ({ params: { slug: game.data.slug }, props: { game } }));
+}
+
+const { game } = Astro.props;
+const g = game.data;
+
+// Cheapest first. Seven rows of ascending specs is the shape people actually
+// scan; sorting any other way makes them hunt for the entry price.
+const plans = [...g.plans].sort((a, b) => a.pricing.monthly - b.pricing.monthly);
+---
+
+<Layout title={g.label} description={g.description}>
+  <section class="relative overflow-hidden border-b border-[var(--edge)]">
+    <img
+      src={g.image}
+      alt=""
+      class="absolute inset-0 h-full w-full object-cover opacity-30"
+      loading="eager"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/90 to-ink/50" aria-hidden="true"></div>
+
+    <div class="shell relative py-16 lg:py-24">
+      <a href="/#pick" class="instrument text-fog hover:text-paper">&larr; All games</a>
+      <h1 class="display-l mt-6 max-w-2xl">{g.label}</h1>
+      <p class="lead text-fog mt-5 max-w-xl">{g.tagline}</p>
+
+      {g.highlights && (
+        <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+          {g.highlights.map((item) => (
+            <li class="small text-fog">{item}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <h2 class="title">Choose a size</h2>
+      <p class="small text-fog mt-3 max-w-lg">
+        You pick Miami or Ashburn on the next screen. Billed monthly unless you
+        choose a longer term at checkout.
+      </p>
+
+      <ul class="mt-8 space-y-3">
+        {plans.map((plan) => (
+          <li
+            class:list={[
+              "chamfer border bg-ink-soft p-6",
+              plan.popular ? "border-red" : "border-[var(--edge)]",
+            ]}
+          >
+            <div class="flex flex-col gap-6 lg:flex-row lg:items-center">
+              <div class="lg:w-56 lg:shrink-0">
+                {plan.popular && <p class="instrument text-red">Most popular</p>}
+                <h3 class:list={["title", plan.popular && "mt-2"]}>{plan.name}</h3>
+              </div>
+
+              <dl class="grid flex-1 grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
+                <div>
+                  <dt class="instrument text-slate">vCores</dt>
+                  <dd class="small tabular mt-1">{plan.specs.vcores}</dd>
+                </div>
+                <div>
+                  <dt class="instrument text-slate">Memory</dt>
+                  <dd class="small tabular mt-1">{plan.specs.ramGb} GB</dd>
+                </div>
+                <div>
+                  <dt class="instrument text-slate">NVMe</dt>
+                  <dd class="small tabular mt-1">{plan.specs.storageGb} GB</dd>
+                </div>
+                <div>
+                  <dt class="instrument text-slate">Slots</dt>
+                  <dd class="small mt-1">{plan.specs.slots}</dd>
+                </div>
+              </dl>
+
+              <div class="flex items-center gap-6 lg:shrink-0">
+                <p class="tabular">
+                  <span class="title">{price(plan.pricing.monthly)}</span>
+                  <span class="small text-fog">/mo</span>
+                </p>
+
+                <!-- Only the popular plan is filled red. Seven red buttons would
+                     be seven equally loud choices, which is no choice at all. -->
+                <a
+                  href={orderUrl(plan.pid)}
+                  class:list={[
+                    "chamfer inline-flex items-center px-6 py-3 font-medium transition-colors duration-150",
+                    plan.popular
+                      ? "bg-red text-ink hover:bg-red-pressed"
+                      : "border border-[var(--edge-strong)] text-paper hover:border-red hover:text-red",
+                  ]}
+                >
+                  Order
+                </a>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <p class="small text-fog mt-10 max-w-xl">{g.description}</p>
+    </div>
+  </section>
+</Layout>

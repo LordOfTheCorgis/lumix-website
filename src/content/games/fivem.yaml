@@ -1,0 +1,139 @@
+slug: "fivem"
+label: "FiveM Server Hosting"
+shortLabel: "FiveM"
+status: "live"
+tagline: "Roleplay-grade GTA V servers with headroom for heavy resource packs."
+description: "Purpose-built for FiveM communities. Unmetered slots, dedicated vCores, and NVMe storage on RAID 1, so restarts stay fast even with a loaded resource list."
+image: "/images/games/fivem.jpg"
+accent: "#f5a524"
+mark: "FM"
+highlights:
+  - "txAdmin and MySQL provisioned on deploy"
+  - "Dedicated vCores, never oversold"
+plans:
+  - key: "starter"
+    name: "Starter FiveM Server"
+    pid: 16
+    popular: false
+    specs:
+      vcores: "2"
+      ramGb: "2"
+      storageGb: "35"
+      slots: "Unmetered"
+      databases: "1"
+      backups: "3"
+    pricing:
+      monthly: 8.99
+      quarterly: 25.49
+      semiannually: 49.99
+      annually: 95.99
+      biennially: 179.99
+      triennially: 251.99
+  - key: "budget"
+    name: "Budget FiveM Server"
+    pid: 17
+    popular: false
+    specs:
+      vcores: "2.5"
+      ramGb: "4"
+      storageGb: "50"
+      slots: "Unmetered"
+      databases: "2"
+      backups: "3"
+    pricing:
+      monthly: 12.99
+      quarterly: 36.99
+      semiannually: 73.99
+      annually: 143.99
+      biennially: 275.99
+      triennially: 395.99
+  - key: "standard"
+    name: "Standard FiveM Server"
+    pid: 18
+    popular: true
+    specs:
+      vcores: "4"
+      ramGb: "6"
+      storageGb: "85"
+      slots: "Unmetered"
+      databases: "4"
+      backups: "4"
+    pricing:
+      monthly: 18.99
+      quarterly: 53.99
+      semiannually: 107.99
+      annually: 215.99
+      biennially: 407.99
+      triennially: 611.99
+  - key: "advanced"
+    name: "Advanced FiveM Server"
+    pid: 22
+    popular: false
+    specs:
+      vcores: "5"
+      ramGb: "8"
+      storageGb: "105"
+      slots: "Unmetered"
+      databases: "5"
+      backups: "5"
+    pricing:
+      monthly: 26.99
+      quarterly: 76.99
+      semiannually: 149.99
+      annually: 311.99
+      biennially: 599.99
+      triennially: 863.99
+  - key: "premium"
+    name: "Premium FiveM Server"
+    pid: 21
+    popular: false
+    specs:
+      vcores: "6"
+      ramGb: "10"
+      storageGb: "120"
+      slots: "Unmetered"
+      databases: "5"
+      backups: "5"
+    pricing:
+      monthly: 31.99
+      quarterly: 90.99
+      semiannually: 179.99
+      annually: 347.99
+      biennially: 671.99
+      triennially: 971.99
+  - key: "elite"
+    name: "Elite FiveM Server"
+    pid: 20
+    popular: false
+    specs:
+      vcores: "6"
+      ramGb: "12"
+      storageGb: "150"
+      slots: "Unmetered"
+      databases: "5"
+      backups: "5"
+    pricing:
+      monthly: 42.99
+      quarterly: 122.99
+      semiannually: 239.99
+      annually: 467.99
+      biennially: 887.99
+      triennially: 1295.99
+  - key: "ultimate"
+    name: "Ultimate FiveM Server"
+    pid: 19
+    popular: false
+    specs:
+      vcores: "6"
+      ramGb: "16"
+      storageGb: "175"
+      slots: "Unmetered"
+      databases: "5"
+      backups: "5"
+    pricing:
+      monthly: 52.99
+      quarterly: 150.99
+      semiannually: 299.99
+      annually: 575.99
+      biennially: 1103.99
+      triennially: 1583.99

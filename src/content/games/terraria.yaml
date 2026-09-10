@@ -1,0 +1,29 @@
+slug: "terraria"
+label: "Terraria Server Hosting"
+shortLabel: "Terraria"
+status: "live"
+tagline: "Small worlds, steady tick rate, no fuss."
+description: "Tuned for vanilla and lightly modded Terraria worlds. Sized for friend groups rather than public servers, and priced accordingly."
+image: "/images/games/terraria.jpg"
+accent: "#22d3ee"
+mark: "TR"
+highlights:
+  - "tModLoader supported"
+  - "Daily backups included"
+plans:
+  - key: "standard"
+    name: "Terraria Server"
+    pid: 14
+    popular: true
+    specs:
+      vcores: "2"
+      ramGb: "2"
+      storageGb: "15"
+      slots: "Unmetered"
+      databases: "1"
+      backups: "3"
+    pricing:
+      monthly: 5.0
+      quarterly: 14.0
+      semiannually: 27.0
+      annually: 48.0
