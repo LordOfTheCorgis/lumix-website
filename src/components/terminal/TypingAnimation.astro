@@ -1,0 +1,25 @@
+---
+// Types its slot text one character at a time. The text is server-rendered in
+// full, so no-JS and reduced-motion readers get the finished output and the
+// script just blanks it and replays it. Never build this by injecting text from
+// a prop, the slot version keeps the markup readable at the call site.
+
+interface Props {
+  duration?: number;   // ms per character
+  delay?: number;      // only used when the parent has sequence={false}
+  as?: "span" | "p" | "div" | "h2" | "h3" | "li";
+  class?: string;
+}
+
+const { duration = 60, delay = 0, as: Tag = "span", class: className = "" } = Astro.props;
+---
+
+<Tag
+  data-line
+  data-kind="type"
+  data-duration={duration}
+  data-delay={delay}
+  class:list={["block", className]}
+>
+  <slot />
+</Tag>

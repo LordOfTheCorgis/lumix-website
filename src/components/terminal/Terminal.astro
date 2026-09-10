@@ -1,0 +1,197 @@
+---
+// Console output, sequenced. Each child starts when the previous one finishes.
+//
+// Not the MacOS traffic lights. Three dots in red, yellow and green would drop
+// two colors that don't exist in this palette and burn the red budget on
+// decoration (DESIGN.md section 5). The header carries a real machine label
+// instead, which is also more useful than a window chrome pastiche.
+//
+// Mono is a deliberate local exception to DESIGN.md section 6. Real console
+// output is monospace; that's the subject, not costume. Scoped here, no token.
+
+interface Props {
+  label?: string;          // e.g. "MIA-04 · console"
+  sequence?: boolean;      // false = every child runs off its own delay
+  startOnView?: boolean;
+  class?: string;
+}
+
+const {
+  label = "console",
+  sequence = true,
+  startOnView = true,
+  class: className = "",
+} = Astro.props;
+---
+
+<figure
+  data-terminal
+  data-sequence={String(sequence)}
+  data-start-on-view={String(startOnView)}
+  aria-label={`Terminal output: ${label}`}
+  class:list={["chamfer not-prose m-0 w-full max-w-lg border border-[var(--edge)] bg-ink-soft", className]}
+>
+  <figcaption class="flex items-center gap-3 border-b border-[var(--edge)] px-4 py-3">
+    <span class="instrument text-fog">{label}</span>
+    <span data-terminal-state class="ml-auto instrument text-fog">idle</span>
+  </figcaption>
+
+  <pre class="terminal-body m-0 overflow-x-auto p-4"><code class="grid gap-y-1" aria-live="off"><slot /></code></pre>
+</figure>
+
+<style>
+  .terminal-body {
+    /* Local exception. See the note in the frontmatter before adding a token. */
+    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    tab-size: 2;
+  }
+
+  /* Hidden by default so the script can blank the typed lines without a flash of
+     finished text. The two escape hatches below put it back. */
+  .terminal-body :global([data-line]) {
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .terminal-body :global([data-line][data-shown]) {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Blinking block caret, parked on whichever line is currently typing. */
+  .terminal-body :global([data-caret])::after {
+    content: "";
+    display: inline-block;
+    width: 0.5em;
+    height: 1em;
+    margin-left: 0.15em;
+    vertical-align: text-bottom;
+    background: var(--color-red);
+    animation: terminal-blink 1s step-end infinite;
+  }
+
+  @keyframes terminal-blink {
+    50% { opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .terminal-body :global([data-line]) {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .terminal-body :global([data-caret])::after {
+      animation: none;
+    }
+  }
+</style>
+
+<noscript>
+  <style>
+    [data-terminal] [data-line] { opacity: 1 !important; transform: none !important; }
+  </style>
+</noscript>
+
+<script>
+  // One script per page regardless of how many terminals are on it.
+  const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  function typeInto(el: HTMLElement, text: string, msPerChar: number) {
+    return new Promise<void>((resolve) => {
+      let i = 0;
+      el.setAttribute("data-caret", "");
+      const tick = setInterval(() => {
+        i += 1;
+        el.textContent = text.slice(0, i);
+        if (i >= text.length) {
+          clearInterval(tick);
+          el.removeAttribute("data-caret");
+          resolve();
+        }
+      }, msPerChar);
+    });
+  }
+
+  async function run(terminal: HTMLElement) {
+    const lines = Array.from(
+      terminal.querySelectorAll<HTMLElement>("[data-line]")
+    );
+    const state = terminal.querySelector<HTMLElement>("[data-terminal-state]");
+    const sequenced = terminal.dataset.sequence !== "false";
+
+    // Stash the server-rendered text before blanking anything, otherwise a
+    // re-run (hot reload, back button) types an empty string.
+    const originals = new Map<HTMLElement, string>();
+    for (const line of lines) {
+      if (line.dataset.kind === "type") {
+        originals.set(line, line.textContent?.trim() ?? "");
+      }
+    }
+
+    if (REDUCED) {
+      lines.forEach((l) => l.setAttribute("data-shown", ""));
+      if (state) state.textContent = "done";
+      return;
+    }
+
+    for (const line of lines) {
+      if (originals.has(line)) line.textContent = "";
+    }
+
+    if (state) state.textContent = "running";
+
+    if (!sequenced) {
+      // Unsequenced: every line runs off its own delay, in parallel.
+      await Promise.all(
+        lines.map(async (line) => {
+          await sleep(Number(line.dataset.delay ?? 0));
+          line.setAttribute("data-shown", "");
+          if (originals.has(line)) {
+            await typeInto(line, originals.get(line)!, Number(line.dataset.duration ?? 60));
+          }
+        })
+      );
+    } else {
+      for (const line of lines) {
+        line.setAttribute("data-shown", "");
+        if (originals.has(line)) {
+          await typeInto(line, originals.get(line)!, Number(line.dataset.duration ?? 60));
+        } else {
+          await sleep(300); // matches the fade duration in the stylesheet above
+        }
+      }
+    }
+
+    if (state) state.textContent = "done";
+  }
+
+  function init(terminal: HTMLElement) {
+    if (terminal.dataset.terminalReady === "true") return;
+    terminal.dataset.terminalReady = "true";
+
+    if (terminal.dataset.startOnView === "false" || REDUCED) {
+      run(terminal);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          observer.unobserve(entry.target);
+          run(entry.target as HTMLElement);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(terminal);
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-terminal]").forEach(init);
+</script>

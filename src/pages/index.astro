@@ -1,8 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Terminal from "../components/terminal/Terminal.astro";
+import TypingAnimation from "../components/terminal/TypingAnimation.astro";
+import AnimatedSpan from "../components/terminal/AnimatedSpan.astro";
 
-// Placeholder numbers until the catalog is wired back up. The real board reads
-// live occupancy, and it has to be allowed to say something unflattering.
+// Placeholder numbers until the content directory is wired up. The real board
+// reads live occupancy, and it has to be allowed to say something unflattering.
 const regions = [
   { code: "MIA", city: "Miami, FL", ping: 4, open: 9, total: 48 },
   { code: "IAD", city: "Ashburn, VA", ping: 11, open: 5, total: 48 },
@@ -42,18 +45,42 @@ const total = regions.reduce((n, r) => n + r.total, 0);
           Live status
         </a>
       </div>
+    </div>
+  </section>
 
-      <div class="mt-16 grid gap-4 sm:grid-cols-2 lg:max-w-3xl">
-        {regions.map((region) => (
-          <div class="chamfer border border-[var(--edge)] bg-ink-soft p-6">
-            <p class="instrument text-fog">{region.code}</p>
-            <p class="title mt-3">{region.city}</p>
-            <p class="small text-fog mt-2 tabular">
-              {region.ping}ms median · {region.open} of {region.total} slots open
-            </p>
-          </div>
-        ))}
+  <section class="section border-t border-[var(--edge)]">
+    <div class="shell grid gap-12 lg:grid-cols-2 lg:items-center">
+      <div>
+        <p class="instrument text-fog">What you actually see</p>
+        <h2 class="display-l mt-6">Your console, not a dashboard about your console.</h2>
+        <p class="text-fog mt-6 max-w-md">
+          Full output, full file access, and a restart that takes eleven seconds. The same
+          panel our own engineers use when they're the ones on call.
+        </p>
       </div>
+
+      <Terminal label="MIA-04 · fivem" class="lg:justify-self-end">
+        <TypingAnimation>./run.sh +exec server.cfg</TypingAnimation>
+        <AnimatedSpan class="text-fog">Loading resources from /txData/CFXDefault</AnimatedSpan>
+        <AnimatedSpan class="text-fog">Started 214 resources in 3.4s</AnimatedSpan>
+        <AnimatedSpan class="text-fog">Authenticating with Cfx.re...</AnimatedSpan>
+        <AnimatedSpan>Server listening on 51.81.44.12:30120</AnimatedSpan>
+        <AnimatedSpan>Slots 0/64 · tick 0.31ms · uptime 00:00:11</AnimatedSpan>
+      </Terminal>
+    </div>
+  </section>
+
+  <section class="section border-t border-[var(--edge)]">
+    <div class="shell grid gap-4 sm:grid-cols-2 lg:max-w-3xl">
+      {regions.map((region) => (
+        <div class="chamfer border border-[var(--edge)] bg-ink-soft p-6">
+          <p class="instrument text-fog">{region.code}</p>
+          <p class="title mt-3">{region.city}</p>
+          <p class="small text-fog mt-2 tabular">
+            {region.ping}ms median · {region.open} of {region.total} slots open
+          </p>
+        </div>
+      ))}
     </div>
   </section>
 </Layout>

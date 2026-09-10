@@ -1,0 +1,15 @@
+---
+// Fades in as one unit. Use for output lines that a real console would print all
+// at once, which is most of them. Only the command the user "types" should type.
+
+interface Props {
+  delay?: number;      // only used when the parent has sequence={false}
+  class?: string;
+}
+
+const { delay = 0, class: className = "" } = Astro.props;
+---
+
+<div data-line data-kind="span" data-delay={delay} class:list={["grid", className]}>
+  <slot />
+</div>
