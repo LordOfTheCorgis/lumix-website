@@ -1,0 +1,99 @@
+---
+// Only renders when analytics is actually configured. A cookie banner on a site
+// that sets no cookies is theatre, and it trains people to dismiss real ones.
+const analyticsEnabled = Boolean(import.meta.env.PUBLIC_POSTHOG_KEY);
+---
+
+{analyticsEnabled && (
+  <div
+    data-cookie-banner
+    hidden
+    role="dialog"
+    aria-modal="false"
+    aria-labelledby="cookie-banner-title"
+    class="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--edge)] bg-ink-soft"
+  >
+    <div class="shell flex flex-col gap-5 py-5 lg:flex-row lg:items-center lg:gap-8">
+      <div class="lg:flex-1">
+        <h2 id="cookie-banner-title" class="instrument text-paper">Analytics cookies</h2>
+        <p class="small text-fog mt-2 max-w-2xl">
+          We use PostHog to see which pages get used, so we know what to fix. Decline and
+          nothing is loaded and no cookie is set. Neither choice affects your service.
+          <a href="/privacy" class="text-red underline-offset-4 hover:underline">Privacy Policy</a>
+        </p>
+      </div>
+
+      <div class="flex shrink-0 items-center gap-3">
+        <button
+          type="button"
+          data-consent="denied"
+          class="chamfer border border-[var(--edge-strong)] px-5 py-2.5 text-sm font-medium text-paper transition-colors duration-150 hover:border-paper"
+        >
+          Decline
+        </button>
+        <!-- Paper, not red. The red budget belongs to ordering, and a consent
+             prompt should not out-shout the thing people came here to do. -->
+        <button
+          type="button"
+          data-consent="granted"
+          class="chamfer bg-paper px-5 py-2.5 text-sm font-medium text-ink transition-opacity duration-150 hover:opacity-90"
+        >
+          Accept
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+<script>
+  const STORAGE_KEY = "lumix.consent";
+  const banner = document.querySelector<HTMLElement>("[data-cookie-banner]");
+
+  if (banner) {
+    const read = () => {
+      try {
+        return localStorage.getItem(STORAGE_KEY);
+      } catch {
+        return null;
+      }
+    };
+
+    const write = (value: string) => {
+      try {
+        localStorage.setItem(STORAGE_KEY, value);
+      } catch {
+        /* private mode: the choice just won't persist */
+      }
+    };
+
+    const decide = (value: "granted" | "denied") => {
+      write(value);
+      banner.hidden = true;
+      document.body.style.paddingBottom = "";
+      if (value === "granted") {
+        window.dispatchEvent(new Event("lumix:consent-granted"));
+      }
+    };
+
+    const existing = read();
+
+    // Global Privacy Control is a legally recognised opt-out signal in California
+    // and several other states. Honour it without asking, and never show the
+    // banner to someone who has already told their browser no.
+    const gpc = (navigator as Navigator & { globalPrivacyControl?: boolean })
+      .globalPrivacyControl;
+
+    if (!existing && gpc) {
+      write("denied");
+    } else if (!existing) {
+      banner.hidden = false;
+      document.body.style.paddingBottom = `${banner.offsetHeight}px`;
+    }
+
+    banner.querySelectorAll<HTMLButtonElement>("[data-consent]").forEach((button) => {
+      button.addEventListener("click", () => {
+        decide(button.dataset.consent === "granted" ? "granted" : "denied");
+      });
+    });
+  }
+</script>

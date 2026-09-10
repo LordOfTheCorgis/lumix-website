@@ -134,7 +134,11 @@ We use cookies for functionality, analytics, and preferences.
 
 - **Persistent cookies.** Remember preferences between visits, so you do not have to set them again.
 
-- **Analytics tools.** Measure aggregate usage so we can understand which pages and features get used.
+- **Analytics tools.** Measure aggregate usage so we can understand which pages and features get used. We use PostHog for this, and it is the only analytics provider on our website.
+
+Analytics cookies are not set unless you accept them. Until you do, no analytics code is loaded at all, and declining means none is ever loaded. You can change your mind by clearing this site's data in your browser, which brings the choice back.
+
+We honour Global Privacy Control. If your browser sends a GPC signal, we record an opt-out automatically and never ask you.
 
 Most browsers let you block or delete cookies. Blocking functional cookies will prevent parts of the billing portal and control panel from working.
 
@@ -192,4 +196,4 @@ Residents of states with comprehensive privacy laws may have additional rights, 
 
 We use third-party providers bound by data protection agreements.
 
-Subprocessors are engaged for functions such as payment processing, infrastructure, and support tooling. Each is required by contract to protect personal information to a standard consistent with this policy and to process it only on our instructions. To request the current list of subprocessors, contact us at the address in section 12.
+Subprocessors are engaged for functions such as payment processing, infrastructure, support tooling, and website analytics (PostHog). Each is required by contract to protect personal information to a standard consistent with this policy and to process it only on our instructions. To request the current list of subprocessors, contact us at the address in section 12.
