@@ -1,9 +1,15 @@
 ---
+// Stripped back to the shell. Every meta tag, canonical and schema block below is
+// load-bearing for SEO and survived the teardown untouched. What's gone: Header,
+// Footer, AnnouncementBanner, the body padding that compensated for the banner,
+// and the blanket IntersectionObserver that fade-in-up'd basically every element
+// on the site. DESIGN.md section 9 says one orchestrated moment, on the Capacity
+// Board, once. That observer was the opposite of that.
+//
+// TODO: rebuild Header + Footer against the new system before this ships anywhere.
+
 import "../styles/global.css";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
-import AnnouncementBanner from "../components/AnnouncementBanner.astro";
-import { announcementBanner, siteConfig } from "../data/site";
+import { siteConfig } from "../data/site";
 
 interface Props {
   title: string;
@@ -16,7 +22,7 @@ const {
   description = siteConfig.description,
   noindex = false
 } = Astro.props;
-const bannerEnabled = announcementBanner.enabled && announcementBanner.announcements?.length > 0;
+
 const absoluteSiteUrl = `https://${siteConfig.domain}`;
 const absoluteLogoUrl = `${absoluteSiteUrl}${siteConfig.logo}`;
 const absoluteSocialImageUrl = `${absoluteSiteUrl}${siteConfig.socialImage ?? siteConfig.logo}`;
@@ -24,6 +30,7 @@ const canonicalUrl = new URL(Astro.url.pathname, absoluteSiteUrl).href;
 const robotsContent = noindex ? "noindex, nofollow" : "index, follow";
 const brandName = "Lumix Solutions";
 const pageTitle = title.includes(brandName) ? title : `${title} | ${brandName}`;
+
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -46,7 +53,7 @@ const websiteSchema = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="robots" content={robotsContent} />
-    <meta name="theme-color" content="#ff4c4c" />
+    <meta name="theme-color" content="#e7e8e3" />
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="Lumix Solutions" />
@@ -65,49 +72,28 @@ const websiteSchema = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={absoluteSocialImageUrl} />
     <meta name="twitter:image:alt" content="Lumix Solutions branded preview image" />
-    
-    <!-- Fonts -->
+
+    <!-- Archivo carries both the display and body voice via its width axis, so
+         this is one file doing two jobs. Martian Mono is instrument labels only. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- Versioned favicon URLs help bust stale crawler and CDN caches -->
     <link rel="icon" href="/favicon.ico?v=20260419" sizes="any" />
     <link rel="icon" type="image/png" sizes="512x512" href="/images/logo.png?v=20260419" />
 
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
-    
+
     <title>{pageTitle}</title>
   </head>
-  <body class:list={["min-h-screen flex flex-col bg-lumix-black text-lumix-white", bannerEnabled ? "pt-25" : "pt-16"]}>
-    <AnnouncementBanner />
-    <Header />
+  <body class="min-h-screen flex flex-col bg-board text-ink">
     <main class="flex-1">
       <slot />
     </main>
-    <Footer />
-    
-    <script>
-      // Scroll-based animations
-      const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
-      };
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in-up');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, observerOptions);
-
-      document.querySelectorAll('[data-animate]').forEach(el => {
-        observer.observe(el);
-      });
-    </script>
   </body>
 </html>
