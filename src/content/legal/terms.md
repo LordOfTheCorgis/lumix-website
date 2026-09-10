@@ -166,11 +166,23 @@ If any provision of these Terms is held invalid, illegal, or unenforceable by a 
 
 The remaining provisions will continue in full force and effect, and a provision held invalid in one jurisdiction remains valid in every other.
 
-## 13. Changes to Terms
+## 13. Entire Agreement
+
+These Terms, together with our Privacy Policy and any plan, order, or policy referenced in them, form the entire agreement between you and Lumix Solutions regarding the services. They replace any prior agreement, proposal, or understanding on the same subject.
+
+Nothing said in a support ticket, Discord message, social media post, or sales conversation modifies these Terms. Only a written amendment signed or issued by us does.
+
+## 14. No Waiver
+
+If we do not enforce a provision of these Terms, that is not a waiver of our right to enforce it later. Allowing something once, or overlooking a breach, does not create a permanent exception or alter the provision.
+
+A waiver is effective only when given in writing by an authorized representative of Lumix Solutions, and it applies only to the specific instance it names.
+
+## 15. Changes to Terms
 
 We may update these Terms at any time. When we do, we revise the "Last updated" date at the top of this page. Continued use of services constitutes acceptance of the updated Terms.
 
-## 14. Contact
+## 16. Contact
 
 For questions regarding these Terms:
 
