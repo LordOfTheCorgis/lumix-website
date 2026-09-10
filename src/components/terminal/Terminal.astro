@@ -1,10 +1,11 @@
 ---
 // Console output, sequenced. Each child starts when the previous one finishes.
 //
-// Not the MacOS traffic lights. Three dots in red, yellow and green would drop
-// two colors that don't exist in this palette and burn the red budget on
-// decoration (DESIGN.md section 5). The header carries a real machine label
-// instead, which is also more useful than a window chrome pastiche.
+// The traffic lights are real macOS hex, not palette tokens, and that's on
+// purpose: they're window chrome quoting another OS, not Lumix color. Keeping
+// them out of @theme is what stops someone "fixing" them to brand red later.
+// They also don't count against the two-reds-per-viewport rule in DESIGN.md
+// section 5 for the same reason.
 //
 // Mono is a deliberate local exception to DESIGN.md section 6. Real console
 // output is monospace; that's the subject, not costume. Scoped here, no token.
@@ -32,6 +33,11 @@ const {
   class:list={["chamfer not-prose m-0 w-full max-w-lg border border-[var(--edge)] bg-ink-soft", className]}
 >
   <figcaption class="flex items-center gap-3 border-b border-[var(--edge)] px-4 py-3">
+    <span class="flex flex-row gap-x-2" aria-hidden="true">
+      <span class="h-2 w-2 rounded-full bg-[#ff5f57]"></span>
+      <span class="h-2 w-2 rounded-full bg-[#febc2e]"></span>
+      <span class="h-2 w-2 rounded-full bg-[#28c840]"></span>
+    </span>
     <span class="instrument text-fog">{label}</span>
     <span data-terminal-state class="ml-auto instrument text-fog">idle</span>
   </figcaption>
