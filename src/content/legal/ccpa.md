@@ -1,7 +1,7 @@
 ---
 title: California Privacy Rights
 description: CCPA and CPRA disclosures for California residents.
-lastUpdated: May 1, 2026
+lastUpdated: September 10, 2026
 ---
 
 ## California Consumer Privacy Act (CCPA)

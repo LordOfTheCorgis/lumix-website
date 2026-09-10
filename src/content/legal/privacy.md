@@ -1,7 +1,7 @@
 ---
 title: Privacy Policy
 description: How Lumix Solutions collects, uses, and protects your data.
-lastUpdated: May 1, 2026
+lastUpdated: September 10, 2026
 ---
 
 ## 1. Introduction

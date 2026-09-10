@@ -1,7 +1,7 @@
 ---
 title: Terms of Service
 description: The agreement covering game servers, hosting, and related infrastructure from Lumix Solutions.
-lastUpdated: May 1, 2026
+lastUpdated: September 10, 2026
 ---
 
 ## 1. Agreement to Terms
@@ -160,11 +160,17 @@ Any dispute arising out of or relating to these Terms or to the services will be
 
 Lumix Solutions LLC is registered in Louisiana.
 
-## 12. Changes to Terms
+## 12. Severability
+
+If any provision of these Terms is held invalid, illegal, or unenforceable by a court of competent jurisdiction, that provision will be modified to the minimum extent necessary to make it enforceable. If it cannot be modified, it will be severed from these Terms.
+
+The remaining provisions will continue in full force and effect, and a provision held invalid in one jurisdiction remains valid in every other.
+
+## 13. Changes to Terms
 
 We may update these Terms at any time. When we do, we revise the "Last updated" date at the top of this page. Continued use of services constitutes acceptance of the updated Terms.
 
-## 13. Contact
+## 14. Contact
 
 For questions regarding these Terms:
 
