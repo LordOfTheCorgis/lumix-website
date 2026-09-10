@@ -34,7 +34,7 @@ const organizationSchema = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
-    <meta name="theme-color" content="#e7e8e3" />
+    <meta name="theme-color" content="#121214" />
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content={brandName} />
@@ -46,12 +46,12 @@ const organizationSchema = {
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
 
-    <!-- Archivo carries both display and body off its width axis, so this is one
-         file doing two jobs. Martian Mono is instrument labels only. -->
+    <!-- Space Grotesk for display, Inter for everything read at length. Both
+         variable, one request. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&family=Inter:wght@100..900&display=swap"
       rel="stylesheet"
     />
 
@@ -61,7 +61,7 @@ const organizationSchema = {
 
     <title>{pageTitle}</title>
   </head>
-  <body class="min-h-screen flex flex-col bg-board text-ink">
+  <body class="min-h-screen flex flex-col bg-ink text-paper">
     <main class="flex-1">
       <slot />
     </main>

@@ -1,16 +1,59 @@
 ---
 import Layout from "../layouts/Layout.astro";
+
+// Placeholder numbers until the catalog is wired back up. The real board reads
+// live occupancy, and it has to be allowed to say something unflattering.
+const regions = [
+  { code: "MIA", city: "Miami, FL", ping: 4, open: 9, total: 48 },
+  { code: "IAD", city: "Ashburn, VA", ping: 11, open: 5, total: 48 },
+];
+
+const open = regions.reduce((n, r) => n + r.open, 0);
+const total = regions.reduce((n, r) => n + r.total, 0);
 ---
 
 <Layout title="Lumix Solutions">
   <section class="section">
     <div class="shell">
-      <p class="instrument text-graphite">Rebuild in progress</p>
-      <h1 class="display-xl mt-6 max-w-3xl">Clean slate.</h1>
-      <p class="lead text-graphite mt-6 max-w-xl">
-        Nothing here yet but the palette, the type and the grid. The plan lives in
-        DESIGN.md at the root of this branch.
+      <p class="instrument text-fog">
+        {open} of {total} slots open
+        {regions.map((r) => <span class="ml-3">· {r.code} {r.ping}ms</span>)}
       </p>
+
+      <h1 class="display-xl mt-8 max-w-4xl">
+        We cap our own servers.<br />That's the whole pitch.
+      </h1>
+
+      <p class="lead text-fog mt-8 max-w-xl">
+        Most hosts sell a node until it buckles. We stop at a number, publish it, and
+        let you watch it move. Miami and Ashburn, and nothing between you and the box.
+      </p>
+
+      <div class="mt-10 flex flex-wrap items-center gap-4">
+        <!-- Ink on red, not white. Paper on red is 3.02:1 and fails AA. Looks wrong
+             for about a minute, then it doesn't. -->
+        <a
+          href="/games"
+          class="chamfer inline-flex items-center bg-red px-6 py-3 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+        >
+          See what's open
+        </a>
+        <a href="/status" class="text-fog underline-offset-4 hover:text-paper hover:underline">
+          Live status
+        </a>
+      </div>
+
+      <div class="mt-16 grid gap-4 sm:grid-cols-2 lg:max-w-3xl">
+        {regions.map((region) => (
+          <div class="chamfer border border-[var(--edge)] bg-ink-soft p-6">
+            <p class="instrument text-fog">{region.code}</p>
+            <p class="title mt-3">{region.city}</p>
+            <p class="small text-fog mt-2 tabular">
+              {region.ping}ms median · {region.open} of {region.total} slots open
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 </Layout>

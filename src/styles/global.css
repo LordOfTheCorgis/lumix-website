@@ -2,40 +2,43 @@
 
 /*
   Foundation only. Tokens, base, type scale, a11y. No component classes.
-  Everything here traces back to DESIGN.md. If you're about to add a color that
-  isn't in the @theme block, go read section 5 first.
+  Traces back to DESIGN.md. If you're adding a color that isn't in @theme,
+  go read section 5 first, especially the three contrast rules.
 */
 
 @theme {
-  /* Surfaces. slot is DARKER than board on purpose: panels are routed into the
-     page, not floated on top of it. Feels wrong for a day, then it clicks. */
-  --color-board: #e7e8e3;
-  --color-slot: #d8dad3;
+  /* ── Red, on a leash ─────────────────────────────────────────────────────
+     Two per viewport, max. Logo S doesn't count. A third red thing is
+     decoration and gets cut. */
+  --color-red: #ff4c4c;
+  --color-red-pressed: #c43535;  /* hover/active, AND the only red for text on paper */
+  --color-red-tint: #ff8a8a;     /* dark surfaces only */
 
-  --color-ink: #15171a;
-  --color-graphite: #4e545c;  /* 6.21:1 on board, 5.42:1 on slot. safe for body */
-  --color-deep: #1f2b33;
+  /* ── Surfaces ──────────────────────────────────────────────────────────── */
+  --color-ink: #121214;
+  --color-ink-soft: #1a1a1d;
+  --color-paper: #f7f5f1;
+  --color-mist: #e4e2dc;
 
-  /* Both accents on a short leash. lamp NEVER appears at rest: hover, focus,
-     active step, primary CTA, that's the list. It's 1.56:1 on board so it can't
-     carry text on light either, fill and stroke only. On deep it's 7.55:1.
+  /* ── Secondary text. NOT interchangeable ─────────────────────────────────
+     fog is ink-only (2.57:1 on paper, unusable). slate is paper-only. */
+  --color-slate: #6b6b72;  /* 4.86:1 on paper */
+  --color-fog: #9a9aa2;    /* 6.70:1 on ink */
 
-     signal is the logo red and the at-capacity state. Nothing else. */
-  --color-lamp: #ffa92b;
-  --color-signal: #f94040;
-  --color-signal-deep: #c42a2a;  /* 4.59:1 on board. the only red you can set type in */
+  /* Space Grotesk flattens into a generic geometric sans below ~24px, so it's
+     display and instrument only. Inter carries everything anyone actually reads.
+     No mono anywhere, that was the old site's terminal cosplay. */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 
-  /* One superfamily, two widths. Width contrast instead of the reflexive
-     serif-vs-sans, and it's one variable file instead of two. Martian Mono is
-     instrument readouts only: slot IDs, region codes, ping. Never a sentence. */
-  --font-display: 'Archivo', system-ui, sans-serif;
-  --font-sans: 'Archivo', system-ui, -apple-system, sans-serif;
-  --font-mono: 'Martian Mono', ui-monospace, monospace;
-
-  /* The one angle in the system, lifted off the monogram's lean. Nothing else
-     in the layout is allowed to tilt. */
+  /* The monogram's cut. The only diagonal in the system. Nothing else tilts. */
   --shear: -16deg;
   --chamfer: 10px;
+
+  /* Panels are invisible against ink on fill alone (1.08:1). The hairline IS
+     the panel. Don't reach for a box-shadow, it won't read on this ground. */
+  --edge: rgba(255, 255, 255, 0.08);
+  --edge-strong: rgba(255, 255, 255, 0.16);
 
   --spacing-section: 6rem;
   --spacing-section-mobile: 3.5rem;
@@ -50,84 +53,72 @@
 
   body {
     font-family: var(--font-sans);
-    font-variation-settings: 'wdth' 100;
-    background-color: var(--color-board);
-    color: var(--color-ink);
+    background-color: var(--color-ink);
+    color: var(--color-paper);
     line-height: 1.65;
   }
 
-  /* Tabular figures in prose and tables. Mono is for labels, not math. */
   table, .tabular { font-variant-numeric: tabular-nums; }
 
   ::selection {
-    background-color: var(--color-lamp);
-    color: var(--color-ink);
+    background-color: var(--color-red);
+    color: var(--color-ink);  /* not white. paper-on-red is 3.02:1 and fails */
   }
 
-  /* Heads up: clip-path eats outlines, so anything using .chamfer needs the ring
-     on a wrapper instead of the clipped element. Learned that the annoying way. */
+  /* :where() keeps specificity at zero so components can override without a fight.
+     Wherever .chamfer is applied, put this ring on a wrapper instead: clip-path
+     eats outlines with no warning and no error. */
   :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-    outline: 2px solid var(--color-lamp);
+    outline: 2px solid var(--color-red);
     outline-offset: 2px;
   }
 
   ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-track { background: var(--color-slot); }
-  ::-webkit-scrollbar-thumb { background: var(--color-graphite); }
-  ::-webkit-scrollbar-thumb:hover { background: var(--color-ink); }
+  ::-webkit-scrollbar-track { background: var(--color-ink); }
+  ::-webkit-scrollbar-thumb { background: #2c2c31; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-slate); }
 }
 
 @layer components {
-  /* Display is wdth 125. The mark leans, the type stays planted; that tension is
-     the point. Don't skew headlines, it collapses the whole idea. */
   .display-xl {
     font-family: var(--font-display);
-    font-variation-settings: 'wdth' 125, 'wght' 700;
-    font-size: clamp(2.75rem, 6vw, 5rem);
-    line-height: 0.98;
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    font-size: clamp(2.75rem, 6vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
   }
 
   .display-l {
     font-family: var(--font-display);
-    font-variation-settings: 'wdth' 125, 'wght' 700;
-    font-size: clamp(2rem, 4vw, 3.25rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.06;
+    letter-spacing: -0.03em;
   }
 
-  .display-m {
+  .title {
     font-family: var(--font-display);
-    font-variation-settings: 'wdth' 125, 'wght' 600;
-    font-size: clamp(1.5rem, 2.5vw, 2rem);
-    line-height: 1.15;
-    letter-spacing: -0.01em;
+    font-weight: 600;
+    font-size: clamp(1.375rem, 2.5vw, 1.75rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
   }
 
   .lead { font-size: 1.25rem; line-height: 1.55; }
   .small { font-size: 0.875rem; line-height: 1.6; }
 
-  /* The only place uppercase is allowed on this site. */
+  /* Region codes, slot IDs, ping, SKUs. The only uppercase on the site. */
   .instrument {
-    font-family: var(--font-mono);
-    font-variation-settings: 'wdth' 87.5, 'wght' 500;
+    font-family: var(--font-display);
+    font-weight: 500;
     font-size: 0.6875rem;
     line-height: 1;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
-  .readout {
-    font-family: var(--font-mono);
-    font-variation-settings: 'wdth' 87.5, 'wght' 500;
-    font-size: 1.5rem;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* Section rhythm lives on this ONE class. Do not also put padding on `section`
-     as an element selector; the old stylesheet did both and they took turns
-     winning depending on import order. That bug cost an evening. */
+  /* Rhythm lives on this ONE class. Never also pad `section` as an element
+     selector: when both exist they take turns winning on import order. */
   .section { padding-block: var(--spacing-section-mobile); }
 
   @media (min-width: 1024px) {
@@ -145,8 +136,7 @@
     .shell { padding-inline: 1.5rem; }
   }
 
-  /* Cut corners top-left and bottom-right, matching the monogram. Chamfer, not
-     radius. Square reads unfinished, rounded reads like a SaaS template. */
+  /* Cut top-left and bottom-right, matching the monogram. Chamfer, not radius. */
   .chamfer {
     clip-path: polygon(
       var(--chamfer) 0,
@@ -159,7 +149,7 @@
   }
 }
 
-/* Final state, instantly. Not a slower animation, none. */
+/* Final state, instantly. Not a slower animation. None. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 
