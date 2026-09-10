@@ -6,6 +6,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import StickyCta from "../components/StickyCta.astro";
 import CookieBanner from "../components/CookieBanner.astro";
+import GridPattern from "../components/GridPattern.astro";
 import Analytics from "../components/Analytics.astro";
 
 interface Props {
@@ -88,6 +89,9 @@ const organizationSchema = {
     <Analytics />
   </head>
   <body class="min-h-screen flex flex-col text-paper">
+    <!-- Sits at z-index -1 under everything, which only works because the ink
+         ground is on <html> and body is transparent. -->
+    <GridPattern />
     <Header />
     <main class="flex-1">
       <slot />

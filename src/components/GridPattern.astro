@@ -1,0 +1,174 @@
+---
+// Interactive grid, ported off the Magic UI React component.
+//
+// The original renders one <rect> per cell, holds the hovered index in React
+// state, and re-renders the whole grid on every mouseenter. At 24x24 that's 576
+// nodes and 576 listeners to make one square change colour. This does the same
+// thing with a <pattern> for the lines and a pool of twelve rects that get
+// recycled for the fading trail, so it's ~15 nodes total, no listeners on the
+// grid itself, and the fade runs on the compositor via WAAPI.
+//
+// It also behaves better: the React one only lights up where the SVG is
+// actually exposed, so anywhere content sits on top it goes dead. This tracks
+// the pointer on window, so cells light up underneath the header and the copy
+// too. The grid reads as a plane the whole page is sitting on rather than a
+// panel with holes punched in it.
+//
+// Lines are deliberately near-invisible. This is a ground, not an element. If
+// you can read the grid before you read the headline, turn `stroke` down.
+
+interface Props {
+  /** Cell size in px. The lines land on whole pixels, so keep it an integer. */
+  cell?: number;
+  stroke?: string;
+  /** Fill of a lit cell at full strength, before it starts fading out. */
+  tint?: string;
+  /** How long a lit cell takes to fade back to nothing, in ms. */
+  fade?: number;
+  /** Cells that can be mid-fade at once. Past ~16 the trail reads as a smear. */
+  trail?: number;
+  /** Only matters if you ever put two of these on one page. */
+  id?: string;
+  class?: string;
+}
+
+const {
+  cell = 40,
+  stroke = "rgba(255, 255, 255, 0.06)",
+  tint = "rgba(247, 245, 241, 0.055)",
+  fade = 900,
+  trail = 12,
+  id = "lumix-grid",
+  class: className = "",
+} = Astro.props;
+---
+
+<svg
+  class:list={["grid-plane", className]}
+  aria-hidden="true"
+  data-grid-plane
+  data-cell={cell}
+  data-fade={fade}
+  style={`--grid-tint:${tint};`}
+>
+  <defs>
+    <pattern id={id} width={cell} height={cell} patternUnits="userSpaceOnUse">
+      {/* Top and left edge only. Drawing all four would double every interior
+          line and make the grid twice as heavy as the stroke value says. */}
+      <path
+        d={`M ${cell} 0 L 0 0 0 ${cell}`}
+        fill="none"
+        stroke={stroke}
+        stroke-width="1"
+        shape-rendering="crispEdges"
+      />
+    </pattern>
+  </defs>
+
+  <rect width="100%" height="100%" fill={`url(#${id})`} />
+
+  {Array.from({ length: trail }, (_, i) => (
+    <rect class="cell" data-cell-slot={i} width={cell} height={cell} x="0" y="0" />
+  ))}
+</svg>
+
+<style>
+  .grid-plane {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* Falls off at the edges so the grid doesn't run into the viewport frame
+       like a table border. Centre stays full strength, which is where the
+       cursor spends its time anyway. */
+    mask-image: radial-gradient(
+      ellipse 90% 75% at 50% 38%,
+      #000 45%,
+      rgba(0, 0, 0, 0.35) 78%,
+      transparent 100%
+    );
+  }
+
+  .cell {
+    fill: var(--grid-tint);
+    opacity: 0;
+  }
+</style>
+
+<script>
+  // Everything below is a no-op without a real pointer, so phones and tablets
+  // ship the bytes and never run them. Worth it: the alternative is a second
+  // build of the grid without the trail rects.
+  const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (fine.matches && !still.matches) {
+    document.querySelectorAll<SVGSVGElement>("[data-grid-plane]").forEach((plane) => {
+      const size = Number(plane.dataset.cell) || 40;
+      const fade = Number(plane.dataset.fade) || 900;
+      const slots = Array.from(
+        plane.querySelectorAll<SVGRectElement>("[data-cell-slot]")
+      );
+      if (!slots.length) return;
+
+      const running = new WeakMap<SVGRectElement, Animation>();
+      let next = 0;
+      let lastCol = NaN;
+      let lastRow = NaN;
+      let pending: { x: number; y: number } | null = null;
+      let frame = 0;
+
+      function light(col: number, row: number) {
+        const rect = slots[next];
+        next = (next + 1) % slots.length;
+
+        // Recycling a slot that's still fading. Kill the old animation first or
+        // the two stack and the cell flickers on its way out.
+        running.get(rect)?.cancel();
+
+        rect.setAttribute("x", String(col * size));
+        rect.setAttribute("y", String(row * size));
+
+        // Snaps on, drifts off, same asymmetry as the original's 100ms-in /
+        // 1000ms-out. WAAPI rather than a class toggle because restarting a CSS
+        // transition means a forced reflow on every cell you cross.
+        const anim = rect.animate(
+          [{ opacity: 1 }, { opacity: 1, offset: 0.08 }, { opacity: 0 }],
+          { duration: fade, easing: "ease-out" }
+        );
+        running.set(rect, anim);
+      }
+
+      function flush() {
+        frame = 0;
+        if (!pending) return;
+        const col = Math.floor(pending.x / size);
+        const row = Math.floor(pending.y / size);
+        pending = null;
+        if (col === lastCol && row === lastRow) return;
+        lastCol = col;
+        lastRow = row;
+        light(col, row);
+      }
+
+      window.addEventListener(
+        "pointermove",
+        (e) => {
+          if (e.pointerType !== "mouse") return;
+          pending = { x: e.clientX, y: e.clientY };
+          if (!frame) frame = requestAnimationFrame(flush);
+        },
+        { passive: true }
+      );
+
+      // Cursor leaves the window mid-drag across cells and the last cell would
+      // otherwise stay lit until you come back in somewhere else.
+      window.addEventListener("blur", () => {
+        lastCol = NaN;
+        lastRow = NaN;
+      });
+    });
+  }
+</script>
