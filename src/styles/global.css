@@ -14,15 +14,22 @@
   --color-red-pressed: #c43535;  /* hover/active, AND the only red for text on paper */
   --color-red-tint: #ff8a8a;     /* dark surfaces only */
 
-  /* ── Surfaces ──────────────────────────────────────────────────────────── */
+  /* ── Surfaces ────────────────────────────────────────────────────────────
+     Dark only. There is no light mode and there is no theme toggle; ink is the
+     ground everywhere. `paper` survived the cut because it stopped being a
+     background a while ago and is now the primary text colour and the one
+     light fill (cookie banner Accept). `mist` was hairlines-on-paper and had
+     nothing left to do, so it's gone. Hairlines are --edge. */
   --color-ink: #121214;
   --color-ink-soft: #1a1a1d;
   --color-paper: #f7f5f1;
-  --color-mist: #e4e2dc;
 
-  /* ── Secondary text. NOT interchangeable ─────────────────────────────────
-     fog is ink-only (2.57:1 on paper, unusable). slate is paper-only. */
-  --color-slate: #6b6b72;  /* 4.86:1 on paper */
+  /* ── Secondary text, both ink-only now ───────────────────────────────────
+     fog is the normal dim. slate is the dimmer one under it, for labels that
+     sit beside the thing they name. Old slate was #6B6B72, a paper-only value,
+     and it had quietly crept onto ink at 3.54:1 under 11px uppercase labels,
+     which is a fail twice over. Lifted to 4.58:1. Don't push it back down. */
+  --color-slate: #7d7d85;  /* 4.58:1 on ink */
   --color-fog: #9a9aa2;    /* 6.70:1 on ink */
 
   /* Space Grotesk flattens into a generic geometric sans below ~24px, so it's
@@ -46,14 +53,21 @@
 
 @layer base {
   html {
+    /* Tells the UA to render form controls, scrollbars and the like dark, so we
+       don't get a white select popping out of nowhere on a page that has none. */
+    color-scheme: dark;
+    background-color: var(--color-ink);
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Body stays transparent on purpose: the ground lives on <html> so the grid
+     can sit at z-index -1 behind everything without body's own background
+     painting over it. Put a background back on body and the grid vanishes with
+     no error to tell you why. */
   body {
     font-family: var(--font-sans);
-    background-color: var(--color-ink);
     color: var(--color-paper);
     line-height: 1.65;
   }

@@ -75,8 +75,17 @@ build it rather than say it.
 
 ## 5. Color
 
-Ratio is roughly 60% Ink or Paper, 30% neutrals, 10% red. Dark is the default surface.
-Light mode exists and is a real mode, not an afterthought.
+Ratio is roughly 60% Ink, 30% neutrals, 10% red.
+
+**The site is dark only.** No light mode, no theme toggle, no `prefers-color-scheme`
+branch. Ink is the ground on every page including legal. This was open for a while and
+it is now closed; a second palette doubles the review surface of every component for a
+mode nobody asked for, and the brand's whole read is a lit thing against a dark room.
+
+Paper is not a background any more. It is the primary text colour and the one light fill
+on the site (the cookie banner's Accept). Light-ground contrast still matters in exactly
+one place, the logo on someone else's surface, so the Paper numbers below stay on the
+record.
 
 | Token | Hex | Job |
 |---|---|---|
@@ -85,23 +94,30 @@ Light mode exists and is a real mode, not an afterthought.
 | `red-tint` | `#FF8A8A` | Highlights on dark surfaces only. |
 | `ink` | `#121214` | Default background. |
 | `ink-soft` | `#1A1A1D` | Cards and panels on Ink. |
-| `paper` | `#F7F5F1` | Light-mode background. |
-| `mist` | `#E4E2DC` | Hairlines and dividers on Paper. |
-| `slate` | `#6B6B72` | Secondary text on Paper. |
+| `paper` | `#F7F5F1` | Primary text on Ink. The one light fill. |
+| `slate` | `#7D7D85` | Tertiary text on Ink. Labels beside the value they name. |
 | `fog` | `#9A9AA2` | Secondary text on Ink. |
+
+`mist` was retired with light mode. Hairlines are `--edge`.
 
 ### Measured contrast, and the three rules that fall out
 
 Computed against WCAG 2.1, not eyeballed.
 
-**On Ink `#121214`:** paper 17.18, mist 14.44, tint 8.25, fog 6.70, red 5.69. Everything
-passes AA for body text. The dark surface is the comfortable one and it should carry the
-bulk of the site.
+**On Ink `#121214`:** paper 17.18, tint 8.25, fog 6.70, red 5.69, slate 4.58. Everything
+passes AA for body text, which is the point of a single-ground system: there is no second
+table to check against.
 
-**On Paper `#F7F5F1`:** ink 17.18, red-pressed 4.94, slate 4.86, **red 3.02**, fog 2.57.
+Slate was `#6B6B72` until light mode was cut. That value was measured on Paper, and on Ink
+it lands at **3.54:1**, under 11px uppercase labels no less. It shipped that way in the
+header, footer, tiles and plan specs. Lifted to `#7D7D85` for 4.58:1.
 
-> **Rule 1.** `red` fails AA on Paper at 3.02:1. Red type on light is always
-> `red-pressed`. `red` on Paper is restricted to fills, strokes, and the logo S.
+**On Paper `#F7F5F1`,** which now only describes the logo on foreign surfaces: ink 17.18,
+red-pressed 4.94, **red 3.02**.
+
+> **Rule 1.** `red` fails AA on Paper at 3.02:1. Wherever the mark lands on a light ground
+> off-site, red type becomes `red-pressed` and `red` is restricted to fills, strokes, and
+> the logo S.
 
 > **Rule 2.** A red CTA takes **Ink** text, not white. Paper on red is 3.02:1 and fails;
 > ink on red is 5.69:1 and passes. This is counterintuitive and it will feel wrong until

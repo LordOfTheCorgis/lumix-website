@@ -194,6 +194,5 @@ Only take it if section 2 comes back negative.
 2. **Build on the server or in Actions?** Depends on memory limits on the plan.
 3. **How many admin accounts, and do they need separate permissions?** A single shared
    login is fine for two people and a real liability for five.
-4. **Light mode.** Still outstanding from DESIGN.md. The Paper palette is defined but not
-   when it applies: theme toggle, `prefers-color-scheme`, or specific pages. Changes how
-   every component gets written, so it wants settling before the UI build starts.
+4. ~~**Light mode.**~~ Settled: there isn't one. Dark only, no toggle, no
+   `prefers-color-scheme` branch, legal pages included. See DESIGN.md section 5.

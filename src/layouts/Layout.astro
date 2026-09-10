@@ -49,6 +49,7 @@ const organizationSchema = {
     <meta name="description" content={description} />
     <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
     <meta name="theme-color" content="#121214" />
+    <meta name="color-scheme" content="dark" />
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content={brandName} />
@@ -86,7 +87,7 @@ const organizationSchema = {
 
     <Analytics />
   </head>
-  <body class="min-h-screen flex flex-col bg-ink text-paper">
+  <body class="min-h-screen flex flex-col text-paper">
     <Header />
     <main class="flex-1">
       <slot />
