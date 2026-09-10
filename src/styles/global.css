@@ -1,54 +1,38 @@
 @import "tailwindcss";
 
 /*
-  Foundation only. Tokens, base, type scale, a11y.
-
-  No component classes live here anymore. The old file had .card, .terminal-window,
-  .btn-primary and friends all fighting each other, and half the pages overrode them
-  inline anyway. Components own their own styles from here on.
-
-  Everything below traces back to DESIGN.md. If you're about to add a color that
+  Foundation only. Tokens, base, type scale, a11y. No component classes.
+  Everything here traces back to DESIGN.md. If you're about to add a color that
   isn't in the @theme block, go read section 5 first.
 */
 
 @theme {
-  /* ── Surfaces ────────────────────────────────────────────────────────────
-     slot is DARKER than board on purpose. Panels are routed into the page,
-     not floated on top of it. Feels wrong for about a day, then it clicks. */
+  /* Surfaces. slot is DARKER than board on purpose: panels are routed into the
+     page, not floated on top of it. Feels wrong for a day, then it clicks. */
   --color-board: #e7e8e3;
   --color-slot: #d8dad3;
 
-  /* ── Ink ─────────────────────────────────────────────────────────────── */
   --color-ink: #15171a;
   --color-graphite: #4e545c;  /* 6.21:1 on board, 5.42:1 on slot. safe for body */
-
-  /* ── Deep ────────────────────────────────────────────────────────────── */
   --color-deep: #1f2b33;
 
-  /* ── Accents, both on a short leash ──────────────────────────────────────
-     lamp NEVER appears at rest. Hover, focus, active step, primary CTA. That's
-     the whole list. 1.56:1 on board means it can't carry text on light either,
-     so it's fill and stroke only up here. On deep it's 7.55:1 and fine.
+  /* Both accents on a short leash. lamp NEVER appears at rest: hover, focus,
+     active step, primary CTA, that's the list. It's 1.56:1 on board so it can't
+     carry text on light either, fill and stroke only. On deep it's 7.55:1.
 
-     signal is the logo red and the at-capacity state. Nothing else. It's 2.92:1
-     on board which fails even large text, hence signal-deep for actual words. */
+     signal is the logo red and the at-capacity state. Nothing else. */
   --color-lamp: #ffa92b;
   --color-signal: #f94040;
   --color-signal-deep: #c42a2a;  /* 4.59:1 on board. the only red you can set type in */
 
-  /* ── Type ────────────────────────────────────────────────────────────────
-     One superfamily, two widths. Archivo Expanded for display, Archivo normal
-     for body. Width contrast instead of the reflexive serif-vs-sans, and it's
-     one variable font file instead of two.
-
-     Martian Mono is for instrument readouts only: slot IDs, region codes, ping.
-     If it's a sentence, it isn't Martian Mono. */
+  /* One superfamily, two widths. Width contrast instead of the reflexive
+     serif-vs-sans, and it's one variable file instead of two. Martian Mono is
+     instrument readouts only: slot IDs, region codes, ping. Never a sentence. */
   --font-display: 'Archivo', system-ui, sans-serif;
   --font-sans: 'Archivo', system-ui, -apple-system, sans-serif;
   --font-mono: 'Martian Mono', ui-monospace, monospace;
 
-  /* ── Geometry ────────────────────────────────────────────────────────────
-     The one angle in the system, lifted off the monogram's lean. Nothing else
+  /* The one angle in the system, lifted off the monogram's lean. Nothing else
      in the layout is allowed to tilt. */
   --shear: -16deg;
   --chamfer: 10px;
@@ -80,9 +64,8 @@
     color: var(--color-ink);
   }
 
-  /* Keyboard focus. 2px lamp at 2px offset, every interactive element, no exceptions.
-     Heads up: clip-path eats outlines, so anything using .chamfer needs the ring on a
-     wrapper instead of the clipped element itself. Learned that the annoying way. */
+  /* Heads up: clip-path eats outlines, so anything using .chamfer needs the ring
+     on a wrapper instead of the clipped element. Learned that the annoying way. */
   :where(a, button, input, select, textarea, [tabindex]):focus-visible {
     outline: 2px solid var(--color-lamp);
     outline-offset: 2px;
@@ -95,9 +78,8 @@
 }
 
 @layer components {
-  /* ── Type scale ──────────────────────────────────────────────────────────
-     Display is wdth 125. The mark leans, the type stays planted; that tension is
-     the point. Don't add a skew to headlines, it collapses the whole idea. */
+  /* Display is wdth 125. The mark leans, the type stays planted; that tension is
+     the point. Don't skew headlines, it collapses the whole idea. */
   .display-xl {
     font-family: var(--font-display);
     font-variation-settings: 'wdth' 125, 'wght' 700;
@@ -143,13 +125,10 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* ── Layout ──────────────────────────────────────────────────────────────
-     Section rhythm lives on this ONE class. Do not also put padding on `section`
-     as an element selector; the old stylesheet did both and the two took turns
+  /* Section rhythm lives on this ONE class. Do not also put padding on `section`
+     as an element selector; the old stylesheet did both and they took turns
      winning depending on import order. That bug cost an evening. */
-  .section {
-    padding-block: var(--spacing-section-mobile);
-  }
+  .section { padding-block: var(--spacing-section-mobile); }
 
   @media (min-width: 1024px) {
     .section { padding-block: var(--spacing-section); }
@@ -167,7 +146,7 @@
   }
 
   /* Cut corners top-left and bottom-right, matching the monogram. Chamfer, not
-     radius. Square-everything reads unfinished; rounded reads like a SaaS template. */
+     radius. Square reads unfinished, rounded reads like a SaaS template. */
   .chamfer {
     clip-path: polygon(
       var(--chamfer) 0,

@@ -1,15 +1,8 @@
 ---
-// Stripped back to the shell. Every meta tag, canonical and schema block below is
-// load-bearing for SEO and survived the teardown untouched. What's gone: Header,
-// Footer, AnnouncementBanner, the body padding that compensated for the banner,
-// and the blanket IntersectionObserver that fade-in-up'd basically every element
-// on the site. DESIGN.md section 9 says one orchestrated moment, on the Capacity
-// Board, once. That observer was the opposite of that.
-//
-// TODO: rebuild Header + Footer against the new system before this ships anywhere.
-
+// The shell, and nothing else. No Header, no Footer, no banner. Those get built
+// against the new system rather than dragged over from the old one.
 import "../styles/global.css";
-import { siteConfig } from "../data/site";
+import { siteConfig } from "../config";
 
 interface Props {
   title: string;
@@ -17,17 +10,11 @@ interface Props {
   noindex?: boolean;
 }
 
-const {
-  title,
-  description = siteConfig.description,
-  noindex = false
-} = Astro.props;
+const { title, description = siteConfig.description, noindex = false } = Astro.props;
 
 const absoluteSiteUrl = `https://${siteConfig.domain}`;
-const absoluteLogoUrl = `${absoluteSiteUrl}${siteConfig.logo}`;
-const absoluteSocialImageUrl = `${absoluteSiteUrl}${siteConfig.socialImage ?? siteConfig.logo}`;
 const canonicalUrl = new URL(Astro.url.pathname, absoluteSiteUrl).href;
-const robotsContent = noindex ? "noindex, nofollow" : "index, follow";
+const socialImageUrl = `${absoluteSiteUrl}${siteConfig.socialImage}`;
 const brandName = "Lumix Solutions";
 const pageTitle = title.includes(brandName) ? title : `${title} | ${brandName}`;
 
@@ -36,13 +23,7 @@ const organizationSchema = {
   "@type": "Organization",
   name: brandName,
   url: absoluteSiteUrl,
-  logo: absoluteLogoUrl
-};
-const websiteSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: brandName,
-  url: absoluteSiteUrl
+  logo: `${absoluteSiteUrl}${siteConfig.logo}`
 };
 ---
 
@@ -52,7 +33,7 @@ const websiteSchema = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="robots" content={robotsContent} />
+    <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
     <meta name="theme-color" content="#e7e8e3" />
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:locale" content="en_US" />
@@ -61,20 +42,16 @@ const websiteSchema = {
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:image" content={absoluteSocialImageUrl} />
-    <meta property="og:image:secure_url" content={absoluteSocialImageUrl} />
-    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image" content={socialImageUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Lumix Solutions branded preview image" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={absoluteSocialImageUrl} />
-    <meta name="twitter:image:alt" content="Lumix Solutions branded preview image" />
+    <meta name="twitter:image" content={socialImageUrl} />
 
-    <!-- Archivo carries both the display and body voice via its width axis, so
-         this is one file doing two jobs. Martian Mono is instrument labels only. -->
+    <!-- Archivo carries both display and body via its width axis, so this is one
+         file doing two jobs. Martian Mono is instrument labels only. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -82,12 +59,10 @@ const websiteSchema = {
       rel="stylesheet"
     />
 
-    <!-- Versioned favicon URLs help bust stale crawler and CDN caches -->
-    <link rel="icon" href="/favicon.ico?v=20260419" sizes="any" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/images/logo.png?v=20260419" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/images/logo.png" />
 
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
-    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
 
     <title>{pageTitle}</title>
   </head>
