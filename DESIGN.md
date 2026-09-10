@@ -179,7 +179,30 @@ letter-spaced hero type.
 **One continuous dark field per page, with content cut into it as chamfered panels on a
 12-column measure.**
 
-Container maxes at 1280px, 24px gutters, 20px page margin on mobile, 8px spacing base.
+### The 40px module
+
+There is a grid drawn behind every page, and the layout is built on it rather than beside
+it. `--grid-cell` is 40px and it is the only number that matters here: the background
+draws at that size, and the content column is snapped down to a width the tile grid
+divides evenly, so panel edges and gutters land on lines instead of near them.
+
+For n columns with a one-cell gutter the column has to be `(n·a + n−1)` cells wide, which
+gives three families: **120k+80** at three columns, **80k+40** at two, any **40k** at one.
+`.shell` rounds down into the family for its breakpoint and whatever is left becomes
+gutter, which is why some viewport widths carry more air than others. That is the trade,
+and it is worth it: before this, tile left edges cycled 24 / 0 / 16 px off the grid across
+a single row.
+
+Horizontal registration is structural rather than calculated. The lines are painted on a
+centred box that is the content column plus sixty whole cells on each side, so a line
+falls on the column's left edge by construction, with no offset arithmetic and no
+JavaScript. Vertical registration cannot be derived, only measured, so the plane spans the
+document and one small script snaps it to whatever the page marks `[data-grid-anchor]`.
+
+Panels that sit on the grid take their height in cells too. Game tiles are seven.
+
+Container maxes at 1328px so the capped content column is exactly 1280, which is 32 cells.
+Gutters are 24px, 20px on mobile, 8px spacing base.
 Section rhythm is 96px desktop and 56px mobile, living on a single `.section` class.
 Never also put block padding on the `section` element selector; when both exist they take
 turns winning depending on import order, and that collision is the most common way a

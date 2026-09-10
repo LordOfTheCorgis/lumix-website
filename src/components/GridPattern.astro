@@ -103,7 +103,9 @@ const {
     height: var(--grid-cell);
     background: var(--grid-tint);
     opacity: 0;
-    will-change: transform, opacity;
+    /* No will-change. These twelve sit on the page forever, and hinting them
+       would mean twelve permanent compositor layers to buy nothing: WAAPI
+       promotes an opacity animation on its own while it's actually running. */
   }
 </style>
 

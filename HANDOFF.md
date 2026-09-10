@@ -41,12 +41,21 @@ three dated 2026-09-10.
 **Components:** Header, Footer, GameTile, StickyCta, CookieBanner, Analytics,
 LightRays, GridPattern, and a three-part Terminal.
 
-**GridPattern** is in Layout, so it is behind every page. Fixed to the viewport at
-`z-index: -1`, one `<pattern>` for the lines, twelve recycled rects for the cursor
-trail. It listens on `window` rather than on itself, which is why cells light up
-under the header and the copy. Nothing runs without a fine pointer, and nothing
-runs under reduced motion; the lines stay either way, because a texture is not
-an animation.
+**GridPattern** is in Layout, so it is behind every page. It spans the document
+at `z-index: -1`, draws its lines with two repeating gradients, and keeps twelve
+recycled divs for the cursor trail. It listens on `window` rather than on itself,
+which is why cells light up under the header and the copy. The trail needs a fine
+pointer and no reduced-motion preference; the lines and the alignment happen
+either way, because a texture is not an animation.
+
+**The grid and the layout are one system, not two.** `--grid-cell` is 40px, and
+`.shell` snaps its content column down to a width the tile grid divides evenly.
+DESIGN.md section 7 has the families. Consequences worth knowing before you touch
+anything: the tile gutter is one cell and the tiles are seven cells tall, so
+changing `gap-[var(--grid-cell)]` or that `min-h` on GameTile puts the staircase
+back. Vertical registration is measured off `[data-grid-anchor]`, which is on the
+tile grid; put it on whatever matters most on a new page, or leave it off and the
+grid just sits at document top.
 
 ## What does not exist yet
 
@@ -111,6 +120,12 @@ Check counts against the source: there are 29 plans across 5 games.
 `/srv/www/` on a server the site no longer lives on. Lumix moved to cPanel. It will
 fail on every push to `main` and needs rewriting or deleting once the cPanel deploy
 path is settled.
+
+**Don't set background-position off `--shell-content`.** It looks like the
+obvious way to align the grid horizontally and it is quietly wrong: that value
+carries a `100%`, and a percentage in `background-position` resolves against the
+positioning area minus the tile, not the plane width. The alignment is structural
+instead, on a centred `::before` padded by whole cells. Measured it both ways.
 
 **The ink ground lives on `<html>`, not on `<body>`.** Body is deliberately
 transparent so GridPattern can sit under it at `z-index: -1`. Put a background
