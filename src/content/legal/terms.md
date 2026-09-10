@@ -154,7 +154,11 @@ This includes claims brought by your own players or users, and claims brought by
 
 ## 11. Governing Law
 
-These Terms are governed by the laws of the United States. Disputes will be handled in a competent jurisdiction chosen by the Company.
+These Terms are governed by the laws of the State of Louisiana, without regard to its conflict of laws principles.
+
+Any dispute arising out of or relating to these Terms or to the services will be brought exclusively in the state or federal courts located in New Orleans, Louisiana. You consent to the personal jurisdiction of those courts and waive any objection based on inconvenient forum.
+
+Lumix Solutions LLC is registered in Louisiana.
 
 ## 12. Changes to Terms
 
