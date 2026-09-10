@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import GameTile from "../components/GameTile.astro";
 import LightRays from "../components/LightRays.astro";
+import TrustpilotReviews from "../components/TrustpilotReviews.astro";
 import { price } from "../lib/order";
 
 const games = (await getCollection("games"))
@@ -75,4 +76,6 @@ const cheapest = Math.min(
       </p>
     </div>
   </section>
+
+  <TrustpilotReviews />
 </Layout>

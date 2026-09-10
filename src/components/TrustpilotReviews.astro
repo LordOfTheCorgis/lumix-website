@@ -1,0 +1,94 @@
+---
+// TrustBox, which is Trustpilot's own embed. The reviews are public and
+// Trustpilot actively wants them shown, so there is nothing dubious about the
+// content. The cost is mechanical: it is a third-party script that draws an
+// iframe we cannot style, on a site that otherwise ships about 1.6KB of JS and
+// no third-party runtime at all.
+//
+// Two things soften that. The bootstrap script is not requested until the
+// section is close to the viewport, so it costs nothing on first paint and
+// nothing at all for anyone who never scrolls this far. And the markup degrades
+// to a plain link to the profile with no JS, which is Trustpilot's own
+// convention: their script replaces the anchor once it loads.
+//
+// Both IDs come from the TrustBox page in the Trustpilot Business account
+// (Integrations > TrustBox). There is deliberately no default template id here:
+// a wrong one renders an empty box with no error, which is worse than rendering
+// nothing. Missing config means this whole section disappears, same as Analytics.
+
+const businessUnitId = import.meta.env.PUBLIC_TRUSTPILOT_BUSINESSUNIT_ID;
+const templateId = import.meta.env.PUBLIC_TRUSTPILOT_TEMPLATE_ID;
+const height = import.meta.env.PUBLIC_TRUSTPILOT_HEIGHT ?? "350px";
+const profileUrl = "https://www.trustpilot.com/review/lumixsolutions.org";
+const configured = Boolean(businessUnitId && templateId);
+---
+
+{configured && (
+  <section class="section border-t border-[var(--edge)]">
+    <div class="shell">
+      <h2 class="title">Reviews</h2>
+      <p class="small text-fog mt-3 max-w-md">
+        Collected by Trustpilot, not by us.
+      </p>
+
+      <div
+        class="mt-8"
+        data-trustpilot
+        data-locale="en-US"
+        data-template-id={templateId}
+        data-businessunit-id={businessUnitId}
+        data-style-height={height}
+        data-style-width="100%"
+        data-theme="dark"
+      >
+        <a href={profileUrl} target="_blank" rel="noopener noreferrer">
+          Read our reviews on Trustpilot
+        </a>
+      </div>
+
+    <script is:inline>
+      // Trustpilot's bootstrap only auto-scans for .trustpilot-widget if it
+      // lands before the element is parsed. The class goes on at load time and
+      // we render this one explicitly, so nothing happens if the script never
+      // arrives and the anchor underneath stays as the fallback.
+      (function () {
+        var box = document.querySelector("[data-trustpilot]");
+        if (!box) return;
+        var started = false;
+
+        function load() {
+          if (started) return;
+          started = true;
+          box.classList.add("trustpilot-widget");
+
+          var s = document.createElement("script");
+          s.src = "https://widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js";
+          s.async = true;
+          s.addEventListener("load", function () {
+            if (window.Trustpilot && window.Trustpilot.loadFromElement) {
+              window.Trustpilot.loadFromElement(box, true);
+            }
+          });
+          document.head.appendChild(s);
+        }
+
+        // 400px of runway so it has usually finished drawing by the time it's read.
+        if (!("IntersectionObserver" in window)) return load();
+        var io = new IntersectionObserver(
+          function (entries) {
+            for (var i = 0; i < entries.length; i++) {
+              if (entries[i].isIntersecting) {
+                io.disconnect();
+                load();
+                return;
+              }
+            }
+          },
+          { rootMargin: "400px" }
+        );
+        io.observe(box);
+      })();
+    </script>
+    </div>
+  </section>
+)}
