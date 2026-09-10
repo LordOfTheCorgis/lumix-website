@@ -127,10 +127,16 @@ data store. Removing it mid-session produced both an "collection does not exist 
 is empty" warning and a `LocalImageUsedWrongly` error, twice, neither of which was a
 real bug. Both are gitignored; there is no reason to delete either.
 
-**And don't run `astro build` while `astro dev` is up either**, which is the same
-trap wearing a different hat and cost an hour a second time. Both share
-`.astro/data-store.json`. A build rewrites it underneath the running dev server,
-the dev server keeps serving entries where `image()` never resolved, and you get:
+**`astro dev` is a background daemon in Astro 7, and Ctrl+C does not stop it.**
+`astro dev status` will say "background" and the process is reparented away from
+your shell, so closing the terminal leaves it running. This is how a dev server
+ends up five hours old without anyone meaning to keep it. To actually restart it:
+
+```
+astro dev stop && npm run dev
+```
+
+**A long-lived dev server eventually serves unresolved content images:**
 
 ```
 LocalImageUsedWrongly: `Image`'s and `getImage`'s `src` parameter must be an
@@ -138,52 +144,17 @@ imported image or a URL, it cannot be a string filepath.
 Received `../../assets/games/beamng.jpg`.
 ```
 
-It looks like a schema or a YAML bug and is neither. Restarting the dev server
-fixes it; nothing needs deleting. The giveaway is that `astro build` succeeds on
-its own and emits the webp derivatives correctly, so only dev is wrong. If you
-need to verify a build mid-session, stop dev first.
+It reads like a schema or YAML bug and is neither; `image()` in
+`src/content.config.ts` and the YAML paths are both correct. **Restarting the dev
+server fixes it, and nothing needs deleting** — a fresh server against the same
+on-disk `.astro/data-store.json` serves the images resolved. That much is tested.
 
-**`popular: true` sits before `specs` in the old catalog**, not after `pricing`. A
-parser that assumes otherwise silently drops one plan per game and all of Terraria.
-Check counts against the source: there are 29 plans across 5 games.
-
-**The deploy workflow is dead.** `.github/workflows/deploy.yml` rsyncs over SSH to
-`/srv/www/` on a server the site no longer lives on. Lumix moved to cPanel. It will
-fail on every push to `main` and needs rewriting or deleting once the cPanel deploy
-path is settled.
-
-**`--shell-content` carries a `100%`,** which resolves against whatever it is used
-in. That is fine everywhere it is used today, but it makes the value useless for
-`background-position`, where a percentage means the positioning area minus the
-tile rather than the element width. If you ever draw the module again, don't
-reach for that.
-
-**The trail plane needs a positioned ancestor, and it fails silently without
-one.** It is `position: absolute; inset: 0`, so with nothing positioned around it
-the containing block becomes the viewport: the plane comes out exactly 100vh
-tall, `overflow: hidden` clips every cell below that, and the trail appears to
-"stop working" somewhere around the fold with no error anywhere. It cost an hour.
-The wrapper in Layout.astro is doing that job and also setting where the effect
-ends. Cells are positioned in plane-local coordinates, so moving the wrapper is
-safe; assuming the plane starts at the document's top left is not.
-
-**The ink ground lives on `<html>`, not on `<body>`.** Body is deliberately
-transparent so GridPattern can sit under it at `z-index: -1`. Put a background
-back on body, or re-add `bg-ink` to its class list, and the grid disappears with
-no error and no warning.
-
-**Headless Chrome reports `hover: none` and `pointer: coarse`,** so the grid's
-trail correctly refuses to bind and screenshots come back with a bare grid. That
-is the gate working, not a bug. To exercise it, launch with
-`--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4`.
-
-**Magic UI snippets are pinned to old library versions, and cobe is the worst
-of them.** The published globe snippet asks for `cobe@0.6.4` and drives rotation
-from an `onRender` callback. Current cobe is 2.x, where `onRender` was removed
-outright: it is not in `COBEOptions` any more. Pass it and nothing complains,
-nothing throws, and the globe renders exactly one frame and then sits there. v2
-gives you `update(state)` and expects you to own the rAF loop, which Globe.astro
-does. If a ported component is frozen on frame one, check the version first.
+What causes it is still unknown, but these were tried against a healthy running
+dev server and none of them reproduced it, so don't spend the time again:
+`astro build` (twice), `npm install`, touching a game YAML, touching
+`content.config.ts`. An earlier version of this note blamed builds sharing the
+data store. That was wrong and is now disproven. If you do need a hard reset,
+`astro dev --force` clears the content layer cache.
 
 **Astro inlines small CSS and JS into the HTML** rather than emitting bundles.
 Grepping `dist/_astro/*.css` for a component's styles will find nothing and mean
