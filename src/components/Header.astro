@@ -1,0 +1,132 @@
+---
+// Sticky, transparent at the top, hairline and blur once you scroll. That one
+// transition is the only thing the header does; premium here means restraint,
+// not another animated element.
+import { nav, links, site } from "../config";
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) =>
+  href !== "/" && (path === href || path.startsWith(href + "/"));
+---
+
+<header
+  data-header
+  class="sticky top-0 z-50 border-b border-transparent transition-[background-color,border-color,backdrop-filter] duration-200"
+>
+  <div class="shell flex h-20 items-center gap-8">
+    <a href="/" class="flex shrink-0 items-center gap-3" aria-label={`${site.name} home`}>
+      <img src="/images/logo.png" alt="" width="32" height="32" class="h-8 w-8" />
+      <span class="instrument hidden text-paper sm:block">{site.name}</span>
+    </a>
+
+    <nav aria-label="Primary" class="ml-auto hidden items-center gap-8 md:flex">
+      {nav.map((item) => (
+        <a
+          href={item.href}
+          aria-current={isCurrent(item.href) ? "page" : undefined}
+          class:list={[
+            "text-sm transition-colors duration-150 hover:text-paper",
+            isCurrent(item.href) ? "text-paper" : "text-fog",
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <!-- The one red thing up here. Ink on red, never paper: paper-on-red is
+         3.02:1 and fails AA (DESIGN.md section 5, rule 2). -->
+    <a
+      href={links.billing}
+      class="chamfer ml-auto hidden bg-red px-4 py-2 text-sm font-medium text-ink transition-colors duration-150 hover:bg-red-pressed md:ml-0 md:block"
+    >
+      Client area
+    </a>
+
+    <button
+      type="button"
+      data-menu-toggle
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+      class="ml-auto flex h-10 w-10 items-center justify-center md:hidden"
+    >
+      <span class="sr-only">Menu</span>
+      <span data-menu-icon class="relative block h-3 w-5">
+        <span class="absolute left-0 top-0 h-px w-full bg-paper transition-transform duration-200"></span>
+        <span class="absolute bottom-0 left-0 h-px w-full bg-paper transition-transform duration-200"></span>
+      </span>
+    </button>
+  </div>
+
+  <div
+    id="mobile-nav"
+    data-menu-panel
+    hidden
+    class="border-t border-[var(--edge)] bg-ink md:hidden"
+  >
+    <nav aria-label="Primary" class="shell flex flex-col py-4">
+      {nav.map((item) => (
+        <a
+          href={item.href}
+          aria-current={isCurrent(item.href) ? "page" : undefined}
+          class:list={[
+            "border-b border-[var(--edge)] py-4 text-sm last:border-b-0",
+            isCurrent(item.href) ? "text-paper" : "text-fog",
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+      <a
+        href={links.billing}
+        class="chamfer mt-4 bg-red px-4 py-3 text-center text-sm font-medium text-ink"
+      >
+        Client area
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-header]");
+  const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+  const panel = document.querySelector<HTMLElement>("[data-menu-panel]");
+
+  if (header) {
+    // Class swap rather than inline styles so the transition on the element still
+    // applies. 8px instead of 0 so a rubber-band scroll doesn't flicker it.
+    const onScroll = () => {
+      const scrolled = window.scrollY > 8;
+      header.classList.toggle("border-[var(--edge)]", scrolled);
+      header.classList.toggle("border-transparent", !scrolled);
+      header.classList.toggle("bg-ink/80", scrolled);
+      header.classList.toggle("backdrop-blur-md", scrolled);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  if (toggle && panel) {
+    const setOpen = (open: boolean) => {
+      panel.hidden = !open;
+      toggle.setAttribute("aria-expanded", String(open));
+    };
+
+    toggle.addEventListener("click", () => {
+      setOpen(panel.hidden);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !panel.hidden) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    // Reopening on resize into desktop leaves the panel stuck open behind the
+    // md: breakpoint. Close it on the way past.
+    window.matchMedia("(min-width: 768px)").addEventListener("change", (e) => {
+      if (e.matches) setOpen(false);
+    });
+  }
+</script>

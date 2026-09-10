@@ -1,0 +1,63 @@
+---
+// No red down here. The header already spends the budget, and a footer is the
+// last place that needs an accent (DESIGN.md section 5).
+import { footerNav, social, site } from "../config";
+
+const year = new Date().getFullYear();
+const external = (href: string) => href.startsWith("http");
+---
+
+<footer class="mt-auto border-t border-[var(--edge)]">
+  <div class="shell py-16 lg:py-20">
+    <div class="grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-20">
+      <div>
+        <a href="/" class="flex items-center gap-3" aria-label={`${site.name} home`}>
+          <img src="/images/logo.png" alt="" width="32" height="32" class="h-8 w-8" />
+          <span class="instrument text-paper">{site.name}</span>
+        </a>
+        <p class="small text-fog mt-5 max-w-xs">{site.tagline}</p>
+      </div>
+
+      <div class="grid gap-10 sm:grid-cols-3">
+        {footerNav.map((group) => (
+          <div>
+            <h2 class="instrument text-slate">{group.heading}</h2>
+            <ul class="mt-5 space-y-3">
+              {group.items.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    rel={external(item.href) ? "noopener" : undefined}
+                    class="text-sm text-fog transition-colors duration-150 hover:text-paper"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="mt-16 flex flex-col gap-6 border-t border-[var(--edge)] pt-8 sm:flex-row sm:items-center sm:justify-between">
+      <p class="small text-slate">© {year} {site.legalName}. All rights reserved.</p>
+
+      <!-- Text, not an icon row. Six brand glyphs would be six more things to
+           keep on-brand for no gain, and this reads quieter. -->
+      <ul class="flex flex-wrap gap-x-6 gap-y-2">
+        {social.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              rel="noopener"
+              class="text-sm text-fog transition-colors duration-150 hover:text-paper"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</footer>

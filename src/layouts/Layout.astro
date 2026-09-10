@@ -2,6 +2,8 @@
 // The shell. SEO tags, the two typefaces, and a slot. Header and Footer get built
 // against the new system when there's a system to build them against.
 import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 
 interface Props {
   title: string;
@@ -62,8 +64,10 @@ const organizationSchema = {
     <title>{pageTitle}</title>
   </head>
   <body class="min-h-screen flex flex-col bg-ink text-paper">
+    <Header />
     <main class="flex-1">
       <slot />
     </main>
+    <Footer />
   </body>
 </html>

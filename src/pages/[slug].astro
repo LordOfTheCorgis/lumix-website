@@ -1,0 +1,89 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const docs = await getCollection("legal");
+  return docs.map((doc) => ({ params: { slug: doc.id }, props: { doc } }));
+}
+
+const { doc } = Astro.props;
+const { Content } = await render(doc);
+---
+
+<Layout title={doc.data.title} description={doc.data.description}>
+  <article class="section">
+    <div class="shell max-w-3xl">
+      <p class="instrument text-fog">Last updated {doc.data.lastUpdated}</p>
+      <h1 class="display-l mt-6">{doc.data.title}</h1>
+
+      <div class="legal-prose mt-12">
+        <Content />
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  /* Scoped rather than global: legal copy is the only long-form prose on this
+     site, and giving it its own rhythm beats bolting a prose plugin on. */
+  .legal-prose :global(h2) {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--edge);
+  }
+
+  .legal-prose :global(h2:first-child) {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .legal-prose :global(h3) {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 2rem;
+    color: var(--color-paper);
+  }
+
+  .legal-prose :global(p),
+  .legal-prose :global(li) {
+    color: var(--color-fog);
+    margin-top: 1rem;
+    max-width: 65ch;
+  }
+
+  .legal-prose :global(ul) {
+    margin-top: 1rem;
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .legal-prose :global(li) {
+    position: relative;
+    padding-left: 1.25rem;
+  }
+
+  /* Square bullet, not a disc. Everything else in this system has cut corners. */
+  .legal-prose :global(li)::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 4px;
+    height: 4px;
+    background: var(--color-slate);
+  }
+
+  .legal-prose :global(a) {
+    color: var(--color-red);
+    text-underline-offset: 3px;
+    text-decoration: underline;
+  }
+</style>
