@@ -4,6 +4,7 @@ import Layout from "../layouts/Layout.astro";
 import GameTile from "../components/GameTile.astro";
 import LightRays from "../components/LightRays.astro";
 import TrustpilotReviews from "../components/TrustpilotReviews.astro";
+import Globe from "../components/Globe.astro";
 import { price } from "../lib/order";
 
 const games = (await getCollection("games"))
@@ -13,6 +14,15 @@ const games = (await getCollection("games"))
 const cheapest = Math.min(
   ...games.flatMap((g) => g.data.plans.map((p) => p.pricing.monthly))
 );
+
+// Same four the globe marks, written out so the information survives a browser
+// with no WebGL. West to east.
+const locations = [
+  { city: "Salt Lake City", region: "Utah" },
+  { city: "Dallas", region: "Texas" },
+  { city: "Ashburn", region: "Virginia" },
+  { city: "Miami", region: "Florida" },
+];
 ---
 
 <Layout
@@ -74,6 +84,31 @@ const cheapest = Math.min(
         Every plan includes DDoS protection, full file access, and a choice of
         Miami or Ashburn.
       </p>
+    </div>
+  </section>
+
+  <!-- The globe's markers are the only red in this viewport, which is what keeps
+       four of them inside the two-per-viewport rule. Don't add a CTA here. -->
+  <section class="section border-t border-[var(--edge)]">
+    <div class="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h2 class="title">Where your server actually runs.</h2>
+        <p class="lead text-fog mt-6 max-w-md">
+          Four regions across the country, so your players connect to the one
+          nearest them instead of the one that was convenient for us.
+        </p>
+
+        <ul class="mt-10 grid grid-cols-2 gap-x-6 gap-y-5 max-w-sm">
+          {locations.map((l) => (
+            <li>
+              <p class="instrument text-slate">{l.region}</p>
+              <p class="mt-1 font-medium">{l.city}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <Globe class="lg:ml-auto" />
     </div>
   </section>
 

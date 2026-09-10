@@ -105,6 +105,13 @@ effectively invisible. Every card uses `var(--edge)`. Never reach for a shadow.
 with vanilla JS and CSS instead of pulling in React and `motion`. Light Rays needs
 no JavaScript at all; it randomises at build time from a fixed seed.
 
+**The globe is the second motion exception, and the last one.** It autorotates
+because that is the component Evan asked for, and it is cobe on a canvas rather
+than anything React. Under `prefers-reduced-motion` it holds still facing the
+markers and stays draggable, which is the compromise; it is not a slower spin.
+Verified by capturing composited frames a second apart: three distinct frames
+normally, one under reduce.
+
 **Light Rays is a deliberate exception** to the one-orchestrated-moment motion rule,
 justified only because the company is named Lumix. Keep it in the hero. Repeating it
 elsewhere turns a signature into wallpaper.
@@ -169,6 +176,14 @@ no error and no warning.
 trail correctly refuses to bind and screenshots come back with a bare grid. That
 is the gate working, not a bug. To exercise it, launch with
 `--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4`.
+
+**Magic UI snippets are pinned to old library versions, and cobe is the worst
+of them.** The published globe snippet asks for `cobe@0.6.4` and drives rotation
+from an `onRender` callback. Current cobe is 2.x, where `onRender` was removed
+outright: it is not in `COBEOptions` any more. Pass it and nothing complains,
+nothing throws, and the globe renders exactly one frame and then sits there. v2
+gives you `update(state)` and expects you to own the rAF loop, which Globe.astro
+does. If a ported component is frozen on frame one, check the version first.
 
 **Astro inlines small CSS and JS into the HTML** rather than emitting bundles.
 Grepping `dist/_astro/*.css` for a component's styles will find nothing and mean

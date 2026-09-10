@@ -1,0 +1,189 @@
+---
+// Magic UI's globe, ported off React. Same cobe underneath, none of the runtime.
+//
+// Two things about the upstream snippet do not survive contact with the current
+// library. It pins cobe@0.6.4 and drives rotation from an `onRender` callback,
+// and v2 deleted onRender outright: COBEOptions has no such field any more, so
+// that loop silently never runs and you get a globe frozen on frame one. v2 hands
+// you `update(state)` instead and expects you to own the loop, which is what
+// happens below. The other is `motion`'s useSpring for drag inertia, which is a
+// whole animation library for one critically damped spring; that's the twelve
+// lines in `step`.
+//
+// Opens facing North America. phi 0 / theta 0.5 was measured, not guessed: at
+// phi 0 the four markers' centroid lands 4px off dead centre horizontally on a
+// 600px canvas, which also matches what cobe's own locationToAngles formula
+// predicts for these coordinates.
+
+interface Props {
+  class?: string;
+}
+const { class: className = "" } = Astro.props;
+
+// The four regions, north to south by longitude so the list reads west to east.
+const LOCATIONS = [
+  { city: "Salt Lake City", region: "UT", lat: 40.7608, lng: -111.891 },
+  { city: "Dallas", region: "TX", lat: 32.7767, lng: -96.797 },
+  { city: "Ashburn", region: "VA", lat: 39.0438, lng: -77.4874 },
+  { city: "Miami", region: "FL", lat: 25.7617, lng: -80.1918 },
+];
+---
+
+<div class:list={["globe", className]} data-globe>
+  {/* Decorative: every city is in the list beside it as real text, so nothing
+      here is the only copy of anything. Also the fallback when WebGL is missing
+      or blocked, which is more common than it sounds on locked-down machines. */}
+  <canvas data-globe-canvas aria-hidden="true"></canvas>
+  <script type="application/json" data-globe-markers set:html={JSON.stringify(
+    LOCATIONS.map((l) => [l.lat, l.lng])
+  )} />
+</div>
+
+<style>
+  .globe {
+    position: relative;
+    margin-inline: auto;
+    width: 100%;
+    max-width: 34rem;
+    aspect-ratio: 1;
+  }
+
+  .globe canvas {
+    width: 100%;
+    height: 100%;
+    /* Grab affordance only once it's actually interactive. */
+    cursor: auto;
+    opacity: 0;
+    transition: opacity 500ms ease;
+    contain: layout paint size;
+    touch-action: pan-y;
+  }
+
+  .globe[data-ready] canvas {
+    opacity: 1;
+    cursor: grab;
+  }
+
+  .globe[data-dragging] canvas {
+    cursor: grabbing;
+  }
+</style>
+
+<script>
+  const host = document.querySelector<HTMLElement>("[data-globe]");
+
+  if (host) {
+    const canvas = host.querySelector<HTMLCanvasElement>("[data-globe-canvas]")!;
+    const markers: [number, number][] = JSON.parse(
+      host.querySelector("[data-globe-markers]")!.textContent || "[]"
+    );
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let globe: { update: (s: any) => void; destroy: () => void } | null = null;
+    let frame = 0;
+    let width = 0;
+
+    // Rotation, and the spring that carries a flick after you let go. Replaces
+    // motion's useSpring: mass 1, stiffness 100, damping 30, same as upstream.
+    let phi = 0;
+    let target = 0;
+    let value = 0;
+    let velocity = 0;
+    let dragStart: number | null = null;
+    let last = 0;
+
+    function measure() {
+      width = canvas.offsetWidth;
+    }
+
+    function step(now: number) {
+      frame = requestAnimationFrame(step);
+      if (!globe) return;
+
+      // Clamped so a backgrounded tab doesn't return and fling the spring.
+      const dt = Math.min((now - last) / 1000 || 0, 1 / 30);
+      last = now;
+
+      const accel = (target - value) * 100 - velocity * 30;
+      velocity += accel * dt;
+      value += velocity * dt;
+
+      // Autorotate only while nobody is holding it, and never under reduced
+      // motion: there it sits still, facing the markers, and still drags.
+      if (dragStart === null && !still.matches) phi += 0.005;
+
+      globe.update({ phi: phi + value, width: width * 2, height: width * 2 });
+    }
+
+    async function start() {
+      if (globe) return;
+      measure();
+      if (!width) return;
+
+      const { default: createGlobe } = await import("cobe");
+      globe = createGlobe(canvas, {
+        devicePixelRatio: Math.min(window.devicePixelRatio, 2),
+        width: width * 2,
+        height: width * 2,
+        phi: 0,
+        theta: 0.5,
+        dark: 1,
+        diffuse: 0.5,
+        mapSamples: 16000,
+        mapBrightness: 3.2,
+        baseColor: [0.26, 0.26, 0.29],
+        markerColor: [1, 0.298, 0.298],
+        glowColor: [0.13, 0.13, 0.15],
+        markers: markers.map((location) => ({ location, size: 0.07 })),
+      });
+
+      host!.setAttribute("data-ready", "");
+      last = performance.now();
+      frame = requestAnimationFrame(step);
+    }
+
+    function stop() {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      globe?.destroy();
+      globe = null;
+      host!.removeAttribute("data-ready");
+    }
+
+    // A WebGL globe repainting every frame behind a footer nobody is looking at
+    // is just battery. Tear it down when it leaves, rebuild when it returns;
+    // phi is kept out here so it picks up where it stopped.
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) e.isIntersecting ? start() : stop();
+      },
+      { rootMargin: "200px" }
+    );
+    io.observe(host);
+
+    window.addEventListener("resize", () => {
+      measure();
+    });
+
+    // Drag to spin. Pointer events cover mouse, touch and pen in one path.
+    canvas.addEventListener("pointerdown", (e) => {
+      dragStart = e.clientX - value * 1400;
+      host!.setAttribute("data-dragging", "");
+      canvas.setPointerCapture(e.pointerId);
+    });
+
+    function release() {
+      dragStart = null;
+      host!.removeAttribute("data-dragging");
+    }
+
+    canvas.addEventListener("pointerup", release);
+    canvas.addEventListener("pointercancel", release);
+
+    canvas.addEventListener("pointermove", (e) => {
+      if (dragStart === null) return;
+      // 1400 is upstream's MOVEMENT_DAMPING: pixels dragged per radian-ish.
+      target = (e.clientX - dragStart) / 1400;
+    });
+  }
+</script>
