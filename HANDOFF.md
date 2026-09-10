@@ -120,6 +120,22 @@ data store. Removing it mid-session produced both an "collection does not exist 
 is empty" warning and a `LocalImageUsedWrongly` error, twice, neither of which was a
 real bug. Both are gitignored; there is no reason to delete either.
 
+**And don't run `astro build` while `astro dev` is up either**, which is the same
+trap wearing a different hat and cost an hour a second time. Both share
+`.astro/data-store.json`. A build rewrites it underneath the running dev server,
+the dev server keeps serving entries where `image()` never resolved, and you get:
+
+```
+LocalImageUsedWrongly: `Image`'s and `getImage`'s `src` parameter must be an
+imported image or a URL, it cannot be a string filepath.
+Received `../../assets/games/beamng.jpg`.
+```
+
+It looks like a schema or a YAML bug and is neither. Restarting the dev server
+fixes it; nothing needs deleting. The giveaway is that `astro build` succeeds on
+its own and emits the webp derivatives correctly, so only dev is wrong. If you
+need to verify a build mid-session, stop dev first.
+
 **`popular: true` sits before `specs` in the old catalog**, not after `pricing`. A
 parser that assumes otherwise silently drops one plan per game and all of Terraria.
 Check counts against the source: there are 29 plans across 5 games.
