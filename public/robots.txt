@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Order flow lives in WHMCS, not here. Nothing to crawl and everything behind it
+# is session state.
+Disallow: /cart
+Disallow: /admin
+
+Sitemap: https://lumixsolutions.org/sitemap-index.xml

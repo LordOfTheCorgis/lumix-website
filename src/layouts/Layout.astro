@@ -4,22 +4,32 @@
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import StickyCta from "../components/StickyCta.astro";
 
 interface Props {
   title: string;
   description?: string;
   noindex?: boolean;
+  /** Absolute or root-relative path. Defaults to the brand card. */
+  image?: string;
 }
 
 const DEFAULT_DESCRIPTION =
   "Game server hosting for communities. A finite number of servers, run properly.";
 
-const { title, description = DEFAULT_DESCRIPTION, noindex = false } = Astro.props;
+const {
+  title,
+  description = DEFAULT_DESCRIPTION,
+  noindex = false,
+  image = "/images/og-image.png",
+} = Astro.props;
 
 const siteUrl = "https://lumixsolutions.org";
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 const brandName = "Lumix Solutions";
 const pageTitle = title.includes(brandName) ? title : `${title} | ${brandName}`;
+// OG scrapers do not resolve relative URLs. Always absolute.
+const ogImage = new URL(image, siteUrl).href;
 
 const organizationSchema = {
   "@context": "https://schema.org",
@@ -44,9 +54,14 @@ const organizationSchema = {
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Lumix Solutions" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <!-- Space Grotesk for display, Inter for everything read at length. Both
          variable, one request. -->
@@ -57,7 +72,11 @@ const organizationSchema = {
       rel="stylesheet"
     />
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
 
@@ -69,5 +88,6 @@ const organizationSchema = {
       <slot />
     </main>
     <Footer />
+    <StickyCta />
   </body>
 </html>

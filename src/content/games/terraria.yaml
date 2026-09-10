@@ -4,7 +4,7 @@ shortLabel: "Terraria"
 status: "live"
 tagline: "Small worlds, steady tick rate, no fuss."
 description: "Tuned for vanilla and lightly modded Terraria worlds. Sized for friend groups rather than public servers, and priced accordingly."
-image: "/images/games/terraria.jpg"
+image: "../../assets/games/terraria.jpg"
 accent: "#22d3ee"
 mark: "TR"
 highlights:

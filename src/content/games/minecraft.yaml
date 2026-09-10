@@ -4,7 +4,7 @@ shortLabel: "Minecraft"
 status: "live"
 tagline: "Vanilla, modded, or a 200-plugin network. Same hardware either way."
 description: "Java and Bedrock ready. Every tier ships with unmetered slots and enough allocated heap for modpacks that actually chew memory, not the theoretical minimum."
-image: "/images/games/minecraft.jpg"
+image: "../../assets/games/minecraft.jpg"
 accent: "#4ade80"
 mark: "MC"
 highlights:

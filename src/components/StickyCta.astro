@@ -1,0 +1,52 @@
+---
+// Mobile only. Appears once the hero CTA has scrolled away, so there is always a
+// way to order without hunting for one. Hidden at md and up, where the header
+// button is already on screen.
+
+interface Props {
+  href?: string;
+  label?: string;
+}
+
+const { href = "/#pick", label = "Order a server" } = Astro.props;
+---
+
+<div
+  data-sticky-cta
+  hidden
+  class="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--edge)] bg-ink/95 backdrop-blur-md md:hidden"
+>
+  <div class="shell py-3">
+    <a
+      href={href}
+      class="chamfer flex items-center justify-center gap-2 bg-red px-6 py-3.5 font-medium text-ink"
+    >
+      {label}
+      <span aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+</div>
+
+<script>
+  const bar = document.querySelector<HTMLElement>("[data-sticky-cta]");
+
+  if (bar) {
+    // Show once past roughly one screen, which is where the hero button has
+    // left. Using scrollY rather than an observer keeps this dependency-free and
+    // correct on pages that have no hero at all.
+    const threshold = () => Math.min(window.innerHeight * 0.8, 640);
+
+    const update = () => {
+      const show = window.scrollY > threshold();
+      if (show === bar.hidden) {
+        bar.hidden = !show;
+        // Keep the bar off the footer's last row.
+        document.body.style.paddingBottom = show ? `${bar.offsetHeight}px` : "";
+      }
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+  }
+</script>

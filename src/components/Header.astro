@@ -2,6 +2,8 @@
 // Sticky, transparent at the top, hairline and blur once you scroll. That one
 // transition is the only thing the header does; premium here means restraint,
 // not another animated element.
+import { Image } from "astro:assets";
+import logo from "../assets/logo.png";
 import { nav, links, site } from "../config";
 
 const path = Astro.url.pathname;
@@ -15,7 +17,7 @@ const isCurrent = (href: string) =>
 >
   <div class="shell flex h-20 items-center gap-8">
     <a href="/" class="flex shrink-0 items-center gap-3" aria-label={`${site.name} home`}>
-      <img src="/images/logo.png" alt="" width="32" height="32" class="h-8 w-8" />
+      <Image src={logo} alt="" width={32} height={32} class="h-8 w-8" />
       <span class="instrument hidden text-paper sm:block">{site.name}</span>
     </a>
 

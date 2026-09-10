@@ -36,14 +36,17 @@ const plan = z.object({
 
 const games = defineCollection({
   loader: glob({ pattern: "*.yaml", base: "./src/content/games" }),
-  schema: z.object({
+  // image() hands back ImageMetadata so <Image> can emit webp, a srcset, and
+  // intrinsic width/height. Keeping key art in public/ meant shipping a 472KB
+  // Palworld jpg to every visitor.
+  schema: ({ image }) => z.object({
     slug: z.string(),
     label: z.string(),
     shortLabel: z.string(),
     status: z.enum(["live", "beta", "planned"]),
     tagline: z.string(),
     description: z.string(),
-    image: z.string(),
+    image: image(),
     accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
     mark: z.string().min(2).max(4),
     highlights: z.array(z.string()).optional(),

@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 import { orderUrl, price } from "../../lib/order";
 
@@ -20,9 +21,11 @@ const plans = [...g.plans].sort((a, b) => a.pricing.monthly - b.pricing.monthly)
 
 <Layout title={g.label} description={g.description}>
   <section class="relative overflow-hidden border-b border-[var(--edge)]">
-    <img
+    <Image
       src={g.image}
       alt=""
+      widths={[800, 1600]}
+      sizes="100vw"
       class="absolute inset-0 h-full w-full object-cover opacity-30"
       loading="eager"
     />

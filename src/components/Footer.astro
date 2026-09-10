@@ -1,6 +1,8 @@
 ---
 // No red down here. The header already spends the budget, and a footer is the
 // last place that needs an accent (DESIGN.md section 5).
+import { Image } from "astro:assets";
+import logo from "../assets/logo.png";
 import { footerNav, social, site } from "../config";
 
 const year = new Date().getFullYear();
@@ -12,7 +14,7 @@ const external = (href: string) => href.startsWith("http");
     <div class="grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-20">
       <div>
         <a href="/" class="flex items-center gap-3" aria-label={`${site.name} home`}>
-          <img src="/images/logo.png" alt="" width="32" height="32" class="h-8 w-8" />
+          <Image src={logo} alt="" width={32} height={32} class="h-8 w-8" />
           <span class="instrument text-paper">{site.name}</span>
         </a>
         <p class="small text-fog mt-5 max-w-xs">{site.tagline}</p>
