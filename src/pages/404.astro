@@ -1,13 +1,6 @@
 ---
-import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import LightRays from "../components/LightRays.astro";
-
-// A 404 that only apologises wastes the visit. Someone who mistyped a game URL
-// is still someone trying to order, so put the games right here.
-const games = (await getCollection("games"))
-  .filter((g) => g.data.status === "live")
-  .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
 ---
 
 <Layout title="Page not found" noindex={true}>
@@ -18,7 +11,8 @@ const games = (await getCollection("games"))
       <p class="instrument text-fog">Error 404</p>
       <h1 class="display-l mt-6 max-w-2xl">This page isn't here.</h1>
       <p class="lead text-fog mt-6 max-w-lg">
-        The link is wrong or the page moved. Everything we host is one click away.
+        The link is wrong or the page moved. Pick your game on the home page and
+        you'll be back on track.
       </p>
 
       <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
@@ -33,19 +27,6 @@ const games = (await getCollection("games"))
           Check service status
         </a>
       </div>
-
-      <ul class="mt-14 flex flex-wrap gap-x-6 gap-y-3">
-        {games.map((game) => (
-          <li>
-            <a
-              href={`/games/${game.data.slug}`}
-              class="small text-fog transition-colors duration-150 hover:text-paper"
-            >
-              {game.data.shortLabel}
-            </a>
-          </li>
-        ))}
-      </ul>
     </div>
   </section>
 </Layout>
