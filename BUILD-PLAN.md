@@ -1,240 +1,199 @@
-# Lumix Website — Content & CMS Build Plan
+# Lumix Website — Admin & Content Build Plan
 
-Goal: edit games, plans, staff, legal copy and sold-out state without opening an
-editor or touching source. Companion to DESIGN.md.
+Goal: `lumixsolutions.org/admin`, password protected, where games, plans, locations,
+staff, legal copy and sold-out flags get edited without touching source or waiting on a
+build. Companion to DESIGN.md.
 
-Verified against this repo: Astro 7.3.2, Tailwind 4.3.3, static output, deployed by
-`.github/workflows/deploy.yml` which rsyncs `dist/` to `/srv/www/lumixsolutions.org/`.
+Scope note: this is the marketing site only. WHMCS is a separate product on a separate
+host. The site never calls it, never reads stock from it, and never processes payment.
+The only contact is that the configurator assembles a `cart.php` URL and hands the
+customer over. Nothing in this plan changes that.
+
+Verified against this repo: Astro 7.3.2, Tailwind 4.3.3, `@astrojs/node@11.1.5`
+(peer `astro: ^7.2.1`, compatible). Astro 7 requires **Node 22.12+**.
 
 ---
 
 ## 1. The decision
 
-**Keystatic, git-backed, on top of Astro content collections.**
+**Run the site as an Astro SSR app under cPanel's Node.js application manager, with
+`/admin` as real authenticated routes in the same codebase.**
 
-Content lives as YAML and Markdoc files in the repo. Keystatic is an admin UI that
-commits to GitHub. Push triggers Actions, Actions builds, rsync deploys. No database,
-no vendor lock, no monthly cost, and the existing pipeline is unchanged.
+This replaces the git-CMS plan wholesale. That plan existed to work around a static
+build; on a server that can run Node, the workaround is unnecessary and strictly worse.
 
-Confirmed compatible: `@keystatic/astro@6` declares `astro: '5 || 6 || 7'`.
+What it buys:
 
-Why not the alternatives. Sanity and Contentful still require a full rebuild for a
-static site, so you take on a vendor and gain nothing git doesn't give you. Directus or
-Payload self-hosted means running Postgres plus a Node service on your box to manage
-content that changes weekly, which is real ops for no benefit. Decap and Sveltia are
-lighter and stay fully static, but their schemas are untyped YAML, and this content
-carries WHMCS product IDs and prices where a typo bills a customer wrong. Keystatic's
-TypeScript schemas plus zod validation mean that breaks the build instead of the cart.
+- `/admin` is a route on the real domain, not a subdomain, not a second deploy target,
+  not a vendor.
+- Edits are live the moment they save. No commit, no build, no deploy, no ninety-second
+  wait. Sold-out toggles in particular become instant, which is what they always needed.
+- One codebase, one deploy, one place to look when something breaks.
+- The three-tier split from the previous plan collapses into one system. Structural
+  content and volatile state stop needing different homes because nothing is baked at
+  build time any more.
 
-## 2. Three tiers, not one system
+## 2. Verify this first, it gates everything
 
-The three things named in the ask are three different problems.
+**cPanel → Software → Setup Node.js App.** Check that it exists and what Node versions
+it offers.
 
-**Tier 1, structural content.** Games, plans, staff, teams, legal, changelog, partners,
-spotlight, announcements, site settings. Changes weekly at most. Lives in the CMS. Edit,
-commit, live in roughly ninety seconds. Correct and boring.
+Astro 7 needs **Node 22.12 or newer**. Plenty of cPanel installs cap out at Node 20,
+especially older CloudLinux. If yours does, there are three ways forward, in order of
+preference: ask the host to add a Node 22 alternative (usually a ticket, often same day);
+run Node yourself under a process manager if you have root, with Passenger or a reverse
+proxy in front; or downgrade the project to Astro 5, which runs on Node 20 and is what
+this repo was on last week.
 
-**Tier 2, capacity.** Sold-out flags and slot counts. **Does not belong in the CMS.**
-Rebuilding and redeploying the entire site to flip a boolean is the wrong shape, and it
-quietly breaks the premise in DESIGN.md section 8, where the Capacity Board shows live
-occupancy rather than a number someone remembered to update. This is a runtime JSON fetch.
+If Node is genuinely unavailable, jump to section 8 for the PHP fallback. It works, it is
+just meaningfully worse, so exhaust the options above first.
 
-**Tier 3, status.** Endpoint pings. Already client-side. Unchanged.
+## 3. Content storage
 
-## 3. Phase 1 — Content collections
-
-Astro 7 uses the Content Layer. Config goes at `src/content.config.ts`.
-
-```
-src/content/
-  games/            fivem.yaml, minecraft.yaml, rust.yaml, ...
-  staff/            evan.yaml, keaghan.yaml
-  teams/            engineering.yaml, support.yaml, security.yaml, operations.yaml
-  changelog/        2026-05-01-miami-live.md
-  legal/            privacy.md, terms.md, ccpa.md
-  partners.yaml     singleton
-  spotlight.yaml    singleton
-  settings.yaml     singleton: links, contact emails, navigation, announcements
-  locations.yaml    Miami and Ashburn: valueId, note, coordinates
-```
-
-Sketch:
-
-```ts
-// src/content.config.ts
-import { defineCollection, z } from 'astro:content';
-import { glob, file } from 'astro/loaders';
-
-const pricing = z.object({
-  monthly: z.number().positive(),
-  quarterly: z.number().positive().optional(),
-  annually: z.number().positive().optional(),
-});
-
-const plan = z.object({
-  id: z.string(),
-  name: z.string(),
-  pid: z.number().int().positive(),      // WHMCS product ID
-  ram: z.number().int().positive(),
-  slots: z.number().int().positive().optional(),
-  popular: z.boolean().default(false),
-  pricing,
-});
-
-const games = defineCollection({
-  loader: glob({ pattern: '*.yaml', base: './src/content/games' }),
-  schema: ({ image }) => z.object({
-    label: z.string(),
-    shortLabel: z.string(),
-    status: z.enum(['live', 'beta', 'planned']),
-    tagline: z.string().max(90),
-    description: z.string(),
-    accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
-    mark: z.string().min(2).max(4),
-    keyArt: image().optional(),
-    hasLocations: z.boolean().default(true),
-    highlights: z.array(z.string()).max(5).optional(),
-    plans: z.array(plan).min(1),
-  }),
-});
-
-const locations = defineCollection({
-  loader: file('src/content/locations.yaml'),
-  schema: z.object({
-    code: z.string().length(3),           // MIA, IAD
-    label: z.string(),
-    valueId: z.number().int().positive(), // WHMCS config option value
-    note: z.string(),
-  }),
-});
-
-export const collections = { games, locations, /* staff, teams, changelog, legal */ };
-```
-
-The zod schemas are the real guard. `pid` and `valueId` are WHMCS identifiers, and a
-wrong one silently sells the wrong product, so they get validated at build time and the
-build fails loudly rather than the cart failing quietly.
-
-Migration is mechanical. `main` still has `src/data/catalog.ts` and `src/data/site.ts`
-fully structured, so this is a transcription job into YAML, roughly two hours.
-Retrieve with `git show main:src/data/catalog.ts`.
-
-## 4. Phase 2 — Keystatic
+Files on disk. YAML for structured records, Markdown for long prose.
 
 ```
-npm i @keystatic/core @keystatic/astro @astrojs/react react react-dom
+/home/<cpanel-user>/lumix-content/      ← OUTSIDE the app directory. this matters.
+  games/          fivem.yaml, minecraft.yaml, rust.yaml, ...
+  staff/          evan.yaml, keaghan.yaml
+  teams/          engineering.yaml, ...
+  legal/          privacy.md, terms.md, ccpa.md
+  changelog/      2026-05-01-miami-live.md
+  locations.yaml  Miami and Ashburn: code, label, valueId, note, soldOut
+  spotlight.yaml
+  announcements.yaml
+  settings.yaml   nav, contact emails, social links
+  users.json      admin accounts, hashed passwords
 ```
 
-React is required; Keystatic's admin UI is React and the peer deps demand it. It only
-ships on the admin route, not the public site.
+> **The content directory must live outside whatever the deploy writes to.** Every deploy
+> mechanism worth using replaces the app directory, and a deploy that overwrites content
+> silently reverts every edit made since the last commit. Put content in a sibling
+> directory, point at it with an env var, and back it up separately.
 
-`keystatic.config.ts` mirrors the collections above with editing fields: `fields.text`,
-`fields.number`, `fields.select`, `fields.checkbox`, `fields.array` for plans,
-`fields.image` for key art, `fields.markdoc` for legal and changelog bodies. Each
-collection sets `path: 'src/content/games/*'` and `format: { data: 'yaml' }` so the
-files Keystatic writes are exactly the files the loaders read.
+No database. Content volume here is a dozen games, a handful of staff, three legal pages.
+YAML on disk is faster than a query, diffs readably, backs up with `tar`, and needs no
+native modules, which matters because native compilation on shared hosting is a bad time.
 
-**The schema gets written twice**, once in Keystatic for the editing UI and once in zod
-for validation. That duplication is the price of this approach. It is real but small,
-and zod stays the authority: if the two disagree, the build fails, which is the outcome
-you want.
+Git stays useful as a backup and history mechanism. It stops being the source of truth.
 
-### Where the admin runs
+### Schemas still get validated
 
-Keystatic's GitHub mode needs server routes at `/api/keystatic/[...params]` to hold the
-OAuth token exchange. This site is static output rsynced to your box, so those routes
-have nowhere to run. Three ways out:
+Astro content collections read this directory through `glob()` and `file()` loaders with
+zod schemas, exactly as planned before. `pid` and `valueId` are WHMCS identifiers, and a
+wrong one silently sends a customer to the wrong product, so they get validated on read.
+In SSR the failure surfaces as a 500 on that page rather than a failed build, so the
+admin validates on save too and refuses to write a record that would not load.
 
-**A. Local mode only.** `npm run dev`, edit at `localhost:4321/keystatic`, files change
-on disk, you commit. Zero extra infrastructure. Fine if you are the only editor, and it
-still means having the repo checked out, which is most of what you asked to avoid.
+## 4. The admin
 
-**B. Admin deployed separately (recommended).** Same repo, second deploy target on a
-free Netlify or Vercel tier, pointed at `admin.lumixsolutions.org`. The admin talks only
-to GitHub. The public site stays static on your own box, untouched. Costs nothing, works
-from any browser including your phone, and is the version that actually satisfies
-"without editing source code."
+### Auth
 
-**C. SSR the whole site.** Add a Node adapter and run Astro as a service. Changes the
-deploy model substantially and buys nothing else you need. Not recommended.
+Single-purpose, no framework, no vendor.
 
-Go with B unless you're the only editor forever.
+- `POST /admin/login` checks the password against a scrypt hash from `users.json`.
+  `node:crypto` has `scrypt` built in, so this needs zero dependencies.
+- Session is a signed, httpOnly, secure, SameSite=Lax cookie holding a random 32-byte id.
+  Sessions live in a JSON file with an expiry. A dozen sessions is not a scaling problem.
+- Middleware guards everything under `/admin` except the login route itself.
+- Failed logins are rate-limited per IP, with a short lockout after five misses.
+- `/admin` is `noindex, nofollow` and excluded from the sitemap.
 
-## 5. Phase 3 — Capacity at runtime
+Two or three accounts, added by hand to `users.json` with a small CLI script that hashes
+a password. No signup flow, no password reset, no email. If someone forgets, you rerun
+the script.
 
-Capacity is a small JSON document fetched client-side on page load:
+### Screens
 
-```json
-{
-  "updated": "2026-09-10T16:20:00Z",
-  "regions": {
-    "MIA": { "open": 9, "total": 48, "soldOut": false },
-    "IAD": { "open": 5, "total": 48, "soldOut": false }
-  },
-  "games": { "fivem": { "open": 0, "soldOut": true } }
-}
-```
+**Dashboard.** Capacity at a glance and a sold-out toggle per location and per game.
+One click, saves immediately, live on the site on the next request. This is the screen
+that gets used weekly; everything else gets used monthly.
 
-The Capacity Board server-renders a last-known state so the page is correct with JS off
-and correct before the fetch lands, then reconciles. If the fetch fails it keeps the
-rendered state and drops the "updated" timestamp rather than showing zeros.
+**Games.** List, create, edit, reorder, archive. Per game: label, tagline, description,
+status, accent, key art upload, highlights, and a repeatable plan editor covering name,
+WHMCS `pid`, RAM, slots, popular flag, and per-cycle pricing. Delete is a soft archive,
+because deleting a game whose `pid` is live in someone's cart is not recoverable.
 
-> **Do not put this file in `dist/`.** The deploy runs
-> `rsync -avz --delete dist/ …`, and `--delete` removes anything at the destination that
-> is not in the build. A capacity file inside the deploy target gets destroyed on the
-> next push, silently, and the board reverts to whatever was committed. It must live
-> outside the rsync target, for example `/srv/www/lumix-runtime/capacity.json`, exposed
-> same-origin through an nginx `location /api/capacity.json` alias. Same origin avoids
-> CORS entirely.
+**Locations.** Miami and Ashburn. Label, `valueId`, the customer-facing note, sold-out.
 
-## 6. Phase 4 — WHMCS as the source of truth
+**Staff and teams.** Name, title, photo upload, bio. Reorderable.
 
-WHMCS already tracks stock per product. The old `soldOut` flag in `catalog.ts` was a
-hand-maintained mirror of a number WHMCS already knew, which is exactly how a capacity
-claim goes stale and starts lying.
+**Legal and changelog.** A plain Markdown textarea with a preview. These are prose; a
+rich text editor would add a dependency and a class of formatting bugs for no gain.
 
-A small endpoint on the billing host exposing `{ pid: qtyAvailable }` as JSON, written
-into `capacity.json` on a cron or read directly, means sold-out state is never typed by
-a human and cannot be wrong. You mark stock in the WHMCS admin you already use, and no
-new UI exists to learn.
+**Announcements and spotlight.** The rotating banner items, and the featured community
+block, both with an on/off switch. The old site had `spotlight.enabled` as a source
+constant; it becomes a checkbox.
 
-This is the version where the Capacity Board's honesty claim is actually true rather
-than aspirational. It needs access to the WHMCS install, so it is separate work and not
-a blocker for anything above.
+**Settings.** Navigation, contact emails, social links.
 
-## 7. Known traps
+### Uploads
 
-**Every CMS save is a production deploy.** The workflow fires on push to `main`, so a
-typo fix in the staff bio rebuilds and redeploys the site and burns Actions minutes.
-Either point Keystatic at a `content` branch and merge deliberately, or accept it and
-watch the minutes. Decide before configuring the GitHub App, because it changes the setup.
+Images go to a media directory beside the content directory, also outside the deploy
+path. Validate by magic bytes rather than extension, cap the size, generate a UUID
+filename, and never trust the client-supplied name. Astro's image pipeline handles
+optimization on the way out.
 
-**`rsync --delete` eats runtime state.** Covered in Phase 3. It will also eat anything
-else you place on the server by hand inside that directory.
+## 5. Deploy on cPanel
 
-**Node version.** Astro 7 needs Node 22.12+. The workflow is already bumped to 22.
+**cPanel → Git Version Control**, cloning this repo, with a `.cpanel.yml` that copies the
+build output into the app directory on deploy. Push to `main`, pull in cPanel, restart
+the Node app. Manual restart is a real step; Passenger needs `tmp/restart.txt` touched.
 
-**Image handling.** `image()` in a collection schema gives real optimization for game key
-art, but the files must live under `src/` rather than `public/` for Astro to process them.
-Keystatic's `fields.image` needs `directory` and `publicPath` set to agree with that.
+`npm run build` produces a server bundle rather than static HTML once the adapter is in.
+Whether `npm ci && npm run build` runs on the server or in Actions depends on whether the
+host gives you enough memory to build there. Building in Actions and deploying the output
+is the safer default on shared hosting.
 
-## 8. Sequence and effort
+**`.github/workflows/deploy.yml` is dead.** It rsyncs over SSH to `/srv/www/` on a server
+that is no longer where this site lives, and it will fail on every push to `main`. It
+should be deleted or rewritten once the deploy path is settled.
 
-1. Content collections and zod schemas — half a day
-2. Migrate content off `main` into YAML — two hours
-3. Rebuild pages against the collections — depends on design build, not counted here
-4. Keystatic config and admin deploy — half a day
-5. Capacity JSON, nginx alias, client fetch — three hours
-6. WHMCS stock endpoint — separate, depends on access
+## 6. What this removes from the old plan
 
-Phases 1, 2 and 3 are about a day and a half. Phase 4 whenever.
+Keystatic, the GitHub App, the separate admin deploy on Netlify, the `content` branch
+question, the rebuild-per-edit tradeoff, and the WHMCS stock endpoint. None of it is
+needed once the site can run code.
+
+The one previously flagged trap that still applies in a new form: a deploy that clobbers
+content. It was `rsync --delete` before, it is the cPanel deploy path now. Same failure,
+same fix, which is keeping content outside whatever the deploy writes.
+
+## 7. Sequence and effort
+
+1. Confirm Node 22.12+ in cPanel — blocks everything, do it first
+2. Add `@astrojs/node`, switch output to server, get a hello-world deploy running under
+   Passenger and surviving a restart — half a day, and most of the risk lives here
+3. Content directory, loaders, zod schemas, migrate content off `main` — half a day
+4. Auth, session middleware, login page — half a day
+5. Dashboard with sold-out toggles — half a day
+6. Games editor including the plan repeater — a day, it is the biggest screen
+7. Staff, teams, locations, legal, announcements, spotlight, settings — a day
+8. Uploads and image handling — half a day
+
+Roughly four to five days, and step 2 is the one that either goes smoothly or eats a day
+on its own depending on how cooperative the host is.
+
+## 8. Fallback if Node is unavailable
+
+Astro builds static, deployed to cPanel by Git Version Control or FTP. `/admin` is a
+small PHP app, since cPanel always has PHP, writing to the same YAML content directory.
+
+The catch is that a static build cannot see those edits without rebuilding. So the split
+comes back: volatile state (sold-out, capacity, announcements) is written by PHP to a
+JSON file and fetched client-side at runtime, while structural content (games, staff,
+legal) still needs a rebuild after editing, triggered by the PHP admin calling a GitHub
+Actions `workflow_dispatch`.
+
+It works. It is two languages, two content paths, and a rebuild delay on half the content.
+Only take it if section 2 comes back negative.
 
 ## 9. Open decisions
 
-1. **Does anyone besides you edit this?** If yes, Phase 2 option B is required. If it is
-   only ever you, option A is defensible and saves a deploy target.
-2. **CMS commits straight to `main`, or to a `content` branch?** Affects the GitHub App
-   config and whether a bad save can reach production unreviewed.
-3. **Light mode.** DESIGN.md defines the full Paper palette but not when it applies:
-   theme toggle, `prefers-color-scheme`, or specific pages like legal running light.
-   This changes how every component is written, so it wants settling before the build.
+1. **Node availability and version in cPanel.** Blocks the whole plan. Check first.
+2. **Build on the server or in Actions?** Depends on memory limits on the plan.
+3. **How many admin accounts, and do they need separate permissions?** A single shared
+   login is fine for two people and a real liability for five.
+4. **Light mode.** Still outstanding from DESIGN.md. The Paper palette is defined but not
+   when it applies: theme toggle, `prefers-color-scheme`, or specific pages. Changes how
+   every component gets written, so it wants settling before the UI build starts.
