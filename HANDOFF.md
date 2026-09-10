@@ -41,21 +41,28 @@ three dated 2026-09-10.
 **Components:** Header, Footer, GameTile, StickyCta, CookieBanner, Analytics,
 LightRays, GridPattern, and a three-part Terminal.
 
-**GridPattern** is in Layout, so it is behind every page. It spans the document
-at `z-index: -1`, draws its lines with two repeating gradients, and keeps twelve
-recycled divs for the cursor trail. It listens on `window` rather than on itself,
-which is why cells light up under the header and the copy. The trail needs a fine
-pointer and no reduced-motion preference; the lines and the alignment happen
-either way, because a texture is not an animation.
+**CursorTrail** is in Layout, so it is behind every page. It spans the document at
+`z-index: -1` and recycles twelve divs that light up under the cursor and fade out
+behind it. Nothing draws a grid: an earlier version painted the lines too and Evan
+cut them, so the module is now invisible and only the lit cells reveal it. It
+listens on `window` rather than on itself, which is why cells light up under the
+header and the copy. Needs a fine pointer and no reduced-motion preference; does
+nothing at all otherwise.
 
-**The grid and the layout are one system, not two.** `--grid-cell` is 40px, and
+**The module and the layout are one system, not two.** `--grid-cell` is 40px, and
 `.shell` snaps its content column down to a width the tile grid divides evenly.
 DESIGN.md section 7 has the families. Consequences worth knowing before you touch
 anything: the tile gutter is one cell and the tiles are seven cells tall, so
 changing `gap-[var(--grid-cell)]` or that `min-h` on GameTile puts the staircase
 back. Vertical registration is measured off `[data-grid-anchor]`, which is on the
 tile grid; put it on whatever matters most on a new page, or leave it off and the
-grid just sits at document top.
+cells just register to the document top.
+
+**A tile's text block is bottom-justified,** so anything with a variable line count
+above the price shoves the title up or down. The tagline reserves two lines with
+`min-h-[2lh]` for exactly this reason: Terraria's is one line where every other
+game's is two, and without it Terraria's title sat 22px below Palworld's beside
+it. `line-clamp-2` caps the height, it does not reserve it.
 
 ## What does not exist yet
 
@@ -121,11 +128,11 @@ Check counts against the source: there are 29 plans across 5 games.
 fail on every push to `main` and needs rewriting or deleting once the cPanel deploy
 path is settled.
 
-**Don't set background-position off `--shell-content`.** It looks like the
-obvious way to align the grid horizontally and it is quietly wrong: that value
-carries a `100%`, and a percentage in `background-position` resolves against the
-positioning area minus the tile, not the plane width. The alignment is structural
-instead, on a centred `::before` padded by whole cells. Measured it both ways.
+**`--shell-content` carries a `100%`,** which resolves against whatever it is used
+in. That is fine everywhere it is used today, but it makes the value useless for
+`background-position`, where a percentage means the positioning area minus the
+tile rather than the element width. If you ever draw the module again, don't
+reach for that.
 
 **The ink ground lives on `<html>`, not on `<body>`.** Body is deliberately
 transparent so GridPattern can sit under it at `z-index: -1`. Put a background

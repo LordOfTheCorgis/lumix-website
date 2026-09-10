@@ -181,23 +181,22 @@ letter-spaced hero type.
 
 ### The 40px module
 
-There is a grid drawn behind every page, and the layout is built on it rather than beside
-it. `--grid-cell` is 40px and it is the only number that matters here: the background
-draws at that size, and the content column is snapped down to a width the tile grid
-divides evenly, so panel edges and gutters land on lines instead of near them.
+Nothing draws this. It exists so the cursor trail's cells land on panel edges and gutters
+instead of across them, which means the layout has to be built to it. `--grid-cell` is
+40px and the content column is snapped down to a width the tile grid divides evenly.
 
 For n columns with a one-cell gutter the column has to be `(n·a + n−1)` cells wide, which
 gives three families: **120k+80** at three columns, **80k+40** at two, any **40k** at one.
 `.shell` rounds down into the family for its breakpoint and whatever is left becomes
 gutter, which is why some viewport widths carry more air than others. That is the trade,
-and it is worth it: before this, tile left edges cycled 24 / 0 / 16 px off the grid across
-a single row.
+and it is worth it: before this, tile left edges cycled 24 / 0 / 16 px off the module
+across a single row, which you cannot unsee once a lit cell straddles one.
 
-Horizontal registration is structural rather than calculated. The lines are painted on a
-centred box that is the content column plus sixty whole cells on each side, so a line
-falls on the column's left edge by construction, with no offset arithmetic and no
-JavaScript. Vertical registration cannot be derived, only measured, so the plane spans the
-document and one small script snaps it to whatever the page marks `[data-grid-anchor]`.
+Both origins are measured off the layout rather than assumed: horizontal from the content
+column's left edge, vertical from whatever the page marks `[data-grid-anchor]`. Vertical
+in particular cannot be derived, because there is no CSS expression for how far down the
+page an element landed, which is also why the trail plane spans the document rather than
+the viewport.
 
 Panels that sit on the grid take their height in cells too. Game tiles are seven.
 
