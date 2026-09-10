@@ -3,10 +3,10 @@
 // the decision, and nothing here is red: the hero button already spends the
 // budget (DESIGN.md section 5). The arrow picks up red on hover only.
 //
-// Height is seven cells rather than a round 256px so the bottom edge lands on a
-// background grid line. The column width is already a whole number of cells, so
-// fixing the height is the last piece of registration. It has to stay a min, not
-// a fixed height: a long tagline still needs somewhere to go.
+// Height is seven cells rather than a round 256px so the bottom edge lands on
+// the module the cursor trail snaps to. Stays a min, not a fixed height: a long
+// tagline still needs somewhere to go.
+
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import { price } from "../lib/order";
@@ -47,7 +47,11 @@ const { slug, name, tagline, image, from, planCount, eager = false } = Astro.pro
 
   <div class="relative">
     <h3 class="title">{name}</h3>
-    <p class="small text-fog mt-2 line-clamp-2">{tagline}</p>
+    <!-- Reserve both lines whether the copy fills them or not. The content is
+         bottom-justified, so a one-line tagline used to shove the title 22px
+         down the tile and Terraria sat visibly lower than Palworld beside it.
+         line-clamp-2 caps the height but doesn't reserve it; 2lh does. -->
+    <p class="small text-fog mt-2 line-clamp-2 min-h-[2lh]">{tagline}</p>
 
     <div class="mt-5 flex items-baseline gap-2">
       <span class="instrument text-slate">from</span>

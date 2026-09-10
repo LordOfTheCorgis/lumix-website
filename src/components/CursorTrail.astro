@@ -1,0 +1,174 @@
+---
+// The interactive bit of the Magic UI grid, without the grid.
+//
+// The original draws 24x24 <rect>s, holds the hovered index in React state, and
+// re-renders all 576 of them on every mouseenter. Here the lines aren't drawn at
+// all: the module exists in the layout, not on screen. Twelve divs get recycled
+// for the cursor trail and the fade rides WAAPI on the compositor, so it's twelve
+// nodes and no listeners on anything but window.
+//
+// Tracking window rather than the plane is what lets cells light up underneath
+// the header and the copy. The React version only responds where its SVG is
+// actually exposed, so it goes dead wherever content sits on top of it.
+//
+// The cells still land on a real 40px module (--grid-cell) that the layout is
+// built to, so a lit cell fills a tile's corner or a gutter exactly instead of
+// straddling an edge. That only works because the plane spans the document
+// rather than the viewport: a viewport-fixed origin can't register vertically,
+// since the content slides across it as you scroll.
+
+interface Props {
+  /** Fill of a lit cell at full strength, before it starts fading out. */
+  tint?: string;
+  /** How long a lit cell takes to fade back to nothing, in ms. */
+  fade?: number;
+  /** Cells that can be mid-fade at once. Past ~16 the trail reads as a smear. */
+  trail?: number;
+  class?: string;
+}
+
+const {
+  tint = "rgba(247, 245, 241, 0.07)",
+  fade = 900,
+  trail = 12,
+  class: className = "",
+} = Astro.props;
+---
+
+<div
+  class:list={["cursor-trail", className]}
+  aria-hidden="true"
+  data-cursor-trail
+  data-fade={fade}
+  style={`--trail-tint:${tint};`}
+>
+  {Array.from({ length: trail }, () => <i class="cell"></i>)}
+</div>
+
+<style>
+  .cursor-trail {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .cell {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--grid-cell);
+    height: var(--grid-cell);
+    background: var(--trail-tint);
+    opacity: 0;
+    /* No will-change. These twelve sit on the page forever, and hinting them
+       would mean twelve permanent compositor layers to buy nothing: WAAPI
+       promotes an opacity animation on its own while it's actually running. */
+  }
+</style>
+
+<script>
+  const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // No pointer, nothing to follow. Under reduced motion, nothing should follow.
+  if (fine.matches && !still.matches) {
+    document.querySelectorAll<HTMLElement>("[data-cursor-trail]").forEach((plane) => {
+      const size =
+        parseFloat(getComputedStyle(plane).getPropertyValue("--grid-cell")) || 40;
+      const fade = Number(plane.dataset.fade) || 900;
+      const slots = Array.from(plane.querySelectorAll<HTMLElement>(".cell"));
+      if (!slots.length) return;
+
+      // Where the module's lines fall, in document coordinates. Both are measured
+      // off the layout rather than assumed, which is the whole reason a lit cell
+      // sits inside a tile corner instead of across its border.
+      let originX = 0;
+      let originY = 0;
+
+      function measure() {
+        // Any .shell will do; they all share a width and a centre.
+        const shell = document.querySelector<HTMLElement>(".shell");
+        if (shell) {
+          const box = shell.getBoundingClientRect();
+          originX = box.left + (parseFloat(getComputedStyle(shell).paddingLeft) || 0);
+        }
+        // Vertical can't be derived, only measured: there's no CSS expression for
+        // "how far down the page did this land". The page nominates the element
+        // worth registering to.
+        const anchor = document.querySelector<HTMLElement>("[data-grid-anchor]");
+        if (anchor) {
+          const top = anchor.getBoundingClientRect().top + window.scrollY;
+          originY = ((top % size) + size) % size;
+        }
+      }
+
+      measure();
+      // Fonts swapping in and images landing both move the anchor, and neither
+      // fires resize. Watching the body catches every one of them.
+      new ResizeObserver(measure).observe(document.body);
+
+      const running = new WeakMap<HTMLElement, Animation>();
+      let next = 0;
+      let lastCol = NaN;
+      let lastRow = NaN;
+      let pending: { x: number; y: number } | null = null;
+      let frame = 0;
+
+      function light(col: number, row: number) {
+        const el = slots[next];
+        next = (next + 1) % slots.length;
+
+        // Recycling a slot that's still fading. Kill the old animation first or
+        // the two stack and the cell flickers on its way out.
+        running.get(el)?.cancel();
+
+        el.style.transform = `translate3d(${col * size + originX}px, ${
+          row * size + originY
+        }px, 0)`;
+
+        // Snaps on, drifts off, same asymmetry as the original's 100ms-in /
+        // 1000ms-out. WAAPI rather than a class toggle because restarting a CSS
+        // transition means a forced reflow on every cell you cross.
+        running.set(
+          el,
+          el.animate([{ opacity: 1 }, { opacity: 1, offset: 0.08 }, { opacity: 0 }], {
+            duration: fade,
+            easing: "ease-out",
+          })
+        );
+      }
+
+      function flush() {
+        frame = 0;
+        if (!pending) return;
+        const col = Math.floor((pending.x - originX) / size);
+        const row = Math.floor((pending.y - originY) / size);
+        pending = null;
+        if (col === lastCol && row === lastRow) return;
+        lastCol = col;
+        lastRow = row;
+        light(col, row);
+      }
+
+      window.addEventListener(
+        "pointermove",
+        (e) => {
+          if (e.pointerType !== "mouse") return;
+          // Plane is in document space, pointer is in viewport space.
+          pending = { x: e.clientX, y: e.clientY + window.scrollY };
+          if (!frame) frame = requestAnimationFrame(flush);
+        },
+        { passive: true }
+      );
+
+      // Cursor leaves the window mid-drag across cells and the last cell would
+      // otherwise stay lit until you come back in somewhere else.
+      window.addEventListener("blur", () => {
+        lastCol = NaN;
+        lastRow = NaN;
+      });
+    });
+  }
+</script>

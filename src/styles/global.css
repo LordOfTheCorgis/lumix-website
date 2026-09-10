@@ -50,15 +50,15 @@
   --spacing-section: 6rem;
   --spacing-section-mobile: 3.5rem;
 
-  /* ── The grid module ─────────────────────────────────────────────────────
-     One number. The background grid draws at this size and the content column
-     is sized to hold a whole number of these, so tile edges and gutters land
-     on lines instead of near them. Change it and the layout follows; change
-     the layout without it and you get the staircase back. */
+  /* ── The module ──────────────────────────────────────────────────────────
+     Nothing draws this. It exists so the cursor trail's cells land on tile
+     edges and gutters instead of across them, which means the layout has to be
+     built to it: see the shell snapping below. Change it and the layout
+     follows; change the layout without it and the cells go back to straddling. */
   --grid-cell: 40px;
 }
 
-/* The content column snaps down to a width the tile grid can divide evenly.
+/* The content column snaps down to a width the tile grid divides evenly.
    Which multiple depends on how many columns the tiles are in, because for
    n columns with a one-cell gutter the width has to be (n·a + n-1) cells:
    3 columns lands on 120k+80, 2 columns on 80k+40, 1 column on any 40k.
@@ -93,15 +93,6 @@
   }
 }
 
-/* Registered so it computes to a real length rather than a raw token stream,
-   which means JS can read it back and a bad value lands on 0px instead of
-   poisoning background-position. */
-@property --grid-shift-y {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 0px;
-}
-
 @layer base {
   html {
     /* Tells the UA to render form controls, scrollbars and the like dark, so we
@@ -117,11 +108,7 @@
      can sit at z-index -1 behind everything without body's own background
      painting over it. Put a background back on body and the grid vanishes with
      no error to tell you why. */
-  /* Containing block for the grid plane, which spans the whole document rather
-     than the viewport so it scrolls with the content. A viewport-fixed grid
-     can never register vertically: the content slides across it as you scroll. */
   body {
-    position: relative;
     font-family: var(--font-sans);
     color: var(--color-paper);
     line-height: 1.65;
@@ -194,8 +181,6 @@
     .section { padding-block: var(--spacing-section); }
   }
 
-  /* Width comes off --shell-content, which GridPattern reads too. That shared
-     number is the whole reason the grid lines up with anything. */
   .shell {
     width: min(100%, calc(var(--shell-content) + 2 * var(--shell-pad)));
     margin-inline: auto;

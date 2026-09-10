@@ -49,8 +49,9 @@ const cheapest = Math.min(
     <div class="shell">
       <h2 class="title">Pick your game</h2>
 
-      <!-- Gutter is exactly one cell, and the row is what the background grid
-           registers to vertically. Change the gap and the grid stops lining up. -->
+      <!-- Gutter is exactly one cell wide, and this row is what the trail
+           registers to vertically. Change the gap and the cells go back to
+           straddling the tile edges. -->
       <div
         data-grid-anchor
         class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3"
