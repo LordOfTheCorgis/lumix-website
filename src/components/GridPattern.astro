@@ -3,172 +3,214 @@
 //
 // The original renders one <rect> per cell, holds the hovered index in React
 // state, and re-renders the whole grid on every mouseenter. At 24x24 that's 576
-// nodes and 576 listeners to make one square change colour. This does the same
-// thing with a <pattern> for the lines and a pool of twelve rects that get
-// recycled for the fading trail, so it's ~15 nodes total, no listeners on the
-// grid itself, and the fade runs on the compositor via WAAPI.
+// nodes and 576 listeners to make one square change colour. This draws the lines
+// with two repeating gradients and keeps twelve divs for the fading trail, so
+// there are thirteen nodes total and the fade rides WAAPI on the compositor.
 //
-// It also behaves better: the React one only lights up where the SVG is
-// actually exposed, so anywhere content sits on top it goes dead. This tracks
-// the pointer on window, so cells light up underneath the header and the copy
-// too. The grid reads as a plane the whole page is sitting on rather than a
-// panel with holes punched in it.
+// It also behaves better in two ways. It tracks the pointer on window rather
+// than on itself, so cells light up under the header and the copy instead of
+// going dead wherever content sits on top. And it registers with the layout:
+// the content column is snapped to a whole number of cells (see global.css) and
+// this plane is offset to start on the column's left edge, so tile edges and
+// gutters land on lines rather than a few pixels off them. Before that, tile
+// left edges cycled 24 / 0 / 16 px off the grid across a row, which you cannot
+// unsee once the cursor lights a cell straddling one.
 //
-// Lines are deliberately near-invisible. This is a ground, not an element. If
-// you can read the grid before you read the headline, turn `stroke` down.
+// The plane spans the document, not the viewport. A viewport-fixed grid can
+// never register vertically, because the content slides across it as you scroll.
 
 interface Props {
-  /** Cell size in px. The lines land on whole pixels, so keep it an integer. */
-  cell?: number;
-  stroke?: string;
+  line?: string;
   /** Fill of a lit cell at full strength, before it starts fading out. */
   tint?: string;
   /** How long a lit cell takes to fade back to nothing, in ms. */
   fade?: number;
   /** Cells that can be mid-fade at once. Past ~16 the trail reads as a smear. */
   trail?: number;
-  /** Only matters if you ever put two of these on one page. */
-  id?: string;
   class?: string;
 }
 
 const {
-  cell = 40,
-  stroke = "rgba(255, 255, 255, 0.06)",
+  line = "rgba(255, 255, 255, 0.06)",
   tint = "rgba(247, 245, 241, 0.055)",
   fade = 900,
   trail = 12,
-  id = "lumix-grid",
   class: className = "",
 } = Astro.props;
 ---
 
-<svg
+<div
   class:list={["grid-plane", className]}
   aria-hidden="true"
   data-grid-plane
-  data-cell={cell}
   data-fade={fade}
-  style={`--grid-tint:${tint};`}
+  style={`--grid-line:${line};--grid-tint:${tint};`}
 >
-  <defs>
-    <pattern id={id} width={cell} height={cell} patternUnits="userSpaceOnUse">
-      {/* Top and left edge only. Drawing all four would double every interior
-          line and make the grid twice as heavy as the stroke value says. */}
-      <path
-        d={`M ${cell} 0 L 0 0 0 ${cell}`}
-        fill="none"
-        stroke={stroke}
-        stroke-width="1"
-        shape-rendering="crispEdges"
-      />
-    </pattern>
-  </defs>
-
-  <rect width="100%" height="100%" fill={`url(#${id})`} />
-
-  {Array.from({ length: trail }, (_, i) => (
-    <rect class="cell" data-cell-slot={i} width={cell} height={cell} x="0" y="0" />
-  ))}
-</svg>
+  {Array.from({ length: trail }, () => <i class="cell"></i>)}
+</div>
 
 <style>
   .grid-plane {
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: -1;
-    width: 100%;
-    height: 100%;
+    overflow: hidden;
     pointer-events: none;
-    /* Falls off at the edges so the grid doesn't run into the viewport frame
-       like a table border. Centre stays full strength, which is where the
-       cursor spends its time anyway. */
-    mask-image: radial-gradient(
-      ellipse 90% 75% at 50% 38%,
-      #000 45%,
-      rgba(0, 0, 0, 0.35) 78%,
-      transparent 100%
+
+    /* Horizontal falloff only. The plane is as tall as the document now, so a
+       radial vignette would stretch into a smear over a long legal page. */
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 6%,
+      #000 94%,
+      transparent
     );
   }
 
+  /* The lines live on a centred box that is the content column plus a whole
+     number of cells on each side. That is the entire alignment mechanism: the
+     box and the content column share a centre, the padding either side is 60
+     exact cells, so a grid line lands on the column's left edge by construction.
+     No offset arithmetic, nothing for JS to correct, right on the first paint.
+     
+     The obvious version of this sets background-position from --shell-content
+     instead. Don't: that value carries a 100%, and a percentage inside
+     background-position resolves against the area minus the tile, not the plane
+     width, so it comes out quietly wrong at most viewport widths. */
+  .grid-plane::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: calc(var(--shell-content) + 120 * var(--grid-cell));
+    transform: translateX(-50%);
+    background-image:
+      linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px);
+    background-size: var(--grid-cell) var(--grid-cell);
+    /* Vertical registration is the one part that has to be measured, so JS owns
+       it. Zero until then, which is just the old unaligned grid. */
+    background-position-y: var(--grid-shift-y);
+  }
+
   .cell {
-    fill: var(--grid-tint);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--grid-cell);
+    height: var(--grid-cell);
+    background: var(--grid-tint);
     opacity: 0;
+    will-change: transform, opacity;
   }
 </style>
 
 <script>
-  // Everything below is a no-op without a real pointer, so phones and tablets
-  // ship the bytes and never run them. Worth it: the alternative is a second
-  // build of the grid without the trail rects.
-  const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const planes = document.querySelectorAll<HTMLElement>("[data-grid-plane]");
   const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
 
-  if (fine.matches && !still.matches) {
-    document.querySelectorAll<SVGSVGElement>("[data-grid-plane]").forEach((plane) => {
-      const size = Number(plane.dataset.cell) || 40;
-      const fade = Number(plane.dataset.fade) || 900;
-      const slots = Array.from(
-        plane.querySelectorAll<SVGRectElement>("[data-cell-slot]")
-      );
-      if (!slots.length) return;
+  planes.forEach((plane) => {
+    const size =
+      parseFloat(getComputedStyle(plane).getPropertyValue("--grid-cell")) || 40;
+    const fade = Number(plane.dataset.fade) || 900;
+    const slots = Array.from(plane.querySelectorAll<HTMLElement>(".cell"));
 
-      const running = new WeakMap<SVGRectElement, Animation>();
-      let next = 0;
-      let lastCol = NaN;
-      let lastRow = NaN;
-      let pending: { x: number; y: number } | null = null;
-      let frame = 0;
+    // Where the grid's own lines actually fall, in document coordinates. Both
+    // are measured off the layout rather than recomputed from the CSS, so the
+    // trail cannot drift away from the lines it is supposed to sit on.
+    let originX = 0;
+    let originY = 0;
 
-      function light(col: number, row: number) {
-        const rect = slots[next];
-        next = (next + 1) % slots.length;
-
-        // Recycling a slot that's still fading. Kill the old animation first or
-        // the two stack and the cell flickers on its way out.
-        running.get(rect)?.cancel();
-
-        rect.setAttribute("x", String(col * size));
-        rect.setAttribute("y", String(row * size));
-
-        // Snaps on, drifts off, same asymmetry as the original's 100ms-in /
-        // 1000ms-out. WAAPI rather than a class toggle because restarting a CSS
-        // transition means a forced reflow on every cell you cross.
-        const anim = rect.animate(
-          [{ opacity: 1 }, { opacity: 1, offset: 0.08 }, { opacity: 0 }],
-          { duration: fade, easing: "ease-out" }
-        );
-        running.set(rect, anim);
+    function measure() {
+      // Only needs to be right modulo the cell size, and the lines are drawn
+      // from the content column's left edge, so this is that edge. Any .shell
+      // will do; they all share a width and a centre.
+      const shell = document.querySelector<HTMLElement>(".shell");
+      if (shell) {
+        const box = shell.getBoundingClientRect();
+        originX = box.left + (parseFloat(getComputedStyle(shell).paddingLeft) || 0);
       }
 
-      function flush() {
-        frame = 0;
-        if (!pending) return;
-        const col = Math.floor(pending.x / size);
-        const row = Math.floor(pending.y / size);
-        pending = null;
-        if (col === lastCol && row === lastRow) return;
-        lastCol = col;
-        lastRow = row;
-        light(col, row);
+      // Vertical registration has to be measured; there is no CSS expression
+      // for "how far down the page did this element land". The anchor is
+      // whatever the page says matters most, which is the tile row.
+      const anchor = document.querySelector<HTMLElement>("[data-grid-anchor]");
+      if (anchor) {
+        const top = anchor.getBoundingClientRect().top + window.scrollY;
+        originY = ((top % size) + size) % size;
+        plane.style.setProperty("--grid-shift-y", `${originY}px`);
       }
+    }
 
-      window.addEventListener(
-        "pointermove",
-        (e) => {
-          if (e.pointerType !== "mouse") return;
-          pending = { x: e.clientX, y: e.clientY };
-          if (!frame) frame = requestAnimationFrame(flush);
-        },
-        { passive: true }
+    measure();
+    // Fonts swapping in and images landing both move the anchor, and neither
+    // fires resize. Watching the body catches every one of them.
+    new ResizeObserver(measure).observe(document.body);
+
+    if (!slots.length || !fine.matches || still.matches) return;
+
+    const running = new WeakMap<HTMLElement, Animation>();
+    let next = 0;
+    let lastCol = NaN;
+    let lastRow = NaN;
+    let pending: { x: number; y: number } | null = null;
+    let frame = 0;
+
+    function light(col: number, row: number) {
+      const el = slots[next];
+      next = (next + 1) % slots.length;
+
+      // Recycling a slot that's still fading. Kill the old animation first or
+      // the two stack and the cell flickers on its way out.
+      running.get(el)?.cancel();
+
+      el.style.transform = `translate3d(${col * size + originX}px, ${
+        row * size + originY
+      }px, 0)`;
+
+      // Snaps on, drifts off, same asymmetry as the original's 100ms-in /
+      // 1000ms-out. WAAPI rather than a class toggle because restarting a CSS
+      // transition means a forced reflow on every cell you cross.
+      running.set(
+        el,
+        el.animate([{ opacity: 1 }, { opacity: 1, offset: 0.08 }, { opacity: 0 }], {
+          duration: fade,
+          easing: "ease-out",
+        })
       );
+    }
 
-      // Cursor leaves the window mid-drag across cells and the last cell would
-      // otherwise stay lit until you come back in somewhere else.
-      window.addEventListener("blur", () => {
-        lastCol = NaN;
-        lastRow = NaN;
-      });
+    function flush() {
+      frame = 0;
+      if (!pending) return;
+      const col = Math.floor((pending.x - originX) / size);
+      const row = Math.floor((pending.y - originY) / size);
+      pending = null;
+      if (col === lastCol && row === lastRow) return;
+      lastCol = col;
+      lastRow = row;
+      light(col, row);
+    }
+
+    window.addEventListener(
+      "pointermove",
+      (e) => {
+        if (e.pointerType !== "mouse") return;
+        // Plane is in document space, pointer is in viewport space.
+        pending = { x: e.clientX, y: e.clientY + window.scrollY };
+        if (!frame) frame = requestAnimationFrame(flush);
+      },
+      { passive: true }
+    );
+
+    // Cursor leaves the window mid-drag across cells and the last cell would
+    // otherwise stay lit until you come back in somewhere else.
+    window.addEventListener("blur", () => {
+      lastCol = NaN;
+      lastRow = NaN;
     });
-  }
+  });
 </script>

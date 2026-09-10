@@ -49,6 +49,57 @@
 
   --spacing-section: 6rem;
   --spacing-section-mobile: 3.5rem;
+
+  /* ── The grid module ─────────────────────────────────────────────────────
+     One number. The background grid draws at this size and the content column
+     is sized to hold a whole number of these, so tile edges and gutters land
+     on lines instead of near them. Change it and the layout follows; change
+     the layout without it and you get the staircase back. */
+  --grid-cell: 40px;
+}
+
+/* The content column snaps down to a width the tile grid can divide evenly.
+   Which multiple depends on how many columns the tiles are in, because for
+   n columns with a one-cell gutter the width has to be (n·a + n-1) cells:
+   3 columns lands on 120k+80, 2 columns on 80k+40, 1 column on any 40k.
+   Whatever is left over becomes gutter, which is why the page has a little
+   more air at some widths than others. That is the trade for registration. */
+:root {
+  --shell-pad: 1.25rem;
+  --shell-max: 83rem;  /* 1328px, so the capped column is exactly 1280 = 32 cells */
+  --shell-base: 0px;
+  --shell-step: var(--grid-cell);
+
+  /* The `100%` here resolves wherever it is used, not here. Every user sits on a
+     full-width parent, so they all resolve to the same number. */
+  --shell-avail: calc(min(100%, var(--shell-max)) - 2 * var(--shell-pad));
+  --shell-content: calc(
+    round(down, var(--shell-avail) - var(--shell-base), var(--shell-step)) + var(--shell-base)
+  );
+}
+
+@media (min-width: 640px) {
+  :root {
+    --shell-pad: 1.5rem;
+    --shell-base: var(--grid-cell);
+    --shell-step: calc(2 * var(--grid-cell));
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --shell-base: calc(2 * var(--grid-cell));
+    --shell-step: calc(3 * var(--grid-cell));
+  }
+}
+
+/* Registered so it computes to a real length rather than a raw token stream,
+   which means JS can read it back and a bad value lands on 0px instead of
+   poisoning background-position. */
+@property --grid-shift-y {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
 }
 
 @layer base {
@@ -66,7 +117,11 @@
      can sit at z-index -1 behind everything without body's own background
      painting over it. Put a background back on body and the grid vanishes with
      no error to tell you why. */
+  /* Containing block for the grid plane, which spans the whole document rather
+     than the viewport so it scrolls with the content. A viewport-fixed grid
+     can never register vertically: the content slides across it as you scroll. */
   body {
+    position: relative;
     font-family: var(--font-sans);
     color: var(--color-paper);
     line-height: 1.65;
@@ -139,15 +194,12 @@
     .section { padding-block: var(--spacing-section); }
   }
 
+  /* Width comes off --shell-content, which GridPattern reads too. That shared
+     number is the whole reason the grid lines up with anything. */
   .shell {
-    width: 100%;
-    max-width: 80rem;
+    width: min(100%, calc(var(--shell-content) + 2 * var(--shell-pad)));
     margin-inline: auto;
-    padding-inline: 1.25rem;
-  }
-
-  @media (min-width: 640px) {
-    .shell { padding-inline: 1.5rem; }
+    padding-inline: var(--shell-pad);
   }
 
   /* Cut top-left and bottom-right, matching the monogram. Chamfer, not radius. */
