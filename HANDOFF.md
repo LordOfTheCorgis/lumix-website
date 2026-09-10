@@ -18,7 +18,8 @@ staff bios, partner copy, changelog entries, and the service descriptions that h
 not been migrated yet.
 
 **Stack:** Astro 7.3.2, Tailwind 4.3.3, static output. Requires Node 22.12+.
-Site-wide JavaScript is about 1KB per page. No React, no framework runtime.
+Site-wide JavaScript is about 2.5KB per page, of which the grid is 900 bytes.
+No React, no framework runtime.
 
 ## What exists
 
@@ -38,7 +39,14 @@ content-collection Markdown. Governing law is Louisiana, venue New Orleans. All
 three dated 2026-09-10.
 
 **Components:** Header, Footer, GameTile, StickyCta, CookieBanner, Analytics,
-LightRays, and a three-part Terminal.
+LightRays, GridPattern, and a three-part Terminal.
+
+**GridPattern** is in Layout, so it is behind every page. Fixed to the viewport at
+`z-index: -1`, one `<pattern>` for the lines, twelve recycled rects for the cursor
+trail. It listens on `window` rather than on itself, which is why cells light up
+under the header and the copy. Nothing runs without a fine pointer, and nothing
+runs under reduced motion; the lines stay either way, because a texture is not
+an animation.
 
 ## What does not exist yet
 
@@ -51,6 +59,13 @@ signature element and the design leans on it heavily.
 The admin panel in BUILD-PLAN.md has not been started.
 
 ## Decisions that are settled, do not relitigate
+
+**Dark only. There is no light mode.** No toggle, no `prefers-color-scheme`
+branch, legal pages included. This was the blocker in the last handoff and Evan
+closed it. Two casualties: `mist` is deleted, and `slate` went from `#6B6B72` to
+`#7D7D85`. The old value was measured on Paper and had drifted onto ink at 3.54:1
+under 11px uppercase labels in the header, footer, tiles and plan specs. It is
+4.58:1 now. Don't put it back.
 
 **The brand is fixed and comes from the client, not from us.** Ink `#121214`,
 Lumix Red `#FF4C4C`, Space Grotesk for display, Inter for body. An earlier
@@ -97,6 +112,16 @@ Check counts against the source: there are 29 plans across 5 games.
 fail on every push to `main` and needs rewriting or deleting once the cPanel deploy
 path is settled.
 
+**The ink ground lives on `<html>`, not on `<body>`.** Body is deliberately
+transparent so GridPattern can sit under it at `z-index: -1`. Put a background
+back on body, or re-add `bg-ink` to its class list, and the grid disappears with
+no error and no warning.
+
+**Headless Chrome reports `hover: none` and `pointer: coarse`,** so the grid's
+trail correctly refuses to bind and screenshots come back with a bare grid. That
+is the gate working, not a bug. To exercise it, launch with
+`--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4`.
+
 **Astro inlines small CSS and JS into the HTML** rather than emitting bundles.
 Grepping `dist/_astro/*.css` for a component's styles will find nothing and mean
 nothing.
@@ -121,19 +146,16 @@ by a routine in the `lumix-routines` repo, and is not part of this project.
 
 ## Open questions for Evan
 
-1. **Light mode.** DESIGN.md defines the full Paper palette but not when it applies:
-   theme toggle, `prefers-color-scheme`, or specific pages like legal. This changes
-   how every remaining component is written and should be settled before the next
-   page is built. **This is the blocker.**
-2. **cPanel Node version.** Astro 7 needs Node 22.12+. Whether cPanel offers it
-   gates the entire admin plan in BUILD-PLAN.md. Nobody has checked yet.
-3. **Deploy path on cPanel**, and what replaces the dead workflow.
-4. Whether Terms sections 7 and 9 get reviewed by Louisiana counsel. Louisiana is
+1. **cPanel Node version.** Astro 7 needs Node 22.12+. Whether cPanel offers it
+   gates the entire admin plan in BUILD-PLAN.md. Nobody has checked yet. **This is
+   the blocker now.**
+2. **Deploy path on cPanel**, and what replaces the dead workflow.
+3. Whether Terms sections 7 and 9 get reviewed by Louisiana counsel. Louisiana is
    the only civil law state, and broad liability disclaimers behave differently
    there than in the other forty-nine.
 
 ## Suggested next steps
 
-Settle light mode first. Then `/games` index, `/status`, `/contact`, `/partners`,
-`/staff`, pulling copy from `main`'s data files. Then the Capacity Board, then the
-admin panel.
+Light mode is settled, so go straight at the pages: `/games` index, `/status`,
+`/contact`, `/partners`, `/staff`, pulling copy from `main`'s data files. Then the
+Capacity Board, then the admin panel.
