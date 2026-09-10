@@ -1,8 +1,7 @@
 ---
-// The shell, and nothing else. No Header, no Footer, no banner. Those get built
-// against the new system rather than dragged over from the old one.
+// The shell. SEO tags, the two typefaces, and a slot. Header and Footer get built
+// against the new system when there's a system to build them against.
 import "../styles/global.css";
-import { siteConfig } from "../config";
 
 interface Props {
   title: string;
@@ -10,11 +9,13 @@ interface Props {
   noindex?: boolean;
 }
 
-const { title, description = siteConfig.description, noindex = false } = Astro.props;
+const DEFAULT_DESCRIPTION =
+  "Game server hosting for communities. A finite number of servers, run properly.";
 
-const absoluteSiteUrl = `https://${siteConfig.domain}`;
-const canonicalUrl = new URL(Astro.url.pathname, absoluteSiteUrl).href;
-const socialImageUrl = `${absoluteSiteUrl}${siteConfig.socialImage}`;
+const { title, description = DEFAULT_DESCRIPTION, noindex = false } = Astro.props;
+
+const siteUrl = "https://lumixsolutions.org";
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 const brandName = "Lumix Solutions";
 const pageTitle = title.includes(brandName) ? title : `${title} | ${brandName}`;
 
@@ -22,12 +23,11 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: brandName,
-  url: absoluteSiteUrl,
-  logo: `${absoluteSiteUrl}${siteConfig.logo}`
+  url: siteUrl
 };
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -37,20 +37,16 @@ const organizationSchema = {
     <meta name="theme-color" content="#e7e8e3" />
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:locale" content="en_US" />
-    <meta property="og:site_name" content="Lumix Solutions" />
+    <meta property="og:site_name" content={brandName} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:image" content={socialImageUrl} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={socialImageUrl} />
 
-    <!-- Archivo carries both display and body via its width axis, so this is one
+    <!-- Archivo carries both display and body off its width axis, so this is one
          file doing two jobs. Martian Mono is instrument labels only. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -59,8 +55,7 @@ const organizationSchema = {
       rel="stylesheet"
     />
 
-    <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/images/logo.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
 

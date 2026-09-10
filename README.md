@@ -1,104 +1,43 @@
-# Lumix Website
-
-## 1. Project Overview
-
-This project is the Lumix marketing and information website built with Astro, including public pages for services, status, staff, legal content, and careers.
-
-## 2. Prerequisites
-
-- Node.js 20 LTS or newer
-- npm 10 or newer
-- Git
-- Supported OS: Windows, macOS, or Linux
-
-## 3. Installation
-
-Run from the project root:
+# Astro Starter Kit: Minimal
 
 ```sh
-npm install
+npm create astro@latest -- --template minimal
 ```
 
-## 4. Running the Project (Development)
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
-Start the local dev server:
+## 🚀 Project Structure
 
-```sh
-npm run dev
+Inside of your Astro project, you'll see the following folders and files:
+
+```text
+/
+├── public/
+├── src/
+│   └── pages/
+│       └── index.astro
+└── package.json
 ```
 
-What to expect:
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
-- The server starts in watch mode
-- Astro prints a local URL (typically http://localhost:4321)
-- Changes in `src/` reload automatically in the browser
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
 
-## 5. Building for Production
+Any static assets, like images, can be placed in the `public/` directory.
 
-Create a production build:
+## 🧞 Commands
 
-```sh
-npm run build
-```
+All commands are run from the root of the project, from a terminal:
 
-Build output is generated in `dist/`.
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `npm install`             | Installs dependencies                            |
+| `npm run dev`             | Starts local dev server at `localhost:4321`      |
+| `npm run build`           | Build your production site to `./dist/`          |
+| `npm run preview`         | Preview your build locally, before deploying     |
+| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `npm run astro -- --help` | Get help using the Astro CLI                     |
 
-## 6. Preview Production Build
+## 👀 Want to learn more?
 
-Preview the built site locally:
-
-```sh
-npm run preview
-```
-
-## 7. Environment Variables
-
-No `.env` file is required for the current project setup.
-
-If environment variables are added later, use this format:
-
-```env
-EXAMPLE_KEY=value
-PUBLIC_EXAMPLE_KEY=value
-```
-
-## 8. Project Structure
-
-Key folders: 
-
-- `public/`: Static assets served as-is (images, icons, etc.)
-- `src/components/`: Reusable UI components
-- `src/data/`: Shared site content/config data
-- `src/layouts/`: Page layout wrappers
-- `src/pages/`: Route-based pages
-- `src/styles/`: Global styles
-
-## 9. Common Issues / Troubleshooting
-
-- Dependencies are broken:
-
-```sh
-# PowerShell (Windows)
-Remove-Item -Recurse -Force node_modules
-Remove-Item -Force package-lock.json
-npm install
-```
-
-```sh
-# Bash (macOS/Linux)
-rm -rf node_modules package-lock.json
-npm install
-```
-
-- Port 4321 is already in use:
-
-```sh
-npm run dev -- --port 4322
-```
-
-- Build fails after branch changes:
-
-```sh
-npm install
-npm run build
-```
+Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
