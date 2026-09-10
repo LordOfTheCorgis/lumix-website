@@ -13,9 +13,14 @@
 //
 // The cells still land on a real 40px module (--grid-cell) that the layout is
 // built to, so a lit cell fills a tile's corner or a gutter exactly instead of
-// straddling an edge. That only works because the plane spans the document
-// rather than the viewport: a viewport-fixed origin can't register vertically,
-// since the content slides across it as you scroll.
+// straddling an edge. That only works because the plane is sized by the page
+// rather than the viewport: a viewport-height plane clips every cell past the
+// fold, and a viewport-fixed origin can't register vertically at all, since the
+// content slides across it as you scroll.
+//
+// The plane covers the header and main and stops at the top of the footer,
+// which is a decision in Layout.astro, not here. Everything below reads its own
+// box, so it keeps working if that changes.
 
 interface Props {
   /** Fill of a lit cell at full strength, before it starts fading out. */
@@ -86,8 +91,19 @@ const {
       // sits inside a tile corner instead of across its border.
       let originX = 0;
       let originY = 0;
+      // The plane doesn't start at the document's top left corner, so cells have
+      // to be placed relative to it. Assuming it did is what put every cell 0px
+      // from the top of a plane that stopped at the footer.
+      let planeX = 0;
+      let planeY = 0;
+      let planeBottom = Infinity;
 
       function measure() {
+        const pb = plane.getBoundingClientRect();
+        planeX = pb.left;
+        planeY = pb.top + window.scrollY;
+        planeBottom = planeY + pb.height;
+
         // Any .shell will do; they all share a width and a centre.
         const shell = document.querySelector<HTMLElement>(".shell");
         if (shell) {
@@ -124,8 +140,8 @@ const {
         // the two stack and the cell flickers on its way out.
         running.get(el)?.cancel();
 
-        el.style.transform = `translate3d(${col * size + originX}px, ${
-          row * size + originY
+        el.style.transform = `translate3d(${col * size + originX - planeX}px, ${
+          row * size + originY - planeY
         }px, 0)`;
 
         // Snaps on, drifts off, same asymmetry as the original's 100ms-in /
@@ -143,9 +159,17 @@ const {
       function flush() {
         frame = 0;
         if (!pending) return;
-        const col = Math.floor((pending.x - originX) / size);
-        const row = Math.floor((pending.y - originY) / size);
+        const { x, y } = pending;
         pending = null;
+        // Cursor is over the footer. The plane's clip would eat the cell anyway,
+        // so don't burn an animation drawing something nobody can see.
+        if (y < planeY || y >= planeBottom) {
+          lastCol = NaN;
+          lastRow = NaN;
+          return;
+        }
+        const col = Math.floor((x - originX) / size);
+        const row = Math.floor((y - originY) / size);
         if (col === lastCol && row === lastRow) return;
         lastCol = col;
         lastRow = row;

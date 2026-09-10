@@ -41,8 +41,9 @@ three dated 2026-09-10.
 **Components:** Header, Footer, GameTile, StickyCta, CookieBanner, Analytics,
 LightRays, GridPattern, and a three-part Terminal.
 
-**CursorTrail** is in Layout, so it is behind every page. It spans the document at
-`z-index: -1` and recycles twelve divs that light up under the cursor and fade out
+**CursorTrail** is in Layout, so it is behind every page. It fills a positioned
+wrapper around the header and main, which is what makes it stop at the top of the
+footer, and recycles twelve divs at `z-index: -1` that light up under the cursor and fade out
 behind it. Nothing draws a grid: an earlier version painted the lines too and Evan
 cut them, so the module is now invisible and only the lit cells reveal it. It
 listens on `window` rather than on itself, which is why cells light up under the
@@ -133,6 +134,15 @@ in. That is fine everywhere it is used today, but it makes the value useless for
 `background-position`, where a percentage means the positioning area minus the
 tile rather than the element width. If you ever draw the module again, don't
 reach for that.
+
+**The trail plane needs a positioned ancestor, and it fails silently without
+one.** It is `position: absolute; inset: 0`, so with nothing positioned around it
+the containing block becomes the viewport: the plane comes out exactly 100vh
+tall, `overflow: hidden` clips every cell below that, and the trail appears to
+"stop working" somewhere around the fold with no error anywhere. It cost an hour.
+The wrapper in Layout.astro is doing that job and also setting where the effect
+ends. Cells are positioned in plane-local coordinates, so moving the wrapper is
+safe; assuming the plane starts at the document's top left is not.
 
 **The ink ground lives on `<html>`, not on `<body>`.** Body is deliberately
 transparent so GridPattern can sit under it at `z-index: -1`. Put a background

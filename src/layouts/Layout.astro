@@ -89,13 +89,19 @@ const organizationSchema = {
     <Analytics />
   </head>
   <body class="min-h-screen flex flex-col text-paper">
-    <!-- Sits at z-index -1 under everything, which only works because the ink
-         ground is on <html> and body is transparent. -->
-    <CursorTrail />
-    <Header />
-    <main class="flex-1">
-      <slot />
-    </main>
+    <!-- The trail plane is absolutely positioned against this wrapper, so it
+         starts at the top of the page and stops dead at the top of the footer.
+         Hanging it off <body> instead would run it behind the footer, and
+         hanging it off nothing positioned at all gets you the viewport, which
+         silently clips the whole thing at 100vh. Sits at z-index -1, which only
+         works because the ink ground is on <html> and body is transparent. -->
+    <div class="relative flex flex-1 flex-col">
+      <CursorTrail />
+      <Header />
+      <main class="flex-1">
+        <slot />
+      </main>
+    </div>
     <Footer />
     <StickyCta />
     <CookieBanner />
