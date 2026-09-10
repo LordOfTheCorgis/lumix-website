@@ -1,6 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import SpotlightContent from "../components/SpotlightContent.astro";
 import { spotlight, siteConfig } from "../data/site";
 
 // Flip spotlight.enabled in src/data/site.ts when there's no server to feature.
@@ -20,32 +19,31 @@ const offDescription =
     noindex={!isLive}
 >
     {isLive ? (
-        <SpotlightContent />
+        <!-- TODO(redesign): rebuild spotlight. Data intact in src/data/site.ts -->
     ) : (
-        <div class="relative">
-            <div class="absolute inset-0 grid-overlay opacity-20 pointer-events-none z-0"></div>
+        <div>
+            <div></div>
 
-            <section class="py-24 lg:py-36 relative z-10">
-                <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <span class="text-mono text-xs text-lumix-gray mb-8 block animate-fade-in">
-                        // SPOTLIGHT_STATUS: <span class="text-lumix-red">between features</span>
+            <section>
+                <div>
+                    <span>
+                        // SPOTLIGHT_STATUS: <span>between features</span>
                     </span>
 
-                    <h1 class="heading-xl text-lumix-white mb-6 animate-fade-in-up">
+                    <h1>
                         No server in the<br />
-                        <span class="text-lumix-red">spotlight right now</span>
+                        <span>spotlight right now</span>
                     </h1>
 
-                    <p class="body-lg text-lumix-gray mb-10 animate-fade-in-up animate-delay-100">
+                    <p>
                         We feature one community-led server at a time and only when it
                         earns it. The next one is still being picked. If you run a server
                         worth showing off, or you know one, send it our way.
                     </p>
 
-                    <div class="flex flex-col sm:flex-row gap-4 animate-fade-in-up animate-delay-200">
+                    <div>
                         <a
                             href="/contact"
-                            class="text-mono text-sm px-6 py-3 bg-lumix-red text-lumix-white border border-lumix-red hover:bg-transparent hover:text-lumix-red transition-colors text-center"
                         >
                             Nominate a server
                         </a>
@@ -53,7 +51,6 @@ const offDescription =
                             href={siteConfig.links.discord}
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="text-mono text-sm px-6 py-3 border border-terminal-border text-lumix-gray hover:text-lumix-white hover:border-lumix-gray-dark transition-colors text-center"
                         >
                             Join the Discord
                         </a>

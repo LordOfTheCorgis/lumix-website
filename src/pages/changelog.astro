@@ -77,13 +77,6 @@ const changelog: ChangelogEntry[] = [
     },
 ];
 
-const typeColors = {
-    feature: "bg-green-500/20 text-green-400 border-green-500/30",
-    improvement: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    fix: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-    announcement: "bg-lumix-red/20 text-lumix-red border-lumix-red/30",
-};
-
 const typeLabels = {
     feature: "New Feature",
     improvement: "Improvement",
@@ -94,20 +87,20 @@ const typeLabels = {
 
 <Layout title="Changelog" description="Release notes and announcements from Lumix Solutions, including new locations, capacity updates, and platform improvements.">
     <!-- Header -->
-    <section class="relative py-20 overflow-hidden">
-        <div class="absolute inset-0 grid-overlay pointer-events-none"></div>
+    <section>
+        <div></div>
         
-        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <div class="text-mono text-xs text-lumix-gray mb-4">
-                    <span class="text-lumix-red">[</span> CHANGELOG <span class="text-lumix-red">]</span> // updates & announcements
+        <div>
+            <div>
+                <div>
+                    <span>[</span> CHANGELOG <span>]</span> // updates & announcements
                 </div>
                 
-                <h1 class="heading-lg text-lumix-white mb-6">
-                    What's <span class="text-lumix-red">New</span>
+                <h1>
+                    What's <span>New</span>
                 </h1>
                 
-                <p class="body-lg text-lumix-gray max-w-2xl mx-auto">
+                <p>
                     Stay up to date with the latest features, improvements, and fixes 
                     across the Lumix Solutions platform.
                 </p>
@@ -116,53 +109,53 @@ const typeLabels = {
     </section>
 
     <!-- Changelog Timeline -->
-    <section class="py-12 pb-20">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="relative">
+    <section>
+        <div>
+            <div>
                 <!-- Timeline line -->
-                <div class="absolute left-0 md:left-8 top-0 bottom-0 w-px bg-terminal-border"></div>
+                <div></div>
                 
                 <!-- Changelog entries -->
-                <div class="space-y-12">
+                <div>
                     {changelog.map((entry, index) => (
-                        <div class="relative pl-8 md:pl-20" data-animate>
+                        <div data-animate>
                             <!-- Timeline dot -->
-                            <div class="absolute left-0 md:left-8 -translate-x-1/2 w-3 h-3 rounded-full bg-lumix-red border-2 border-lumix-black"></div>
+                            <div></div>
                             
                             <!-- Entry card -->
-                            <div class="terminal-card p-6">
+                            <div>
                                 <!-- Header -->
-                                <div class="flex flex-wrap items-center gap-3 mb-4">
-                                    <span class={`px-2 py-1 text-xs font-mono rounded border ${typeColors[entry.type]}`}>
+                                <div>
+                                    <span>
                                         {typeLabels[entry.type]}
                                     </span>
-                                    <span class="text-mono text-xs text-lumix-gray">
+                                    <span>
                                         v{entry.version}
                                     </span>
-                                    <span class="text-mono text-xs text-lumix-gray">
+                                    <span>
                                         •
                                     </span>
-                                    <span class="text-mono text-xs text-lumix-gray">
+                                    <span>
                                         {entry.date}
                                     </span>
                                 </div>
                                 
                                 <!-- Title -->
-                                <h3 class="text-lg font-semibold text-lumix-white mb-2">
+                                <h3>
                                     {entry.title}
                                 </h3>
                                 
                                 <!-- Description -->
-                                <p class="text-lumix-gray text-sm mb-4">
+                                <p>
                                     {entry.description}
                                 </p>
                                 
                                 <!-- Items -->
                                 {entry.items && entry.items.length > 0 && (
-                                    <ul class="space-y-2">
+                                    <ul>
                                         {entry.items.map((item) => (
-                                            <li class="flex items-start gap-2 text-sm text-lumix-gray">
-                                                <span class="text-lumix-red mt-1">→</span>
+                                            <li>
+                                                <span>→</span>
                                                 <span>{item}</span>
                                             </li>
                                         ))}
@@ -174,10 +167,10 @@ const typeLabels = {
                 </div>
                 
                 <!-- End marker -->
-                <div class="relative pl-8 md:pl-20 pt-8">
-                    <div class="absolute left-0 md:left-8 -translate-x-1/2 w-3 h-3 rounded-full bg-terminal-border border-2 border-lumix-black"></div>
-                    <p class="text-mono text-xs text-lumix-gray">
-                        <span class="text-lumix-red">$</span> git log --end-of-history
+                <div>
+                    <div></div>
+                    <p>
+                        <span>$</span> git log --end-of-history
                     </p>
                 </div>
             </div>

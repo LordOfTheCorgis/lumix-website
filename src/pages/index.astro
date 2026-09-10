@@ -1,7 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Terminal from "../components/Terminal.astro";
-import GameTile from "../components/GameTile.astro";
 import { liveCategories } from "../data/catalog";
 import { spotlight } from "../data/site";
 import { siteConfig, stats } from "../data/site";
@@ -10,26 +8,25 @@ import { siteConfig, stats } from "../data/site";
 <Layout title="Game Server & VPS Hosting">
 
   {spotlight.enabled && (
-    <div class="bg-lumix-black-light border-b border-terminal-border py-2.5 text-xs">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-y-1 gap-x-4">
+    <div>
+    <div>
     
-      <div class="flex items-center gap-3">
-        <span class="relative flex h-2 w-2 flex-shrink-0">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-lumix-red opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-lumix-red"></span>
+      <div>
+        <span>
+          <span></span>
+          <span></span>
         </span>
-        <span class="text-mono text-lumix-gray-dark hidden sm:inline">// BROADCAST:</span>
-        <p class="text-lumix-gray">
-          Featured monthly spotlight: <span class="text-lumix-white font-medium">{spotlight.name}</span>
+        <span>// BROADCAST:</span>
+        <p>
+          Featured monthly spotlight: <span>{spotlight.name}</span>
         </p>
       </div>
 
       <a 
-        href="/spotlight" 
-        class="text-mono text-lumix-red hover:text-lumix-white transition-colors flex items-center gap-1 ml-auto sm:ml-0 group"
+        href="/spotlight"
       >
         <span>Read more</span>
-        <span class="text-lumix-gray group-hover:translate-x-0.5 transition-transform duration-150">&rarr;</span>
+        <span>&rarr;</span>
       </a>
 
     </div>
@@ -37,136 +34,120 @@ import { siteConfig, stats } from "../data/site";
   )}
 
   <!-- Hero Section -->
-  <section class="relative min-h-[90vh] flex items-center overflow-hidden">
+  <section>
     <!-- Grid Background -->
-    <div class="absolute inset-0 grid-overlay pointer-events-none"></div>
+    <div></div>
     
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+    <div>
+      <div>
         <!-- Left: Content -->
         <div>
-          <div class="text-mono text-xs text-lumix-gray mb-4 animate-fade-in">
-            <span class="text-lumix-red">[</span> LUMIX_SOLUTIONS <span class="text-lumix-red">]</span> // infrastructure
+          <div>
+            <span>[</span> LUMIX_SOLUTIONS <span>]</span> // infrastructure
           </div>
           
-          <h1 class="heading-xl text-lumix-white mb-6 animate-fade-in-up animate-delay-100">
+          <h1>
             Infrastructure built<br/>
-            <span class="text-lumix-red">by engineers</span>
+            <span>by engineers</span>
           </h1>
           
-          <p class="body-lg text-lumix-gray max-w-lg mb-8 animate-fade-in-up animate-delay-200">
+          <p>
             Reliable compute, game server hosting, voice infrastructure, and 
             enterprise-grade DDoS protection. No buzzwords, just infrastructure 
             that works.
           </p>
           
-          <div class="flex flex-wrap gap-4 animate-fade-in-up animate-delay-300">
-            <a href="/games" class="btn-primary">
+          <div>
+            <a href="/games">
               Build Your Server
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
               </svg>
             </a>
-            <a href="/games#catalog" class="btn-outline">
+            <a href="/games#catalog">
               Browse Games
             </a>
           </div>
         </div>
         
         <!-- Right: Terminal -->
-        <div class="animate-fade-in-up animate-delay-400">
-          <Terminal 
-            title="lumix@infra ~ $"
-            lines={[
-              { prompt: "$", command: "lumix status --all" },
-              { output: "Checking infrastructure status...", type: "info" },
-              { output: "" },
-              { output: "SERVICES           STATUS      UPTIME", type: "info" },
-              { output: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", type: "info" },
-              { output: "ddos_shield        ACTIVE      99.99%", type: "success" },
-              { output: "compute_nodes      ACTIVE      99.98%", type: "success" },
-              { output: "game_servers       ACTIVE      99.97%", type: "success" },
-              { output: "voice_infra        ACTIVE      99.95%", type: "success" },
-              { output: "" },
-              { output: "All systems operational.", type: "success" },
-            ]}
-          />
+        <div>
         </div>
       </div>
     </div>
   </section>
   
-  <div class="section-divider"></div>
+  <div></div>
   
   <!-- Stats Section -->
-  <section class="py-16 lg:py-24">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+  <section>
+    <div>
+      <div>
         {stats.map((stat, index) => (
-          <div class="text-center lg:text-left" data-animate>
-            <div class="text-mono text-3xl lg:text-4xl font-bold text-lumix-white mb-1">
+          <div data-animate>
+            <div>
               {stat.value}
-              <span class="text-lumix-red text-xl lg:text-2xl">{stat.unit}</span>
+              <span>{stat.unit}</span>
             </div>
-            <div class="text-sm text-lumix-gray">{stat.label}</div>
+            <div>{stat.label}</div>
           </div>
         ))}
       </div>
     </div>
   </section>
   
-  <div class="section-divider"></div>
+  <div></div>
 
   <!-- Featured Games -->
-  <section class="py-16 lg:py-24">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12">
+  <section>
+    <div>
+      <div>
         <div>
-          <span class="text-mono text-xs text-lumix-gray mb-4 block">// BUILD_YOUR_SERVER</span>
-          <h2 class="heading-lg text-lumix-white">Pick a game, size it, deploy</h2>
-          <p class="text-lumix-gray mt-3 max-w-xl">
+          <span>// BUILD_YOUR_SERVER</span>
+          <h2>Pick a game, size it, deploy</h2>
+          <p>
             Configure everything here. Your plan, location, and billing cycle carry
             straight into checkout with nothing to re-select.
           </p>
         </div>
-        <a href="/games" class="btn-outline shrink-0">
+        <a href="/games">
           View Full Catalog
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
           </svg>
         </a>
       </div>
 
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div>
         {liveCategories.map(category => (
-          <GameTile category={category} />
+          <a href={`/games/${category.slug}`}>{category.shortLabel}</a>
         ))}
       </div>
     </div>
   </section>
 
-  <div class="section-divider"></div>
+  <div></div>
 
   <!-- What We Do Section -->
-  <section class="py-16 lg:py-24">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+  <section>
+    <div>
+      <div>
         <!-- Left: Text -->
         <div>
-          <span class="text-mono text-xs text-lumix-gray mb-4 block">// OVERVIEW</span>
-          <h2 class="heading-lg text-lumix-white mb-6">
+          <span>// OVERVIEW</span>
+          <h2>
             What we do
           </h2>
-          <div class="space-y-4 text-lumix-gray">
+          <div>
             <p>
               Lumix Solutions provides infrastructure services for businesses and 
               developers who need reliability without the corporate overhead.
             </p>
             <p>
-              We specialize in <span class="text-lumix-white">Node.js application hosting</span>, 
-              <span class="text-lumix-white">game server infrastructure</span>, 
-              <span class="text-lumix-white">voice communication servers</span>, and 
-              <span class="text-lumix-white">DDoS mitigation</span>.
+              We specialize in <span>Node.js application hosting</span>, 
+              <span>game server infrastructure</span>, 
+              <span>voice communication servers</span>, and 
+              <span>DDoS mitigation</span>.
             </p>
             <p>
               Our team comes from backgrounds in systems administration, network 
@@ -174,11 +155,11 @@ import { siteConfig, stats } from "../data/site";
             </p>
           </div>
           
-          <div class="mt-8 pt-8 border-t border-terminal-border">
-            <div class="text-mono text-xs text-lumix-gray mb-3">SUPPORTED PLATFORMS</div>
-            <div class="flex flex-wrap gap-3">
+          <div>
+            <div>SUPPORTED PLATFORMS</div>
+            <div>
               {['Node.js', 'Python', 'Docker', 'TeamSpeak', 'Mumble', 'Game Servers'].map(platform => (
-                <span class="px-3 py-1 text-xs text-lumix-gray border border-terminal-border">
+                <span>
                   {platform}
                 </span>
               ))}
@@ -187,54 +168,40 @@ import { siteConfig, stats } from "../data/site";
         </div>
         
         <!-- Right: Terminal -->
-        <div class="lg:sticky lg:top-24">
-          <Terminal 
-            title="infrastructure.log"
-            showCursor={false}
-            lines={[
-              { output: "[2026-01-30 12:00:01] DDoS mitigation active", type: "success" },
-              { output: "[2026-01-30 12:00:01] Scrubbing capacity: 10Tbps+", type: "info" },
-              { output: "[2026-01-30 12:00:02] Game servers: 847 active", type: "success" },
-              { output: "[2026-01-30 12:00:02] Avg latency: 8ms", type: "info" },
-              { output: "[2026-01-30 12:00:03] Voice servers: 234 online", type: "success" },
-              { output: "[2026-01-30 12:00:03] Codec: Opus @ 128kbps", type: "info" },
-              { output: "[2026-01-30 12:00:04] Compute nodes: healthy", type: "success" },
-              { output: "[2026-01-30 12:00:05] Network: no incidents", type: "success" },
-            ]}
-          />
+        <div>
         </div>
       </div>
     </div>
   </section>
   
-  <div class="section-divider"></div>
+  <div></div>
 
   <!-- CTA Section -->
-  <section class="py-16 lg:py-24">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="relative border border-terminal-border p-8 lg:p-16 overflow-hidden">
+  <section>
+    <div>
+      <div>
         <!-- Background grid -->
-        <div class="absolute inset-0 grid-overlay opacity-20 pointer-events-none"></div>
+        <div></div>
         
-        <div class="relative text-center max-w-2xl mx-auto">
-          <div class="text-mono text-xs text-lumix-red mb-4">
+        <div>
+          <div>
             $ deploy --production
           </div>
-          <h2 class="heading-lg text-lumix-white mb-4">
+          <h2>
             Ready to deploy?
           </h2>
-          <p class="text-lumix-gray mb-8">
+          <p>
             Access our billing portal to configure your infrastructure. 
             Hourly billing, no long-term contracts, cancel anytime.
           </p>
-          <div class="flex flex-wrap justify-center gap-4">
-            <a href={siteConfig.links.billing} target="_blank" rel="noopener noreferrer" class="btn-primary">
+          <div>
+            <a href={siteConfig.links.billing} target="_blank" rel="noopener noreferrer">
               Access Billing Portal
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
               </svg>
             </a>
-            <a href="/contact" class="btn-outline">
+            <a href="/contact">
               Contact Sales
             </a>
           </div>

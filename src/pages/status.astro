@@ -1,6 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import StatusCard from "../components/StatusCard.astro";
 import { statusServices } from "../data/site";
 ---
 
@@ -9,24 +8,20 @@ import { statusServices } from "../data/site";
     description="Real-time status of Lumix Solutions infrastructure and services."
 >
     <!-- Page Header -->
-    <section class="py-16 lg:py-20 border-b border-terminal-border">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section>
+        <div>
             <div
-                class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6"
             >
                 <div>
                     <span
-                        class="text-mono text-xs text-lumix-gray mb-4 block animate-fade-in"
                     >
-                        <span class="text-lumix-red">$</span> lumix status --monitor
+                        <span>$</span> lumix status --monitor
                     </span>
                     <h1
-                        class="heading-xl text-lumix-white mb-4 animate-fade-in-up animate-delay-100"
                     >
-                        System <span class="text-lumix-red">status</span>
+                        System <span>status</span>
                     </h1>
                     <p
-                        class="text-lumix-gray animate-fade-in-up animate-delay-200"
                     >
                         Real-time infrastructure status and service health
                     </p>
@@ -34,24 +29,20 @@ import { statusServices } from "../data/site";
 
                 <!-- Overall Status -->
                 <div
-                    class="card p-6 lg:min-w-[280px] animate-fade-in-up animate-delay-300"
                     id="overall-status"
                 >
-                    <div class="flex items-center gap-4">
+                    <div>
                         <div
-                            class="status-dot status-operational status-pulse w-4 h-4"
                             id="overall-status-dot"
                         >
                         </div>
                         <div>
                             <div
-                                class="text-lg font-medium text-lumix-white"
                                 id="overall-status-text"
                             >
                                 Checking Services...
                             </div>
                             <div
-                                class="text-mono text-xs text-lumix-gray"
                                 id="last-updated"
                             >
                                 Last updated: checking...
@@ -62,10 +53,9 @@ import { statusServices } from "../data/site";
             </div>
 
             <!-- Ping All Button -->
-            <div class="mt-6">
-                <button id="ping-all-btn" class="btn-primary">
+            <div>
+                <button id="ping-all-btn">
                     <svg
-                        class="w-4 h-4 animate-spin hidden"
                         id="ping-all-spinner"
                         fill="none"
                         stroke="currentColor"
@@ -85,69 +75,66 @@ import { statusServices } from "../data/site";
     </section>
 
     <!-- Status Grid -->
-    <section class="py-16 lg:py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-8 flex items-center justify-between">
-                <span class="text-mono text-xs text-lumix-gray"
+    <section>
+        <div>
+            <div>
+                <span
                     >// SERVICES</span
                 >
                 <span
-                    class="text-mono text-xs text-lumix-gray"
                     id="services-summary">0/0 operational</span
                 >
             </div>
 
             <div
-                class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
                 id="services-grid"
             >
-                {statusServices.map((service) => <StatusCard {...service} />)}
+                {statusServices.map((service) => <div><h3>{service.name}</h3><p>{service.endpoint}</p></div>)}
             </div>
         </div>
     </section>
 
-    <div class="section-divider"></div>
+    <div></div>
 
     <!-- Ping Tool -->
-    <section class="py-16 lg:py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-8">
-                <span class="text-mono text-xs text-lumix-gray"
+    <section>
+        <div>
+            <div>
+                <span
                     >// NETWORK_TOOLS</span
                 >
-                <h2 class="heading-lg text-lumix-white mt-4">Ping any URL</h2>
-                <p class="text-sm text-lumix-gray mt-2">
+                <h2>Ping any URL</h2>
+                <p>
                     Check connectivity to any service (must support HTTPS)
                 </p>
             </div>
 
-            <div class="max-w-2xl">
-                <div class="terminal-window">
-                    <div class="terminal-header">
-                        <span class="terminal-dot bg-lumix-red"></span>
-                        <span class="terminal-dot bg-terminal-yellow"></span>
-                        <span class="terminal-dot bg-terminal-green"></span>
-                        <span class="text-mono text-xs text-lumix-gray ml-3"
+            <div>
+                <div>
+                    <div>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span
                             >ping_tool</span
                         >
                     </div>
-                    <div class="terminal-body">
-                        <div class="flex gap-2 mb-4">
-                            <span class="terminal-prompt">$</span>
-                            <span class="text-terminal-text">ping</span>
+                    <div>
+                        <div>
+                            <span>$</span>
+                            <span>ping</span>
                             <input
                                 type="text"
                                 id="ping-url"
-                                class="flex-1 bg-transparent border-none outline-none text-lumix-white text-sm font-mono"
                                 placeholder="https://example.com"
                             />
                         </div>
-                        <button id="ping-btn" class="btn-primary text-xs">
+                        <button id="ping-btn">
                             Execute
                         </button>
 
-                        <div id="ping-output" class="mt-6 hidden">
-                            <div class="border-t border-terminal-border pt-4">
+                        <div id="ping-output">
+                            <div>
                                 <div id="ping-results"></div>
                             </div>
                         </div>
@@ -157,25 +144,24 @@ import { statusServices } from "../data/site";
         </div>
     </section>
 
-    <div class="section-divider"></div>
+    <div></div>
 
     <!-- Recent Incidents -->
-    <section class="py-16 lg:py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-8">
-                <span class="text-mono text-xs text-lumix-gray"
+    <section>
+        <div>
+            <div>
+                <span
                     >// INCIDENT_LOG</span
                 >
-                <h2 class="heading-lg text-lumix-white mt-4">
+                <h2>
                     Recent incidents
                 </h2>
             </div>
 
-            <div class="max-w-3xl">
-                <div class="card p-6">
-                    <div class="flex items-center gap-3 text-terminal-green">
+            <div>
+                <div>
+                    <div>
                         <svg
-                            class="w-5 h-5"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -187,28 +173,26 @@ import { statusServices } from "../data/site";
                                 d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                             ></path>
                         </svg>
-                        <span class="text-sm"
+                        <span
                             >No incidents reported in the last 90 days</span
                         >
                     </div>
                 </div>
 
-                <div class="mt-8 space-y-4">
-                    <div class="text-mono text-xs text-lumix-gray">
+                <div>
+                    <div>
                         UPTIME HISTORY (90 DAYS)
                     </div>
-                    <div class="flex gap-1 flex-wrap">
+                    <div>
                         {
                             Array.from({ length: 90 }, (_, i) => (
                                 <div
-                                    class="w-2 h-8 bg-terminal-green opacity-80 hover:opacity-100 transition-opacity"
                                     title={`${90 - i} days ago: 100% uptime`}
                                 />
                             ))
                         }
                     </div>
                     <div
-                        class="flex justify-between text-mono text-xs text-lumix-gray"
                     >
                         <span>90 days ago</span>
                         <span>Today</span>
@@ -307,14 +291,9 @@ import { statusServices } from "../data/site";
                 degraded: "Degraded",
                 down: "Down",
             };
-            const colors: Record<string, string> = {
-                operational: "text-terminal-green",
-                degraded: "text-terminal-yellow",
-                down: "text-lumix-red",
-            };
-
             statusLabel.textContent = labels[result.status];
-            statusLabel.className = `text-xs font-medium ${colors[result.status]}`;
+            // Styling hook for the rebuild. CSS owns the color, not this file.
+            statusLabel.setAttribute("data-status", result.status);
         }
 
         // Update response time
@@ -455,7 +434,7 @@ import { statusServices } from "../data/site";
         }
 
         pingOutput.classList.remove("hidden");
-        pingResults.innerHTML = `<div class="text-lumix-gray">Pinging ${url}...</div>`;
+        pingResults.innerHTML = `<div>Pinging ${url}...</div>`;
 
         // Perform multiple pings
         const results: PingResult[] = [];
@@ -466,16 +445,16 @@ import { statusServices } from "../data/site";
             // Update display incrementally
             const lines = results.map((r, idx) => {
                 if (r.success) {
-                    return `<div class="text-terminal-text">seq=${idx + 1} time=${r.responseTime}ms status=${r.status}</div>`;
+                    return `<div>seq=${idx + 1} time=${r.responseTime}ms status=${r.status}</div>`;
                 } else {
-                    return `<div class="terminal-error">seq=${idx + 1} failed: ${r.error}</div>`;
+                    return `<div>seq=${idx + 1} failed: ${r.error}</div>`;
                 }
             });
 
             pingResults.innerHTML = `
-        <div class="text-terminal-text mb-2">PING ${url}</div>
+        <div>PING ${url}</div>
         ${lines.join("")}
-        ${i < 3 ? '<div class="text-lumix-gray mt-2">...</div>' : ""}
+        ${i < 3 ? '<div>...</div>' : ""}
       `;
 
             // Small delay between pings
@@ -491,24 +470,24 @@ import { statusServices } from "../data/site";
         const loss = Math.round((1 - successful / results.length) * 100);
 
         pingResults.innerHTML = `
-      <div class="text-terminal-text mb-2">PING ${url}</div>
+      <div>PING ${url}</div>
       ${results
           .map((r, idx) => {
               if (r.success) {
-                  return `<div class="text-terminal-text">seq=${idx + 1} time=${r.responseTime}ms status=${r.status}</div>`;
+                  return `<div>seq=${idx + 1} time=${r.responseTime}ms status=${r.status}</div>`;
               } else {
-                  return `<div class="terminal-error">seq=${idx + 1} failed: ${r.error}</div>`;
+                  return `<div>seq=${idx + 1} failed: ${r.error}</div>`;
               }
           })
           .join("")}
-      <div class="mt-4 text-terminal-text">--- ${url} ping statistics ---</div>
-      <div class="text-terminal-text">${results.length} requests, ${successful} successful, ${loss}% loss, avg ${avgTime}ms</div>
+      <div>--- ${url} ping statistics ---</div>
+      <div>${results.length} requests, ${successful} successful, ${loss}% loss, avg ${avgTime}ms</div>
       ${
           successful === results.length
-              ? '<div class="terminal-success mt-2">Connection successful ✓</div>'
+              ? '<div>Connection successful ✓</div>'
               : successful > 0
-                ? '<div class="terminal-warning mt-2">Connection unstable ⚠</div>'
-                : '<div class="terminal-error mt-2">Connection failed ✗</div>'
+                ? '<div>Connection unstable ⚠</div>'
+                : '<div>Connection failed ✗</div>'
       }
     `;
     }
