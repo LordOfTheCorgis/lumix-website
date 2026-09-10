@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# pulled from lumix-routines when I need it, that repo owns it
+marketing-log.md
