@@ -22,10 +22,16 @@ interface Props {
 
 const { games, class: className = "" } = Astro.props;
 
+// Anything under 1200 wide gets skipped. Terraria's art is 460x215, a tile
+// thumbnail, and blown up to hero size it's mush with the wordmark across the
+// top. Width rule rather than a slug list so it comes back on its own the day
+// someone drops a real image in.
+const HERO_MIN_WIDTH = 1200;
+
 // 1600 is enough: the hero caps at 1328 wide and the thing sits behind a
 // veil at half brightness, nobody is going to pixel-peep it.
 const art = await Promise.all(
-  games.map(async (g) => {
+  games.filter((g) => g.image.width >= HERO_MIN_WIDTH).map(async (g) => {
     const img = await getImage({ src: g.image, width: 1600, format: "webp", quality: 68 });
     return { slug: g.slug, src: img.src };
   })
@@ -51,6 +57,12 @@ const art = await Promise.all(
       try { last = Number(sessionStorage.getItem("hero-art")); } catch (e) {}
       var i = Math.floor(Math.random() * list.length);
       if (list.length > 1 && i === last) i = (i + 1) % list.length;
+
+      // ?art=fivem pins one, for checking each game's crop without reloading
+      // until the dice land on it. Left in on purpose, it costs nothing.
+      var pin = new URLSearchParams(location.search).get("art");
+      for (var k = 0; pin && k < list.length; k++) if (list[k].slug === pin) i = k;
+
       try { sessionStorage.setItem("hero-art", String(i)); } catch (e) {}
 
       host.setAttribute("data-game", list[i].slug);
@@ -80,9 +92,10 @@ const art = await Promise.all(
        isn't. Most of the key art has its subject right of centre anyway. */
     object-position: 68% 45%;
     /* Not greyscale. Kill it fully and the whole point, colour, goes with it.
-       Saturation at a third keeps the world recognisable without shouting
-       over the headline. */
-    filter: saturate(0.38) brightness(0.5) contrast(1.06);
+       First pass was saturate .38 / brightness .5 and Terraria vanished
+       entirely, its art is dark to begin with. This is as far as it goes
+       before the FiveM red car starts fighting the CTA. */
+    filter: saturate(0.62) brightness(0.62) contrast(1.06);
     opacity: 0;
     transition: opacity 900ms ease 120ms;
   }
@@ -103,8 +116,8 @@ const art = await Promise.all(
         to right,
         var(--color-ink) 0%,
         var(--color-ink) 28%,
-        color-mix(in srgb, var(--color-ink) 72%, transparent) 55%,
-        color-mix(in srgb, var(--color-ink) 30%, transparent) 100%
+        color-mix(in srgb, var(--color-ink) 65%, transparent) 55%,
+        color-mix(in srgb, var(--color-ink) 18%, transparent) 100%
       ),
       linear-gradient(
         to bottom,
