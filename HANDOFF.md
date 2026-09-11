@@ -114,7 +114,17 @@ normally, one under reduce.
 
 **Light Rays is a deliberate exception** to the one-orchestrated-moment motion rule,
 justified only because the company is named Lumix. Keep it in the hero. Repeating it
-elsewhere turns a signature into wallpaper.
+elsewhere turns a signature into wallpaper. Second version now: parallel beams at
+`--shear` instead of the Magic UI blobs, which read as a grey smudge. One beam runs
+red at the source and the thin slits carry a red/blue fringe; DESIGN.md section 5
+was amended to allow both (the red budget counts UI, not light).
+
+**The hero ground is game art, one game per visit.** `HeroArt.astro` picks
+client-side from the live games with art at least 1200 wide (Terraria's is a
+460px thumbnail and gets skipped until someone replaces it). `?art=fivem` pins
+one for checking crops. The beams have no `isolation` on purpose so they screen
+onto the art; put it back and they go flat grey. Colour on this site comes from
+the games, not the palette, and DESIGN.md now says so.
 
 **Analytics is genuinely gated.** PostHog loads zero bytes until consent. Global
 Privacy Control is honoured automatically. The privacy policy names PostHog and
