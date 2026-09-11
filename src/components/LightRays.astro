@@ -1,37 +1,31 @@
 ---
-// Light rays, ported off the React/motion version. Zero JS: the randomisation
-// happens here at build time and the animation is plain CSS keyframes, so there
-// is no hydration, no layout shift, and nothing to run on the main thread.
+// Light through a grille. Zero JS: positions are seeded here at build time and
+// the motion is plain CSS keyframes, so no hydration and nothing on the main
+// thread.
 //
-// The company is named Lumix and this is light. That's the entire justification
-// for breaking the ambient-motion rule in DESIGN.md section 9, and it's the only
-// place on the site that gets to break it.
+// The first cut of this was a port of Magic UI's light rays: six 40px-blurred
+// blobs at random angles. Screenshotted it and it read as a grey smudge on the
+// right half of the hero, and the random rotations quietly broke DESIGN.md's
+// "nothing else tilts" rule. Now every beam sits at --shear, the monogram's
+// 16 degrees, so the light falls at the same angle the mark is cut at. That's
+// the whole idea: the logo is a lit thing cut on a diagonal, the hero is a dark
+// room with light coming in on that same diagonal.
 //
-// Default colour is Paper at low alpha, not the original's blue. A new hue would
-// be a fourth colour in a palette that has a hard budget.
+// Still the one place on the site that gets ambient motion (section 9). The
+// company is named Lumix. Nowhere else gets to do this.
+//
+// Paper at low alpha, never a hue. Red is spent on the two CTAs in this viewport.
 
 interface Props {
   count?: number;
-  color?: string;
-  blur?: number;
-  speed?: number;   // seconds for an average cycle
-  length?: string;
   seed?: number;
   class?: string;
 }
 
-const {
-  count = 6,
-  color = "rgba(247, 245, 241, 0.20)",
-  blur = 40,
-  speed = 16,
-  length = "70vh",
-  seed = 7,
-  class: className = "",
-} = Astro.props;
+const { count = 9, seed = 7, class: className = "" } = Astro.props;
 
-// Seeded so a rebuild produces the same sky. Math.random() here would mean the
-// rays quietly rearrange on every deploy, which is impossible to eyeball-diff.
+// Seeded so a rebuild produces the same light. Math.random() here means the
+// hero quietly rearranges on every deploy, which is impossible to eyeball-diff.
 function makeRng(s: number) {
   let state = s >>> 0;
   return () => {
@@ -41,37 +35,39 @@ function makeRng(s: number) {
 }
 
 const rand = makeRng(seed);
-const cycle = Math.max(speed, 0.1);
 
-const rays = Array.from({ length: Math.max(0, count) }, () => {
-  const rotate = -28 + rand() * 56;
-  const swing = 0.8 + rand() * 1.8;
+// Beams live in the right two thirds so the headline on the left stays on
+// clean ink. Widths are bimodal on purpose: a few wide soft slabs and a few
+// thin bright slits is what a grille actually throws, uniform widths look like
+// a barcode.
+const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
+  const thin = rand() < 0.45;
   return {
-    left: 8 + rand() * 84,
-    width: 160 + rand() * 160,
-    rotMin: rotate - swing,
-    rotMax: rotate + swing,
-    delay: rand() * cycle,
-    duration: cycle * (0.75 + rand() * 0.5),
-    intensity: 0.6 + rand() * 0.4,
+    x: 34 + rand() * 62,
+    width: thin ? 2 + rand() * 6 : 40 + rand() * 120,
+    // Thin slits run brighter, that's the "light through a gap" read.
+    alpha: thin ? 0.16 + rand() * 0.14 : 0.05 + rand() * 0.06,
+    blur: thin ? 0.5 : 6 + rand() * 10,
+    // Switch-on order is left to right with jitter so it reads as one moment,
+    // not nine separate fades.
+    delay: 0.15 + i * 0.09 + rand() * 0.12,
+    breathe: 9 + rand() * 8,
   };
 });
 ---
 
-<div
-  class:list={["light-rays", className]}
-  aria-hidden="true"
-  style={`--rays-color:${color};--rays-blur:${blur}px;--rays-length:${length};`}
->
-  <div class="wash wash-left"></div>
-  <div class="wash wash-right"></div>
-  {rays.map((ray) => (
-    <div
-      class="ray"
-      style={`--left:${ray.left.toFixed(2)}%;--width:${ray.width.toFixed(0)}px;--rot-min:${ray.rotMin.toFixed(2)}deg;--rot-max:${ray.rotMax.toFixed(2)}deg;--intensity:${ray.intensity.toFixed(2)};animation-duration:${ray.duration.toFixed(2)}s;animation-delay:${ray.delay.toFixed(2)}s;`}
-    >
-    </div>
-  ))}
+<div class:list={["light-rays", className]} aria-hidden="true">
+  <div class="wash"></div>
+  <div class="beams">
+    {beams.map((b) => (
+      <div
+        class="beam"
+        style={`--x:${b.x.toFixed(2)}%;--w:${b.width.toFixed(1)}px;--a:${b.alpha.toFixed(3)};--blur:${b.blur.toFixed(1)}px;--delay:${b.delay.toFixed(2)}s;--breathe:${b.breathe.toFixed(1)}s;`}
+      >
+      </div>
+    ))}
+  </div>
+  <div class="grain"></div>
 </div>
 
 <style>
@@ -84,77 +80,95 @@ const rays = Array.from({ length: Math.max(0, count) }, () => {
     border-radius: inherit;
   }
 
+  /* Where the light comes in from. Top right, since the beams lean that way. */
   .wash {
     position: absolute;
     inset: 0;
-    opacity: 0.6;
-  }
-
-  .wash-left {
     background: radial-gradient(
-      circle at 20% 15%,
-      color-mix(in srgb, var(--rays-color) 45%, transparent),
+      ellipse 70% 90% at 78% 0%,
+      rgba(247, 245, 241, 0.07),
       transparent 70%
     );
   }
 
-  .wash-right {
-    background: radial-gradient(
-      circle at 80% 10%,
-      color-mix(in srgb, var(--rays-color) 35%, transparent),
-      transparent 75%
-    );
+  /* One rotated container, vertical strips inside. Rotating each beam
+     separately is the same picture with nine transforms to keep in sync. The
+     box is oversized so the rotated corners never show. The negative sign is
+     deliberate: --shear tilts the monogram's cut one way, but the mark has to
+     read as light coming down from the top right, which is this way. */
+  .beams {
+    position: absolute;
+    inset: -40% -20%;
+    transform: rotate(calc(-1 * var(--shear)));
+    transform-origin: 70% 0;
+    /* Everything below drifts as one, slowly. Reads as the sun moving. */
+    animation: beams-drift 46s ease-in-out infinite alternate;
   }
 
-  .ray {
+  .beam {
     position: absolute;
-    top: -12%;
-    left: var(--left);
-    width: var(--width);
-    height: var(--rays-length);
-    transform-origin: top center;
-    border-radius: 9999px;
+    top: 0;
+    bottom: 0;
+    left: var(--x);
+    width: var(--w);
     background: linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--rays-color) 70%, transparent),
-      transparent
+      rgba(247, 245, 241, var(--a)) 0%,
+      rgba(247, 245, 241, calc(var(--a) * 0.55)) 45%,
+      transparent 92%
     );
-    filter: blur(var(--rays-blur));
+    filter: blur(var(--blur));
     mix-blend-mode: screen;
     opacity: 0;
-    animation-name: ray-sweep;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
+    animation:
+      beam-on 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) var(--delay) forwards,
+      beam-breathe var(--breathe) ease-in-out calc(var(--delay) + 1.1s) infinite;
   }
 
-  @keyframes ray-sweep {
-    0% {
-      opacity: 0;
-      transform: translateX(-50%) rotate(var(--rot-min));
-    }
-    50% {
-      opacity: var(--intensity);
-      transform: translateX(-50%) rotate(var(--rot-max));
-    }
-    100% {
-      opacity: 0;
-      transform: translateX(-50%) rotate(var(--rot-min));
-    }
+  /* Gradients on ink band. A hair of noise over the top hides it and gives the
+     light something to land on. 3% is about the point where it stops being
+     visible as noise and starts being visible as texture. */
+  .grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 160px 160px;
   }
 
-  /* Six blurred, screen-blended layers is a real compositing cost, and phones
-     feel it first. Half the rays below the small breakpoint. */
+  @keyframes beam-on {
+    from { opacity: 0; transform: translateX(-14px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* Barely there. Shift the alpha and this becomes a strobe. */
+  @keyframes beam-breathe {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.72; }
+  }
+
+  @keyframes beams-drift {
+    from { translate: 0 0; }
+    to   { translate: 3% 0; }
+  }
+
+  /* Blurred, screen-blended layers are compositing cost and phones feel it
+     first. Drop the wide soft ones past the sixth on small screens; the thin
+     slits are nearly free. */
   @media (max-width: 640px) {
-    .ray:nth-child(n + 6) {
+    .beam:nth-child(n + 7) {
       display: none;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ray {
+    .beams {
       animation: none;
-      opacity: calc(var(--intensity) * 0.7);
-      transform: translateX(-50%) rotate(var(--rot-min));
+    }
+    .beam {
+      animation: none;
+      opacity: 1;
     }
   }
 </style>
