@@ -83,27 +83,27 @@ const href = planned ? links.discord : `/games/${slug}`;
   >
   </div>
 
-  <!-- The game's actual logo, in its own colours, top-left. Replaced the
-       two-letter chip on 2026-09-11. This is where the grid's colour comes
-       from: nine publishers' marks, not one of ours. Decorative, the name
-       is in the h3. -->
-  <Image
-    src={logo}
-    alt=""
-    height={56}
-    densities={[1, 2]}
-    loading={eager ? "eager" : "lazy"}
-    decoding="async"
-    class="logo absolute left-6 top-6 h-14 w-auto max-w-[60%] object-contain object-left"
-  />
-
   <div class="relative">
-    <h3 class="title">{name}</h3>
+    <!-- The logo is the title. Evan cut the text name on 2026-09-11: the
+         publisher's mark identifies the game better than Inter does, and
+         it's where the grid's colour comes from. The alt carries the name,
+         so the link still reads "FiveM" to a screen reader and the h3 lives
+         on as an sr-only for the document outline. -->
+    <h3 class="sr-only">{name}</h3>
+    <Image
+      src={logo}
+      alt={name}
+      height={56}
+      densities={[1, 2]}
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
+      class="logo h-14 w-auto max-w-[70%] object-contain object-left"
+    />
     <!-- Reserve both lines whether the copy fills them or not. The content is
          bottom-justified, so a one-line tagline used to shove the title 22px
          down the tile and Terraria sat visibly lower than Palworld beside it.
          line-clamp-2 caps the height but doesn't reserve it; 2lh does. -->
-    <p class="small text-fog mt-2 line-clamp-2 min-h-[2lh]">{tagline}</p>
+    <p class="small text-fog mt-4 line-clamp-2 min-h-[2lh]">{tagline}</p>
 
     {planned ? (
       <>
@@ -163,7 +163,4 @@ const href = planned ? links.discord : `/games/${slug}`;
     opacity: 0.4;
   }
 
-  .planned h3 {
-    color: var(--color-fog);
-  }
 </style>
