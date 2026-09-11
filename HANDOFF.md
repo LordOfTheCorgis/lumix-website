@@ -132,6 +132,19 @@ says exactly this, so the code and the document have to stay in agreement.
 
 ## Traps that already cost time
 
+**The globe "vanishes" in dev after a dependency change.** Symptom: the canvas
+stays at opacity 0, console shows `504 (Outdated Optimize Dep)` for `cobe.js`.
+Vite only discovered cobe on first scroll (it's a dynamic import), re-optimised
+mid-session, and the open tab kept the stale module URL. `optimizeDeps.include`
+in astro.config.mjs pre-bundles it now. If it ever comes back: hard reload, and
+if that fails, stop dev and delete `node_modules/.vite`. The build was never
+affected.
+
+**Content store goes stale after a schema change.** Adding `logo` to the games
+schema left the dev store without the field on every entry even after a clean
+restart ("Synced content" but no re-parse). Stop dev, delete
+`.astro/data-store.json`, start again.
+
 **Never delete `.astro/` while a dev server is running.** It is the content layer's
 data store. Removing it mid-session produced both an "collection does not exist or
 is empty" warning and a `LocalImageUsedWrongly` error, twice, neither of which was a
