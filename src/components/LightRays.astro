@@ -46,7 +46,7 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
     x: 34 + rand() * 62,
     width: thin ? 2 + rand() * 6 : 40 + rand() * 120,
     // Thin slits run brighter, that's the "light through a gap" read.
-    alpha: thin ? 0.16 + rand() * 0.14 : 0.05 + rand() * 0.06,
+    alpha: thin ? 0.16 + rand() * 0.14 : 0.035 + rand() * 0.045,
     blur: thin ? 0.5 : 6 + rand() * 10,
     // Switch-on order is left to right with jitter so it reads as one moment,
     // not nine separate fades.
@@ -111,11 +111,14 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
     bottom: 0;
     left: var(--x);
     width: var(--w);
+    /* The box hangs 40% above and below the hero, so the hero's bottom edge
+       sits at ~78% of this gradient. Fade has to be done before that or the
+       beams slam into the section border like they're clipped, which they are. */
     background: linear-gradient(
       to bottom,
       rgba(247, 245, 241, var(--a)) 0%,
-      rgba(247, 245, 241, calc(var(--a) * 0.55)) 45%,
-      transparent 92%
+      rgba(247, 245, 241, calc(var(--a) * 0.6)) 30%,
+      transparent 66%
     );
     filter: blur(var(--blur));
     mix-blend-mode: screen;
