@@ -4,6 +4,7 @@
 // 2026-09-11 has one of these and two of them (RocketNode, Shockbyte) use it
 // to answer refunds and trials head-on, which is the honest place for that.
 import { FAQ } from "../lib/faq";
+import { links } from "../config";
 
 interface Props {
   class?: string;
@@ -25,11 +26,35 @@ const schema = {
 
 <section class:list={["section border-t border-[var(--edge)]", className]}>
   <div class="shell grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
-    <div>
+    <!-- Sticky on desktop so the column rides alongside ten questions instead
+         of leaving a hole under the heading. The exit for "read all of it,
+         still not sure" lives here because this is where that person is. -->
+    <div class="lg:sticky lg:top-28 lg:self-start">
       <h2 class="title">Before you order.</h2>
       <p class="lead text-fog mt-6 max-w-sm">
         The questions people ask in Discord before they buy, answered once.
       </p>
+
+      <div class="chamfer mt-10 max-w-sm border border-[var(--edge)] bg-ink-soft p-6">
+        <p class="instrument text-slate">Not answered here</p>
+        <p class="mt-3 text-paper">
+          Ask in Discord. You'll get someone who actually runs the
+          hardware, and if it's a real gap we add it to this list.
+        </p>
+        <div class="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <a
+            href={links.discord}
+            rel="noopener"
+            class="chamfer inline-flex items-center gap-2 border border-[var(--edge-strong)] px-5 py-3 text-sm font-medium text-paper transition-colors duration-150 hover:border-red hover:text-red"
+          >
+            Ask in Discord
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+          <a href={links.billing} class="small text-fog underline underline-offset-4 hover:text-paper">
+            Open a ticket
+          </a>
+        </div>
+      </div>
     </div>
 
     <div class="faq divide-y divide-[var(--edge)] border-y border-[var(--edge)]">
