@@ -7,7 +7,7 @@ export const site = {
   domain: "lumixsolutions.org",
   description:
     "Game server hosting for communities. A finite number of servers, run properly.",
-  tagline: "Low-latency game servers out of Miami and Ashburn, capped on purpose.",
+  tagline: "Low-latency game servers in four US regions, capped on purpose.",
 };
 
 export const links = {
@@ -16,7 +16,9 @@ export const links = {
   careers: "https://careers.lumixsolutions.org/",
   discord: "https://discord.com/invite/uaNYBJQtvn",
   x: "https://x.com/LumixSolutions",
-  youtube: "https://youtube.com/@officiallumixsolutions",
+  // youtube.com/@officiallumixsolutions has been a hard 404 since at least
+  // 07-31 per the marketing log. Put it back here AND in `social` below once
+  // there's a channel that resolves.
   instagram: "https://www.instagram.com/lumixsolutionsllc/",
   tiktok: "https://tiktok.com/@lumix.solutions",
   github: "https://github.com/lumixsolutions",
@@ -63,7 +65,6 @@ export const footerNav = [
 export const social = [
   { label: "Discord", href: links.discord },
   { label: "X", href: links.x },
-  { label: "YouTube", href: links.youtube },
   { label: "Instagram", href: links.instagram },
   { label: "TikTok", href: links.tiktok },
   { label: "GitHub", href: links.github },
