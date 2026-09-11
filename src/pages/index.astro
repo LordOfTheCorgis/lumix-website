@@ -6,8 +6,11 @@ import LightRays from "../components/LightRays.astro";
 import HeroArt from "../components/HeroArt.astro";
 import TrustpilotReviews from "../components/TrustpilotReviews.astro";
 import Globe from "../components/Globe.astro";
-import { price } from "../lib/order";
+import { orderUrl, price } from "../lib/order";
 import { HOSTING, MITIGATION } from "../lib/locations";
+import { promo, botHosting, links } from "../config";
+
+const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
 
 const games = (await getCollection("games"))
   .filter((g) => g.data.status === "live")
@@ -49,7 +52,15 @@ const cheapest = Math.min(
           Order now
           <span aria-hidden="true">&rarr;</span>
         </a>
-        <p class="small text-fog">No setup fee. Cancel anytime.</p>
+        <p class="small text-fog">
+          No setup fee. Cancel anytime.
+          {promo.live && (
+            <>
+              {" "}{promo.percent}% off with code{" "}
+              <span class="instrument text-paper">{promo.code}</span>.
+            </>
+          )}
+        </p>
       </div>
     </div>
   </section>
@@ -82,6 +93,13 @@ const cheapest = Math.min(
       <p class="small text-fog mt-8">
         Every plan includes DDoS protection, full file access, and your pick of
         Salt Lake City, Dallas, Ashburn or Miami.
+      </p>
+      <!-- Bot hosting has been "coming" in the old site's ticker since July with
+           no card, no price and no link. One sentence beats seven weeks of that. -->
+      <p class="small text-fog mt-3">
+        Running a Discord bot or a Node.js app instead? Application hosting is{" "}
+        {price(botHosting.monthly)} a month.
+        <a href={botUrl} class="text-paper underline underline-offset-4 hover:text-red">Order one</a>.
       </p>
     </div>
   </section>

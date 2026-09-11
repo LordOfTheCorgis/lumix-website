@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 import { orderUrl, price } from "../../lib/order";
+import { promo } from "../../config";
 
 export async function getStaticPaths() {
   const games = await getCollection("games");
@@ -83,6 +84,12 @@ const productSchema = {
       <p class="small text-fog mt-3 max-w-lg">
         You pick the region on the next screen: Salt Lake City, Dallas, Ashburn
         or Miami. Billed monthly unless you choose a longer term at checkout.
+        {promo.live && (
+          <>
+            {" "}Code <span class="instrument text-paper">{promo.code}</span> takes{" "}
+            {promo.percent}% off.
+          </>
+        )}
       </p>
 
       <ul class="mt-8 space-y-3">
@@ -144,6 +151,11 @@ const productSchema = {
       </ul>
 
       <p class="small text-fog mt-10 max-w-xl">{g.description}</p>
+      <!-- Straight answers to the two questions the marketing log kept asking
+           on our behalf. No trial, refunds case by case; matches terms.md. -->
+      <p class="small text-slate mt-4 max-w-xl">
+        No free trial. Refunds are handled case by case, not on a fixed window.
+      </p>
     </div>
   </section>
 </Layout>

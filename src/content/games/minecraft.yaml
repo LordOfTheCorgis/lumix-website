@@ -9,6 +9,7 @@ accent: "#4ade80"
 mark: "MC"
 highlights:
   - "Unmetered slots, no per-player upcharge"
+  - "Modpacks, Paper, Forge and Fabric installed from the panel"
   - "Automatic daily backups retained per tier"
 plans:
   - key: "starter"

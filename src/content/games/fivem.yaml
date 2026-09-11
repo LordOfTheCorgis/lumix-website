@@ -10,6 +10,7 @@ mark: "FM"
 highlights:
   - "txAdmin and MySQL provisioned on deploy"
   - "QBCore, ESX and vRP ready"
+  - "GTA V Legacy and Enhanced builds"
   - "Dedicated vCores, never oversold"
 plans:
   - key: "starter"

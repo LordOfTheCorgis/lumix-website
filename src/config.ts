@@ -10,6 +10,22 @@ export const site = {
   tagline: "Low-latency game servers in four US regions, capped on purpose.",
 };
 
+// The one public code. Has to exist in WHMCS as a promotion with the same
+// string or the site is advertising a discount the cart rejects; create it
+// there first, then flip `live`. Evan's call 2026-09-11: LUMIX10, evergreen.
+export const promo = {
+  code: "LUMIX10",
+  percent: 10,
+  live: true,
+};
+
+// Not a game, so it doesn't get a tile. Priced per Evan 2026-09-11. `pid` is
+// the WHMCS product; until it's known the link lands on the store front.
+export const botHosting = {
+  monthly: 4,
+  pid: null as number | null,
+};
+
 export const links = {
   billing: "https://billing.lumixsolutions.org",
   panel: "https://panel.lumixsolutions.org",
