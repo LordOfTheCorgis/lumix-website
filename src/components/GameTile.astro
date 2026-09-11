@@ -108,14 +108,14 @@ const href = planned ? links.discord : `/games/${slug}`;
     {planned ? (
       <>
         <!-- Same height as the price row so the grid doesn't ripple. -->
-        <div class="mt-5 flex items-baseline gap-2">
+        <div class="mt-3 flex items-baseline gap-2">
           <span class="title text-fog">Coming soon</span>
           <span
             aria-hidden="true"
             class="arrow ml-auto text-fog transition-colors duration-150"
           >&rarr;</span>
         </div>
-        <p class="instrument text-slate mt-3">Ask for it in Discord</p>
+        <p class="instrument text-slate mt-2">Ask for it in Discord</p>
       </>
     ) : (
       <>
@@ -128,7 +128,7 @@ const href = planned ? links.discord : `/games/${slug}`;
             class="arrow ml-auto text-fog transition-colors duration-150"
           >&rarr;</span>
         </div>
-        <p class="instrument text-slate mt-3">
+        <p class="instrument text-slate mt-2">
           {planCount === 1 ? "1 plan" : `${planCount} plans`}
         </p>
       </>
