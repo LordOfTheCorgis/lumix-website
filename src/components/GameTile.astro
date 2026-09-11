@@ -4,10 +4,12 @@
 // budget (DESIGN.md section 5). The arrow picks up the game's accent on hover,
 // not red, which was the old behaviour and quietly a third red per viewport.
 //
-// Each tile carries its game's accent from the yaml: a wash up from the bottom
-// edge at rest, the hairline and the arrow on hover. Same argument as the hero
-// art, colour on this site comes from the games (DESIGN.md section 5), so the
-// second viewport gets to have some too instead of five identical grey slabs.
+// Each tile carries its game's accent from the yaml, in the hairline. A panel
+// on this site is its hairline (DESIGN.md rule 3), so that's where the colour
+// goes: a third strength at rest, most of the way up on hover, arrow to match.
+// First version was a glow washing up from the corner; Evan hated it, and he
+// was right, it looked like a hover state stuck on. The art already brings the
+// colour, the edge just names it.
 //
 // Height is seven cells rather than a round 256px so the bottom edge lands on
 // the module the cursor trail snaps to. Stays a min, not a fixed height: a long
@@ -34,7 +36,7 @@ const { slug, name, tagline, image, from, planCount, accent, eager = false } = A
 
 <a
   href={`/games/${slug}`}
-  class="tile group chamfer relative flex min-h-[calc(7*var(--grid-cell))] flex-col justify-end overflow-hidden border border-[var(--edge)] bg-ink-soft p-6 transition-colors duration-150"
+  class="tile group chamfer relative flex min-h-[calc(7*var(--grid-cell))] flex-col justify-end overflow-hidden border bg-ink-soft p-6 transition-colors duration-150"
   style={`--accent:${accent};`}
 >
   <Image
@@ -53,9 +55,6 @@ const { slug, name, tagline, image, from, planCount, accent, eager = false } = A
     aria-hidden="true"
   >
   </div>
-  <!-- The accent. Sits above the scrim so it reads as colour, not as a tint on
-       the photo. Anchored bottom left, under the title. -->
-  <div class="wash absolute inset-0" aria-hidden="true"></div>
 
   <div class="relative">
     <h3 class="title">{name}</h3>
@@ -82,31 +81,15 @@ const { slug, name, tagline, image, from, planCount, accent, eager = false } = A
 </a>
 
 <style>
+  .tile {
+    border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  }
+
   .tile:hover {
-    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-  }
-
-  .wash {
-    background: radial-gradient(
-      ellipse 90% 70% at 0% 100%,
-      color-mix(in srgb, var(--accent) 30%, transparent),
-      transparent 72%
-    );
-    opacity: 0.85;
-    transition: opacity 300ms ease;
-  }
-
-  .tile:hover .wash {
-    opacity: 1;
+    border-color: color-mix(in srgb, var(--accent) 75%, transparent);
   }
 
   .tile:hover .arrow {
     color: var(--accent);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .wash {
-      transition: none;
-    }
   }
 </style>
