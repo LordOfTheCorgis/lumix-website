@@ -27,7 +27,9 @@ const cheapest = Math.min(
   <section class="section relative overflow-hidden">
     <!-- Order matters: art, then light on top of it, then copy. All three are
          positioned so DOM order is the stack. -->
-    <HeroArt games={games.map((g) => ({ slug: g.data.slug, image: g.data.image }))} />
+    <HeroArt
+      games={games.map((g) => ({ slug: g.data.slug, image: g.data.image, accent: g.data.accent }))}
+    />
     <LightRays />
 
     <div class="shell relative">

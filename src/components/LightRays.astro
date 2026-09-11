@@ -15,9 +15,11 @@
 // company is named Lumix. Nowhere else gets to do this.
 //
 // Colour, two ways, both from what light actually does:
-//  - One wide slab runs red at the source and cools to paper as it falls,
-//    same as the mark, where only the S is red. DESIGN.md section 5 was amended
-//    for this: the red budget counts UI, not illumination.
+//  - One wide slab runs coloured at the source and cools to paper as it falls,
+//    same as the mark, where only the S is red. It takes --game-accent when
+//    HeroArt has set one (the light matches the world it lands on) and falls
+//    back to red otherwise. DESIGN.md section 5 was amended for this: the red
+//    budget counts UI, not illumination.
 //  - The thin slits get a spectral fringe, red on one edge and blue on the
 //    other, like light through a slit does. The blue is nowhere else on the
 //    site and shouldn't be. It's a fringe, not a colour.
@@ -144,13 +146,15 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
       beam-breathe var(--breathe) ease-in-out calc(var(--delay) + 1.1s) infinite;
   }
 
-  /* Red at the source, paper by a third of the way down. The alpha is bumped
-     because red on ink reads dimmer than paper on ink at the same value. */
+  /* Colour at the source, paper by a third of the way down. The alpha is
+     bumped because a hue on ink reads dimmer than paper on ink at the same
+     value. --a is 0.035..0.08 so the top lands around 12..27%. */
   .beam.warm {
+    --hue: var(--game-accent, var(--color-red));
     background: linear-gradient(
       to bottom,
-      rgba(255, 76, 76, calc(var(--a) * 3.4)) 0%,
-      rgba(255, 138, 138, calc(var(--a) * 2)) 18%,
+      color-mix(in srgb, var(--hue) calc(var(--a) * 340%), transparent) 0%,
+      color-mix(in srgb, var(--hue) calc(var(--a) * 200%), transparent) 18%,
       rgba(247, 245, 241, calc(var(--a) * 0.6)) 38%,
       transparent 66%
     );

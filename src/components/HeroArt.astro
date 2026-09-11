@@ -16,7 +16,7 @@
 import { getImage } from "astro:assets";
 
 interface Props {
-  games: { slug: string; image: ImageMetadata }[];
+  games: { slug: string; image: ImageMetadata; accent: string }[];
   class?: string;
 }
 
@@ -33,7 +33,7 @@ const HERO_MIN_WIDTH = 1200;
 const art = await Promise.all(
   games.filter((g) => g.image.width >= HERO_MIN_WIDTH).map(async (g) => {
     const img = await getImage({ src: g.image, width: 1600, format: "webp", quality: 68 });
-    return { slug: g.slug, src: img.src };
+    return { slug: g.slug, src: img.src, accent: g.accent };
   })
 );
 ---
@@ -66,6 +66,10 @@ const art = await Promise.all(
       try { sessionStorage.setItem("hero-art", String(i)); } catch (e) {}
 
       host.setAttribute("data-game", list[i].slug);
+      // The beams read this. Set on the section so LightRays, a sibling, can
+      // see it; the light takes the colour of whatever world it's falling on.
+      var section = host.closest("section") || host.parentElement;
+      if (section && list[i].accent) section.style.setProperty("--game-accent", list[i].accent);
       img.addEventListener("load", function () { host.setAttribute("data-loaded", ""); });
       img.src = list[i].src;
       if (img.complete && img.naturalWidth) host.setAttribute("data-loaded", "");
