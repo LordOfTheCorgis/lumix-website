@@ -6,6 +6,7 @@ import LightRays from "../components/LightRays.astro";
 import TrustpilotReviews from "../components/TrustpilotReviews.astro";
 import Globe from "../components/Globe.astro";
 import { price } from "../lib/order";
+import { HOSTING, MITIGATION } from "../lib/locations";
 
 const games = (await getCollection("games"))
   .filter((g) => g.data.status === "live")
@@ -14,15 +15,6 @@ const games = (await getCollection("games"))
 const cheapest = Math.min(
   ...games.flatMap((g) => g.data.plans.map((p) => p.pricing.monthly))
 );
-
-// Same four the globe marks, written out so the information survives a browser
-// with no WebGL. West to east.
-const locations = [
-  { city: "Salt Lake City", region: "Utah" },
-  { city: "Dallas", region: "Texas" },
-  { city: "Ashburn", region: "Virginia" },
-  { city: "Miami", region: "Florida" },
-];
 ---
 
 <Layout
@@ -87,8 +79,9 @@ const locations = [
     </div>
   </section>
 
-  <!-- The globe's markers are the only red in this viewport, which is what keeps
-       four of them inside the two-per-viewport rule. Don't add a CTA here. -->
+  <!-- The globe's red markers are the only red in this viewport, which is what
+       keeps four of them inside the two-per-viewport rule. The scrubbing points
+       are paper so they add none. Don't add a CTA here. -->
   <section class="section border-t border-[var(--edge)]">
     <div class="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
@@ -98,12 +91,26 @@ const locations = [
           nearest them instead of the one that was convenient for us.
         </p>
 
+        <!-- Both lists exist as text so a browser with no WebGL still gets the
+             whole picture. Same source as the globe, src/lib/locations.ts. -->
         <ul class="mt-10 grid grid-cols-2 gap-x-6 gap-y-5 max-w-sm">
-          {locations.map((l) => (
+          {HOSTING.map((l) => (
             <li>
               <p class="instrument text-slate">{l.region}</p>
               <p class="mt-1 font-medium">{l.city}</p>
             </li>
+          ))}
+        </ul>
+
+        <p class="instrument text-slate mt-12">Scrubbed before it reaches you</p>
+        <p class="small text-fog mt-3 max-w-md">
+          Attack traffic hits Cloudflare Magic Transit and CosmicGuard first and
+          gets dropped there, not at your server. The white points are the
+          nearest ten of those.
+        </p>
+        <ul class="small mt-4 flex flex-wrap gap-x-4 gap-y-1.5 max-w-md">
+          {MITIGATION.map((l) => (
+            <li class="text-paper">{l.city}</li>
           ))}
         </ul>
       </div>

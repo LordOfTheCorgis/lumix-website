@@ -11,21 +11,33 @@
 // lines in `step`.
 //
 // Opens facing North America. phi 0 / theta 0.5 was measured, not guessed: at
-// phi 0 the four markers' centroid lands 4px off dead centre horizontally on a
-// 600px canvas, which also matches what cobe's own locationToAngles formula
-// predicts for these coordinates.
+// phi 0 the four hosting markers' centroid lands 4px off dead centre horizontally
+// on a 600px canvas, which also matches what cobe's own locationToAngles formula
+// predicts for these coordinates. The mitigation dots don't move that, they're
+// scattered round the whole thing and only show up as it turns.
 
 interface Props {
   class?: string;
 }
 const { class: className = "" } = Astro.props;
 
-// The four regions, north to south by longitude so the list reads west to east.
-const LOCATIONS = [
-  { city: "Salt Lake City", region: "UT", lat: 40.7608, lng: -111.891 },
-  { city: "Dallas", region: "TX", lat: 32.7767, lng: -96.797 },
-  { city: "Ashburn", region: "VA", lat: 39.0438, lng: -77.4874 },
-  { city: "Miami", region: "FL", lat: 25.7617, lng: -80.1918 },
+// Two kinds of dot. Red is where a server actually lives; paper is where the
+// traffic gets scrubbed before it arrives. Same list the page prints beside it,
+// keep them in step (src/lib/locations.ts is the one copy).
+//
+// No third colour for the mitigation points, on purpose. DESIGN.md gives this
+// site exactly one accent and it's already spent on the hosting regions, so the
+// shield around them is drawn in paper, smaller. Reads as "these are the thing,
+// those are around the thing," which is the actual relationship.
+import { HOSTING, MITIGATION } from "../lib/locations";
+
+// cobe wants 0..1 floats. red #ff4c4c, paper #f7f5f1.
+const RED: [number, number, number] = [1, 0.298, 0.298];
+const PAPER: [number, number, number] = [0.97, 0.96, 0.95];
+
+const MARKERS = [
+  ...HOSTING.map((l) => ({ location: [l.lat, l.lng], size: 0.07, color: RED })),
+  ...MITIGATION.map((l) => ({ location: [l.lat, l.lng], size: 0.04, color: PAPER })),
 ];
 ---
 
@@ -34,9 +46,7 @@ const LOCATIONS = [
       here is the only copy of anything. Also the fallback when WebGL is missing
       or blocked, which is more common than it sounds on locked-down machines. */}
   <canvas data-globe-canvas aria-hidden="true"></canvas>
-  <script type="application/json" data-globe-markers set:html={JSON.stringify(
-    LOCATIONS.map((l) => [l.lat, l.lng])
-  )} />
+  <script type="application/json" data-globe-markers set:html={JSON.stringify(MARKERS)} />
 </div>
 
 <style>
@@ -74,9 +84,11 @@ const LOCATIONS = [
 
   if (host) {
     const canvas = host.querySelector<HTMLCanvasElement>("[data-globe-canvas]")!;
-    const markers: [number, number][] = JSON.parse(
-      host.querySelector("[data-globe-markers]")!.textContent || "[]"
-    );
+    const markers: {
+      location: [number, number];
+      size: number;
+      color: [number, number, number];
+    }[] = JSON.parse(host.querySelector("[data-globe-markers]")!.textContent || "[]");
     const still = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     let globe: { update: (s: any) => void; destroy: () => void } | null = null;
@@ -132,9 +144,11 @@ const LOCATIONS = [
         mapSamples: 16000,
         mapBrightness: 3.2,
         baseColor: [0.26, 0.26, 0.29],
+        // Per-marker color is a cobe 2 thing, this global one is just the
+        // fallback if a marker ever comes through without one.
         markerColor: [1, 0.298, 0.298],
         glowColor: [0.13, 0.13, 0.15],
-        markers: markers.map((location) => ({ location, size: 0.07 })),
+        markers,
       });
 
       host!.setAttribute("data-ready", "");
