@@ -66,16 +66,28 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
         <AnimatedSpan class="text-fog">Resolving node capacity across 4 regions...</AnimatedSpan>
         <AnimatedSpan>&nbsp;</AnimatedSpan>
         <AnimatedSpan class="text-slate">{pad("GAME")}{pad("STATUS", 10)}ORDER</AnimatedSpan>
-        {live.map((g) => (
-          <AnimatedSpan>
-            <span>{pad(g.data.slug)}{pad("online", 10)}<span class="text-paper">accepting</span></span>
-          </AnimatedSpan>
-        ))}
-        {planned.map((g) => (
-          <AnimatedSpan class="text-slate">
-            {pad(g.data.slug)}{pad("planned", 10)}waitlist
-          </AnimatedSpan>
-        ))}
+        <!-- Twenty-one rows is a wall. Eight show at a time; the arrows below
+             page through the rest a row at a time. Every row is still in the
+             DOM, so no-JS and screen readers get the whole list. -->
+        <div class="rows grid gap-y-1" data-rows style="--visible: 8">
+          {live.map((g) => (
+            <AnimatedSpan>
+              <span>{pad(g.data.slug)}{pad("online", 10)}<span class="text-paper">accepting</span></span>
+            </AnimatedSpan>
+          ))}
+          {planned.map((g) => (
+            <AnimatedSpan class="text-slate">
+              {pad(g.data.slug)}{pad("planned", 10)}waitlist
+            </AnimatedSpan>
+          ))}
+        </div>
+        <AnimatedSpan class="text-slate">
+          <span class="flex items-center gap-3">
+            <button type="button" data-rows-up aria-label="Previous rows" class="rows-btn">&uarr;</button>
+            <button type="button" data-rows-down aria-label="Next rows" class="rows-btn">&darr;</button>
+            <span data-rows-label>1–{Math.min(8, all.length)} of {all.length}</span>
+          </span>
+        </AnimatedSpan>
         <AnimatedSpan>&nbsp;</AnimatedSpan>
         <AnimatedSpan class="text-paper">{live.length} ready to provision.</AnimatedSpan>
       </Terminal>
@@ -139,3 +151,87 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
     </div>
   </section>
 </Layout>
+
+<style>
+  /* The window. Height is N rows of the terminal's own line box plus the
+     gaps between them, so it never cuts a row in half. */
+  .rows {
+    --line: calc(0.8125rem * 1.6);
+    max-height: calc(var(--visible) * var(--line) + (var(--visible) - 1) * 0.25rem);
+    overflow: hidden;
+    scroll-behavior: smooth;
+  }
+
+  .rows-btn {
+    display: inline-flex;
+    width: 1.5rem;
+    height: 1.25rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--edge-strong);
+    color: var(--color-fog);
+    cursor: pointer;
+    transition: color 150ms, border-color 150ms;
+  }
+
+  .rows-btn:hover {
+    color: var(--color-paper);
+    border-color: var(--color-paper);
+  }
+
+  .rows-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .rows-btn:focus-visible {
+    outline: 2px solid var(--color-red);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rows {
+      scroll-behavior: auto;
+    }
+  }
+</style>
+
+<script>
+  const rows = document.querySelector<HTMLElement>("[data-rows]");
+  const up = document.querySelector<HTMLButtonElement>("[data-rows-up]");
+  const down = document.querySelector<HTMLButtonElement>("[data-rows-down]");
+  const label = document.querySelector<HTMLElement>("[data-rows-label]");
+
+  if (rows && up && down && label) {
+    const items = Array.from(rows.children) as HTMLElement[];
+    const visible = Number(getComputedStyle(rows).getPropertyValue("--visible")) || 8;
+    let first = 0;
+
+    // One row = its box plus the grid gap. Measured, not assumed, because the
+    // terminal's font stack differs per OS and so does the line box.
+    const step = () => (items[1]?.offsetTop ?? 0) - (items[0]?.offsetTop ?? 0) || 21;
+
+    function render() {
+      rows.scrollTop = first * step();
+      up.disabled = first === 0;
+      down.disabled = first + visible >= items.length;
+      label.textContent = `${first + 1}–${Math.min(first + visible, items.length)} of ${items.length}`;
+    }
+
+    up.addEventListener("click", () => { first = Math.max(0, first - 1); render(); });
+    down.addEventListener("click", () => { first = Math.min(items.length - visible, first + 1); render(); });
+
+    // Wheel over the list pages it too, one row per notch, and stops the
+    // page from scrolling underneath while you're doing it.
+    rows.addEventListener("wheel", (e) => {
+      const dir = Math.sign(e.deltaY);
+      const next = Math.min(Math.max(0, first + dir), Math.max(0, items.length - visible));
+      if (next === first) return;
+      e.preventDefault();
+      first = next;
+      render();
+    }, { passive: false });
+
+    render();
+  }
+</script>
