@@ -17,9 +17,40 @@ const g = game.data;
 // Cheapest first. Seven rows of ascending specs is the shape people actually
 // scan; sorting any other way makes them hunt for the entry price.
 const plans = [...g.plans].sort((a, b) => a.pricing.monthly - b.pricing.monthly);
+
+// Product + one Offer per plan, built off the same yaml the page renders, so
+// the structured data can't say a different price than the table. The
+// marketing log flagged the old site for shipping only Organization schema
+// on pages with a visible $8.99 and a full spec table; six weeks unfixed there.
+const siteUrl = "https://lumixsolutions.org";
+const productSchema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: g.label,
+  description: g.description,
+  image: new URL(g.image.src, siteUrl).href,
+  brand: { "@type": "Brand", name: "Lumix Solutions" },
+  offers: plans.map((plan) => ({
+    "@type": "Offer",
+    name: plan.name,
+    price: plan.pricing.monthly.toFixed(2),
+    priceCurrency: "USD",
+    priceSpecification: {
+      "@type": "UnitPriceSpecification",
+      price: plan.pricing.monthly.toFixed(2),
+      priceCurrency: "USD",
+      billingIncrement: 1,
+      unitCode: "MON",
+    },
+    availability: "https://schema.org/InStock",
+    url: orderUrl(plan.pid),
+  })),
+};
 ---
 
 <Layout title={g.label} description={g.description}>
+  <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+
   <section class="relative overflow-hidden border-b border-[var(--edge)]">
     <Image
       src={g.image}
@@ -50,8 +81,8 @@ const plans = [...g.plans].sort((a, b) => a.pricing.monthly - b.pricing.monthly)
     <div class="shell">
       <h2 class="title">Choose a size</h2>
       <p class="small text-fog mt-3 max-w-lg">
-        You pick Miami or Ashburn on the next screen. Billed monthly unless you
-        choose a longer term at checkout.
+        You pick the region on the next screen: Salt Lake City, Dallas, Ashburn
+        or Miami. Billed monthly unless you choose a longer term at checkout.
       </p>
 
       <ul class="mt-8 space-y-3">
