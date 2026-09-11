@@ -7,6 +7,7 @@ import Footer from "../components/Footer.astro";
 import StickyCta from "../components/StickyCta.astro";
 import CookieBanner from "../components/CookieBanner.astro";
 import CursorTrail from "../components/CursorTrail.astro";
+import PromoBar from "../components/PromoBar.astro";
 import Analytics from "../components/Analytics.astro";
 
 interface Props {
@@ -97,6 +98,7 @@ const organizationSchema = {
          works because the ink ground is on <html> and body is transparent. -->
     <div class="relative flex flex-1 flex-col">
       <CursorTrail />
+      <PromoBar />
       <Header />
       <main class="flex-1">
         <slot />

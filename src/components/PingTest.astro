@@ -1,0 +1,79 @@
+---
+// Your ping to each region, measured in the browser. Bisect, Apex and
+// RocketNode all have one and for FiveM it's the number that closes the sale;
+// "23 ms to Dallas" beats any globe.
+//
+// Measures with fetch in no-cors mode against a URL per region, which gives an
+// opaque response you can't read but can time. Five samples, drop the first
+// (connection setup), median of the rest. It's a rough number and the page
+// says so. Regions with no pingUrl are skipped; if none have one the whole
+// component renders nothing, same convention as everything else on this site
+// that waits on config.
+import { HOSTING } from "../lib/locations";
+
+const regions = HOSTING.filter((r) => r.pingUrl);
+---
+
+{regions.length > 0 && (
+  <div class="ping" data-ping>
+    <p class="instrument text-slate">Your ping from here</p>
+    <ul class="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 max-w-sm">
+      {regions.map((r) => (
+        <li class="flex items-baseline justify-between gap-4 border-b border-[var(--edge)] pb-2">
+          <span class="small">{r.city}</span>
+          <span class="tabular text-fog" data-ping-value data-url={r.pingUrl}>
+            <span class="sr-only">measuring</span>
+            <span aria-hidden="true">···</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+    <p class="small text-slate mt-3 max-w-sm">
+      Measured from your browser to each region just now. Rough, but in the
+      right neighbourhood.
+    </p>
+  </div>
+)}
+
+<script>
+  const cells = document.querySelectorAll<HTMLElement>("[data-ping-value]");
+
+  async function sample(url: string): Promise<number> {
+    const t = performance.now();
+    // cache: "no-store" plus a nonce so no layer between here and there
+    // answers from cache and reports 0 ms to Ashburn from Perth.
+    await fetch(`${url}${url.includes("?") ? "&" : "?"}t=${Date.now()}`, {
+      mode: "no-cors",
+      cache: "no-store",
+      credentials: "omit",
+    });
+    return performance.now() - t;
+  }
+
+  async function measure(cell: HTMLElement) {
+    const url = cell.dataset.url!;
+    try {
+      const times: number[] = [];
+      for (let i = 0; i < 5; i++) times.push(await sample(url));
+      times.shift(); // first one pays for the connection
+      times.sort((a, b) => a - b);
+      const ms = Math.round(times[Math.floor(times.length / 2)]);
+      cell.textContent = `${ms} ms`;
+      cell.classList.add("text-paper");
+    } catch {
+      cell.textContent = "—";
+    }
+  }
+
+  // Run when it scrolls into view, not on load: five round trips to four
+  // regions is twenty requests nobody asked for if they never scroll here.
+  const host = document.querySelector("[data-ping]");
+  if (host && cells.length) {
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      cells.forEach(measure);
+    });
+    io.observe(host);
+  }
+</script>

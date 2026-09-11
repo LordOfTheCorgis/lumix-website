@@ -1,0 +1,68 @@
+---
+// Native <details>, no JS, and the same list rendered as FAQPage JSON-LD so
+// Google can show the answers under the result. Every competitor crawled on
+// 2026-09-11 has one of these and two of them (RocketNode, Shockbyte) use it
+// to answer refunds and trials head-on, which is the honest place for that.
+import { FAQ } from "../lib/faq";
+
+interface Props {
+  class?: string;
+}
+const { class: className = "" } = Astro.props;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+<section class:list={["section border-t border-[var(--edge)]", className]}>
+  <div class="shell grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
+    <div>
+      <h2 class="title">Before you order.</h2>
+      <p class="lead text-fog mt-6 max-w-sm">
+        The questions people ask in Discord before they buy, answered once.
+      </p>
+    </div>
+
+    <div class="faq divide-y divide-[var(--edge)] border-y border-[var(--edge)]">
+      {FAQ.map((f) => (
+        <details class="group">
+          <summary class="flex cursor-pointer list-none items-center gap-6 py-5 font-medium text-paper">
+            <span>{f.q}</span>
+            <span
+              aria-hidden="true"
+              class="ml-auto shrink-0 text-fog transition-transform duration-150 group-open:rotate-45"
+            >+</span>
+          </summary>
+          <p class="text-fog max-w-2xl pb-6">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Safari still draws the disclosure triangle unless you say so twice. */
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary:focus-visible {
+    outline: 2px solid var(--color-red);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq span {
+      transition: none;
+    }
+  }
+</style>

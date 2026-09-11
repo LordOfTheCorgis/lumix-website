@@ -4,11 +4,13 @@ import Layout from "../layouts/Layout.astro";
 import GameTile from "../components/GameTile.astro";
 import LightRays from "../components/LightRays.astro";
 import HeroArt from "../components/HeroArt.astro";
-import TrustpilotReviews from "../components/TrustpilotReviews.astro";
+import Faq from "../components/Faq.astro";
+import Included from "../components/Included.astro";
+import PingTest from "../components/PingTest.astro";
 import Globe from "../components/Globe.astro";
 import { orderUrl, price } from "../lib/order";
 import { HOSTING, MITIGATION } from "../lib/locations";
-import { promo, botHosting, links } from "../config";
+import { botHosting, links, trust } from "../config";
 
 const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
 
@@ -37,6 +39,18 @@ const cheapest = Math.min(
 
     <div class="shell relative">
       <p class="instrument text-fog">Game servers · Four US regions</p>
+      <!-- The proof line. Every competitor puts the score above the fold;
+           ours was a paid widget at the bottom of the page until 09-11. -->
+      {trust.score !== null && trust.reviews !== null && (
+        <a
+          href={trust.url}
+          rel="noopener"
+          class="small mt-4 inline-flex items-center gap-2 text-fog hover:text-paper"
+        >
+          <span class="text-paper" aria-hidden="true">★</span>
+          <span><span class="text-paper font-medium">{trust.score.toFixed(1)}</span> · {trust.reviews} reviews on Trustpilot</span>
+        </a>
+      )}
 
       <h1 class="display-xl mt-6 max-w-3xl">Order your game server.</h1>
 
@@ -52,15 +66,9 @@ const cheapest = Math.min(
           Order now
           <span aria-hidden="true">&rarr;</span>
         </a>
-        <p class="small text-fog">
-          No setup fee. Cancel anytime.
-          {promo.live && (
-            <>
-              {" "}{promo.percent}% off with code{" "}
-              <span class="instrument text-paper">{promo.code}</span>.
-            </>
-          )}
-        </p>
+        <!-- The code lives in the bar above the header now; saying it twice
+             in one viewport looked like we were nervous about it. -->
+        <p class="small text-fog">No setup fee. Cancel anytime.</p>
       </div>
     </div>
   </section>
@@ -90,19 +98,17 @@ const cheapest = Math.min(
         ))}
       </div>
 
-      <p class="small text-fog mt-8">
-        Every plan includes DDoS protection, full file access, and your pick of
-        Salt Lake City, Dallas, Ashburn or Miami.
-      </p>
       <!-- Bot hosting has been "coming" in the old site's ticker since July with
            no card, no price and no link. One sentence beats seven weeks of that. -->
-      <p class="small text-fog mt-3">
+      <p class="small text-fog mt-8">
         Running a Discord bot or a Node.js app instead? Application hosting is{" "}
         {price(botHosting.monthly)} a month.
         <a href={botUrl} class="text-paper underline underline-offset-4 hover:text-red">Order one</a>.
       </p>
     </div>
   </section>
+
+  <Included />
 
   <!-- The globe's red markers are the only red in this viewport, which is what
        keeps four of them inside the two-per-viewport rule. The scrubbing points
@@ -137,11 +143,15 @@ const cheapest = Math.min(
             <li class="text-paper">{l.city}</li>
           ))}
         </ul>
+
+        <div class="mt-12">
+          <PingTest />
+        </div>
       </div>
 
       <Globe class="lg:ml-auto" />
     </div>
   </section>
 
-  <TrustpilotReviews />
+  <Faq />
 </Layout>

@@ -19,6 +19,17 @@ export const promo = {
   live: true,
 };
 
+// Trustpilot, by hand. The embeddable TrustBoxes are behind Trustpilot's paid
+// tier, so the score and count are copied off the public profile page and the
+// hero line links there. Both null = the line doesn't render. Update `updated`
+// when you update the numbers; it's what stops this quietly going stale.
+export const trust = {
+  score: null as number | null,
+  reviews: null as number | null,
+  updated: "",
+  url: "https://www.trustpilot.com/review/lumixsolutions.org",
+};
+
 // Not a game, so it doesn't get a tile. Priced per Evan 2026-09-11. `pid` is
 // the WHMCS product; until it's known the link lands on the store front.
 export const botHosting = {
@@ -41,12 +52,14 @@ export const links = {
 };
 
 // Four items. The old header carried six and a premium header carries four.
-// Staff and Careers moved to the footer where nobody misses them.
+// Staff and Careers moved to the footer where nobody misses them, and on
+// 2026-09-11 Contact went there too: Evan's answer to "where's live chat" is
+// Discord, so Discord gets the header slot.
 export const nav = [
   { label: "Game Hosting", href: "/games" },
   { label: "Partners", href: "/partners" },
   { label: "Status", href: "/status" },
-  { label: "Contact", href: "/contact" },
+  { label: "Discord", href: links.discord },
 ];
 
 export const footerNav = [

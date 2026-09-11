@@ -19,11 +19,24 @@ the commit and point at this file.
       PostHog. Goes in `.env` as `PUBLIC_POSTHOG_KEY` (see `.env.example`).
       Confirm the host is US (`https://us.i.posthog.com`) or set EU. Until
       it's set, analytics and the cookie banner both render nothing.
-- [ ] **Trustpilot TrustBox IDs.** Trustpilot Business > Integrations >
-      TrustBox > pick a template > copy the snippet. Two values:
-      `PUBLIC_TRUSTPILOT_BUSINESSUNIT_ID` and `PUBLIC_TRUSTPILOT_TEMPLATE_ID`
-      in `.env`. Set `PUBLIC_TRUSTPILOT_HEIGHT` to whatever height that
-      template documents. Reviews section is invisible until both are in.
+- [ ] **Trustpilot score and review count, by hand.** The embeddable widgets
+      turned out to be paid-tier only, so the hero line is typed. Read the
+      TrustScore and review count off trustpilot.com/review/lumixsolutions.org
+      and put them in `trust` in `src/config.ts` with today's date. Line
+      doesn't render until both are set.
+- [ ] **One HTTP URL per region for the ping test.** Anything in that
+      datacenter that answers fast: a node's panel host, a status endpoint,
+      even a 404 page. Goes in `pingUrl` on each `HOSTING` entry in
+      `src/lib/locations.ts`. The "Your ping from here" block is hidden until
+      at least one is set.
+- [ ] **Support hours and a real response time.** The "Every server comes
+      with" section and the FAQ say ticket + Discord and promise no hours,
+      because nobody's given a number. If you have one (average first reply,
+      hours staffed), it goes in `src/components/Included.astro` and
+      `src/lib/faq.ts`. Every competitor quantifies this.
+- [ ] **Read the FAQ answers** in `src/lib/faq.ts`. Ten answers written from
+      the yaml and what you've told me. The proration claim on plan changes
+      is WHMCS's default; confirm it's on.
 - [ ] **cPanel Node version.** Astro 7 needs Node 22.12+. Nobody has checked
       whether the cPanel box offers it. If it doesn't, the admin panel plan
       in BUILD-PLAN.md is dead and static-only deploy is the fallback.

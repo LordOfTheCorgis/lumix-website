@@ -1,0 +1,50 @@
+---
+// What every plan comes with, and how support works. The competitor crawl on
+// 2026-09-11 found all seven running a six-card "features" strip and all seven
+// saying something about support; ours said one sentence and nothing. This is
+// the plain version: no icons, no cards, one line each.
+//
+// Every line is a claim. They're drawn from the game yaml (specs, highlights)
+// and from what Evan has said; the support line deliberately promises no hours
+// and no response time because nobody's given a real number yet (TODO.md).
+import { links } from "../config";
+
+const included = [
+  { label: "Compute", text: "Dedicated vCores, never oversold. Your tick rate isn't sharing a core with someone else's." },
+  { label: "Storage", text: "NVMe on RAID 1. A drive can die and your world doesn't." },
+  { label: "Protection", text: "DDoS mitigation on every plan, scrubbed upstream before it reaches you." },
+  { label: "Backups", text: "Automatic backups, retained per plan. Restore from the panel." },
+  { label: "Databases", text: "MySQL included, count per plan. FiveM gets txAdmin provisioned on deploy." },
+  { label: "Access", text: "Full file access over SFTP and the panel. Console, uploads, restarts, yours." },
+];
+---
+
+<section class="section border-t border-[var(--edge)]">
+  <div class="shell grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-16">
+    <div>
+      <h2 class="title">Every server comes with.</h2>
+      <p class="lead text-fog mt-6 max-w-sm">
+        Nothing here is an add-on. It's what the price already covers.
+      </p>
+
+      <h3 class="instrument text-slate mt-12">Support</h3>
+      <p class="text-fog mt-3 max-w-sm">
+        Open a ticket from the client area or ask in Discord. Either way it's
+        the people who run the hardware answering, not a first-line script.
+      </p>
+      <div class="mt-5 flex flex-wrap gap-x-6 gap-y-2">
+        <a href={links.discord} rel="noopener" class="small text-paper underline underline-offset-4 hover:text-red">Discord</a>
+        <a href={links.billing} class="small text-paper underline underline-offset-4 hover:text-red">Open a ticket</a>
+      </div>
+    </div>
+
+    <dl class="grid gap-x-10 gap-y-8 sm:grid-cols-2">
+      {included.map((item) => (
+        <div>
+          <dt class="instrument text-slate">{item.label}</dt>
+          <dd class="mt-2 text-paper">{item.text}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>

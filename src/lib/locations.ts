@@ -6,6 +6,10 @@ export interface Location {
   region: string;
   lat: number;
   lng: number;
+  /** Something HTTP in that region that answers fast. The ping test times a
+      no-cors fetch against it, so it needs no CORS headers and can 404 for
+      all we care. Leave it off and the region is skipped. */
+  pingUrl?: string;
 }
 
 // Where servers run. West to east.

@@ -1,0 +1,17 @@
+---
+// The one line above the header. Every competitor crawled on 2026-09-11 runs
+// one of these (Apex: "25% off on first order with APEX25") and it's the
+// first thing on the page. Ours is ink-soft with paper text, not red: the
+// header's Client area and the hero's Order now already spend the two reds.
+// No dismiss button, no JS; it's one line and it's part of the page.
+import { promo } from "../config";
+---
+
+{promo.live && (
+  <div class="band border-b border-[var(--edge)]">
+    <p class="shell instrument flex h-9 items-center justify-center gap-2 text-fog">
+      <span>{promo.percent}% off any game server with code</span>
+      <span class="text-paper">{promo.code}</span>
+    </p>
+  </div>
+)}
