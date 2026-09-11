@@ -30,7 +30,7 @@
 
   /* ── Light ───────────────────────────────────────────────────────────────
      Two warm hues. Ember is the source end of the hero beams. Gold is the
-     promo bar and the price, the two things the page most wants you to see.
+     price and nothing else, the number the page most wants you to see.
      Solid fills only; the ambient-glow version of this lasted twenty minutes
      before Evan killed it ("fuck the gradients"). Red stays the UI accent. */
   --color-ember: #ff7a45;

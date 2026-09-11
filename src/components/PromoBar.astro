@@ -1,15 +1,16 @@
 ---
 // The one line above the header. Every competitor crawled on 2026-09-11 runs
 // one of these (Apex: "25% off on first order with APEX25") and it's the
-// first thing on the page. Ours is solid gold with ink text: not red, because
-// the header's Client area and the hero's Order now already spend the two
-// reds, and gold is the light colour, which is what a promo is. No dismiss
-// button, no JS; it's one line and it's part of the page.
+// first thing on the page. Ours is solid paper with ink text: the one light
+// strip on a dark site, which is about as eye-catching as a line gets. Not
+// red, because the header's Client area and the hero's Order now already
+// spend the two reds; not gold, Evan didn't like it there. No dismiss button,
+// no JS; it's one line and it's part of the page.
 import { promo } from "../config";
 ---
 
 {promo.live && (
-  <div class="bg-gold text-ink">
+  <div class="bg-paper text-ink">
     <p class="shell instrument flex h-9 items-center justify-center gap-2">
       <span>{promo.percent}% off any game server with code</span>
       <span class="font-bold">{promo.code}</span>

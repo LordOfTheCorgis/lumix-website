@@ -13,7 +13,7 @@ import Terminal from "../../components/terminal/Terminal.astro";
 import TypingAnimation from "../../components/terminal/TypingAnimation.astro";
 import AnimatedSpan from "../../components/terminal/AnimatedSpan.astro";
 import { price } from "../../lib/order";
-import { botHosting, links, promo } from "../../config";
+import { botHosting, links } from "../../config";
 import { orderUrl } from "../../lib/order";
 
 const all = await getCollection("games");
@@ -57,12 +57,6 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
             Browse the catalogue
             <span aria-hidden="true">&darr;</span>
           </a>
-          {promo.live && (
-            <p class="small text-fog">
-              {promo.percent}% off with code{" "}
-              <span class="instrument text-paper">{promo.code}</span>.
-            </p>
-          )}
         </div>
       </div>
 
@@ -108,7 +102,7 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
             from={game.data.status === "live" ? cheapest(game) : undefined}
             planCount={game.data.plans.length}
             accent={game.data.accent}
-            mark={game.data.mark}
+            logo={game.data.logo}
             status={game.data.status}
             eager={i < 3}
           />

@@ -30,8 +30,8 @@ interface Props {
   planCount?: number;
   /** The game's own colour, from its yaml. Hex. */
   accent: string;
-  /** Two-to-four letter mark from the yaml (FM, MC). Sits in the chip. */
-  mark: string;
+  /** The game's own logo, from the yaml. Rendered 56px tall, top-left. */
+  logo: ImageMetadata;
   /** "planned" renders the tile dimmed in place with no price and no order
       link. Same grid as the live ones, on purpose: exiling them to a "coming
       soon" ghetto reads as an apology. */
@@ -47,7 +47,7 @@ const {
   from,
   planCount = 0,
   accent,
-  mark,
+  logo,
   status = "live",
   eager = false,
 } = Astro.props;
@@ -83,13 +83,19 @@ const href = planned ? links.discord : `/games/${slug}`;
   >
   </div>
 
-  <!-- The chip. A solid block of the game's colour at rest, with its mark
-       in ink. This is where the grid's colour comes from now: not a glow,
-       not a tinted edge, a flat swatch of the thing you're buying. -->
-  <span
-    aria-hidden="true"
-    class="chip chamfer absolute left-6 top-6 inline-flex h-10 min-w-10 items-center justify-center px-2 font-display text-xs font-semibold tracking-[0.08em] text-ink"
-  >{mark}</span>
+  <!-- The game's actual logo, in its own colours, top-left. Replaced the
+       two-letter chip on 2026-09-11. This is where the grid's colour comes
+       from: nine publishers' marks, not one of ours. Decorative, the name
+       is in the h3. -->
+  <Image
+    src={logo}
+    alt=""
+    height={56}
+    densities={[1, 2]}
+    loading={eager ? "eager" : "lazy"}
+    decoding="async"
+    class="logo absolute left-6 top-6 h-14 w-auto max-w-[60%] object-contain object-left"
+  />
 
   <div class="relative">
     <h3 class="title">{name}</h3>
@@ -143,11 +149,7 @@ const href = planned ? links.discord : `/games/${slug}`;
     color: var(--accent);
   }
 
-  .chip {
-    background: var(--accent);
-  }
-
-  .planned .chip {
+  .planned .logo {
     opacity: 0.45;
   }
 

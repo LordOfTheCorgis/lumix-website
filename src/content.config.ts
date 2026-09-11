@@ -47,6 +47,11 @@ const games = defineCollection({
     tagline: z.string(),
     description: z.string(),
     image: image(),
+    // The game's own logo, pulled from its publisher or Wikimedia Commons on
+    // 2026-09-11 and shrunk to 112px tall (2x of the 56px it renders at).
+    // SVG where one existed, webp otherwise. Black-on-transparent ones were
+    // recoloured to paper. See src/assets/logos.
+    logo: image(),
     accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
     mark: z.string().min(2).max(4),
     highlights: z.array(z.string()).optional(),
