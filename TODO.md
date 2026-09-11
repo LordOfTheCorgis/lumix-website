@@ -30,12 +30,11 @@ the commit and point at this file.
 - [ ] **Deploy path.** `.github/workflows/deploy.yml` is the old, dead
       workflow. Decide: build in CI and rsync `dist/` to cPanel, or build on
       the box. Depends on the Node answer above.
-- [ ] **Pages the nav links to that don't exist yet:** `/games`, `/partners`,
+- [ ] **Pages the nav links to that don't exist yet:** `/partners`,
       `/status`, `/contact`, `/staff`, `/privacy`, `/terms`, `/ccpa`. Header
       and footer currently point at 404s. Legal three have content in
-      `src/content/legal/` and just need routing checked. When `/games` gets
-      built, its terminal readout must be generated from the games
-      collection, not hand-typed (the old site's dropped Terraria).
+      `src/content/legal/` and just need routing checked. (`/games` is built,
+      readout generated from the collection.)
 
 ## Pricing (WHMCS, not the site)
 

@@ -1,0 +1,146 @@
+---
+// The catalogue. One job: show everything Lumix runs, and everything it
+// doesn't yet, in one grid, and get the reader onto a game page.
+//
+// The readout in the hero is generated from the collection. The old site
+// hand-typed four rows into a terminal, then sold five games underneath it,
+// and the marketing log flagged the missing Terraria row for weeks. Nothing on
+// this page is typed twice.
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import GameTile from "../../components/GameTile.astro";
+import Terminal from "../../components/terminal/Terminal.astro";
+import TypingAnimation from "../../components/terminal/TypingAnimation.astro";
+import AnimatedSpan from "../../components/terminal/AnimatedSpan.astro";
+import { price } from "../../lib/order";
+import { botHosting, links, promo } from "../../config";
+import { orderUrl } from "../../lib/order";
+
+const all = await getCollection("games");
+const live = all
+  .filter((g) => g.data.status === "live")
+  .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
+const planned = all
+  .filter((g) => g.data.status !== "live")
+  .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
+const catalog = [...live, ...planned];
+
+const cheapest = (g: (typeof live)[number]) =>
+  Math.min(...g.data.plans.map((p) => p.pricing.monthly));
+
+// Column widths for the readout. Longest slug plus two, so it survives a new
+// game with a long name without anyone touching this.
+const col = Math.max(...all.map((g) => g.data.slug.length)) + 2;
+const pad = (s: string, n = col) => s.padEnd(n);
+
+const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
+---
+
+<Layout
+  title="Game server hosting"
+  description={`${live.map((g) => g.data.shortLabel).join(", ")} servers from ${price(Math.min(...live.map(cheapest)))} a month, plus ${planned.length} more on the way. Four US regions, DDoS protected, online in minutes.`}
+>
+  <section class="section border-b border-[var(--edge)]">
+    <div class="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <p class="instrument text-fog">Catalogue · {live.length} live · {planned.length} planned</p>
+        <h1 class="display-xl mt-6 max-w-2xl">Every game we run.</h1>
+        <p class="lead text-fog mt-6 max-w-lg">
+          Pick one, pick a size, pick a region. Anything dimmed isn't orderable
+          yet; ask for it in Discord and it moves up the list.
+        </p>
+        <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+          <a
+            href="#catalog"
+            class="chamfer inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+          >
+            Browse the catalogue
+            <span aria-hidden="true">&darr;</span>
+          </a>
+          {promo.live && (
+            <p class="small text-fog">
+              {promo.percent}% off with code{" "}
+              <span class="instrument text-paper">{promo.code}</span>.
+            </p>
+          )}
+        </div>
+      </div>
+
+      <!-- Every row here is a game in src/content/games. Add a yaml, get a row. -->
+      <Terminal label="catalogue" class="lg:ml-auto">
+        <TypingAnimation>$ lumix catalog --all</TypingAnimation>
+        <AnimatedSpan class="text-fog">Resolving node capacity across 4 regions...</AnimatedSpan>
+        <AnimatedSpan>&nbsp;</AnimatedSpan>
+        <AnimatedSpan class="text-slate">{pad("GAME")}{pad("STATUS", 10)}ORDER</AnimatedSpan>
+        {live.map((g) => (
+          <AnimatedSpan>
+            <span>{pad(g.data.slug)}{pad("online", 10)}<span class="text-paper">accepting</span></span>
+          </AnimatedSpan>
+        ))}
+        {planned.map((g) => (
+          <AnimatedSpan class="text-slate">
+            {pad(g.data.slug)}{pad("planned", 10)}waitlist
+          </AnimatedSpan>
+        ))}
+        <AnimatedSpan>&nbsp;</AnimatedSpan>
+        <AnimatedSpan class="text-paper">{live.length} ready to provision.</AnimatedSpan>
+      </Terminal>
+    </div>
+  </section>
+
+  <section id="catalog" class="section">
+    <div class="shell">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <h2 class="title">Pick your game</h2>
+        <p class="instrument text-slate">{live.length} live / {catalog.length} total</p>
+      </div>
+
+      <div
+        data-grid-anchor
+        class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3"
+      >
+        {catalog.map((game, i) => (
+          <GameTile
+            slug={game.data.slug}
+            name={game.data.shortLabel}
+            tagline={game.data.tagline}
+            image={game.data.image}
+            from={game.data.status === "live" ? cheapest(game) : undefined}
+            planCount={game.data.plans.length}
+            accent={game.data.accent}
+            status={game.data.status}
+            eager={i < 3}
+          />
+        ))}
+      </div>
+
+      <p class="small text-fog mt-8 max-w-2xl">
+        Every plan includes DDoS protection, full file access, and your pick of
+        Salt Lake City, Dallas, Ashburn or Miami.
+      </p>
+      <p class="small text-fog mt-3 max-w-2xl">
+        Running a Discord bot or a Node.js app instead? Application hosting is{" "}
+        {price(botHosting.monthly)} a month.
+        <a href={botUrl} class="text-paper underline underline-offset-4 hover:text-red">Order one</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section border-t border-[var(--edge)]">
+    <div class="shell">
+      <h2 class="title">Not seeing your game?</h2>
+      <p class="lead text-fog mt-6 max-w-lg">
+        We add titles by demand, not by what looks good on a homepage. Say what
+        you want to run and we'll tell you where it sits in the queue.
+      </p>
+      <a
+        href={links.discord}
+        rel="noopener"
+        class="chamfer mt-8 inline-flex items-center gap-2 border border-[var(--edge-strong)] px-7 py-4 font-medium text-paper transition-colors duration-150 hover:border-red hover:text-red"
+      >
+        Ask in Discord
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+  </section>
+</Layout>
