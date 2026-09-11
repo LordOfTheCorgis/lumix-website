@@ -71,6 +71,7 @@ const cheapest = Math.min(
             image={game.data.image}
             from={Math.min(...game.data.plans.map((p) => p.pricing.monthly))}
             planCount={game.data.plans.length}
+            accent={game.data.accent}
             eager={i < 3}
           />
         ))}

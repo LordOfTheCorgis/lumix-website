@@ -1,7 +1,13 @@
 ---
 // The whole tile is the link. Key art carries the recognition, the price carries
 // the decision, and nothing here is red: the hero button already spends the
-// budget (DESIGN.md section 5). The arrow picks up red on hover only.
+// budget (DESIGN.md section 5). The arrow picks up the game's accent on hover,
+// not red, which was the old behaviour and quietly a third red per viewport.
+//
+// Each tile carries its game's accent from the yaml: a wash up from the bottom
+// edge at rest, the hairline and the arrow on hover. Same argument as the hero
+// art, colour on this site comes from the games (DESIGN.md section 5), so the
+// second viewport gets to have some too instead of five identical grey slabs.
 //
 // Height is seven cells rather than a round 256px so the bottom edge lands on
 // the module the cursor trail snaps to. Stays a min, not a fixed height: a long
@@ -18,15 +24,18 @@ interface Props {
   image: ImageMetadata;
   from: number;
   planCount: number;
+  /** The game's own colour, from its yaml. Hex. */
+  accent: string;
   eager?: boolean;
 }
 
-const { slug, name, tagline, image, from, planCount, eager = false } = Astro.props;
+const { slug, name, tagline, image, from, planCount, accent, eager = false } = Astro.props;
 ---
 
 <a
   href={`/games/${slug}`}
-  class="group chamfer relative flex min-h-[calc(7*var(--grid-cell))] flex-col justify-end overflow-hidden border border-[var(--edge)] bg-ink-soft p-6 transition-colors duration-150 hover:border-[var(--edge-strong)]"
+  class="tile group chamfer relative flex min-h-[calc(7*var(--grid-cell))] flex-col justify-end overflow-hidden border border-[var(--edge)] bg-ink-soft p-6 transition-colors duration-150"
+  style={`--accent:${accent};`}
 >
   <Image
     src={image}
@@ -35,7 +44,7 @@ const { slug, name, tagline, image, from, planCount, eager = false } = Astro.pro
     sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
     loading={eager ? "eager" : "lazy"}
     decoding="async"
-    class="absolute inset-0 h-full w-full object-cover opacity-45 transition-[opacity,transform] duration-300 group-hover:scale-[1.03] group-hover:opacity-60"
+    class="absolute inset-0 h-full w-full object-cover opacity-55 transition-[opacity,transform] duration-300 group-hover:scale-[1.03] group-hover:opacity-70"
   />
   <!-- Scrim, not a tint. Key art on these games is dark and busy, and text over
        it fails contrast without a real gradient underneath. -->
@@ -44,6 +53,9 @@ const { slug, name, tagline, image, from, planCount, eager = false } = Astro.pro
     aria-hidden="true"
   >
   </div>
+  <!-- The accent. Sits above the scrim so it reads as colour, not as a tint on
+       the photo. Anchored bottom left, under the title. -->
+  <div class="wash absolute inset-0" aria-hidden="true"></div>
 
   <div class="relative">
     <h3 class="title">{name}</h3>
@@ -59,7 +71,7 @@ const { slug, name, tagline, image, from, planCount, eager = false } = Astro.pro
       <span class="small text-fog">/mo</span>
       <span
         aria-hidden="true"
-        class="ml-auto text-fog transition-colors duration-150 group-hover:text-red"
+        class="arrow ml-auto text-fog transition-colors duration-150"
       >&rarr;</span>
     </div>
 
@@ -68,3 +80,33 @@ const { slug, name, tagline, image, from, planCount, eager = false } = Astro.pro
     </p>
   </div>
 </a>
+
+<style>
+  .tile:hover {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  .wash {
+    background: radial-gradient(
+      ellipse 90% 70% at 0% 100%,
+      color-mix(in srgb, var(--accent) 16%, transparent),
+      transparent 70%
+    );
+    opacity: 0.8;
+    transition: opacity 300ms ease;
+  }
+
+  .tile:hover .wash {
+    opacity: 1;
+  }
+
+  .tile:hover .arrow {
+    color: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wash {
+      transition: none;
+    }
+  }
+</style>
