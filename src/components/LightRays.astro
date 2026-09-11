@@ -14,7 +14,13 @@
 // Still the one place on the site that gets ambient motion (section 9). The
 // company is named Lumix. Nowhere else gets to do this.
 //
-// Paper at low alpha, never a hue. Red is spent on the two CTAs in this viewport.
+// Colour, two ways, both from what light actually does:
+//  - One wide slab runs red at the source and cools to paper as it falls,
+//    same as the mark, where only the S is red. DESIGN.md section 5 was amended
+//    for this: the red budget counts UI, not illumination.
+//  - The thin slits get a spectral fringe, red on one edge and blue on the
+//    other, like light through a slit does. The blue is nowhere else on the
+//    site and shouldn't be. It's a fringe, not a colour.
 
 interface Props {
   count?: number;
@@ -40,10 +46,18 @@ const rand = makeRng(seed);
 // clean ink. Widths are bimodal on purpose: a few wide soft slabs and a few
 // thin bright slits is what a grille actually throws, uniform widths look like
 // a barcode.
+let warmed = false;
 const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
   const thin = rand() < 0.45;
+  // First wide slab past the halfway mark is the red one. One, not "some":
+  // two red beams and it's a Netflix intro.
+  const x = 34 + rand() * 62;
+  const warm = !thin && !warmed && x > 60;
+  if (warm) warmed = true;
   return {
-    x: 34 + rand() * 62,
+    x,
+    thin,
+    warm,
     width: thin ? 2 + rand() * 6 : 40 + rand() * 120,
     // Thin slits run brighter, that's the "light through a gap" read.
     alpha: thin ? 0.16 + rand() * 0.14 : 0.035 + rand() * 0.045,
@@ -61,7 +75,7 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
   <div class="beams">
     {beams.map((b) => (
       <div
-        class="beam"
+        class:list={["beam", { thin: b.thin, warm: b.warm }]}
         style={`--x:${b.x.toFixed(2)}%;--w:${b.width.toFixed(1)}px;--a:${b.alpha.toFixed(3)};--blur:${b.blur.toFixed(1)}px;--delay:${b.delay.toFixed(2)}s;--breathe:${b.breathe.toFixed(1)}s;`}
       >
       </div>
@@ -74,7 +88,9 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
   .light-rays {
     position: absolute;
     inset: 0;
-    isolation: isolate;
+    /* No isolation here on purpose. The beams screen onto whatever is
+       underneath, which is the game art in HeroArt. Isolate this and they
+       screen onto nothing and go flat grey again. */
     overflow: hidden;
     pointer-events: none;
     border-radius: inherit;
@@ -126,6 +142,50 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
     animation:
       beam-on 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) var(--delay) forwards,
       beam-breathe var(--breathe) ease-in-out calc(var(--delay) + 1.1s) infinite;
+  }
+
+  /* Red at the source, paper by a third of the way down. The alpha is bumped
+     because red on ink reads dimmer than paper on ink at the same value. */
+  .beam.warm {
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 76, 76, calc(var(--a) * 2.4)) 0%,
+      rgba(255, 138, 138, calc(var(--a) * 1.4)) 16%,
+      rgba(247, 245, 241, calc(var(--a) * 0.6)) 38%,
+      transparent 66%
+    );
+  }
+
+  /* The fringe. Two copies of the slit, one red shoved 2px left and one blue
+     2px right, both fainter than the slit itself. Pseudo-elements so they ride
+     the parent's opacity animation and blur for free. Stops at 66% with the
+     parent so the fringe never outlasts the beam. */
+  .beam.thin::before,
+  .beam.thin::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    mix-blend-mode: screen;
+  }
+
+  .beam.thin::before {
+    transform: translateX(-2px);
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 76, 76, calc(var(--a) * 0.55)) 0%,
+      rgba(255, 76, 76, calc(var(--a) * 0.3)) 30%,
+      transparent 66%
+    );
+  }
+
+  .beam.thin::after {
+    transform: translateX(2px);
+    background: linear-gradient(
+      to bottom,
+      rgba(96, 148, 255, calc(var(--a) * 0.55)) 0%,
+      rgba(96, 148, 255, calc(var(--a) * 0.3)) 30%,
+      transparent 66%
+    );
   }
 
   /* Gradients on ink band. A hair of noise over the top hides it and gives the

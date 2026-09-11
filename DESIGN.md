@@ -137,6 +137,20 @@ The logo S does not count. If a third red thing appears, one of them is decorati
 gets cut. This is the difference between "single deliberate accent" and "red-accented
 template," and it is the easiest rule in this document to break by accident.
 
+Light does not count either. The rule budgets **UI**, actions and state, not illumination.
+The hero's beams may carry red at their source, cooling to paper as they fall, which is the
+mark's own logic (only the S is red). The thin beams also carry a spectral fringe, red on
+one edge and blue on the other, because that is what light through a slit does. That blue
+is a fringe, not a colour: it appears nowhere else and never as a fill, a stroke, or text.
+
+### Where colour actually comes from
+
+The palette above is ink, one red, and neutrals, and that is not going to make the site
+colourful. It is not supposed to. Colour comes from the **games**: the hero's ground is one
+game's key art per visit, pulled to about half brightness and a third of its saturation,
+and the light falls across it. The brand stays on its leash and the product supplies the
+colour, which is the only source of colour on this site that no competitor can copy.
+
 ## 6. Typography
 
 Space Grotesk for headlines and titles, Inter for body and UI. Both variable, both from

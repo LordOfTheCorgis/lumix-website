@@ -1,0 +1,140 @@
+---
+// The hero's ground. One game's key art per visit, pulled down to about half
+// brightness and a third of its saturation, with the beams falling across it.
+//
+// Before this the hero was copy over an empty dark room and Evan's verdict was
+// "bland, not colourful". The brand palette is ink and one red on purpose, so
+// the colour has to come from somewhere else, and the honest somewhere else is
+// the games: that's what people are here to buy, and every one of them has a
+// loud palette already sitting in its tile art.
+//
+// Which game is picked client-side, per visit, by the inline script below. It
+// has to be client-side because the site is static; there's no request to hash.
+// Only the chosen image ever loads, the rest are just URLs in a JSON blob.
+// sessionStorage remembers the last pick so a reload doesn't show the same
+// world twice in a row.
+import { getImage } from "astro:assets";
+
+interface Props {
+  games: { slug: string; image: ImageMetadata }[];
+  class?: string;
+}
+
+const { games, class: className = "" } = Astro.props;
+
+// 1600 is enough: the hero caps at 1328 wide and the thing sits behind a
+// veil at half brightness, nobody is going to pixel-peep it.
+const art = await Promise.all(
+  games.map(async (g) => {
+    const img = await getImage({ src: g.image, width: 1600, format: "webp", quality: 68 });
+    return { slug: g.slug, src: img.src };
+  })
+);
+---
+
+<div class:list={["hero-art", className]} aria-hidden="true" data-hero-art>
+  <img alt="" decoding="async" fetchpriority="high" data-hero-img />
+  <div class="veil"></div>
+  <script type="application/json" data-hero-art-list set:html={JSON.stringify(art)} />
+  <script is:inline>
+    // Inline and right here so the src lands before first paint. Moving this to
+    // a module script means the browser paints the veil over nothing, then the
+    // art pops in a frame later.
+    (function () {
+      var host = document.querySelector("[data-hero-art]");
+      if (!host) return;
+      var img = host.querySelector("[data-hero-img]");
+      var list = JSON.parse(host.querySelector("[data-hero-art-list]").textContent || "[]");
+      if (!list.length) return;
+
+      var last = -1;
+      try { last = Number(sessionStorage.getItem("hero-art")); } catch (e) {}
+      var i = Math.floor(Math.random() * list.length);
+      if (list.length > 1 && i === last) i = (i + 1) % list.length;
+      try { sessionStorage.setItem("hero-art", String(i)); } catch (e) {}
+
+      host.setAttribute("data-game", list[i].slug);
+      img.addEventListener("load", function () { host.setAttribute("data-loaded", ""); });
+      img.src = list[i].src;
+      if (img.complete && img.naturalWidth) host.setAttribute("data-loaded", "");
+    })();
+  </script>
+  <noscript>
+    <img src={art[0]?.src} alt="" class="fallback" />
+  </noscript>
+</div>
+
+<style>
+  .hero-art {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .hero-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Framed to the right because that's where the light falls and the copy
+       isn't. Most of the key art has its subject right of centre anyway. */
+    object-position: 68% 45%;
+    /* Not greyscale. Kill it fully and the whole point, colour, goes with it.
+       Saturation at a third keeps the world recognisable without shouting
+       over the headline. */
+    filter: saturate(0.38) brightness(0.5) contrast(1.06);
+    opacity: 0;
+    transition: opacity 900ms ease 120ms;
+  }
+
+  .hero-art[data-loaded] img,
+  .hero-art .fallback {
+    opacity: 1;
+  }
+
+  /* Two jobs. Left to right: a hard ink shelf under the headline so paper text
+     never sits on a photo. Top to bottom: ink at the bottom so the art meets
+     the section's hairline instead of being sliced by it. */
+  .veil {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        to right,
+        var(--color-ink) 0%,
+        var(--color-ink) 28%,
+        color-mix(in srgb, var(--color-ink) 72%, transparent) 55%,
+        color-mix(in srgb, var(--color-ink) 30%, transparent) 100%
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--color-ink) 55%, transparent) 0%,
+        transparent 35%,
+        color-mix(in srgb, var(--color-ink) 40%, transparent) 75%,
+        var(--color-ink) 100%
+      );
+  }
+
+  @media (max-width: 640px) {
+    .hero-art img {
+      object-position: 60% 45%;
+    }
+    /* Narrow viewport, copy runs the full width, so the shelf has to come
+       from the top instead of the side. */
+    .veil {
+      background:
+        linear-gradient(
+          to bottom,
+          color-mix(in srgb, var(--color-ink) 82%, transparent) 0%,
+          color-mix(in srgb, var(--color-ink) 62%, transparent) 55%,
+          var(--color-ink) 100%
+        );
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-art img {
+      transition: none;
+    }
+  }
+</style>

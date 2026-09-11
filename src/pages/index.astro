@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import GameTile from "../components/GameTile.astro";
 import LightRays from "../components/LightRays.astro";
+import HeroArt from "../components/HeroArt.astro";
 import TrustpilotReviews from "../components/TrustpilotReviews.astro";
 import Globe from "../components/Globe.astro";
 import { price } from "../lib/order";
@@ -24,6 +25,9 @@ const cheapest = Math.min(
   <!-- One job: get someone into a cart. No positioning copy, no engineering
        story, no stat bar. Those can live further down the page later. -->
   <section class="section relative overflow-hidden">
+    <!-- Order matters: art, then light on top of it, then copy. All three are
+         positioned so DOM order is the stack. -->
+    <HeroArt games={games.map((g) => ({ slug: g.data.slug, image: g.data.image }))} />
     <LightRays />
 
     <div class="shell relative">
