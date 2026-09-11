@@ -50,7 +50,19 @@ const games = defineCollection({
     accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
     mark: z.string().min(2).max(4),
     highlights: z.array(z.string()).optional(),
-    plans: z.array(plan).min(1),
+    // A live game needs something to sell. A planned one has nothing yet and
+    // that's the point of listing it: the /games catalogue shows it dimmed so
+    // people can ask for it. Enforced below rather than with min(1) so the
+    // error names the game instead of "array too short".
+    plans: z.array(plan).default([]),
+  }).superRefine((g, ctx) => {
+    if (g.status === "live" && g.plans.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `${g.slug} is live with no plans. Add one or set status: planned.`,
+        path: ["plans"],
+      });
+    }
   }),
 });
 
