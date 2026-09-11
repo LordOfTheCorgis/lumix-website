@@ -40,11 +40,11 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
   title="Game server hosting"
   description={`${live.map((g) => g.data.shortLabel).join(", ")} servers from ${price(Math.min(...live.map(cheapest)))} a month, plus ${planned.length} more on the way. Four US regions, DDoS protected, online in minutes.`}
 >
-  <section class="section lit lit-tr border-b border-[var(--edge)]">
+  <section class="section border-b border-[var(--edge)]">
     <div class="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
         <p class="instrument text-fog">Catalogue · {live.length} live · {planned.length} planned</p>
-        <h1 class="display-xl mt-6 max-w-2xl">Every game we run.</h1>
+        <h1 class="display-xl mt-6 max-w-2xl">Every game we run<span class="text-red">.</span></h1>
         <p class="lead text-fog mt-6 max-w-lg">
           Pick one, pick a size, pick a region. Anything dimmed isn't orderable
           yet; ask for it in Discord and it moves up the list.
@@ -88,7 +88,7 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
     </div>
   </section>
 
-  <section id="catalog" class="section lit lit-tl">
+  <section id="catalog" class="section">
     <div class="shell">
       <div class="flex flex-wrap items-end justify-between gap-4">
         <h2 class="title">Pick your game</h2>
@@ -108,6 +108,7 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
             from={game.data.status === "live" ? cheapest(game) : undefined}
             planCount={game.data.plans.length}
             accent={game.data.accent}
+            mark={game.data.mark}
             status={game.data.status}
             eager={i < 3}
           />

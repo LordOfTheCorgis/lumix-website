@@ -30,6 +30,8 @@ interface Props {
   planCount?: number;
   /** The game's own colour, from its yaml. Hex. */
   accent: string;
+  /** Two-to-four letter mark from the yaml (FM, MC). Sits in the chip. */
+  mark: string;
   /** "planned" renders the tile dimmed in place with no price and no order
       link. Same grid as the live ones, on purpose: exiling them to a "coming
       soon" ghetto reads as an apology. */
@@ -45,6 +47,7 @@ const {
   from,
   planCount = 0,
   accent,
+  mark,
   status = "live",
   eager = false,
 } = Astro.props;
@@ -79,6 +82,14 @@ const href = planned ? links.discord : `/games/${slug}`;
     aria-hidden="true"
   >
   </div>
+
+  <!-- The chip. A solid block of the game's colour at rest, with its mark
+       in ink. This is where the grid's colour comes from now: not a glow,
+       not a tinted edge, a flat swatch of the thing you're buying. -->
+  <span
+    aria-hidden="true"
+    class="chip chamfer absolute left-6 top-6 inline-flex h-10 min-w-10 items-center justify-center px-2 font-display text-xs font-semibold tracking-[0.08em] text-ink"
+  >{mark}</span>
 
   <div class="relative">
     <h3 class="title">{name}</h3>
@@ -130,6 +141,14 @@ const href = planned ? links.discord : `/games/${slug}`;
 
   .tile:hover .arrow {
     color: var(--accent);
+  }
+
+  .chip {
+    background: var(--accent);
+  }
+
+  .planned .chip {
+    opacity: 0.45;
   }
 
   /* Dimmed in place. Art drops to a third, the title to fog. The accent still

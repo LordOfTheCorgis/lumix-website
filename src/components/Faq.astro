@@ -24,13 +24,13 @@ const schema = {
 
 <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-<section class:list={["section lit lit-tl border-t border-[var(--edge)]", className]}>
+<section class:list={["section border-t border-[var(--edge)]", className]}>
   <div class="shell grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
     <!-- Sticky on desktop so the column rides alongside ten questions instead
          of leaving a hole under the heading. The exit for "read all of it,
          still not sure" lives here because this is where that person is. -->
     <div class="lg:sticky lg:top-28 lg:self-start">
-      <h2 class="title">Before you order.</h2>
+      <h2 class="title">Before you order<span class="text-red">.</span></h2>
       <p class="lead text-fog mt-6 max-w-sm">
         The questions people ask in Discord before they buy, answered once.
       </p>

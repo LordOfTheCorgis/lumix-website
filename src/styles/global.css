@@ -29,11 +29,10 @@
   --color-ink-soft: #221a1f;
 
   /* ── Light ───────────────────────────────────────────────────────────────
-     Two warm hues for illumination: ambient glows behind sections, the
-     source end of the hero beams, the glowing end of a section rule. Gold
-     gets exactly one text job, the price, because that's the number the
-     whole page exists to get someone to look at. Never a fill on a control,
-     never a border. Red stays the one UI accent; these are what it's lit by. */
+     Two warm hues. Ember is the source end of the hero beams. Gold is the
+     promo bar and the price, the two things the page most wants you to see.
+     Solid fills only; the ambient-glow version of this lasted twenty minutes
+     before Evan killed it ("fuck the gradients"). Red stays the UI accent. */
   --color-ember: #ff7a45;
   --color-gold: #ffb347;
   --color-paper: #f7f5f1;
@@ -191,48 +190,7 @@
      selector: when both exist they take turns winning on import order. */
   .section { padding-block: var(--spacing-section-mobile); }
 
-  /* Ambient light. A section with .lit gets a large, soft warm glow painted
-     behind its content, positioned by the modifier. The point is that no
-     section on the page is a flat slab: each one is lit from somewhere, the
-     way the hero is. Kept to ~9% so it reads as light on a wall, not a
-     gradient background. Pointer-events off, sits under the content. */
-  .lit { position: relative; isolation: isolate; }
-  .lit::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background:
-      radial-gradient(
-        ellipse 55% 70% at var(--lit-x, 85%) var(--lit-y, 0%),
-        color-mix(in srgb, var(--color-ember) 20%, transparent),
-        transparent 70%
-      ),
-      radial-gradient(
-        ellipse 40% 50% at var(--lit-x2, 10%) var(--lit-y2, 100%),
-        color-mix(in srgb, var(--color-gold) 11%, transparent),
-        transparent 70%
-      );
-  }
-  /* The top rule catches the light: brightest under the glow, fading to the
-     ordinary hairline away from it. Replaces the flat border-t on lit
-     sections so the edge reads as an edge in a lit room, not a ruled line. */
-  .lit::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: -1px;
-    height: 1px;
-    pointer-events: none;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      color-mix(in srgb, var(--color-gold) 55%, transparent) var(--lit-x, 85%),
-      transparent 100%
-    );
-  }
+  /* Gold's one text job. */
   .price { color: var(--color-gold); }
   .lit-tr { --lit-x: 88%; --lit-y: 0%;  --lit-x2: 8%;  --lit-y2: 100%; }
   .lit-tl { --lit-x: 10%; --lit-y: 0%;  --lit-x2: 92%; --lit-y2: 100%; }

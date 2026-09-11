@@ -94,8 +94,8 @@ record.
 | `red-tint` | `#FF8A8A` | Highlights on dark surfaces only. |
 | `ink` | `#161114` | Default background. Warm, leaning toward the red. |
 | `ink-soft` | `#221A1F` | Cards and panels on Ink, and the ground for `.band` sections. |
-| `ember` | `#FF7A45` | Light only: section glows, the source end of the hero beams, lit rules. |
-| `gold` | `#FFB347` | Light, plus exactly one text job: the price. |
+| `ember` | `#FF7A45` | The source end of the hero beams. Nothing else. |
+| `gold` | `#FFB347` | The promo bar fill and the price. Nothing else. |
 | `paper` | `#F7F5F1` | Primary text on Ink. The one light fill. |
 | `slate` | `#97909A` | Tertiary text on Ink. Labels beside the value they name. |
 | `fog` | `#B7AFB5` | Secondary text on Ink. |
@@ -152,17 +152,24 @@ mark's own logic (only the S is red). The thin beams also carry a spectral fring
 one edge and blue on the other, because that is what light through a slit does. That blue
 is a fringe, not a colour: it appears nowhere else and never as a fill, a stroke, or text.
 
-### The ground is warm, and every section is lit
+### The ground is warm, and colour is solid
 
 2026-09-11. Evan's read of the built site was "dark and gloomy" and he was right; the
 competitors' darks are all tinted (RocketNode navy, Apex brown, Pebble blue) and that tint
 is most of why theirs read as colour. Ink moved from neutral `#121214` to `#161114`, a
-dark room lit by something warm, which is also what the hero's beams are doing. Two light
-hues arrived with it, `ember` and `gold`, and a `.lit` section utility that paints a large
-soft glow behind the content from a stated corner (`.lit-tr`, `.lit-tl`, `.lit-br`) and
-lets the section's top rule catch that light. The rule: no section on the page is a flat
-slab; each is lit from somewhere. Gold's one text job is the price, because the number is
-what the page exists to get someone to look at.
+dark room lit by something warm, which is also what the hero's beams are doing.
+
+Colour on the page is **solid fills, never gradients.** An ambient-glow pass (soft radial
+washes behind every section) lasted twenty minutes before it was cut. What replaced it:
+
+- **Gold promo bar** at the very top, ink text on solid gold.
+- **The chip.** Every game tile carries a flat swatch of its own accent with the game's
+  mark in ink, top-left, at rest. That's where the grid's colour comes from.
+- **Gold prices.** Gold's one text job, because the number is what the page exists to
+  get someone to look at.
+- **The red full stop.** Every headline that ends in a period ends in a red one. The
+  logo makes one letterform red; the headline makes one mark red. Same logic, and it
+  costs nothing against the two-per-viewport rule because it's the mark, not a control.
 
 ### Where colour actually comes from
 
