@@ -92,11 +92,13 @@ record.
 | `red` | `#FF4C4C` | Primary accent. Logo S, CTAs, links, active states. |
 | `red-pressed` | `#C43535` | Hover and active. **Also the only red allowed for text on Paper.** |
 | `red-tint` | `#FF8A8A` | Highlights on dark surfaces only. |
-| `ink` | `#121214` | Default background. |
-| `ink-soft` | `#1E1E22` | Cards and panels on Ink, and the ground for `.band` sections. |
+| `ink` | `#161114` | Default background. Warm, leaning toward the red. |
+| `ink-soft` | `#221A1F` | Cards and panels on Ink, and the ground for `.band` sections. |
+| `ember` | `#FF7A45` | Light only: section glows, the source end of the hero beams, lit rules. |
+| `gold` | `#FFB347` | Light, plus exactly one text job: the price. |
 | `paper` | `#F7F5F1` | Primary text on Ink. The one light fill. |
-| `slate` | `#8C8C95` | Tertiary text on Ink. Labels beside the value they name. |
-| `fog` | `#AEAEB6` | Secondary text on Ink. |
+| `slate` | `#97909A` | Tertiary text on Ink. Labels beside the value they name. |
+| `fog` | `#B7AFB5` | Secondary text on Ink. |
 
 `mist` was retired with light mode. Hairlines are `--edge`.
 
@@ -149,6 +151,18 @@ The hero's beams may carry red at their source, cooling to paper as they fall, w
 mark's own logic (only the S is red). The thin beams also carry a spectral fringe, red on
 one edge and blue on the other, because that is what light through a slit does. That blue
 is a fringe, not a colour: it appears nowhere else and never as a fill, a stroke, or text.
+
+### The ground is warm, and every section is lit
+
+2026-09-11. Evan's read of the built site was "dark and gloomy" and he was right; the
+competitors' darks are all tinted (RocketNode navy, Apex brown, Pebble blue) and that tint
+is most of why theirs read as colour. Ink moved from neutral `#121214` to `#161114`, a
+dark room lit by something warm, which is also what the hero's beams are doing. Two light
+hues arrived with it, `ember` and `gold`, and a `.lit` section utility that paints a large
+soft glow behind the content from a stated corner (`.lit-tr`, `.lit-tl`, `.lit-br`) and
+lets the section's top rule catch that light. The rule: no section on the page is a flat
+slab; each is lit from somewhere. Gold's one text job is the price, because the number is
+what the page exists to get someone to look at.
 
 ### Where colour actually comes from
 

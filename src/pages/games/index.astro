@@ -40,7 +40,7 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
   title="Game server hosting"
   description={`${live.map((g) => g.data.shortLabel).join(", ")} servers from ${price(Math.min(...live.map(cheapest)))} a month, plus ${planned.length} more on the way. Four US regions, DDoS protected, online in minutes.`}
 >
-  <section class="section border-b border-[var(--edge)]">
+  <section class="section lit lit-tr border-b border-[var(--edge)]">
     <div class="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
         <p class="instrument text-fog">Catalogue · {live.length} live · {planned.length} planned</p>
@@ -88,7 +88,7 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
     </div>
   </section>
 
-  <section id="catalog" class="section">
+  <section id="catalog" class="section lit lit-tl">
     <div class="shell">
       <div class="flex flex-wrap items-end justify-between gap-4">
         <h2 class="title">Pick your game</h2>

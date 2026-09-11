@@ -20,12 +20,22 @@
      background a while ago and is now the primary text colour and the one
      light fill (cookie banner Accept). `mist` was hairlines-on-paper and had
      nothing left to do, so it's gone. Hairlines are --edge. */
-  --color-ink: #121214;
-  /* Was #1a1a1d, 1.08:1 against ink, which is invisible and why every panel
-     leans on its hairline. Lifted to 1.13:1 after Evan looked at the built
-     site and called it too dark. The hairline is still the panel; this just
-     stops the page reading as one black slab. */
-  --color-ink-soft: #1e1e22;
+  /* Warm now, not neutral. Every competitor's "dark" is tinted (RocketNode
+     navy, Apex brown, Pebble blue) and that tint is most of why theirs read
+     as colour and ours read as gloom. Lumix's tint leans toward its red: a
+     dark room lit by something warm, which is also what the hero's light is
+     doing. Still ink, still the only ground. */
+  --color-ink: #161114;
+  --color-ink-soft: #221a1f;
+
+  /* ── Light ───────────────────────────────────────────────────────────────
+     Two warm hues for illumination: ambient glows behind sections, the
+     source end of the hero beams, the glowing end of a section rule. Gold
+     gets exactly one text job, the price, because that's the number the
+     whole page exists to get someone to look at. Never a fill on a control,
+     never a border. Red stays the one UI accent; these are what it's lit by. */
+  --color-ember: #ff7a45;
+  --color-gold: #ffb347;
   --color-paper: #f7f5f1;
 
   /* ── Secondary text, both ink-only now ───────────────────────────────────
@@ -33,8 +43,8 @@
      sit beside the thing they name. Old slate was #6B6B72, a paper-only value,
      and it had quietly crept onto ink at 3.54:1 under 11px uppercase labels,
      which is a fail twice over. Lifted to 4.58:1. Don't push it back down. */
-  --color-slate: #8c8c95;  /* 5.61:1 on ink, 4.98 on ink-soft */
-  --color-fog: #aeaeb6;    /* 8.49:1 on ink, 7.54 on ink-soft */
+  --color-slate: #97909a;  /* warmed to sit on the warm ink; 5.8:1 */
+  --color-fog: #b7afb5;    /* 8.6:1 */
 
   /* Space Grotesk flattens into a generic geometric sans below ~24px, so it's
      display and instrument only. Inter carries everything anyone actually reads.
@@ -48,8 +58,8 @@
 
   /* Panels are invisible against ink on fill alone (1.08:1). The hairline IS
      the panel. Don't reach for a box-shadow, it won't read on this ground. */
-  --edge: rgba(255, 255, 255, 0.08);
-  --edge-strong: rgba(255, 255, 255, 0.16);
+  --edge: rgba(255, 235, 225, 0.09);
+  --edge-strong: rgba(255, 235, 225, 0.18);
 
   --spacing-section: 6rem;
   --spacing-section-mobile: 3.5rem;
@@ -180,6 +190,53 @@
   /* Rhythm lives on this ONE class. Never also pad `section` as an element
      selector: when both exist they take turns winning on import order. */
   .section { padding-block: var(--spacing-section-mobile); }
+
+  /* Ambient light. A section with .lit gets a large, soft warm glow painted
+     behind its content, positioned by the modifier. The point is that no
+     section on the page is a flat slab: each one is lit from somewhere, the
+     way the hero is. Kept to ~9% so it reads as light on a wall, not a
+     gradient background. Pointer-events off, sits under the content. */
+  .lit { position: relative; isolation: isolate; }
+  .lit::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 55% 70% at var(--lit-x, 85%) var(--lit-y, 0%),
+        color-mix(in srgb, var(--color-ember) 20%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 40% 50% at var(--lit-x2, 10%) var(--lit-y2, 100%),
+        color-mix(in srgb, var(--color-gold) 11%, transparent),
+        transparent 70%
+      );
+  }
+  /* The top rule catches the light: brightest under the glow, fading to the
+     ordinary hairline away from it. Replaces the flat border-t on lit
+     sections so the edge reads as an edge in a lit room, not a ruled line. */
+  .lit::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -1px;
+    height: 1px;
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--color-gold) 55%, transparent) var(--lit-x, 85%),
+      transparent 100%
+    );
+  }
+  .price { color: var(--color-gold); }
+  .lit-tr { --lit-x: 88%; --lit-y: 0%;  --lit-x2: 8%;  --lit-y2: 100%; }
+  .lit-tl { --lit-x: 10%; --lit-y: 0%;  --lit-x2: 92%; --lit-y2: 100%; }
+  .lit-br { --lit-x: 90%; --lit-y: 100%; --lit-x2: 5%; --lit-y2: 0%; }
 
   /* A section on the raised ground. Alternate these with plain sections so a
      long page has tonal rhythm instead of being one black slab with hairlines

@@ -104,7 +104,7 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
     inset: 0;
     background: radial-gradient(
       ellipse 70% 90% at 78% 0%,
-      rgba(247, 245, 241, 0.07),
+      color-mix(in srgb, var(--color-gold) 14%, transparent),
       transparent 70%
     );
   }
@@ -150,7 +150,7 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
      bumped because a hue on ink reads dimmer than paper on ink at the same
      value. --a is 0.035..0.08 so the top lands around 12..27%. */
   .beam.warm {
-    --hue: var(--game-accent, var(--color-red));
+    --hue: var(--game-accent, var(--color-ember));
     background: linear-gradient(
       to bottom,
       color-mix(in srgb, var(--hue) calc(var(--a) * 340%), transparent) 0%,
