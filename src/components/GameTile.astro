@@ -70,12 +70,12 @@ const href = planned ? links.discord : `/games/${slug}`;
     sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
     loading={eager ? "eager" : "lazy"}
     decoding="async"
-    class="absolute inset-0 h-full w-full object-cover opacity-55 transition-[opacity,transform] duration-300 group-hover:scale-[1.03] group-hover:opacity-70"
+    class="absolute inset-0 h-full w-full object-cover opacity-70 transition-[opacity,transform] duration-300 group-hover:scale-[1.03] group-hover:opacity-85"
   />
   <!-- Scrim, not a tint. Key art on these games is dark and busy, and text over
        it fails contrast without a real gradient underneath. -->
   <div
-    class="absolute inset-0 bg-gradient-to-t from-ink via-ink/85 to-ink/25"
+    class="absolute inset-0 bg-gradient-to-t from-ink via-ink/75 to-ink/10"
     aria-hidden="true"
   >
   </div>

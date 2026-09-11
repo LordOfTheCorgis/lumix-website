@@ -93,10 +93,10 @@ record.
 | `red-pressed` | `#C43535` | Hover and active. **Also the only red allowed for text on Paper.** |
 | `red-tint` | `#FF8A8A` | Highlights on dark surfaces only. |
 | `ink` | `#121214` | Default background. |
-| `ink-soft` | `#1A1A1D` | Cards and panels on Ink. |
+| `ink-soft` | `#1E1E22` | Cards and panels on Ink, and the ground for `.band` sections. |
 | `paper` | `#F7F5F1` | Primary text on Ink. The one light fill. |
-| `slate` | `#7D7D85` | Tertiary text on Ink. Labels beside the value they name. |
-| `fog` | `#9A9AA2` | Secondary text on Ink. |
+| `slate` | `#8C8C95` | Tertiary text on Ink. Labels beside the value they name. |
+| `fog` | `#AEAEB6` | Secondary text on Ink. |
 
 `mist` was retired with light mode. Hairlines are `--edge`.
 
@@ -104,9 +104,13 @@ record.
 
 Computed against WCAG 2.1, not eyeballed.
 
-**On Ink `#121214`:** paper 17.18, tint 8.25, fog 6.70, red 5.69, slate 4.58. Everything
-passes AA for body text, which is the point of a single-ground system: there is no second
-table to check against.
+**On Ink `#121214`:** paper 17.18, tint 8.25, fog 8.49, red 5.69, slate 5.61. On
+`ink-soft`, which is now a real second ground because of bands: paper 15.26, fog 7.54,
+red 5.06, slate 4.98. Everything passes AA for body text on both.
+
+Fog and slate were `#9A9AA2` / `#7D7D85` (6.70 / 4.58) until 2026-09-11, when Evan looked
+at the built site and called it too dark. Lifting the two neutrals did more for that than
+any single component change; most of what anyone reads on the site is fog.
 
 Slate was `#6B6B72` until light mode was cut. That value was measured on Paper, and on Ink
 it lands at **3.54:1**, under 11px uppercase labels no less. It shipped that way in the
@@ -123,9 +127,12 @@ red-pressed 4.94, **red 3.02**.
 > ink on red is 5.69:1 and passes. This is counterintuitive and it will feel wrong until
 > you see it. Do it anyway.
 
-> **Rule 3.** `ink-soft` against `ink` is **1.08:1**, which is invisible. A panel is not a
-> panel because of its fill; it is a panel because of its hairline. Every card on Ink gets
-> a 1px `#FFFFFF` at 8% border. Depth comes from the edge, never from a shadow.
+> **Rule 3.** `ink-soft` against `ink` is **1.13:1** (was 1.08), still not enough to carry
+> a panel on its own. A panel is not a panel because of its fill; it is a panel because of
+> its hairline. Every card on Ink gets a 1px `#FFFFFF` at 8% border. Depth comes from the
+> edge, never from a shadow. What 1.13 *is* enough for is a whole section: `.band` puts a
+> section on `ink-soft` so a long page alternates ground instead of being one black slab.
+> Panels inside a band drop to `ink` so they still read against it.
 
 `fog` is Ink-only and `slate` is Paper-only. Swapping them fails in both directions
 (fog on Paper is 2.57:1). They are not interchangeable neutrals.

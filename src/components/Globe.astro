@@ -142,12 +142,14 @@ const MARKERS = [
         dark: 1,
         diffuse: 0.5,
         mapSamples: 16000,
-        mapBrightness: 3.2,
-        baseColor: [0.26, 0.26, 0.29],
+        // Was 3.2 / [0.26]. The globe was a black ball with grey freckles on a
+        // black page. Lifted with the rest of the site.
+        mapBrightness: 5,
+        baseColor: [0.36, 0.36, 0.4],
         // Per-marker color is a cobe 2 thing, this global one is just the
         // fallback if a marker ever comes through without one.
         markerColor: [1, 0.298, 0.298],
-        glowColor: [0.13, 0.13, 0.15],
+        glowColor: [0.18, 0.18, 0.21],
         markers,
       });
 

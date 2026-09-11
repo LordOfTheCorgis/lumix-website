@@ -21,7 +21,11 @@
      light fill (cookie banner Accept). `mist` was hairlines-on-paper and had
      nothing left to do, so it's gone. Hairlines are --edge. */
   --color-ink: #121214;
-  --color-ink-soft: #1a1a1d;
+  /* Was #1a1a1d, 1.08:1 against ink, which is invisible and why every panel
+     leans on its hairline. Lifted to 1.13:1 after Evan looked at the built
+     site and called it too dark. The hairline is still the panel; this just
+     stops the page reading as one black slab. */
+  --color-ink-soft: #1e1e22;
   --color-paper: #f7f5f1;
 
   /* ── Secondary text, both ink-only now ───────────────────────────────────
@@ -29,8 +33,8 @@
      sit beside the thing they name. Old slate was #6B6B72, a paper-only value,
      and it had quietly crept onto ink at 3.54:1 under 11px uppercase labels,
      which is a fail twice over. Lifted to 4.58:1. Don't push it back down. */
-  --color-slate: #7d7d85;  /* 4.58:1 on ink */
-  --color-fog: #9a9aa2;    /* 6.70:1 on ink */
+  --color-slate: #8c8c95;  /* 5.61:1 on ink, 4.98 on ink-soft */
+  --color-fog: #aeaeb6;    /* 8.49:1 on ink, 7.54 on ink-soft */
 
   /* Space Grotesk flattens into a generic geometric sans below ~24px, so it's
      display and instrument only. Inter carries everything anyone actually reads.
@@ -177,6 +181,11 @@
      selector: when both exist they take turns winning on import order. */
   .section { padding-block: var(--spacing-section-mobile); }
 
+  /* A section on the raised ground. Alternate these with plain sections so a
+     long page has tonal rhythm instead of being one black slab with hairlines
+     across it. Panels inside a band sit on ink, not ink-soft, or they vanish. */
+  .band { background-color: var(--color-ink-soft); }
+
   @media (min-width: 1024px) {
     .section { padding-block: var(--spacing-section); }
   }
@@ -209,4 +218,11 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Has to live in the utilities layer: Tailwind's own .bg-ink-soft is there,
+   and a components-layer rule loses to it no matter the specificity. Same
+   layer, two classes beat one. Checked with getComputedStyle, not assumed. */
+@layer utilities {
+  .band .bg-ink-soft { background-color: var(--color-ink); }
 }
