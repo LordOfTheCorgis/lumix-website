@@ -19,3 +19,22 @@ the metadata stripped. Black-on-transparent originals got `fill="#f7f5f1"`.
 
 If a publisher ever asks for theirs to come down, delete the file and the
 build fails on the yaml `logo:` line, which is the point.
+
+## Added later the same day, twelve more planned titles
+
+| file | source |
+|---|---|
+| valheim.webp | Steam CDN app 892970 logo.png, cropped above the DLC tag |
+| project-zomboid.webp | Steam CDN app 108600 logo.png |
+| 7-days-to-die.webp | Steam CDN app 251570 logo.png |
+| dayz.webp | Steam CDN app 221100 logo.png |
+| enshrouded.webp | Steam CDN app 1203620 logo.png |
+| v-rising.webp | Steam CDN app 1604030 logo.png |
+| satisfactory.webp | Wikimedia Commons, File:Satisfactory Logo.png |
+| garrys-mod.webp | Steam CDN app 4000 logo.png |
+| counter-strike-2.svg | Wikimedia Commons, File:Counter-Strike 2 logo.svg, recoloured to paper |
+| conan-exiles.webp | Steam CDN app 440900 logo.png |
+| unturned.webp | Steam CDN app 304930 logo.png |
+| sons-of-the-forest.webp | Steam CDN app 1326470 logo.png |
+
+Tile art for all twelve is the Steam header (460×215) from the same CDN path.
