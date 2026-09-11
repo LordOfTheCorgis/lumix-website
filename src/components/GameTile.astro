@@ -4,12 +4,12 @@
 // budget (DESIGN.md section 5). The arrow picks up the game's accent on hover,
 // not red, which was the old behaviour and quietly a third red per viewport.
 //
-// Each tile carries its game's accent from the yaml, in the hairline. A panel
-// on this site is its hairline (DESIGN.md rule 3), so that's where the colour
-// goes: a third strength at rest, most of the way up on hover, arrow to match.
-// First version was a glow washing up from the corner; Evan hated it, and he
-// was right, it looked like a hover state stuck on. The art already brings the
-// colour, the edge just names it.
+// Each tile carries its game's accent from the yaml, in the hairline, and only
+// on hover. A panel on this site is its hairline (DESIGN.md rule 3), so that's
+// where the colour goes; the arrow matches. At rest it's the normal edge.
+// Went through a glow washing up from the corner, then a tinted edge at rest,
+// and Evan cut both. The art already brings the colour, the edge names it
+// when you reach for it.
 //
 // Height is seven cells rather than a round 256px so the bottom edge lands on
 // the module the cursor trail snaps to. Stays a min, not a fixed height: a long
@@ -82,7 +82,7 @@ const { slug, name, tagline, image, from, planCount, accent, eager = false } = A
 
 <style>
   .tile {
-    border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+    border-color: var(--edge);
   }
 
   .tile:hover {
