@@ -1,0 +1,122 @@
+---
+// Three people, three portraits. The photos are the content here, in the
+// landonorris register rather than a LinkedIn row: big, chamfered, grayscale
+// at rest so the green bokeh doesn't fight the ink, colour when you reach for
+// them. The one motion on the page. Red is the headline stop and the careers
+// button, nothing else.
+import { Image } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
+import { staff } from "../lib/staff";
+import { links } from "../config";
+---
+
+<Layout
+  title="Staff"
+  description={`The ${staff.length} people who run Lumix Solutions, what each of them actually does, and where to find them.`}
+>
+  <section class="section border-b border-[var(--edge)]">
+    <div class="shell">
+      <p class="instrument text-fog">Staff · {staff.length} people</p>
+      <h1 class="display-xl mt-6 max-w-3xl">Small on purpose<span class="text-red">.</span></h1>
+      <p class="lead text-fog mt-6 max-w-xl">
+        A finite number of servers needs a finite number of people who know
+        every one of them. These are those people. Tickets get read by someone
+        on this page.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <ul data-grid-anchor class="m-0 grid list-none gap-[var(--grid-cell)] p-0 sm:grid-cols-2 lg:grid-cols-3">
+        {staff.map((p, i) => (
+          <li class="group flex flex-col">
+            <!-- Portrait is 4:5 so a square headshot crops to the face, not
+                 the shoulders. Seven cells tall lands the bottom edge on the
+                 module. -->
+            <div class="chamfer portrait relative aspect-[4/5] w-full overflow-hidden border border-[var(--edge)] bg-ink-soft">
+              {p.image ? (
+                <Image
+                  src={p.image}
+                  alt={p.name || p.title}
+                  widths={[480, 960]}
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  class="h-full w-full object-cover object-top"
+                  loading={i === 0 ? "eager" : "lazy"}
+                />
+              ) : (
+                <div class="flex h-full w-full items-center justify-center">
+                  <span class="font-display text-5xl font-semibold tracking-tight text-slate">{p.mark}</span>
+                </div>
+              )}
+            </div>
+
+            <p class="instrument mt-6 text-fog">{String(i + 1).padStart(2, "0")} · {p.title}</p>
+            <h2 class="title mt-2">{p.name || p.title}</h2>
+            <p class="small text-fog mt-3 max-w-prose">{p.bio}</p>
+
+            {p.links.length > 0 && (
+              <ul class="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+                {p.links.map((l) => (
+                  <li>
+                    <a href={l.href} rel="noopener" target="_blank" class="small inline-flex items-center gap-1.5 text-paper hover:text-red">
+                      {l.label} <span aria-hidden="true">&nearr;</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section band border-t border-[var(--edge)]">
+    <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h2 class="title">There's a fourth chair</h2>
+        <p class="lead text-fog mt-6 max-w-lg">
+          We hire out of the community, not off a job board. If you've run a
+          server on us and fixed something we got wrong, that's the interview.
+        </p>
+        <a
+          href={links.careers}
+          rel="noopener"
+          class="chamfer mt-8 inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+        >
+          Open roles
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+      <dl class="m-0">
+        {[
+          ["Who answers tickets?", "Someone on this page, or someone they trained. No outsourced first line, no script."],
+          ["Where are you?", "The company is a Louisiana LLC. The people are wherever the people are; the nodes are in four US datacentres."],
+          ["Can I talk to a human before buying?", "Yes. Discord is the fastest way, and it's the same people."],
+        ].map(([q, a]) => (
+          <div class="border-t border-[var(--edge)] py-5 first:border-t-0 first:pt-0">
+            <dt class="text-paper">{q}</dt>
+            <dd class="small text-fog m-0 mt-2">{a}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* Grayscale at rest, colour on hover or keyboard focus within. The lift on
+     contrast stops a desaturated outdoor shot going muddy on ink. */
+  .portrait :global(img) {
+    filter: grayscale(1) contrast(1.06);
+    transition: filter 400ms ease;
+  }
+  .group:hover .portrait :global(img),
+  .group:focus-within .portrait :global(img) {
+    filter: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .portrait :global(img) { transition: none; }
+  }
+</style>
