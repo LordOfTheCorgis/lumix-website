@@ -60,6 +60,29 @@ localhost, the key can live in the Startup tab as `FIVEM_LICENSE`, hostname
 rules; there is no "on Lumix / elsewhere" switch and no secrets.cfg split.
 Both existed for about an hour on 2026-09-14 and Evan cut them.
 
+**Game pages are lit in their own accent** (2026-09-14). `--game-accent`
+goes on the hero section, `LightRays` picks it up for the warm beam, the
+eyebrow gets an accent square, and the step numbers below the plans are the
+accent too. Red stays on the CTA and the popular plan. Below the plans is
+"Your first ten minutes", five steps from `src/lib/firstTen.ts`: FiveM gets
+the txAdmin sequence from the setup guide, everything else gets the generic
+Lumi-Panel sequence. Both are lifted from the docs; don't invent a step.
+
+**`demoPanel` in `src/config.ts`** renders a "Look around the panel first"
+button on every game page and on `/migrate` once `url` is set. Until then
+the game page shows a docs link in its place. Evan makes the demo user.
+
+**`/migrate`** is two paths from the Server Importer docs: do it yourself in
+the panel, or fill a form that writes the ticket text. Nothing is sent; the
+Copy button and a link to the WHMCS ticket page is the whole backend.
+
+**`/regions`** is one page with four anchors (`#dallas` and so on), not four
+pages. `PingTest` grew an `all` prop: with it, regions without a `pingUrl`
+render greyed with "soon" instead of being dropped. Add the URL in
+`src/lib/locations.ts` and that row goes live on both this page and the
+home page. Reuses the Globe. `serves` on each `HOSTING` entry is the one
+line of copy per region.
+
 **`.mcp.json` registers the docs site as an MCP server** (`lumix-docs`,
 streamable HTTP at docs.lumixsolutions.org/mcp, Mintlify-hosted, no auth).
 Tools: `search_lumix_solutions`, `query_docs_filesystem_lumix_solutions`,

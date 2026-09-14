@@ -80,6 +80,23 @@ the commit and point at this file.
       Enhanced builds" on your word. If the panel needs a manual step for
       Enhanced, say so on the page or take the line out.
 
+## Pages added 2026-09-14
+
+- [ ] **Demo panel user.** Make a read-only user on Lumi-Panel with one
+      server on it, put the URL and credentials in `demoPanel` in
+      `src/config.ts`. The "Look around the panel first" button on every
+      game page and on `/migrate` appears on its own.
+- [ ] **Ping endpoints, again.** `/regions` now shows all four greyed with
+      "soon" until `pingUrl` is set per region in `src/lib/locations.ts`.
+      Anything HTTP in the datacentre that answers fast.
+- [ ] **Confirm the `/regions` FAQ.** It says moving between regions is
+      "ask on a ticket" and every game goes in every region at the same
+      price. Both are what the site already implied; say if either is wrong.
+- [ ] **Confirm the `/migrate` promises.** "Under an hour for 10 GB" and
+      "we stop the old one, pull it, start it here" describe the importer
+      path done by support. If support doesn't do migrations on a ticket,
+      the second column comes out.
+
 ## Tools
 
 - [ ] **Confirm or cut the three planned tools** on `/tools`: Minecraft
