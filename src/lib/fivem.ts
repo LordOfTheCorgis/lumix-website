@@ -5,16 +5,32 @@
 // Sources, 2026-09-14: docs.fivem.net server-commands and the vanilla setup
 // guide's default server.cfg, the QBCore txAdminRecipe server.cfg, ESX's
 // esx_core server.cfg, oxmysql's readme. The Enhanced rules come from
-// docs.fivem.net/docs/developers/legacy-vs-enhanced. If cfx moves a goalpost
-// it'll show up here first, so check those before "fixing" a preset.
+// docs.fivem.net/docs/developers/legacy-vs-enhanced. The Lumix-specific
+// rules (port allocations, the database endpoint, FIVEM_LICENSE in the
+// Startup tab, secrets.cfg) come from docs.lumixsolutions.org/games/fivem,
+// also available to a session as the lumix-docs MCP server in .mcp.json.
+// If cfx moves a goalpost it'll show up here first, so check those before
+// "fixing" a preset.
 
 export type Edition = "legacy" | "enhanced";
 export type Framework = "vanilla" | "qbcore" | "esx" | "vrp" | "custom";
 export type DbFormat = "uri" | "kv";
 export type OneSync = "on" | "legacy" | "off";
 export type PureLevel = "0" | "1" | "2";
+export type Host = "lumix" | "other";
 
 export interface CfgState {
+  // Where the server runs. Lumix mode turns on everything the panel docs say
+  // trips people: the port allocation, the database endpoint, the key in the
+  // Startup tab. "other" is a plain FXServer anywhere.
+  host: Host;
+  // Lumix only. The egg boots with `+set sv_licenseKey {{FIVEM_LICENSE}}`, so
+  // the key never has to be in the file. A cfg line would override it.
+  licenseInStartup: boolean;
+  // Keys and passwords into secrets.cfg, main file gets `exec secrets.cfg`.
+  // The docs recommend it; people paste server.cfg into Discord for help.
+  splitSecrets: boolean;
+
   projectName: string;
   projectDesc: string;
   hostname: string;
@@ -55,6 +71,10 @@ export interface CfgState {
 }
 
 export const DEFAULTS: CfgState = {
+  host: "lumix",
+  licenseInStartup: true,
+  splitSecrets: false,
+
   projectName: "",
   projectDesc: "",
   hostname: "",
@@ -134,6 +154,22 @@ export const LOCALES: { value: string; label: string }[] = [
   { value: "ar-SA", label: "العربية" },
 ];
 
+// ^N colour codes for sv_hostname, as the docs list them. These are the
+// game's colours quoted for a preview, same status as the terminal's traffic
+// lights: not palette, don't "fix" them to brand red.
+export const HOSTNAME_COLOURS: Record<string, string> = {
+  "0": "#ffffff",
+  "1": "#ff4444",
+  "2": "#55d955",
+  "3": "#ffdd44",
+  "4": "#5577ff",
+  "5": "#55ccff",
+  "6": "#cc66ff",
+  "7": "#ffffff",
+  "8": "#ff9933",
+  "9": "#999999",
+};
+
 // The base set every server needs regardless of framework. The docs' vanilla
 // cfg lists these minus baseevents; QBCore's recipe adds it and nothing
 // breaks with it present, so frameworks get it and vanilla stays as documented.
@@ -178,7 +214,15 @@ export const FRAMEWORKS: Record<
   },
 };
 
-export type Line = { text: string; field?: string };
+export type Line = { text: string; field?: string; secret?: boolean };
+
+export interface CfgOutput {
+  main: Line[];
+  // Empty unless splitSecrets. Header plus every line flagged secret.
+  secrets: Line[];
+}
+
+const LOCALHOST = /^(localhost|127\.0\.0\.1|::1|0\.0\.0\.0)$/i;
 
 // Quotes inside a cfg string have no escape sequence, so a stray " ends the
 // value early and the rest of the line gets parsed as a command. Swapping to
@@ -192,25 +236,41 @@ export const URI_UNSAFE = /[;,\/?:@&=+$#]/;
 export function connectionString(s: CfgState): string {
   const pass = s.dbPass;
   if (s.dbFormat === "kv") {
-    return `user=${s.dbUser};password=${pass};host=${s.dbHost};port=${s.dbPort};database=${s.dbName};charset=utf8mb4`;
+    // mysql-async's spelling. oxmysql reads it too, so one kv form covers both.
+    return `server=${s.dbHost};port=${s.dbPort};database=${s.dbName};userid=${s.dbUser};password=${pass}`;
   }
   const auth = pass ? `${s.dbUser}:${pass}` : s.dbUser;
   return `mysql://${auth}@${s.dbHost}:${s.dbPort}/${s.dbName}?charset=utf8mb4`;
 }
 
-export function buildCfg(s: CfgState): Line[] {
+export function buildCfg(s: CfgState): CfgOutput {
   const out: Line[] = [];
   const push = (text: string, field?: string) => out.push({ text, field });
+  const secret = (text: string, field?: string) => out.push({ text, field, secret: true });
   const blank = () => push("");
   const enhanced = s.edition === "enhanced";
+  const lumix = s.host === "lumix";
   const name = s.projectName.trim() || "My FiveM Server";
 
   push(`# ${name} · server.cfg`, "projectName");
   push(`# Built with lumixsolutions.org/tools/fivem-server-cfg`);
   push(`# Edition: GTA V ${enhanced ? "Enhanced" : "Legacy"}`, "edition");
+  push("# Only read on boot. Restart after every edit.");
   blank();
 
-  push("# Change the IP only if the box has several interfaces.");
+  if (s.splitSecrets) {
+    push("# Keys and passwords live in secrets.cfg. Keep that file out of", "splitSecrets");
+    push("# git and out of Discord.", "splitSecrets");
+    push("exec secrets.cfg", "splitSecrets");
+    blank();
+  }
+
+  if (lumix) {
+    push("# Port = the game allocation in the Network tab, not the", "port");
+    push("# txAdmin one. 0.0.0.0 is fine, the container has one interface.", "port");
+  } else {
+    push("# Change the IP only if the box has several interfaces.");
+  }
   push(`endpoint_add_tcp "0.0.0.0:${s.port}"`, "port");
   push(`endpoint_add_udp "0.0.0.0:${s.port}"`, "port");
   blank();
@@ -231,9 +291,14 @@ export function buildCfg(s: CfgState): Line[] {
 
   push("# Slots and keys");
   push(`sv_maxclients ${s.maxClients}`, "maxClients");
-  push(`sv_licenseKey ${q(s.licenseKey.trim() || "changeme")}`, "licenseKey");
+  if (lumix && s.licenseInStartup) {
+    push("# sv_licenseKey comes in from FIVEM_LICENSE in the Startup tab.", "licenseKey");
+    push("# A line here would override it, so there isn't one.", "licenseKey");
+  } else {
+    secret(`sv_licenseKey ${q(s.licenseKey.trim() || "changeme")}`, "licenseKey");
+  }
   push("# Without this, steam: identifiers never resolve.");
-  push(`set steam_webApiKey ${q(s.steamKey.trim() || "")}`, "steamKey");
+  secret(`set steam_webApiKey ${q(s.steamKey.trim() || "")}`, "steamKey");
   blank();
 
   push("# Game");
@@ -252,17 +317,21 @@ export function buildCfg(s: CfgState): Line[] {
   blank();
 
   push("# Listing and access");
-  if (s.rconPassword.trim()) push(`set rcon_password ${q(s.rconPassword)}`, "rconPassword");
+  if (s.rconPassword.trim()) secret(`set rcon_password ${q(s.rconPassword)}`, "rconPassword");
   else push("# RCON is off. Set a password to turn it on.", "rconPassword");
   push(`sv_endpointPrivacy ${s.endpointPrivacy}`, "endpointPrivacy");
   if (s.lan) push("sv_lan true", "lan");
-  if (s.privateListing) push(`sv_master1 ""`, "privateListing");
+  if (s.privateListing) {
+    push("# Off the public list. Direct connect only.", "privateListing");
+    push(`sv_master1 ""`, "privateListing");
+  }
   if (s.pureLevel !== "0") push(`sv_pureLevel ${s.pureLevel}`, "pureLevel");
   blank();
 
   if (s.dbEnabled) {
     push("# Database. Must be set before anything that reads it starts.");
-    push(`set mysql_connection_string ${q(connectionString(s))}`, "db");
+    if (lumix) push("# Host is the Databases tab endpoint. Never localhost here.", "db");
+    secret(`set mysql_connection_string ${q(connectionString(s))}`, "db");
     blank();
   }
 
@@ -294,7 +363,17 @@ export function buildCfg(s: CfgState): Line[] {
     push("add_principal qbcore.admin qbcore.mod", "admins");
   }
 
-  return out;
+  if (!s.splitSecrets) return { main: out, secrets: [] };
+
+  // Pull the flagged lines into their own file. The exec line at the top of
+  // the main file runs before anything that needs them.
+  const secrets: Line[] = [
+    { text: `# ${name} · secrets.cfg` },
+    { text: "# Loaded by server.cfg. Do not commit, do not paste anywhere." },
+    { text: "" },
+    ...out.filter((l) => l.secret).map((l) => ({ ...l, secret: false })),
+  ];
+  return { main: out.filter((l) => !l.secret), secrets };
 }
 
 export function splitLines(v: string): string[] {
@@ -311,8 +390,12 @@ export function warnings(s: CfgState): Warning[] {
   const stop = (field: string, text: string) => w.push({ level: "stop", field, text });
   const warn = (field: string, text: string) => w.push({ level: "warn", field, text });
 
+  const lumix = s.host === "lumix";
   const key = s.licenseKey.trim();
-  if (!key || key === "changeme") {
+  if (lumix && s.licenseInStartup) {
+    // Nothing to check here, but the key still has to exist over there.
+    if (key) warn("licenseKey", "Key is set to come from the Startup tab, so what you typed here isn't in the file.");
+  } else if (!key || key === "changeme") {
     stop("licenseKey", "No license key. The server won't start without one from portal.cfx.re.");
   } else if (!/^cfxk_/.test(key)) {
     warn("licenseKey", "Keys from portal.cfx.re start with cfxk_. Check you pasted the whole thing.");
@@ -328,11 +411,22 @@ export function warnings(s: CfgState): Warning[] {
   if (s.maxClients < 1 || s.maxClients > 2048) {
     stop("maxClients", "Slots must be between 1 and 2048.");
   }
+  if (s.edition === "legacy" && s.onesync !== "on" && s.maxClients > 32) {
+    stop("onesync", "OneSync has to be on above 32 slots. The master list rejects the server otherwise.");
+  }
 
   if (s.port < 1024 || s.port > 65535) {
-    stop("port", "Use a port between 1024 and 65535. 30120 is what everyone expects.");
+    stop("port", "Use a port between 1024 and 65535.");
+  } else if (lumix) {
+    if (s.port === 30120) {
+      warn("port", "30120 is the template default. Check the game allocation in the Network tab; a different number here means nobody connects and the server never lists.");
+    }
   } else if (s.port !== 30120) {
     warn("port", `Open ${s.port} for both TCP and UDP in the firewall, or nobody connects.`);
+  }
+
+  if (s.privateListing) {
+    warn("privateListing", "sv_master1 \"\" takes you off the public list. If that's not on purpose, untick it; it's the usual reason a server 'doesn't show up'.");
   }
 
   if (!s.projectName.trim()) warn("projectName", "No project name. The listing shows a placeholder.");
@@ -343,10 +437,13 @@ export function warnings(s: CfgState): Warning[] {
   }
 
   if (s.dbEnabled) {
+    if (lumix && LOCALHOST.test(s.dbHost.trim())) {
+      stop("db", "The database doesn't run on your game server. Use the Endpoint from the Databases tab; localhost is ECONNREFUSED every time.");
+    }
     if (s.dbFormat === "uri" && URI_UNSAFE.test(s.dbPass)) {
       stop("db", "The password has a character the URI form can't carry. Switch to key=value.");
     }
-    if (!s.dbPass) warn("db", "Empty database password. Fine on localhost, nowhere else.");
+    if (!s.dbPass) warn("db", lumix ? "Empty database password. Copy it from the Databases tab." : "Empty database password. Fine on localhost, nowhere else.");
     if (s.framework === "vrp" && s.dbFormat === "uri") {
       warn("db", "vRP expects the key=value connection string.");
     }

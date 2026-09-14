@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "lumix-docs": {
+      "type": "http",
+      "url": "https://docs.lumixsolutions.org/mcp"
+    }
+  }
+}
