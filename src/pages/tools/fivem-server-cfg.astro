@@ -694,6 +694,88 @@ const faqSchema = {
     overflow-wrap: anywhere;
   }
   .hostname-preview:empty::before { content: " "; }
+
+
+  /* ── The file ────────────────────────────────────────────────────────────
+     Mono is the subject here, same exception the Terminal takes. Line numbers
+     are a counter so the copied text never contains them. */
+  .file-body {
+    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    tab-size: 2;
+    max-height: 60vh;
+    padding: 1rem 0;
+    counter-reset: line;
+  }
+
+  @media (min-width: 1024px) {
+    /* Height comes from the flex column above lg, not from here. */
+    .file-body { max-height: none; }
+  }
+
+  .file-body :global(.line) {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    padding-right: 1rem;
+    /* Wrap under the gutter rather than scroll sideways. The connection
+       string alone is 80 chars; a permanent scrollbar for one line is worse
+       than a wrapped one. Copy reads the text, not the DOM, so it's unaffected. */
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    box-shadow: inset 2px 0 0 transparent;
+    transition: background-color 150ms, box-shadow 150ms;
+  }
+
+  .file-body :global(.line)::before {
+    counter-increment: line;
+    content: counter(line);
+    text-align: right;
+    padding-right: 1rem;
+    color: var(--color-slate);
+    opacity: 0.6;
+    user-select: none;
+  }
+
+  /* Mirrors the input's focus ring. See the note at the top of the file. */
+  .file-body :global(.line[data-hot]) {
+    background: rgba(255, 76, 76, 0.07);
+    box-shadow: inset 2px 0 0 var(--color-red);
+  }
+
+  .file-body :global(.c) { color: var(--color-slate); }
+  .file-body :global(.k) { color: var(--color-paper); font-weight: 500; }
+  .file-body :global(.a) { color: var(--color-fog); }
+  .file-body :global(.s) { color: var(--color-ember); }
+
+  /* ── Checks ──────────────────────────────────────────────────────────── */
+  [data-check-list] :global(li) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    align-items: start;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--edge);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-fog);
+  }
+  [data-check-list] :global(li:first-child) { border-top: 0; }
+  [data-check-list] :global(li button) {
+    text-align: left;
+    color: inherit;
+    cursor: pointer;
+  }
+  [data-check-list] :global(li button:hover) { color: var(--color-paper); }
+  [data-check-list] :global(.mark) {
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-top: 0.45rem;
+    background: var(--color-slate);
+  }
+  /* Stop is ember, not red. A stop is a fact about the file, not a call to action. */
+  [data-check-list] :global(.mark.stop) { background: var(--color-ember); }
+  [data-check-list] :global(.all-clear) { color: var(--color-fog); }
 </style>
 
 <script>
