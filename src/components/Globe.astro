@@ -1,37 +1,25 @@
 ---
-// Magic UI's globe, ported off React. Same cobe underneath, none of the runtime.
+// magic ui's globe without react. same cobe underneath.
 //
-// Two things about the upstream snippet do not survive contact with the current
-// library. It pins cobe@0.6.4 and drives rotation from an `onRender` callback,
-// and v2 deleted onRender outright: COBEOptions has no such field any more, so
-// that loop silently never runs and you get a globe frozen on frame one. v2 hands
-// you `update(state)` instead and expects you to own the loop, which is what
-// happens below. The other is `motion`'s useSpring for drag inertia, which is a
-// whole animation library for one critically damped spring; that's the twelve
-// lines in `step`.
+// two things from upstream don't work any more: it pins cobe 0.6.4 and drives
+// rotation from onRender, which v2 deleted (globe just freezes on frame one,
+// no error). v2 gives you update(state) and you own the loop. and it pulled in
+// `motion` for one spring, that's the dozen lines in step().
 //
-// Opens facing North America. phi 0 / theta 0.5 was measured, not guessed: at
-// phi 0 the four hosting markers' centroid lands 4px off dead centre horizontally
-// on a 600px canvas, which also matches what cobe's own locationToAngles formula
-// predicts for these coordinates. The mitigation dots don't move that, they're
-// scattered round the whole thing and only show up as it turns.
+// phi 0 / theta 0.5 was measured: the four hosting markers' centroid lands
+// 4px off centre on a 600px canvas. matches cobe's own locationToAngles too.
 
 interface Props {
   class?: string;
 }
 const { class: className = "" } = Astro.props;
 
-// Two kinds of dot. Red is where a server actually lives; paper is where the
-// traffic gets scrubbed before it arrives. Same list the page prints beside it,
-// keep them in step (src/lib/locations.ts is the one copy).
-//
-// No third colour for the mitigation points, on purpose. DESIGN.md gives this
-// site exactly one accent and it's already spent on the hosting regions, so the
-// shield around them is drawn in paper, smaller. Reads as "these are the thing,
-// those are around the thing," which is the actual relationship.
+// red = a server lives here, paper = scrubbing point. same list the page
+// prints as text, src/lib/locations.ts is the one copy. no third colour for
+// mitigation, the one accent is already spent on the regions.
 import { HOSTING, MITIGATION } from "../lib/locations";
 
-// cobe wants 0..1 floats. red #ff4c4c, paper #f7f5f1.
+// cobe wants 0..1 floats. red #ff4c4c, paper #f7f5f1
 const RED: [number, number, number] = [1, 0.298, 0.298];
 const PAPER: [number, number, number] = [0.97, 0.96, 0.95];
 
@@ -42,9 +30,7 @@ const MARKERS = [
 ---
 
 <div class:list={["globe", className]} data-globe>
-  {/* Decorative: every city is in the list beside it as real text, so nothing
-      here is the only copy of anything. Also the fallback when WebGL is missing
-      or blocked, which is more common than it sounds on locked-down machines. */}
+  {/* decorative, every city is real text beside it. also the no-webgl fallback */}
   <canvas data-globe-canvas aria-hidden="true"></canvas>
   <script type="application/json" data-globe-markers set:html={JSON.stringify(MARKERS)} />
 </div>
@@ -61,7 +47,7 @@ const MARKERS = [
   .globe canvas {
     width: 100%;
     height: 100%;
-    /* Grab affordance only once it's actually interactive. */
+    /* grab cursor only once it actually works */
     cursor: auto;
     opacity: 0;
     transition: opacity 500ms ease;
@@ -95,8 +81,8 @@ const MARKERS = [
     let frame = 0;
     let width = 0;
 
-    // Rotation, and the spring that carries a flick after you let go. Replaces
-    // motion's useSpring: mass 1, stiffness 100, damping 30, same as upstream.
+    // rotation plus the spring that carries a flick. same numbers as
+    // motion's useSpring upstream: mass 1, stiffness 100, damping 30
     let phi = 0;
     let target = 0;
     let value = 0;
@@ -112,7 +98,7 @@ const MARKERS = [
       frame = requestAnimationFrame(step);
       if (!globe) return;
 
-      // Clamped so a backgrounded tab doesn't return and fling the spring.
+      // clamp dt or a backgrounded tab comes back and flings it
       const dt = Math.min((now - last) / 1000 || 0, 1 / 30);
       last = now;
 
@@ -120,8 +106,8 @@ const MARKERS = [
       velocity += accel * dt;
       value += velocity * dt;
 
-      // Autorotate only while nobody is holding it, and never under reduced
-      // motion: there it sits still, facing the markers, and still drags.
+      // autorotate only when nobody's holding it and not under reduced
+      // motion (still draggable there, just doesn't spin on its own)
       if (dragStart === null && !still.matches) phi += 0.005;
 
       globe.update({ phi: phi + value, width: width * 2, height: width * 2 });
@@ -142,12 +128,10 @@ const MARKERS = [
         dark: 1,
         diffuse: 0.5,
         mapSamples: 16000,
-        // Was 3.2 / [0.26]. The globe was a black ball with grey freckles on a
-        // black page. Lifted with the rest of the site.
+        // was 3.2 / 0.26, a black ball with grey freckles on a black page
         mapBrightness: 5,
         baseColor: [0.42, 0.34, 0.38],
-        // Per-marker color is a cobe 2 thing, this global one is just the
-        // fallback if a marker ever comes through without one.
+        // fallback only, markers carry their own colour in cobe 2
         markerColor: [1, 0.298, 0.298],
         glowColor: [0.24, 0.17, 0.2],
         markers,
@@ -166,9 +150,8 @@ const MARKERS = [
       host!.removeAttribute("data-ready");
     }
 
-    // A WebGL globe repainting every frame behind a footer nobody is looking at
-    // is just battery. Tear it down when it leaves, rebuild when it returns;
-    // phi is kept out here so it picks up where it stopped.
+    // tear it down offscreen, it's just battery otherwise. phi lives outside
+    // so it picks up where it stopped
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) e.isIntersecting ? start() : stop();
@@ -181,7 +164,7 @@ const MARKERS = [
       measure();
     });
 
-    // Drag to spin. Pointer events cover mouse, touch and pen in one path.
+    // pointer events cover mouse, touch and pen in one go
     canvas.addEventListener("pointerdown", (e) => {
       dragStart = e.clientX - value * 1400;
       host!.setAttribute("data-dragging", "");
@@ -198,7 +181,7 @@ const MARKERS = [
 
     canvas.addEventListener("pointermove", (e) => {
       if (dragStart === null) return;
-      // 1400 is upstream's MOVEMENT_DAMPING: pixels dragged per radian-ish.
+      // 1400 = upstream's MOVEMENT_DAMPING, px per radian-ish
       target = (e.clientX - dragStart) / 1400;
     });
   }

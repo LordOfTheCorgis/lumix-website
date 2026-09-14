@@ -1,26 +1,14 @@
 ---
-// The interactive bit of the Magic UI grid, without the grid.
+// magic ui's interactive grid minus the grid. no lines drawn, 12 divs recycled
+// for the trail, fade on WAAPI. listens on window so cells light up under the
+// header/copy too (the react one goes dead under anything on top of it).
 //
-// The original draws 24x24 <rect>s, holds the hovered index in React state, and
-// re-renders all 576 of them on every mouseenter. Here the lines aren't drawn at
-// all: the module exists in the layout, not on screen. Twelve divs get recycled
-// for the cursor trail and the fade rides WAAPI on the compositor, so it's twelve
-// nodes and no listeners on anything but window.
+// cells snap to --grid-cell (40px) and the layout is built to that module, so
+// a lit cell lands in a tile corner instead of across a border. plane is page
+// sized, not viewport: viewport height clips everything below the fold and a
+// fixed origin can't register vertically once you scroll.
 //
-// Tracking window rather than the plane is what lets cells light up underneath
-// the header and the copy. The React version only responds where its SVG is
-// actually exposed, so it goes dead wherever content sits on top of it.
-//
-// The cells still land on a real 40px module (--grid-cell) that the layout is
-// built to, so a lit cell fills a tile's corner or a gutter exactly instead of
-// straddling an edge. That only works because the plane is sized by the page
-// rather than the viewport: a viewport-height plane clips every cell past the
-// fold, and a viewport-fixed origin can't register vertically at all, since the
-// content slides across it as you scroll.
-//
-// The plane covers the header and main and stops at the top of the footer,
-// which is a decision in Layout.astro, not here. Everything below reads its own
-// box, so it keeps working if that changes.
+// plane stops at the footer, that's Layout.astro's call not ours.
 
 interface Props {
   /** Fill of a lit cell at full strength, before it starts fading out. */
@@ -67,9 +55,8 @@ const {
     height: var(--grid-cell);
     background: var(--trail-tint);
     opacity: 0;
-    /* No will-change. These twelve sit on the page forever, and hinting them
-       would mean twelve permanent compositor layers to buy nothing: WAAPI
-       promotes an opacity animation on its own while it's actually running. */
+    /* no will-change, WAAPI promotes it while animating. 12 permanent layers
+       for nothing otherwise */
   }
 </style>
 
@@ -77,7 +64,7 @@ const {
   const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
   const still = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  // No pointer, nothing to follow. Under reduced motion, nothing should follow.
+  // no mouse or reduced motion = do nothing at all
   if (fine.matches && !still.matches) {
     document.querySelectorAll<HTMLElement>("[data-cursor-trail]").forEach((plane) => {
       const size =
@@ -86,14 +73,11 @@ const {
       const slots = Array.from(plane.querySelectorAll<HTMLElement>(".cell"));
       if (!slots.length) return;
 
-      // Where the module's lines fall, in document coordinates. Both are measured
-      // off the layout rather than assumed, which is the whole reason a lit cell
-      // sits inside a tile corner instead of across its border.
+      // where the module lines fall, document coords. measured not assumed
       let originX = 0;
       let originY = 0;
-      // The plane doesn't start at the document's top left corner, so cells have
-      // to be placed relative to it. Assuming it did is what put every cell 0px
-      // from the top of a plane that stopped at the footer.
+      // plane doesn't start at 0,0 of the document. assumed it did once, every
+      // cell ended up pinned to the top
       let planeX = 0;
       let planeY = 0;
       let planeBottom = Infinity;
@@ -104,15 +88,14 @@ const {
         planeY = pb.top + window.scrollY;
         planeBottom = planeY + pb.height;
 
-        // Any .shell will do; they all share a width and a centre.
+        // any .shell, they're all the same width
         const shell = document.querySelector<HTMLElement>(".shell");
         if (shell) {
           const box = shell.getBoundingClientRect();
           originX = box.left + (parseFloat(getComputedStyle(shell).paddingLeft) || 0);
         }
-        // Vertical can't be derived, only measured: there's no CSS expression for
-        // "how far down the page did this land". The page nominates the element
-        // worth registering to.
+        // vertical has to be measured, there's no css for "where did this land".
+        // page picks the anchor
         const anchor = document.querySelector<HTMLElement>("[data-grid-anchor]");
         if (anchor) {
           const top = anchor.getBoundingClientRect().top + window.scrollY;
@@ -121,8 +104,7 @@ const {
       }
 
       measure();
-      // Fonts swapping in and images landing both move the anchor, and neither
-      // fires resize. Watching the body catches every one of them.
+      // fonts and images shift the anchor and neither fires resize
       new ResizeObserver(measure).observe(document.body);
 
       const running = new WeakMap<HTMLElement, Animation>();
@@ -136,17 +118,15 @@ const {
         const el = slots[next];
         next = (next + 1) % slots.length;
 
-        // Recycling a slot that's still fading. Kill the old animation first or
-        // the two stack and the cell flickers on its way out.
+        // slot might still be fading, kill it or they stack and flicker
         running.get(el)?.cancel();
 
         el.style.transform = `translate3d(${col * size + originX - planeX}px, ${
           row * size + originY - planeY
         }px, 0)`;
 
-        // Snaps on, drifts off, same asymmetry as the original's 100ms-in /
-        // 1000ms-out. WAAPI rather than a class toggle because restarting a CSS
-        // transition means a forced reflow on every cell you cross.
+        // snap on, drift off. WAAPI not a class toggle, restarting a css
+        // transition forces a reflow per cell
         running.set(
           el,
           el.animate([{ opacity: 1 }, { opacity: 1, offset: 0.08 }, { opacity: 0 }], {
@@ -161,8 +141,7 @@ const {
         if (!pending) return;
         const { x, y } = pending;
         pending = null;
-        // Cursor is over the footer. The plane's clip would eat the cell anyway,
-        // so don't burn an animation drawing something nobody can see.
+        // over the footer, the clip eats it anyway
         if (y < planeY || y >= planeBottom) {
           lastCol = NaN;
           lastRow = NaN;
@@ -180,15 +159,14 @@ const {
         "pointermove",
         (e) => {
           if (e.pointerType !== "mouse") return;
-          // Plane is in document space, pointer is in viewport space.
+          // plane is document space, pointer is viewport space
           pending = { x: e.clientX, y: e.clientY + window.scrollY };
           if (!frame) frame = requestAnimationFrame(flush);
         },
         { passive: true }
       );
 
-      // Cursor leaves the window mid-drag across cells and the last cell would
-      // otherwise stay lit until you come back in somewhere else.
+      // leave the window and the last cell stays lit otherwise
       window.addEventListener("blur", () => {
         lastCol = NaN;
         lastRow = NaN;

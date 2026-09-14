@@ -1,18 +1,10 @@
 ---
-// The hero's ground. One game's key art per visit, pulled down to about half
-// brightness and a third of its saturation, with the beams falling across it.
+// hero ground: one game's key art per visit, dimmed, beams over it.
 //
-// Before this the hero was copy over an empty dark room and Evan's verdict was
-// "bland, not colourful". The brand palette is ink and one red on purpose, so
-// the colour has to come from somewhere else, and the honest somewhere else is
-// the games: that's what people are here to buy, and every one of them has a
-// loud palette already sitting in its tile art.
-//
-// Which game is picked client-side, per visit, by the inline script below. It
-// has to be client-side because the site is static; there's no request to hash.
-// Only the chosen image ever loads, the rest are just URLs in a JSON blob.
-// sessionStorage remembers the last pick so a reload doesn't show the same
-// world twice in a row.
+// before this it was copy over an empty dark room and evan said "bland, not
+// colourful". palette is ink and one red, so the colour has to come from the
+// games. picked client side (static site, nothing to hash on). only the
+// chosen image loads. sessionStorage stops a reload showing the same one.
 import { getImage } from "astro:assets";
 
 interface Props {
@@ -22,14 +14,12 @@ interface Props {
 
 const { games, class: className = "" } = Astro.props;
 
-// Anything under 1200 wide gets skipped. Terraria's art is 460x215, a tile
-// thumbnail, and blown up to hero size it's mush with the wordmark across the
-// top. Width rule rather than a slug list so it comes back on its own the day
-// someone drops a real image in.
+// under 1200 wide gets skipped. terraria's is a 460px thumbnail and it's mush
+// at hero size. width rule not a slug list so it comes back when someone drops
+// a real image in
 const HERO_MIN_WIDTH = 1200;
 
-// 1600 is enough: the hero caps at 1328 wide and the thing sits behind a
-// veil at half brightness, nobody is going to pixel-peep it.
+// 1600 is plenty, hero caps at 1328 and it's behind a veil anyway
 const art = await Promise.all(
   games.filter((g) => g.image.width >= HERO_MIN_WIDTH).map(async (g) => {
     const img = await getImage({ src: g.image, width: 1600, format: "webp", quality: 68 });
@@ -43,9 +33,8 @@ const art = await Promise.all(
   <div class="veil"></div>
   <script type="application/json" data-hero-art-list set:html={JSON.stringify(art)} />
   <script is:inline>
-    // Inline and right here so the src lands before first paint. Moving this to
-    // a module script means the browser paints the veil over nothing, then the
-    // art pops in a frame later.
+    // inline so the src lands before first paint. as a module script the veil
+    // paints over nothing and the art pops in a frame late
     (function () {
       var host = document.querySelector("[data-hero-art]");
       if (!host) return;
@@ -58,16 +47,14 @@ const art = await Promise.all(
       var i = Math.floor(Math.random() * list.length);
       if (list.length > 1 && i === last) i = (i + 1) % list.length;
 
-      // ?art=fivem pins one, for checking each game's crop without reloading
-      // until the dice land on it. Left in on purpose, it costs nothing.
+      // ?art=fivem pins one for checking crops. costs nothing, leave it
       var pin = new URLSearchParams(location.search).get("art");
       for (var k = 0; pin && k < list.length; k++) if (list[k].slug === pin) i = k;
 
       try { sessionStorage.setItem("hero-art", String(i)); } catch (e) {}
 
       host.setAttribute("data-game", list[i].slug);
-      // The beams read this. Set on the section so LightRays, a sibling, can
-      // see it; the light takes the colour of whatever world it's falling on.
+      // LightRays is a sibling and reads this off the section
       var section = host.closest("section") || host.parentElement;
       if (section && list[i].accent) section.style.setProperty("--game-accent", list[i].accent);
       img.addEventListener("load", function () { host.setAttribute("data-loaded", ""); });
@@ -92,13 +79,10 @@ const art = await Promise.all(
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Framed to the right because that's where the light falls and the copy
-       isn't. Most of the key art has its subject right of centre anyway. */
+    /* framed right, that's where the light falls and the copy isn't */
     object-position: 68% 45%;
-    /* Not greyscale. Kill it fully and the whole point, colour, goes with it.
-       First pass was saturate .38 / brightness .5 and Terraria vanished
-       entirely, its art is dark to begin with. This is as far as it goes
-       before the FiveM red car starts fighting the CTA. */
+    /* not greyscale, colour is the whole point. .38/.5 made terraria vanish,
+       this is as far as it goes before the fivem red car fights the CTA */
     filter: saturate(0.62) brightness(0.62) contrast(1.06);
     opacity: 0;
     transition: opacity 900ms ease 120ms;
@@ -109,9 +93,8 @@ const art = await Promise.all(
     opacity: 1;
   }
 
-  /* Two jobs. Left to right: a hard ink shelf under the headline so paper text
-     never sits on a photo. Top to bottom: ink at the bottom so the art meets
-     the section's hairline instead of being sliced by it. */
+  /* ink shelf under the headline on the left, ink at the bottom so the art
+     meets the hairline instead of getting sliced by it */
   .veil {
     position: absolute;
     inset: 0;
@@ -136,8 +119,7 @@ const art = await Promise.all(
     .hero-art img {
       object-position: 60% 45%;
     }
-    /* Narrow viewport, copy runs the full width, so the shelf has to come
-       from the top instead of the side. */
+    /* narrow: copy is full width so the shelf comes from the top */
     .veil {
       background:
         linear-gradient(

@@ -1,28 +1,16 @@
 ---
-// Light through a grille. Zero JS: positions are seeded here at build time and
-// the motion is plain CSS keyframes, so no hydration and nothing on the main
-// thread.
+// light through a grille. no js, positions seeded at build, css keyframes.
 //
-// The first cut of this was a port of Magic UI's light rays: six 40px-blurred
-// blobs at random angles. Screenshotted it and it read as a grey smudge on the
-// right half of the hero, and the random rotations quietly broke DESIGN.md's
-// "nothing else tilts" rule. Now every beam sits at --shear, the monogram's
-// 16 degrees, so the light falls at the same angle the mark is cut at. That's
-// the whole idea: the logo is a lit thing cut on a diagonal, the hero is a dark
-// room with light coming in on that same diagonal.
+// v1 was magic ui's blurred blobs at random angles. looked like a grey smudge
+// and the random tilts broke the "nothing else tilts" rule. every beam is at
+// --shear now, same angle the mark is cut at.
 //
-// Still the one place on the site that gets ambient motion (section 9). The
-// company is named Lumix. Nowhere else gets to do this.
+// only place on the site with ambient motion. company's called Lumix, that's
+// the excuse. don't repeat it anywhere.
 //
-// Colour, two ways, both from what light actually does:
-//  - One wide slab runs coloured at the source and cools to paper as it falls,
-//    same as the mark, where only the S is red. It takes --game-accent when
-//    HeroArt has set one (the light matches the world it lands on) and falls
-//    back to red otherwise. DESIGN.md section 5 was amended for this: the red
-//    budget counts UI, not illumination.
-//  - The thin slits get a spectral fringe, red on one edge and blue on the
-//    other, like light through a slit does. The blue is nowhere else on the
-//    site and shouldn't be. It's a fringe, not a colour.
+// one wide beam is coloured at the source (--game-accent if HeroArt set one,
+// ember otherwise). thin slits get a red/blue fringe. the blue exists nowhere
+// else and shouldn't.
 
 interface Props {
   count?: number;
@@ -32,8 +20,7 @@ interface Props {
 
 const { count = 9, seed = 7, class: className = "" } = Astro.props;
 
-// Seeded so a rebuild produces the same light. Math.random() here means the
-// hero quietly rearranges on every deploy, which is impossible to eyeball-diff.
+// seeded. Math.random() here and the hero rearranges every deploy
 function makeRng(s: number) {
   let state = s >>> 0;
   return () => {
@@ -44,15 +31,12 @@ function makeRng(s: number) {
 
 const rand = makeRng(seed);
 
-// Beams live in the right two thirds so the headline on the left stays on
-// clean ink. Widths are bimodal on purpose: a few wide soft slabs and a few
-// thin bright slits is what a grille actually throws, uniform widths look like
-// a barcode.
+// right two thirds only, headline stays on clean ink. mix of wide soft and
+// thin bright, uniform widths look like a barcode
 let warmed = false;
 const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
   const thin = rand() < 0.45;
-  // First wide slab past the halfway mark is the red one. One, not "some":
-  // two red beams and it's a Netflix intro.
+  // first wide one past halfway gets the colour. one. two and it's a netflix intro
   const x = 34 + rand() * 62;
   const warm = !thin && !warmed && x > 60;
   if (warm) warmed = true;
@@ -61,11 +45,10 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
     thin,
     warm,
     width: thin ? 2 + rand() * 6 : 40 + rand() * 120,
-    // Thin slits run brighter, that's the "light through a gap" read.
+    // slits brighter, that's the through-a-gap read
     alpha: thin ? 0.16 + rand() * 0.14 : 0.035 + rand() * 0.045,
     blur: thin ? 0.5 : 6 + rand() * 10,
-    // Switch-on order is left to right with jitter so it reads as one moment,
-    // not nine separate fades.
+    // left to right with jitter so it's one moment not nine fades
     delay: 0.15 + i * 0.09 + rand() * 0.12,
     breathe: 9 + rand() * 8,
   };
@@ -90,15 +73,14 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
   .light-rays {
     position: absolute;
     inset: 0;
-    /* No isolation here on purpose. The beams screen onto whatever is
-       underneath, which is the game art in HeroArt. Isolate this and they
-       screen onto nothing and go flat grey again. */
+    /* no isolation. beams screen onto the art underneath, isolate this and
+       they go flat grey */
     overflow: hidden;
     pointer-events: none;
     border-radius: inherit;
   }
 
-  /* Where the light comes in from. Top right, since the beams lean that way. */
+  /* where the light comes from, top right */
   .wash {
     position: absolute;
     inset: 0;
@@ -109,17 +91,14 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
     );
   }
 
-  /* One rotated container, vertical strips inside. Rotating each beam
-     separately is the same picture with nine transforms to keep in sync. The
-     box is oversized so the rotated corners never show. The negative sign is
-     deliberate: --shear tilts the monogram's cut one way, but the mark has to
-     read as light coming down from the top right, which is this way. */
+  /* rotate the container once, not each beam. oversized so the corners never
+     show. negative shear on purpose, light has to come down from top right */
   .beams {
     position: absolute;
     inset: -40% -20%;
     transform: rotate(calc(-1 * var(--shear)));
     transform-origin: 70% 0;
-    /* Everything below drifts as one, slowly. Reads as the sun moving. */
+    /* slow drift as one, reads as the sun moving */
     animation: beams-drift 46s ease-in-out infinite alternate;
   }
 
@@ -129,9 +108,8 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
     bottom: 0;
     left: var(--x);
     width: var(--w);
-    /* The box hangs 40% above and below the hero, so the hero's bottom edge
-       sits at ~78% of this gradient. Fade has to be done before that or the
-       beams slam into the section border like they're clipped, which they are. */
+    /* box hangs 40% past the hero so its bottom edge is ~78% of this gradient.
+       fade has to be done before that or the beams slam into the border */
     background: linear-gradient(
       to bottom,
       rgba(247, 245, 241, var(--a)) 0%,
@@ -146,9 +124,8 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
       beam-breathe var(--breathe) ease-in-out calc(var(--delay) + 1.1s) infinite;
   }
 
-  /* Colour at the source, paper by a third of the way down. The alpha is
-     bumped because a hue on ink reads dimmer than paper on ink at the same
-     value. --a is 0.035..0.08 so the top lands around 12..27%. */
+  /* colour at the source, paper a third of the way down. alpha bumped, a hue
+     on ink reads dimmer than paper at the same value */
   .beam.warm {
     --hue: var(--game-accent, var(--color-ember));
     background: linear-gradient(
@@ -160,10 +137,8 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
     );
   }
 
-  /* The fringe. Two copies of the slit, one red shoved 2px left and one blue
-     2px right, both fainter than the slit itself. Pseudo-elements so they ride
-     the parent's opacity animation and blur for free. Stops at 66% with the
-     parent so the fringe never outlasts the beam. */
+  /* fringe: red copy 2px left, blue copy 2px right, both fainter. pseudos so
+     they ride the parent's opacity and blur for free */
   .beam.thin::before,
   .beam.thin::after {
     content: "";
@@ -192,9 +167,8 @@ const beams = Array.from({ length: Math.max(0, count) }, (_, i) => {
     );
   }
 
-  /* Gradients on ink band. A hair of noise over the top hides it and gives the
-     light something to land on. 3% is about the point where it stops being
-     visible as noise and starts being visible as texture. */
+  /* gradients band on ink. a hair of noise hides it. ~3% is where it stops
+     reading as noise and starts reading as texture */
   .grain {
     position: absolute;
     inset: 0;
