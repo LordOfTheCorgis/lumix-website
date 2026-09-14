@@ -37,9 +37,21 @@ export const botHosting = {
   pid: null as number | null,
 };
 
+// A read-only demo server on Lumi-Panel so people can click around before
+// they pay. Pterodactyl supports a demo user; Evan makes it, the values go
+// here. Nothing renders until `url` is set. Credentials are shown in the open
+// on purpose, it's a demo account with no power.
+export const demoPanel = {
+  url: null as string | null,
+  user: "",
+  password: "",
+};
+
 export const links = {
   billing: "https://billing.lumixsolutions.org",
+  ticket: "https://billing.lumixsolutions.org/submitticket.php",
   panel: "https://panel.lumixsolutions.org",
+  docs: "https://docs.lumixsolutions.org",
   careers: "https://careers.lumixsolutions.org/",
   discord: "https://discord.com/invite/uaNYBJQtvn",
   x: "https://x.com/LumixSolutions",
@@ -67,6 +79,8 @@ export const nav = [
 // in the handoff. Everything in here already existed in the footer except Tools.
 export const moreNav = [
   { label: "Tools", href: "/tools", note: "Free config generators" },
+  { label: "Regions", href: "/regions", note: "Where the nodes are, and your ping" },
+  { label: "Migrate", href: "/migrate", note: "Move a server from another host" },
   { label: "Staff", href: "/staff", note: "Who runs the nodes" },
   { label: "Contact", href: "/contact", note: "Tickets, Discord, email" },
   { label: "Careers", href: links.careers, note: "We hire out of the community" },
@@ -77,6 +91,8 @@ export const footerNav = [
     heading: "Hosting",
     items: [
       { label: "Game Hosting", href: "/games" },
+      { label: "Regions", href: "/regions" },
+      { label: "Migrate", href: "/migrate" },
       { label: "Status", href: "/status" },
       { label: "Control Panel", href: links.panel },
       { label: "Client Area", href: links.billing },

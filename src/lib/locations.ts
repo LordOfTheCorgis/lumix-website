@@ -6,6 +6,10 @@ export interface Location {
   region: string;
   lat: number;
   lng: number;
+  /** URL-safe id, for /regions#dallas and the like. Hosting regions only. */
+  slug?: string;
+  /** Who it's for, in one line. Hosting regions only, read by /regions. */
+  serves?: string;
   /** Something HTTP in that region that answers fast. The ping test times a
       no-cors fetch against it, so it needs no CORS headers and can 404 for
       all we care. Leave it off and the region is skipped. */
@@ -14,10 +18,38 @@ export interface Location {
 
 // Where servers run. West to east.
 export const HOSTING: Location[] = [
-  { city: "Salt Lake City", region: "Utah", lat: 40.7608, lng: -111.891 },
-  { city: "Dallas", region: "Texas", lat: 32.7767, lng: -96.797 },
-  { city: "Ashburn", region: "Virginia", lat: 39.0438, lng: -77.4874 },
-  { city: "Miami", region: "Florida", lat: 25.7617, lng: -80.1918 },
+  {
+    city: "Salt Lake City",
+    region: "Utah",
+    slug: "salt-lake-city",
+    lat: 40.7608,
+    lng: -111.891,
+    serves: "The Mountain West and the Pacific coast. Seattle to San Diego lands here.",
+  },
+  {
+    city: "Dallas",
+    region: "Texas",
+    slug: "dallas",
+    lat: 32.7767,
+    lng: -96.797,
+    serves: "Texas, the South, the Midwest, and most of Mexico. The middle of the country.",
+  },
+  {
+    city: "Ashburn",
+    region: "Virginia",
+    slug: "ashburn",
+    lat: 39.0438,
+    lng: -77.4874,
+    serves: "The Northeast, the Mid-Atlantic, eastern Canada, and the shortest hop from Europe.",
+  },
+  {
+    city: "Miami",
+    region: "Florida",
+    slug: "miami",
+    lat: 25.7617,
+    lng: -80.1918,
+    serves: "Florida, the Gulf, the Caribbean, and South America.",
+  },
 ];
 
 // Where attack traffic gets scrubbed before it reaches one of the above.
