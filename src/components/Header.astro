@@ -4,11 +4,15 @@
 // not another animated element.
 import { Image } from "astro:assets";
 import logo from "../assets/logo.png";
-import { nav, links, site } from "../config";
+import { nav, moreNav, links, site } from "../config";
 
 const path = Astro.url.pathname;
 const isCurrent = (href: string) =>
   href !== "/" && (path === href || path.startsWith(href + "/"));
+
+// The toggle reads as active when you're on any page inside the drawer, so
+// "More" isn't the one nav item that never lights up.
+const moreOpenish = moreNav.some((item) => isCurrent(item.href));
 ---
 
 <header
@@ -34,6 +38,55 @@ const isCurrent = (href: string) =>
           {item.label}
         </a>
       ))}
+
+      <!-- No .chamfer on the panel. The cut corner would clip the focus ring on
+           the first and last item, and a clipped focus ring inside a menu is a
+           worse trade than a square corner. The mobile panel is square too. -->
+      <div class="relative" data-more>
+        <button
+          type="button"
+          data-more-toggle
+          aria-expanded="false"
+          aria-controls="more-menu"
+          class:list={[
+            "flex items-center gap-1.5 text-sm transition-colors duration-150 hover:text-paper",
+            moreOpenish ? "text-paper" : "text-fog",
+          ]}
+        >
+          More
+          <svg
+            data-more-arrow
+            aria-hidden="true"
+            viewBox="0 0 10 6"
+            class="h-1.5 w-2.5 transition-transform duration-200"
+          >
+            <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" />
+          </svg>
+        </button>
+
+        <div
+          id="more-menu"
+          data-more-panel
+          hidden
+          class="absolute right-0 top-full z-50 mt-4 w-72 border border-[var(--edge)] bg-ink/95 p-2 backdrop-blur-md"
+        >
+          {moreNav.map((item) => (
+            <a
+              href={item.href}
+              aria-current={isCurrent(item.href) ? "page" : undefined}
+              class:list={[
+                "block px-3 py-2.5 transition-colors duration-150 hover:bg-ink-soft",
+                isCurrent(item.href) ? "bg-ink-soft" : "",
+              ]}
+            >
+              <span class:list={["block text-sm", isCurrent(item.href) ? "text-paper" : "text-fog"]}>
+                {item.label}
+              </span>
+              <span class="small block text-slate">{item.note}</span>
+            </a>
+          ))}
+        </div>
+      </div>
     </nav>
 
     <!-- The one red thing up here. Ink on red, never paper: paper-on-red is
@@ -79,9 +132,23 @@ const isCurrent = (href: string) =>
           {item.label}
         </a>
       ))}
+      <p class="instrument text-slate mt-6">More</p>
+      {moreNav.map((item) => (
+        <a
+          href={item.href}
+          aria-current={isCurrent(item.href) ? "page" : undefined}
+          class:list={[
+            "border-b border-[var(--edge)] py-4 text-sm last:border-b-0",
+            isCurrent(item.href) ? "text-paper" : "text-fog",
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+
       <a
         href={links.billing}
-        class="chamfer mt-4 bg-red px-4 py-3 text-center text-sm font-medium text-ink"
+        class="chamfer mt-6 bg-red px-4 py-3 text-center text-sm font-medium text-ink"
       >
         Client area
       </a>
@@ -129,6 +196,67 @@ const isCurrent = (href: string) =>
     // md: breakpoint. Close it on the way past.
     window.matchMedia("(min-width: 768px)").addEventListener("change", (e) => {
       if (e.matches) setOpen(false);
+    });
+  }
+
+  // ── The More drawer ───────────────────────────────────────────────────────
+  const more = document.querySelector<HTMLElement>("[data-more]");
+  const moreToggle = more?.querySelector<HTMLButtonElement>("[data-more-toggle]");
+  const morePanel = more?.querySelector<HTMLElement>("[data-more-panel]");
+  const moreArrow = more?.querySelector<SVGElement>("[data-more-arrow]");
+
+  if (more && moreToggle && morePanel) {
+    let hoverTimer: number | undefined;
+
+    const setMore = (open: boolean) => {
+      morePanel.hidden = !open;
+      moreToggle.setAttribute("aria-expanded", String(open));
+      moreArrow?.classList.toggle("rotate-180", open);
+    };
+
+    moreToggle.addEventListener("click", () => setMore(morePanel.hidden));
+
+    // Hover only where there's a real pointer. On touch the hover event fires
+    // on tap and then the click immediately closes it again, which reads as
+    // the menu refusing to open.
+    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      more.addEventListener("pointerenter", () => {
+        clearTimeout(hoverTimer);
+        setMore(true);
+      });
+      // Small grace period so a diagonal cursor path to the panel doesn't
+      // close it out from under you.
+      more.addEventListener("pointerleave", () => {
+        hoverTimer = window.setTimeout(() => setMore(false), 120);
+      });
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !morePanel.hidden) {
+        setMore(false);
+        moreToggle.focus();
+      }
+    });
+
+    // Down arrow opens and lands on the first link, which is what a menu
+    // button is supposed to do.
+    moreToggle.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowDown") return;
+      event.preventDefault();
+      setMore(true);
+      morePanel.querySelector<HTMLAnchorElement>("a")?.focus();
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      if (!morePanel.hidden && !more.contains(event.target as Node)) setMore(false);
+    });
+
+    // Tabbing out the far end of the panel should close it too, otherwise it
+    // hangs open behind whatever you focus next.
+    more.addEventListener("focusout", () => {
+      requestAnimationFrame(() => {
+        if (!more.contains(document.activeElement)) setMore(false);
+      });
     });
   }
 </script>

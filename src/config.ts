@@ -62,6 +62,16 @@ export const nav = [
   { label: "Discord", href: links.discord },
 ];
 
+// The "More" drawer. Five header slots where one is a disclosure is still four
+// destinations plus a drawer, which is why this doesn't break the four-item rule
+// in the handoff. Everything in here already existed in the footer except Tools.
+export const moreNav = [
+  { label: "Tools", href: "/tools", note: "Free config generators" },
+  { label: "Staff", href: "/staff", note: "Who runs the nodes" },
+  { label: "Contact", href: "/contact", note: "Tickets, Discord, email" },
+  { label: "Careers", href: links.careers, note: "We hire out of the community" },
+];
+
 export const footerNav = [
   {
     heading: "Hosting",
@@ -76,6 +86,7 @@ export const footerNav = [
     heading: "Company",
     items: [
       { label: "Partners", href: "/partners" },
+      { label: "Tools", href: "/tools" },
       { label: "Staff", href: "/staff" },
       { label: "Careers", href: links.careers },
       { label: "Contact", href: "/contact" },
