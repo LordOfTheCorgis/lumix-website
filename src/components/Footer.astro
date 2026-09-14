@@ -2,16 +2,34 @@
 // No red down here. The header already spends the budget, and a footer is the
 // last place that needs an accent (DESIGN.md section 5).
 import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
 import logo from "../assets/logo.png";
 import { footerNav, social, site } from "../config";
 
 const year = new Date().getFullYear();
 const external = (href: string) => href.startsWith("http");
+
+// Two columns the config doesn't own: the live games straight from the
+// collection, so a new yaml shows up here on its own, and the socials, which
+// moved up from the bottom line on 2026-09-14 so the copyright could sit alone.
+const games = (await getCollection("games"))
+  .filter((g) => g.data.status === "live")
+  .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
+
+const columns = [
+  footerNav[0],
+  {
+    heading: "Games",
+    items: games.map((g) => ({ label: g.data.shortLabel, href: `/games/${g.data.slug}` })),
+  },
+  ...footerNav.slice(1),
+  { heading: "Social", items: social },
+];
 ---
 
 <footer class="mt-auto border-t border-[var(--edge)]">
   <div class="shell py-16 lg:py-20">
-    <div class="grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-20">
+    <div class="grid gap-12 lg:grid-cols-[1fr_3fr] lg:gap-20">
       <div>
         <a href="/" class="flex items-center gap-3" aria-label={`${site.name} home`}>
           <Image src={logo} alt="" width={32} height={32} class="h-8 w-8" />
@@ -20,8 +38,8 @@ const external = (href: string) => href.startsWith("http");
         <p class="small text-fog mt-5 max-w-xs">{site.tagline}</p>
       </div>
 
-      <div class="grid gap-10 sm:grid-cols-3">
-        {footerNav.map((group) => (
+      <div class="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:grid-cols-5">
+        {columns.map((group) => (
           <div>
             <h2 class="instrument text-slate">{group.heading}</h2>
             <ul class="mt-5 space-y-3">
@@ -42,24 +60,8 @@ const external = (href: string) => href.startsWith("http");
       </div>
     </div>
 
-    <div class="mt-16 flex flex-col gap-6 border-t border-[var(--edge)] pt-8 sm:flex-row sm:items-center sm:justify-between">
-      <p class="small text-slate">© {year} {site.legalName}. All rights reserved.</p>
-
-      <!-- Text, not an icon row. Six brand glyphs would be six more things to
-           keep on-brand for no gain, and this reads quieter. -->
-      <ul class="flex flex-wrap gap-x-6 gap-y-2">
-        {social.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              rel="noopener"
-              class="text-sm text-fog transition-colors duration-150 hover:text-paper"
-            >
-              {item.label}
-            </a>
-          </li>
-        ))}
-      </ul>
+    <div class="mt-16 border-t border-[var(--edge)] pt-8">
+      <p class="small text-center text-slate">© {year} {site.legalName}. All rights reserved.</p>
     </div>
   </div>
 </footer>
