@@ -220,7 +220,7 @@ const faqSchema = {
                     <option value={b.value} selected={b.value === DEFAULTS.gameBuild}>{b.label}</option>
                   ))}
                 </select>
-                <span class="field-hint">Newest DLC your scripts support. 3095 is where most frameworks sit.</span>
+                <span class="field-hint">Newest DLC your scripts support. Each build includes everything before it. 3095 is where most frameworks still sit.</span>
               </label>
 
               <label class="field" data-edition="legacy">
@@ -236,7 +236,7 @@ const faqSchema = {
               <label class="field" data-edition="enhanced" hidden>
                 <span class="field-label">Game build</span>
                 <select name="gameBuildEnhanced" data-field="gameBuild">
-                  <option value="" selected>Current build (default)</option>
+                  <option value="" selected>Current build · The Kortz Center Heist</option>
                   <option value="1">1 · Base game, no DLC</option>
                 </select>
                 <span class="field-hint">Enhanced only ships the current build. Pinning an old number stops the server registering.</span>

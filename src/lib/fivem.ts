@@ -106,9 +106,14 @@ export const DEFAULTS: CfgState = {
 };
 
 // Legacy only. Enhanced ships one build (the current one) and refuses to
-// register if you pin any of these, see the emitter.
+// register if you pin any of these, see the emitter. Straight off
+// docs.fivem.net/docs/server-manual/server-commands/#sv_enforcegamebuild-build
+// as of 2026-09-14; every build includes everything before it. 2612 has no
+// DLC name in the docs, only its alias.
 export const GAME_BUILDS: { value: string; label: string }[] = [
   { value: "", label: "Don't enforce (client picks)" },
+  { value: "3889", label: "3889 · The Kortz Center Heist" },
+  { value: "3751", label: "3751 · A Safehouse in the Hills" },
   { value: "3570", label: "3570 · Money Fronts" },
   { value: "3407", label: "3407 · Agents of Sabotage" },
   { value: "3258", label: "3258 · Bottom Dollar Bounties" },
@@ -116,12 +121,13 @@ export const GAME_BUILDS: { value: string; label: string }[] = [
   { value: "2944", label: "2944 · San Andreas Mercenaries" },
   { value: "2802", label: "2802 · Los Santos Drug Wars" },
   { value: "2699", label: "2699 · The Criminal Enterprises" },
-  { value: "2612", label: "2612 · Expanded & Enhanced" },
+  { value: "2612", label: "2612 · mpg9ec" },
   { value: "2545", label: "2545 · The Contract" },
   { value: "2372", label: "2372 · Los Santos Tuners" },
   { value: "2189", label: "2189 · Cayo Perico Heist" },
   { value: "2060", label: "2060 · Los Santos Summer Special" },
   { value: "1604", label: "1604 · Arena War" },
+  { value: "1", label: "1 · Base game, no DLC" },
 ];
 
 export const LOCALES: { value: string; label: string }[] = [
