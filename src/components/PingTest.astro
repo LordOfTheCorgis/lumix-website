@@ -11,26 +11,46 @@
 // that waits on config.
 import { HOSTING } from "../lib/locations";
 
-const regions = HOSTING.filter((r) => r.pingUrl);
+interface Props {
+  /** Show every region, with the ones that have no endpoint yet greyed out
+      rather than dropped. /regions wants the full list; the home page only
+      wants numbers. */
+  all?: boolean;
+  class?: string;
+}
+const { all = false, class: className = "" } = Astro.props;
+
+const regions = all ? HOSTING : HOSTING.filter((r) => r.pingUrl);
+const measurable = regions.filter((r) => r.pingUrl).length;
 ---
 
 {regions.length > 0 && (
-  <div class="ping" data-ping>
+  <div class:list={["ping", className]} data-ping>
     <p class="instrument text-slate">Your ping from here</p>
     <ul class="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 max-w-sm">
       {regions.map((r) => (
-        <li class="flex items-baseline justify-between gap-4 border-b border-[var(--edge)] pb-2">
+        <li
+          class:list={[
+            "flex items-baseline justify-between gap-4 border-b border-[var(--edge)] pb-2",
+            !r.pingUrl && "opacity-40",
+          ]}
+        >
           <span class="small">{r.city}</span>
-          <span class="tabular text-fog" data-ping-value data-url={r.pingUrl}>
-            <span class="sr-only">measuring</span>
-            <span aria-hidden="true">···</span>
-          </span>
+          {r.pingUrl ? (
+            <span class="tabular text-fog" data-ping-value data-url={r.pingUrl}>
+              <span class="sr-only">measuring</span>
+              <span aria-hidden="true">···</span>
+            </span>
+          ) : (
+            <span class="instrument text-slate">soon</span>
+          )}
         </li>
       ))}
     </ul>
     <p class="small text-slate mt-3 max-w-sm">
-      Measured from your browser to each region just now. Rough, but in the
-      right neighbourhood.
+      {measurable > 0
+        ? "Measured from your browser to each region just now. Rough, but in the right neighbourhood."
+        : "Measured from your browser once each region has a test endpoint. Greyed ones aren't wired up yet."}
     </p>
   </div>
 )}

@@ -1,0 +1,125 @@
+---
+// Where the nodes are and what your ping to each one is. One page, four
+// anchors, rather than four thin pages: there isn't enough per region to
+// carry a page each yet, and one strong page ranks better than four weak
+// ones. The ping rows grey out until a region has a pingUrl in
+// src/lib/locations.ts; that's the whole mechanism, no status flag.
+import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import PingTest from "../components/PingTest.astro";
+import Globe from "../components/Globe.astro";
+import { HOSTING, MITIGATION } from "../lib/locations";
+import { links } from "../config";
+
+const games = (await getCollection("games"))
+  .filter((g) => g.data.status === "live")
+  .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
+
+const live = HOSTING.filter((r) => r.pingUrl).length;
+---
+
+<Layout
+  title="Regions and ping"
+  description={`${HOSTING.map((r) => r.city).join(", ")}. Every plan can go in any of them; pick at checkout. Measure your ping to each from your browser.`}
+>
+  <section class="section border-b border-[var(--edge)]">
+    <div class="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <p class="instrument text-fog">Regions · {HOSTING.length} US · {MITIGATION.length} scrubbing points</p>
+        <h1 class="display-xl mt-6 max-w-2xl">Four rooms, one country<span class="text-red">.</span></h1>
+        <p class="lead text-fog mt-6 max-w-lg">
+          Every plan can live in any of them, and you pick at checkout. The
+          only thing that should decide it is the number on the right.
+        </p>
+        <PingTest all class="mt-10" />
+      </div>
+      <Globe class="lg:ml-auto" />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <h2 class="title">The four</h2>
+        <p class="instrument text-slate">{live} of {HOSTING.length} with a ping endpoint</p>
+      </div>
+
+      <div data-grid-anchor class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2">
+        {HOSTING.map((r) => (
+          <article
+            id={r.slug}
+            class:list={[
+              "scroll-mt-24 flex min-h-[calc(7*var(--grid-cell))] flex-col border border-[var(--edge)] p-6 transition-opacity",
+              !r.pingUrl && "opacity-50",
+            ]}
+          >
+            <div class="flex items-center justify-between">
+              <span class="instrument text-fog">{r.region}</span>
+              <span class="instrument text-slate">
+                {r.pingUrl ? "ping live" : "ping soon"}
+              </span>
+            </div>
+            <h3 class="title mt-4">{r.city}</h3>
+            <p class="small text-fog mt-3 flex-1 max-w-prose">{r.serves}</p>
+            <dl class="mt-6 grid grid-cols-2 gap-x-6 gap-y-3">
+              <div>
+                <dt class="instrument text-slate">Coordinates</dt>
+                <dd class="small tabular mt-1 text-fog">{r.lat.toFixed(2)}, {r.lng.toFixed(2)}</dd>
+              </div>
+              <div>
+                <dt class="instrument text-slate">Games</dt>
+                <dd class="small mt-1 text-fog">All {games.length}</dd>
+              </div>
+            </dl>
+          </article>
+        ))}
+      </div>
+
+      <p class="small text-fog mt-8 max-w-2xl">
+        Attack traffic gets scrubbed before it reaches any of these, at{" "}
+        {MITIGATION.length} points from {MITIGATION[0].city} to {MITIGATION[MITIGATION.length - 1].city}.
+        A flood aimed at your server hits a scrubbing centre first and the
+        clean part carries on.
+      </p>
+    </div>
+  </section>
+
+  <section class="section band border-t border-[var(--edge)]">
+    <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h2 class="title">Which one?</h2>
+        <p class="lead text-fog mt-6 max-w-lg">
+          Lowest number wins. For a community spread across the country,
+          Dallas splits the difference. For Europe, Ashburn.
+        </p>
+        <a
+          href="/games"
+          class="chamfer mt-8 inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+        >
+          Pick a game
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+      <dl class="m-0">
+        {[
+          ["Does every game go in every region?", "Yes. Same plans, same prices, any of the four. The region is a dropdown at checkout."],
+          ["Can I move regions later?", "Ask on a ticket. A move between two of our own nodes is a copy, not an import, so it's the quick kind."],
+          ["What does the ping test actually measure?", "A handful of no-cors fetches from your browser to something in that datacentre, median of the last four. It isn't the game's netcode but it's the same path."],
+        ].map(([q, a]) => (
+          <div class="border-t border-[var(--edge)] py-5 first:border-t-0 first:pt-0">
+            <dt class="text-paper">{q}</dt>
+            <dd class="small text-fog m-0 mt-2">{a}</dd>
+          </div>
+        ))}
+        <div class="border-t border-[var(--edge)] py-5">
+          <dt class="text-paper">Still not sure?</dt>
+          <dd class="small text-fog m-0 mt-2">
+            Say where your players are in{" "}
+            <a href={links.discord} rel="noopener" class="text-paper underline underline-offset-4 hover:text-red">Discord</a>{" "}
+            and someone will tell you.
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+</Layout>
