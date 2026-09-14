@@ -210,7 +210,7 @@ export function buildCfg(s: CfgState): Line[] {
   push(`# Edition: GTA V ${enhanced ? "Enhanced" : "Legacy"}`, "edition");
   blank();
 
-  push("# Only change the IP if the box has more than one interface.");
+  push("# Change the IP only if the box has several interfaces.");
   push(`endpoint_add_tcp "0.0.0.0:${s.port}"`, "port");
   push(`endpoint_add_udp "0.0.0.0:${s.port}"`, "port");
   blank();
@@ -238,10 +238,10 @@ export function buildCfg(s: CfgState): Line[] {
 
   push("# Game");
   if (enhanced) {
-    push("# Enhanced only ships the current build and refuses to register if you");
-    push("# pin an older one. sv_enforceGameBuild 1 is the one exception: base game, no DLC.");
+    push("# Enhanced ships one build and won't register with an older");
+    push("# one pinned. The only valid pin is 1: base game, no DLC.");
     if (s.gameBuild === "1") push("sv_enforceGameBuild 1", "gameBuild");
-    push("# OneSync is always on in Enhanced. There is no convar for it any more.", "onesync");
+    push("# OneSync is always on in Enhanced, no convar any more.", "onesync");
     push(`set sv_syncTickRate ${s.syncTickRate}`, "syncTickRate");
   } else {
     if (s.gameBuild) push(`sv_enforceGameBuild ${s.gameBuild}`, "gameBuild");
@@ -261,7 +261,7 @@ export function buildCfg(s: CfgState): Line[] {
   blank();
 
   if (s.dbEnabled) {
-    push("# Database. Has to be set before any resource that reads it starts.");
+    push("# Database. Must be set before anything that reads it starts.");
     push(`set mysql_connection_string ${q(connectionString(s))}`, "db");
     blank();
   }
@@ -269,7 +269,7 @@ export function buildCfg(s: CfgState): Line[] {
   const fw = FRAMEWORKS[s.framework];
   push(`# Resources · ${fw.label}`);
   if (s.framework !== "vanilla" && s.framework !== "custom") {
-    push("# oxmysql first or the framework boots with no database and dies.");
+    push("# oxmysql first or the framework boots with no db and dies.");
   }
   for (const r of BASE_RESOURCES) push(`ensure ${r}`, "framework");
   if (s.framework !== "vanilla") push("ensure baseevents", "framework");
@@ -284,7 +284,7 @@ export function buildCfg(s: CfgState): Line[] {
   push("add_ace group.admin command.quit deny", "admins");
   const admins = splitLines(s.admins);
   if (admins.length === 0) {
-    push("# Nobody yet. Add an identifier above and it lands here.", "admins");
+    push("# Nobody yet. Add an identifier and it lands here.", "admins");
   }
   for (const id of admins) push(`add_principal identifier.${id} group.admin`, "admins");
   if (s.framework === "qbcore") {

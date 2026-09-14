@@ -394,8 +394,12 @@ const faqSchema = {
         </form>
 
         <!-- ── The file ─────────────────────────────────────────── -->
-        <aside class="lg:sticky lg:top-24" aria-label="Generated server.cfg">
-          <figure class="file m-0 border border-[var(--edge)] bg-ink-soft">
+        <!-- Sticky and capped to the viewport, with the file taking whatever the
+             checks don't. A tall sticky column just pins its top and hides the
+             bottom until the form runs out, which put the checks off-screen
+             for the whole time anyone was actually typing. -->
+        <aside class="lg:sticky lg:top-24 lg:flex lg:max-h-[calc(100vh-7rem)] lg:flex-col" aria-label="Generated server.cfg">
+          <figure class="file m-0 flex min-h-0 flex-col border border-[var(--edge)] bg-ink-soft">
             <figcaption class="flex flex-wrap items-center gap-3 border-b border-[var(--edge)] px-4 py-3">
               <span class="instrument text-paper">server.cfg</span>
               <span class="instrument text-slate" data-line-count>0 lines</span>
@@ -406,15 +410,15 @@ const faqSchema = {
                 </button>
               </span>
             </figcaption>
-            <pre class="file-body m-0 overflow-auto" data-file-scroll><code data-file aria-live="off"></code></pre>
+            <pre class="file-body m-0 min-h-0 flex-1 overflow-auto" data-file-scroll><code data-file aria-live="off"></code></pre>
           </figure>
 
-          <div class="mt-4 border border-[var(--edge)] bg-ink-soft" data-checks>
+          <div class="mt-4 shrink-0 border border-[var(--edge)] bg-ink-soft" data-checks>
             <div class="flex items-center gap-3 border-b border-[var(--edge)] px-4 py-3">
               <span class="instrument text-paper">Checks</span>
               <span class="instrument text-slate" data-check-count></span>
             </div>
-            <ul class="m-0 list-none p-0" data-check-list></ul>
+            <ul class="m-0 max-h-56 list-none overflow-auto p-0" data-check-list></ul>
           </div>
         </aside>
       </div>
@@ -644,9 +648,14 @@ const faqSchema = {
     font-size: 0.8125rem;
     line-height: 1.6;
     tab-size: 2;
-    max-height: min(68vh, 44rem);
+    max-height: 60vh;
     padding: 1rem 0;
     counter-reset: line;
+  }
+
+  @media (min-width: 1024px) {
+    /* Height comes from the flex column above lg, not from here. */
+    .file-body { max-height: none; }
   }
 
   .file-body :global(.line) {
