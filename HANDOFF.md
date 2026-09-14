@@ -53,7 +53,19 @@ live tool and three dimmed planned ones, hardcoded in the page; Evan has not
 confirmed the planned three, see TODO.md. The cfg maker is a vanilla-JS form
 that rewrites a server.cfg live. All the knowledge is in `src/lib/fivem.ts`:
 builds, locales, framework presets, the emitter, the checks. Sources are
-cited at the top of that file. The page imports it in its client script and
+cited at the top of that file. The panel-specific rules (game port from the
+Network tab, database host is the Databases tab endpoint and never
+localhost, the key can live in the Startup tab as `FIVEM_LICENSE`, hostname
+`^N` colour codes) come from docs.lumixsolutions.org and are simply the
+rules; there is no "on Lumix / elsewhere" switch and no secrets.cfg split.
+Both existed for about an hour on 2026-09-14 and Evan cut them.
+
+**`.mcp.json` registers the docs site as an MCP server** (`lumix-docs`,
+streamable HTTP at docs.lumixsolutions.org/mcp, Mintlify-hosted, no auth).
+Tools: `search_lumix_solutions`, `query_docs_filesystem_lumix_solutions`,
+`submit_feedback`. A new session picks it up automatically. The docs are
+also plain fetchable: `/llms.txt` indexes them, each page is at its path
+with `.md` appended. The page imports it in its client script and
 Vite bundles it. Focusing a field marks its lines in the file with a red edge
 (counted as focus feedback, not a third red). Secrets are never written to
 localStorage; everything else is. `Layout` grew a `stickyCta` prop because
