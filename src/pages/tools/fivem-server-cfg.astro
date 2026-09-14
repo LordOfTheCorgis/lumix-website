@@ -1097,7 +1097,14 @@ const faqSchema = {
   checkList.addEventListener("click", (e) => {
     const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-goto]");
     if (!btn) return;
-    const target = form.querySelector<Ctl>(`[data-field="${btn.dataset.goto}"]:not([hidden])`);
+    // Several controls can share a field (the host radios light the port
+    // lines, the Startup-tab box lights the key lines). Land on the one you
+    // can type into, and never on something inside a hidden block.
+    const visible = Array.from(form.querySelectorAll<Ctl>(`[data-field="${btn.dataset.goto}"]`))
+      .filter((el) => !el.closest("[hidden]"));
+    const target =
+      visible.find((el) => !(el instanceof HTMLInputElement && (el.type === "radio" || el.type === "checkbox"))) ??
+      visible[0];
     if (!target) return;
     // Advanced is closed by default and a field inside it can't take focus.
     target.closest("details")?.setAttribute("open", "");
