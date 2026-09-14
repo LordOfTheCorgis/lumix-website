@@ -2,8 +2,9 @@
 // ours, so it's kept as given; tighten it with them, not here. All of them
 // are FiveM asset shops, which is why /partners reads as a FiveM page.
 //
-// Order is Evan's, 2026-09-14. "Cartoon" belongs between Marco and Kez and
-// has no data yet; slot it in when it arrives.
+// Order is Evan's, 2026-09-14. Cartoon's blurb is ours, written from what
+// Evan said (animations, LEO emotes, scripts as a side line); the rest is
+// each studio's own copy.
 
 export interface Partner {
   name: string;
@@ -67,6 +68,21 @@ export const partners: Partner[] = [
     services: ["High quality ENB graphics", "High quality Reshade products"],
     url: "https://www.patreon.com/cw/marcopresets/shop",
     discord: "https://discord.gg/marco",
+  },
+  {
+    name: "Cartoon",
+    mark: "CT",
+    founder: "Cartoon",
+    description:
+      "Cartoon does custom animations for FiveM: law enforcement emotes, cuffing and searching sequences, the small movements that make a traffic stop look like one instead of two people standing still. Scripts too, when an animation needs one to run.",
+    services: [
+      "Custom animations",
+      "Law enforcement emotes",
+      "Animation commissions",
+      "Supporting scripts",
+    ],
+    note: "Newest partner. Animations are the thing; go watch them in the Discord.",
+    discord: "https://discord.gg/EnVMwY7HeH",
   },
   {
     name: "Kez Modifications",
