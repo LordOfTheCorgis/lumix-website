@@ -1,6 +1,6 @@
 ---
-// Only renders when analytics is actually configured. A cookie banner on a site
-// that sets no cookies is theatre, and it trains people to dismiss real ones.
+// only renders when analytics is configured. a cookie banner on a site that
+// sets no cookies just trains people to dismiss the real ones
 const analyticsEnabled = Boolean(import.meta.env.PUBLIC_POSTHOG_KEY);
 ---
 
@@ -31,8 +31,7 @@ const analyticsEnabled = Boolean(import.meta.env.PUBLIC_POSTHOG_KEY);
         >
           Decline
         </button>
-        <!-- Paper, not red. The red budget belongs to ordering, and a consent
-             prompt should not out-shout the thing people came here to do. -->
+        <!-- paper not red, the red is for ordering -->
         <button
           type="button"
           data-consent="granted"
@@ -77,9 +76,8 @@ const analyticsEnabled = Boolean(import.meta.env.PUBLIC_POSTHOG_KEY);
 
     const existing = read();
 
-    // Global Privacy Control is a legally recognised opt-out signal in California
-    // and several other states. Honour it without asking, and never show the
-    // banner to someone who has already told their browser no.
+    // GPC is a legal opt-out in california and a few other states. honour it
+    // and don't show the banner to someone who already said no
     const gpc = (navigator as Navigator & { globalPrivacyControl?: boolean })
       .globalPrivacyControl;
 

@@ -1,8 +1,7 @@
 ---
-// Types its slot text one character at a time. The text is server-rendered in
-// full, so no-JS and reduced-motion readers get the finished output and the
-// script just blanks it and replays it. Never build this by injecting text from
-// a prop, the slot version keeps the markup readable at the call site.
+// types its slot text a char at a time. text is server rendered in full so
+// no-js and reduced motion get the finished line, the script blanks and
+// replays. slot not prop, keeps the call site readable
 
 interface Props {
   duration?: number;   // ms per character

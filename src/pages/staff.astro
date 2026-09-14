@@ -1,9 +1,6 @@
 ---
-// Three people, three portraits. The photos are the content here, in the
-// landonorris register rather than a LinkedIn row: big, chamfered, grayscale
-// at rest so the green bokeh doesn't fight the ink, colour when you reach for
-// them. The one motion on the page. Red is the headline stop and the careers
-// button, nothing else.
+// three portraits, the photos are the content. grayscale at rest so the
+// green bokeh doesn't fight the ink, colour on hover. only motion on the page
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import { staff } from "../lib/staff";
@@ -31,9 +28,7 @@ import { links } from "../config";
       <ul data-grid-anchor class="m-0 grid list-none gap-[var(--grid-cell)] p-0 sm:grid-cols-2 lg:grid-cols-3">
         {staff.map((p, i) => (
           <li class="group flex flex-col">
-            <!-- Portrait is 4:5 so a square headshot crops to the face, not
-                 the shoulders. Seven cells tall lands the bottom edge on the
-                 module. -->
+            <!-- 4:5 so a square headshot crops to the face -->
             <div class="chamfer portrait relative aspect-[4/5] w-full overflow-hidden border border-[var(--edge)] bg-ink-soft">
               {p.image ? (
                 <Image
@@ -106,8 +101,8 @@ import { links } from "../config";
 </Layout>
 
 <style>
-  /* Grayscale at rest, colour on hover or keyboard focus within. The lift on
-     contrast stops a desaturated outdoor shot going muddy on ink. */
+  /* grayscale at rest. contrast lift stops a desaturated outdoor shot going
+     muddy on ink */
   .portrait :global(img) {
     filter: grayscale(1) contrast(1.06);
     transition: filter 400ms ease;

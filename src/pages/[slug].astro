@@ -25,8 +25,7 @@ const { Content } = await render(doc);
 </Layout>
 
 <style>
-  /* Scoped rather than global: legal copy is the only long-form prose on this
-     site, and giving it its own rhythm beats bolting a prose plugin on. */
+  /* scoped. legal is the only long prose on the site, not worth a prose plugin */
   .legal-prose :global(h2) {
     font-family: var(--font-display);
     font-weight: 600;
@@ -70,7 +69,7 @@ const { Content } = await render(doc);
     padding-left: 1.25rem;
   }
 
-  /* Square bullet, not a disc. Everything else in this system has cut corners. */
+  /* square bullet, everything else here has cut corners */
   .legal-prose :global(li)::before {
     content: "";
     position: absolute;

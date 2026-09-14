@@ -1,10 +1,9 @@
-// The site never takes payment. Everything here is a link into WHMCS with the
-// product preselected; WHMCS owns the cart, the price, and the config screen.
+// site never takes payment, everything is a link into WHMCS with the product
+// preselected.
 //
-// Deliberately no `skipconfig=1`. That flag only bypasses WHMCS's own config
-// page when EVERY configurable option group is present in the URL, and region is
-// one of those. Sending people through WHMCS's screen costs a click and means we
-// can never quote a region we don't actually have stock in.
+// no skipconfig=1 on purpose. it only skips the config page when every option
+// group is in the url, and region is one of them. one extra click, and we
+// never quote a region we don't have stock in
 
 const BILLING_BASE = "https://billing.lumixsolutions.org";
 

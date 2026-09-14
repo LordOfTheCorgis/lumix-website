@@ -1,6 +1,5 @@
 ---
-// The shell. SEO tags, the two typefaces, and a slot. Header and Footer get built
-// against the new system when there's a system to build them against.
+// the shell: seo tags, fonts, a slot
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
@@ -14,10 +13,9 @@ interface Props {
   title: string;
   description?: string;
   noindex?: boolean;
-  /** Absolute or root-relative path. Defaults to the brand card. */
+  /** absolute or root-relative. defaults to the brand card */
   image?: string;
-  /** The mobile "Order a server" bar. Off for pages that need the bottom edge
-      for something of their own, like the tools. */
+  /** mobile order bar. off for pages that need the bottom edge (tools) */
   stickyCta?: boolean;
 }
 
@@ -36,7 +34,7 @@ const siteUrl = "https://lumixsolutions.org";
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 const brandName = "Lumix Solutions";
 const pageTitle = title.includes(brandName) ? title : `${title} | ${brandName}`;
-// OG scrapers do not resolve relative URLs. Always absolute.
+// og scrapers don't resolve relative urls
 const ogImage = new URL(image, siteUrl).href;
 
 const organizationSchema = {
@@ -72,8 +70,7 @@ const organizationSchema = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <!-- Space Grotesk for display, Inter for everything read at length. Both
-         variable, one request. -->
+    <!-- both variable, one request -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -94,12 +91,10 @@ const organizationSchema = {
     <Analytics />
   </head>
   <body class="min-h-screen flex flex-col text-paper">
-    <!-- The trail plane is absolutely positioned against this wrapper, so it
-         starts at the top of the page and stops dead at the top of the footer.
-         Hanging it off <body> instead would run it behind the footer, and
-         hanging it off nothing positioned at all gets you the viewport, which
-         silently clips the whole thing at 100vh. Sits at z-index -1, which only
-         works because the ink ground is on <html> and body is transparent. -->
+    <!-- trail plane is positioned against this wrapper so it stops at the
+         footer. off body it runs behind the footer, off nothing it clips at
+         100vh. z -1 works because the ground is on html and body is
+         transparent -->
     <div class="relative flex flex-1 flex-col">
       <CursorTrail />
       <PromoBar />

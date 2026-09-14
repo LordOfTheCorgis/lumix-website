@@ -1,6 +1,5 @@
 ---
-// No red down here. The header already spends the budget, and a footer is the
-// last place that needs an accent (DESIGN.md section 5).
+// no red down here, the header spends it
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 import logo from "../assets/logo.png";
@@ -9,9 +8,8 @@ import { footerNav, social, site } from "../config";
 const year = new Date().getFullYear();
 const external = (href: string) => href.startsWith("http");
 
-// Two columns the config doesn't own: the live games straight from the
-// collection, so a new yaml shows up here on its own, and the socials, which
-// moved up from the bottom line on 2026-09-14 so the copyright could sit alone.
+// games column comes off the collection so a new yaml shows up on its own.
+// socials moved up from the bottom line so the copyright could sit alone
 const games = (await getCollection("games"))
   .filter((g) => g.data.status === "live")
   .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));

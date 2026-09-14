@@ -1,8 +1,6 @@
-// Regenerates the favicon set from public/images/logo.png.
-// Run with `node scripts/make-icons.mjs` after the mark ever changes.
-//
-// The mark's L is white on a transparent ground, so a bare favicon disappears on
-// a light browser tab. Everything below gets composited onto Ink first.
+// regenerates the favicons from public/images/logo.png. run after the mark
+// changes. the L is white on transparent so a bare favicon vanishes on a
+// light tab, everything gets composited onto ink first
 import sharp from "sharp";
 import { writeFileSync } from "node:fs";
 
@@ -30,8 +28,7 @@ await icon(180, 0.16, "public/apple-touch-icon.png");
 await icon(192, 0.14, "public/icon-192.png");
 await icon(512, 0.14, "public/icon-512.png");
 
-// Minimal ICO wrapping the 32px PNG. PNG-in-ICO has been fine since Vista and
-// beats shipping a bitmap nobody can regenerate.
+// minimal ico wrapping the 32px png, fine since vista
 const header = Buffer.alloc(6);
 header.writeUInt16LE(0, 0);
 header.writeUInt16LE(1, 2);

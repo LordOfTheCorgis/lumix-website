@@ -1,9 +1,6 @@
-// Answers to the questions people ask before they buy. Rendered on the home
-// page as <details> and as FAQPage JSON-LD, from this one list.
-//
-// Every answer here is a claim on a marketing page. Keep them to things the
-// yaml, the terms, or Evan has actually said. The support and backup lines
-// are the ones most likely to drift, check them when either changes.
+// pre-sale questions, rendered as <details> and FAQPage json-ld from this one
+// list. every answer is a claim, keep to what the yaml, the terms, or evan
+// has said. support and backup lines drift the most
 import { promo, botHosting } from "../config";
 
 export interface Faq {

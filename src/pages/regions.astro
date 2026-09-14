@@ -1,9 +1,6 @@
 ---
-// Where the nodes are and what your ping to each one is. One page, four
-// anchors, rather than four thin pages: there isn't enough per region to
-// carry a page each yet, and one strong page ranks better than four weak
-// ones. The ping rows grey out until a region has a pingUrl in
-// src/lib/locations.ts; that's the whole mechanism, no status flag.
+// one page four anchors, not four thin pages. ping rows grey out until a
+// region has a pingUrl in locations.ts, no status flag
 import Layout from "../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import PingTest from "../components/PingTest.astro";

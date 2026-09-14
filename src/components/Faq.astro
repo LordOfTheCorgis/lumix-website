@@ -1,8 +1,7 @@
 ---
-// Native <details>, no JS, and the same list rendered as FAQPage JSON-LD so
-// Google can show the answers under the result. Every competitor crawled on
-// 2026-09-11 has one of these and two of them (RocketNode, Shockbyte) use it
-// to answer refunds and trials head-on, which is the honest place for that.
+// native <details>, no js, same list as FAQPage json-ld. every competitor
+// has one and two of them answer refunds and trials in it, which is the
+// honest place for that
 import { FAQ } from "../lib/faq";
 import { links } from "../config";
 
@@ -26,9 +25,7 @@ const schema = {
 
 <section class:list={["section border-t border-[var(--edge)]", className]}>
   <div class="shell grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
-    <!-- Sticky on desktop so the column rides alongside ten questions instead
-         of leaving a hole under the heading. The exit for "read all of it,
-         still not sure" lives here because this is where that person is. -->
+    <!-- sticky so the column rides alongside ten questions -->
     <div class="lg:sticky lg:top-28 lg:self-start">
       <h2 class="title">Before you order<span class="text-red">.</span></h2>
       <p class="lead text-fog mt-6 max-w-sm">
@@ -75,7 +72,7 @@ const schema = {
 </section>
 
 <style>
-  /* Safari still draws the disclosure triangle unless you say so twice. */
+  /* safari draws the triangle unless you say so twice */
   summary::-webkit-details-marker {
     display: none;
   }

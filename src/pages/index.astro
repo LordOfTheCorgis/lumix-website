@@ -27,11 +27,9 @@ const cheapest = Math.min(
   title="Order a game server | Lumix Solutions"
   description={`FiveM, Minecraft, Palworld, BeamMP and Terraria servers from ${price(cheapest)} a month. Four US regions, DDoS protected, online in minutes.`}
 >
-  <!-- One job: get someone into a cart. No positioning copy, no engineering
-       story, no stat bar. Those can live further down the page later. -->
+  <!-- one job: get someone into a cart. no positioning copy up here -->
   <section class="section relative overflow-hidden">
-    <!-- Order matters: art, then light on top of it, then copy. All three are
-         positioned so DOM order is the stack. -->
+    <!-- order matters: art, light, copy. DOM order is the stack -->
     <HeroArt
       games={games.map((g) => ({ slug: g.data.slug, image: g.data.image, accent: g.data.accent }))}
     />
@@ -39,8 +37,7 @@ const cheapest = Math.min(
 
     <div class="shell relative">
       <p class="instrument text-fog">Game servers · Four US regions</p>
-      <!-- The proof line. Every competitor puts the score above the fold;
-           ours was a paid widget at the bottom of the page until 09-11. -->
+      <!-- proof line. every competitor has the score above the fold -->
       {trust.score !== null && trust.reviews !== null && (
         <a
           href={trust.url}
@@ -66,8 +63,7 @@ const cheapest = Math.min(
           Order now
           <span aria-hidden="true">&rarr;</span>
         </a>
-        <!-- The code lives in the bar above the header now; saying it twice
-             in one viewport looked like we were nervous about it. -->
+        <!-- code is in the promo bar, saying it twice looked nervous -->
         <p class="small text-fog">No setup fee. Cancel anytime.</p>
       </div>
     </div>
@@ -77,9 +73,7 @@ const cheapest = Math.min(
     <div class="shell">
       <h2 class="title">Pick your game</h2>
 
-      <!-- Gutter is exactly one cell wide, and this row is what the trail
-           registers to vertically. Change the gap and the cells go back to
-           straddling the tile edges. -->
+      <!-- gutter is one cell, this row is what the trail registers to -->
       <div
         data-grid-anchor
         class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3"
@@ -99,8 +93,8 @@ const cheapest = Math.min(
         ))}
       </div>
 
-      <!-- Bot hosting has been "coming" in the old site's ticker since July with
-           no card, no price and no link. One sentence beats seven weeks of that. -->
+      <!-- bot hosting was "coming" in the old ticker since july. it's a line
+           and a link now -->
       <p class="small text-fog mt-8">
         Running a Discord bot or a Node.js app instead? Application hosting is{" "}
         {price(botHosting.monthly)} a month.
@@ -111,9 +105,7 @@ const cheapest = Math.min(
 
   <Included />
 
-  <!-- The globe's red markers are the only red in this viewport, which is what
-       keeps four of them inside the two-per-viewport rule. The scrubbing points
-       are paper so they add none. Don't add a CTA here. -->
+  <!-- globe markers are the only red in this viewport -->
   <section class="section band border-t border-[var(--edge)]">
     <div class="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
@@ -123,8 +115,7 @@ const cheapest = Math.min(
           nearest them instead of the one that was convenient for us.
         </p>
 
-        <!-- Both lists exist as text so a browser with no WebGL still gets the
-             whole picture. Same source as the globe, src/lib/locations.ts. -->
+        <!-- both lists as text so no-webgl still gets them -->
         <ul class="mt-10 grid grid-cols-2 gap-x-6 gap-y-5 max-w-sm">
           {HOSTING.map((l) => (
             <li>
