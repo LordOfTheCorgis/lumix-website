@@ -1,16 +1,10 @@
 ---
-// The FiveM server.cfg maker. Form on the left, the actual file on the right,
-// and the file is the point: it rewrites as you type and the line you're
-// editing lights up in it, so the tool teaches the format while it fills it in.
+// server.cfg maker. form left, file right, file rewrites as you type and the
+// line you're on lights up. the file is the point.
 //
-// Red budget on this page: the copy button and the headline stop. The hot-line
-// marker in the file is also red, but it mirrors the input's focus ring and
-// only exists while something has focus, so it's counted as focus feedback,
-// which the system already allows to be red, not as a third UI element.
-//
-// Ember gets one new job here: string literals in the file. It was only ever
-// the warm end of the hero beams, and a warm value colour on a dark file reads
-// as "this is the bit you typed". Documented in DESIGN.md too.
+// red: copy button + headline stop. the hot line marker is red too but it's
+// focus feedback, only there while a field has focus, so not counting it.
+// ember does string literals here, it had no text job before this.
 import Layout from "../../layouts/Layout.astro";
 import { GAME_BUILDS, LOCALES, FRAMEWORKS, DEFAULTS, HOSTNAME_COLOURS } from "../../lib/fivem";
 import { links } from "../../config";
@@ -81,7 +75,7 @@ const faqSchema = {
     <div class="shell">
       <div class="grid items-start gap-[var(--grid-cell)] lg:grid-cols-2">
         <form data-cfg-form class="flex flex-col gap-[var(--grid-cell)]" novalidate autocomplete="off">
-          <!-- ── Identity ─────────────────────────────────────────── -->
+          <!-- identity -->
           <fieldset class="panel">
             <legend class="panel-head">
               <span class="instrument text-fog">01 · Listing</span>
@@ -149,7 +143,7 @@ const faqSchema = {
             </div>
           </fieldset>
 
-          <!-- ── Connection ───────────────────────────────────────── -->
+          <!-- connection -->
           <fieldset class="panel">
             <legend class="panel-head">
               <span class="instrument text-fog">02 · Connection</span>
@@ -190,7 +184,7 @@ const faqSchema = {
             </div>
           </fieldset>
 
-          <!-- ── Game ─────────────────────────────────────────────── -->
+          <!-- game -->
           <fieldset class="panel">
             <legend class="panel-head">
               <span class="instrument text-fog">03 · Game</span>
@@ -258,7 +252,7 @@ const faqSchema = {
             </div>
           </fieldset>
 
-          <!-- ── Database ─────────────────────────────────────────── -->
+          <!-- database -->
           <fieldset class="panel">
             <legend class="panel-head">
               <span class="instrument text-fog">04 · Database</span>
@@ -317,7 +311,7 @@ const faqSchema = {
             </div>
           </fieldset>
 
-          <!-- ── Resources ────────────────────────────────────────── -->
+          <!-- resources -->
           <fieldset class="panel">
             <legend class="panel-head">
               <span class="instrument text-fog">05 · Resources</span>
@@ -343,7 +337,7 @@ const faqSchema = {
             </label>
           </fieldset>
 
-          <!-- ── Admins ───────────────────────────────────────────── -->
+          <!-- admins -->
           <fieldset class="panel">
             <legend class="panel-head">
               <span class="instrument text-fog">06 · Admins</span>
@@ -357,7 +351,7 @@ const faqSchema = {
             </label>
           </fieldset>
 
-          <!-- ── Advanced ─────────────────────────────────────────── -->
+          <!-- advanced -->
           <details class="panel" data-advanced>
             <summary class="panel-head cursor-pointer list-none">
               <span class="instrument text-fog">07 · Advanced</span>
@@ -420,11 +414,9 @@ const faqSchema = {
           </div>
         </form>
 
-        <!-- ── The file ─────────────────────────────────────────── -->
-        <!-- Sticky and capped to the viewport, with the file taking whatever the
-             checks don't. A tall sticky column just pins its top and hides the
-             bottom until the form runs out, which put the checks off-screen
-             for the whole time anyone was actually typing. -->
+        <!-- the file -->
+        <!-- sticky, capped to the viewport, file flexes. a tall sticky column just
+             pins its top and the checks were off screen the whole time -->
         <aside id="file" class="scroll-mt-24 lg:sticky lg:top-24 lg:flex lg:max-h-[calc(100vh-7rem)] lg:flex-col" aria-label="Generated server.cfg">
           <figure class="file m-0 flex min-h-0 flex-col border border-[var(--edge)]">
             <figcaption class="flex flex-wrap items-center gap-3 border-b border-[var(--edge)] px-4 py-3">
@@ -452,8 +444,7 @@ const faqSchema = {
     </div>
   </section>
 
-  <!-- Below lg the file is a long way under the form. This is the mobile
-       StickyCta's slot, with the file as the destination instead of the cart. -->
+  <!-- mobile: file is 3000px under the form. takes StickyCta's slot -->
   <div class="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--edge)] bg-ink/95 backdrop-blur-md lg:hidden">
     <div class="shell flex items-center justify-between gap-4 py-3">
       <span class="instrument text-fog" data-mobile-status>server.cfg</span>
@@ -499,13 +490,9 @@ const faqSchema = {
 </Layout>
 
 <style>
-  /* ── Form furniture ──────────────────────────────────────────────────────
-     A panel is its hairline. Inputs are darker than the panel so they read
-     as wells; the strong edge on them is what makes a field findable on ink
-     without a fill. */
-  /* No fill. ink-soft has a magenta cast (its blue sits above its green) and
-     a page that is mostly panels turned faintly pink. The hairline is the
-     panel, per DESIGN.md; the wells below are what make a field findable. */
+  /* form bits */
+  /* no fill on panels. had ink-soft and a page that's mostly panels went
+     faintly pink. hairline only */
   .panel {
     border: 1px solid var(--edge);
     padding: 1.5rem;
@@ -521,8 +508,7 @@ const faqSchema = {
     width: 100%;
   }
 
-  /* <legend> floats out of the fieldset's border box by default and eats
-     the padding. Resetting it to a block puts it back in flow. */
+  /* legend floats out of the fieldset box by default and eats the padding */
   fieldset.panel { padding-top: 1.5rem; }
   fieldset.panel > legend { float: left; width: 100%; }
   fieldset.panel > legend + * { clear: both; }
@@ -563,8 +549,7 @@ const faqSchema = {
   }
   .field-hint a:hover { color: var(--color-paper); }
 
-  /* The wells are the raised tone. Panels don't use it: a fill on a fill
-     is the thing the hairline rule exists to prevent. */
+  /* inputs get the raised tone, panels don't */
   .file, .panel, aside { --well: var(--color-ink-soft); }
 
   .field input:not([type="radio"]):not([type="checkbox"]),
@@ -609,8 +594,7 @@ const faqSchema = {
     background-size: 10px 6px;
   }
 
-  /* Segmented radios. The selected one is paper on ink-soft-on-ink, not red:
-     the budget's spent. */
+  /* segmented radios. selected is paper not red, budget's spent */
   .seg {
     display: inline-flex;
     border: 1px solid var(--edge-strong);
@@ -686,7 +670,7 @@ const faqSchema = {
   [data-db-fields].is-off { opacity: 0.4; pointer-events: none; }
   [name="licenseKey"].is-off { opacity: 0.4; }
 
-  /* What the server browser will actually draw. Mono, on ink, game colours. */
+  /* what the server browser draws. game colours, not palette */
   .hostname-preview {
     display: block;
     min-height: 2.4rem;
@@ -702,9 +686,8 @@ const faqSchema = {
   .hostname-preview:empty::before { content: " "; }
 
 
-  /* ── The file ────────────────────────────────────────────────────────────
-     Mono is the subject here, same exception the Terminal takes. Line numbers
-     are a counter so the copied text never contains them. */
+  /* the file. mono, same exception Terminal takes. line numbers are a css
+     counter so copy never picks them up */
   .file-body {
     background: var(--well);
     font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
@@ -725,9 +708,8 @@ const faqSchema = {
     display: grid;
     grid-template-columns: 3rem 1fr;
     padding-right: 1rem;
-    /* Wrap under the gutter rather than scroll sideways. The connection
-       string alone is 80 chars; a permanent scrollbar for one line is worse
-       than a wrapped one. Copy reads the text, not the DOM, so it's unaffected. */
+    /* wrap, don't scroll sideways. the mysql line alone is 80 chars and a
+       permanent scrollbar for one line looked bad. copy reads text not DOM */
     white-space: pre-wrap;
     overflow-wrap: anywhere;
     box-shadow: inset 2px 0 0 transparent;
@@ -744,7 +726,7 @@ const faqSchema = {
     user-select: none;
   }
 
-  /* Mirrors the input's focus ring. See the note at the top of the file. */
+  /* mirrors the input's focus ring */
   .file-body :global(.line[data-hot]) {
     background: rgba(255, 76, 76, 0.07);
     box-shadow: inset 2px 0 0 var(--color-red);
@@ -755,7 +737,7 @@ const faqSchema = {
   .file-body :global(.a) { color: var(--color-fog); }
   .file-body :global(.s) { color: var(--color-ember); }
 
-  /* ── Checks ──────────────────────────────────────────────────────────── */
+  /* checks */
   [data-check-list] :global(li) {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -780,7 +762,7 @@ const faqSchema = {
     margin-top: 0.45rem;
     background: var(--color-slate);
   }
-  /* Stop is ember, not red. A stop is a fact about the file, not a call to action. */
+  /* stop is ember not red, it's a fact not a button */
   [data-check-list] :global(.mark.stop) { background: var(--color-ember); }
   [data-check-list] :global(.all-clear) { color: var(--color-fog); }
 </style>
@@ -835,12 +817,12 @@ const faqSchema = {
     }
   }
 
-  // ── Rendering ─────────────────────────────────────────────────────────
+  // rendering
   const esc = (t: string) =>
     t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-  // Comment, or command + args with quoted strings picked out. Two tones plus
-  // dim, on purpose; a third colour for numbers looked like an IDE theme.
+  // comment, or command + args + quoted strings. tried a colour for numbers
+  // too and it looked like an IDE theme
   function highlight(text: string): string {
     if (text.startsWith("#")) return `<span class="c">${esc(text)}</span>`;
     if (!text) return "";
@@ -860,7 +842,7 @@ const faqSchema = {
     return html;
   }
 
-  // ^1Red ^7White, as the server browser draws it. Unknown codes pass through.
+  // ^1Red ^7White like the browser draws it. unknown codes pass through
   function hostnamePreview(raw: string): string {
     if (!raw) return "";
     let colour = "#ffffff";
@@ -881,8 +863,8 @@ const faqSchema = {
     currentText = lines.map((l) => l.text).join("\n") + "\n";
 
     fileEl.innerHTML = lines
-      // One wrapper span per line: .line is a grid and every direct child is a
-      // cell, so the highlight spans have to be nested or they each get a column.
+      // wrapper span per line. .line is a grid so every direct child becomes a
+      // column, learned that one the hard way
       .map((l) => `<span class="line"${l.field ? ` data-field="${l.field}"` : ""}><span>${highlight(l.text) || " "}</span></span>`)
       .join("");
     lineCount.textContent = `${lines.length} lines`;
@@ -916,15 +898,14 @@ const faqSchema = {
     hot.forEach((l) => l.setAttribute("data-hot", ""));
     const first = hot[0];
     if (!first) return;
-    // Scroll the file, not the page. scrollIntoView would drag the whole
-    // document around every time you tab to a field.
+    // scroll the file not the page, scrollIntoView drags the whole document
     const top = first.offsetTop - scrollEl.clientHeight / 2 + first.offsetHeight / 2;
     scrollEl.scrollTo({ top: Math.max(0, top), behavior: reduced ? "auto" : "smooth" });
   }
 
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // ── Visibility that depends on other fields ───────────────────────────
+  // visibility that depends on other fields
   function syncVisibility() {
     const s = readState();
     form.querySelectorAll<HTMLElement>("[data-edition]").forEach((el) => {
@@ -936,7 +917,7 @@ const faqSchema = {
     form.querySelector<HTMLInputElement>('[name="licenseKey"]')!.classList.toggle("is-off", keyOff);
   }
 
-  // ── Persistence ───────────────────────────────────────────────────────
+  // persistence
   function persist(s: CfgState) {
     try {
       const safe: Record<string, unknown> = {};
@@ -952,12 +933,11 @@ const faqSchema = {
     } catch {}
   }
 
-  // ── Events ────────────────────────────────────────────────────────────
+  // events
   const onChange = (e: Event) => {
     const t = e.target as Ctl;
     if (["edition", "dbEnabled", "licenseInStartup"].includes(t.name)) syncVisibility();
-    // vRP wants kv. Flip it once on selection; the user can flip it back and
-    // the check will nag them, which is the right amount of nagging.
+    // vRP wants kv. flip once, they can flip back and the check will nag
     if (t.name === "framework" && t.value === "vrp") {
       const kv = form.querySelector<HTMLInputElement>('input[name="dbFormat"][value="kv"]');
       if (kv) kv.checked = true;
@@ -967,8 +947,7 @@ const faqSchema = {
   form.addEventListener("input", render);
   form.addEventListener("change", onChange);
 
-  // The Databases tab gives one string, host:port. Split it into the two
-  // fields the emitter reads. Keep the box's own text as typed.
+  // databases tab gives host:port as one string, split it
   dbEndpoint.addEventListener("input", () => {
     const m = dbEndpoint.value.trim().match(/^\s*(?:[a-z]+:\/\/)?([^:\/\s]+)(?::(\d{1,5}))?/i);
     if (!m) return;
@@ -987,8 +966,7 @@ const faqSchema = {
   form.addEventListener("focusin", onFocusIn);
 
   form.addEventListener("focusout", () => {
-    // Let the next focusin win first, otherwise tabbing between fields
-    // flickers the marker off and on.
+    // let the next focusin land first or tabbing flickers the marker
     requestAnimationFrame(() => {
       if (!form.contains(document.activeElement)) {
         hotField = null;
@@ -1000,9 +978,8 @@ const faqSchema = {
   checkList.addEventListener("click", (e) => {
     const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-goto]");
     if (!btn) return;
-    // Several controls can share a field (the host radios light the port
-    // lines, the Startup-tab box lights the key lines). Land on the one you
-    // can type into, and never on something inside a hidden block.
+    // a few controls share a field (the startup checkbox lights the key lines
+    // too). land on the one you can type in, and not something hidden
     const visible = Array.from(form.querySelectorAll<Ctl>(`[data-field="${btn.dataset.goto}"]`))
       .filter((el) => !el.closest("[hidden]"));
     const target =

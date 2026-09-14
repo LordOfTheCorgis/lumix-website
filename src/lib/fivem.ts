@@ -1,16 +1,11 @@
-// Everything the server.cfg generator knows, kept out of the page so the
-// builds list and the framework presets can be edited without wading through
-// markup. The page's client script imports this and Vite bundles it.
+// everything the cfg generator knows. out of the page so you can edit a
+// preset without wading through markup.
 //
-// Sources, 2026-09-14: docs.fivem.net server-commands and the vanilla setup
-// guide's default server.cfg, the QBCore txAdminRecipe server.cfg, ESX's
-// esx_core server.cfg, oxmysql's readme. The Enhanced rules come from
-// docs.fivem.net/docs/developers/legacy-vs-enhanced. The Lumi-Panel rules
-// (port allocations, the database endpoint, FIVEM_LICENSE in the Startup
-// tab) come from docs.lumixsolutions.org/games/fivem,
-// also available to a session as the lumix-docs MCP server in .mcp.json.
-// If cfx moves a goalpost it'll show up here first, so check those before
-// "fixing" a preset.
+// sources (2026-09-14): docs.fivem.net server-commands + the vanilla setup
+// guide's default cfg, qbcore's txAdminRecipe server.cfg, esx_core server.cfg,
+// oxmysql readme, docs.fivem.net legacy-vs-enhanced. panel stuff (ports, db
+// endpoint, FIVEM_LICENSE) is docs.lumixsolutions.org/games/fivem. check
+// those before "fixing" a preset, cfx moves things.
 
 export type Edition = "legacy" | "enhanced";
 export type Framework = "vanilla" | "qbcore" | "esx" | "vrp" | "custom";
@@ -19,9 +14,8 @@ export type OneSync = "on" | "legacy" | "off";
 export type PureLevel = "0" | "1" | "2";
 
 export interface CfgState {
-  // Lumi-Panel boots with `+set sv_licenseKey {{FIVEM_LICENSE}}`, so the key
-  // can live in the Startup tab instead of the file. Off by default: a file
-  // with a redundant key boots everywhere, a file with no key boots nowhere.
+  // panel boots with +set sv_licenseKey {{FIVEM_LICENSE}} so the key can live
+  // in the startup tab. off by default, a missing key boots nowhere
   licenseInStartup: boolean;
 
   projectName: string;
@@ -105,11 +99,9 @@ export const DEFAULTS: CfgState = {
   admins: "",
 };
 
-// Legacy only. Enhanced ships one build (the current one) and refuses to
-// register if you pin any of these, see the emitter. Straight off
-// docs.fivem.net/docs/server-manual/server-commands/#sv_enforcegamebuild-build
-// as of 2026-09-14; every build includes everything before it. 2612 has no
-// DLC name in the docs, only its alias.
+// legacy only, enhanced refuses to register with any of these pinned.
+// straight off the cfx server-commands page, 2026-09-14. 2612 has no dlc
+// name in the docs, just the alias
 export const GAME_BUILDS: { value: string; label: string }[] = [
   { value: "", label: "Don't enforce (client picks)" },
   { value: "3889", label: "3889 · The Kortz Center Heist" },
@@ -151,9 +143,8 @@ export const LOCALES: { value: string; label: string }[] = [
   { value: "ar-SA", label: "العربية" },
 ];
 
-// ^N colour codes for sv_hostname, as the docs list them. These are the
-// game's colours quoted for a preview, same status as the terminal's traffic
-// lights: not palette, don't "fix" them to brand red.
+// ^N hostname colours per the docs. game colours, not palette, don't "fix"
+// the red to brand red
 export const HOSTNAME_COLOURS: Record<string, string> = {
   "0": "#ffffff",
   "1": "#ff4444",
@@ -167,9 +158,8 @@ export const HOSTNAME_COLOURS: Record<string, string> = {
   "9": "#999999",
 };
 
-// The base set every server needs regardless of framework. The docs' vanilla
-// cfg lists these minus baseevents; QBCore's recipe adds it and nothing
-// breaks with it present, so frameworks get it and vanilla stays as documented.
+// base set every server needs. vanilla per the docs, frameworks also get
+// baseevents because qbcore's recipe has it
 const BASE_RESOURCES = [
   "mapmanager",
   "chat",
@@ -215,19 +205,17 @@ export type Line = { text: string; field?: string };
 
 const LOCALHOST = /^(localhost|127\.0\.0\.1|::1|0\.0\.0\.0)$/i;
 
-// Quotes inside a cfg string have no escape sequence, so a stray " ends the
-// value early and the rest of the line gets parsed as a command. Swapping to
-// ' keeps the meaning and keeps the parser happy.
+// no escape for " in a cfg string, a stray one ends the value and the rest
+// gets parsed as a command. swap to '
 const q = (v: string) => `"${String(v).trim().replace(/"/g, "'")}"`;
 
-// Characters oxmysql's URI parser chokes on. Any of these in the password
-// means the kv form, no argument.
+// oxmysql's uri parser chokes on these. any in the password = kv form
 export const URI_UNSAFE = /[;,\/?:@&=+$#]/;
 
 export function connectionString(s: CfgState): string {
   const pass = s.dbPass;
   if (s.dbFormat === "kv") {
-    // mysql-async's spelling. oxmysql reads it too, so one kv form covers both.
+    // mysql-async spelling, oxmysql reads it too
     return `server=${s.dbHost};port=${s.dbPort};database=${s.dbName};userid=${s.dbUser};password=${pass}`;
   }
   const auth = pass ? `${s.dbUser}:${pass}` : s.dbUser;
@@ -378,7 +366,7 @@ export function warnings(s: CfgState): Warning[] {
 
   const key = s.licenseKey.trim();
   if (s.licenseInStartup) {
-    // Nothing to check here, but the key still has to exist over there.
+    // nothing to check, the key's over in the panel
     if (key)
       warn(
         "licenseKey",
