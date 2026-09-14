@@ -248,7 +248,10 @@ export function buildCfg(s: CfgState): Line[] {
   blank();
 
   push("# Port = the game allocation in the Network tab, not the", "port");
-  push("# txAdmin one. 0.0.0.0 is fine, the container has one interface.", "port");
+  push(
+    "# txAdmin one. 0.0.0.0 is fine, the container has one interface.",
+    "port",
+  );
   push(`endpoint_add_tcp "0.0.0.0:${s.port}"`, "port");
   push(`endpoint_add_udp "0.0.0.0:${s.port}"`, "port");
   blank();
@@ -256,11 +259,16 @@ export function buildCfg(s: CfgState): Line[] {
   push("# What players see");
   push(`sv_hostname ${q(s.hostname.trim() || name)}`, "hostname");
   push(`sets sv_projectName ${q(name)}`, "projectName");
-  push(`sets sv_projectDesc ${q(s.projectDesc.trim() || "A FiveM server")}`, "projectDesc");
+  push(
+    `sets sv_projectDesc ${q(s.projectDesc.trim() || "A FiveM server")}`,
+    "projectDesc",
+  );
   push(`sets tags ${q(s.tags.trim() || "default")}`, "tags");
   push(`sets locale ${q(s.locale)}`, "locale");
-  if (s.bannerDetail.trim()) push(`sets banner_detail ${q(s.bannerDetail)}`, "bannerDetail");
-  if (s.bannerConnecting.trim()) push(`sets banner_connecting ${q(s.bannerConnecting)}`, "bannerConnecting");
+  if (s.bannerDetail.trim())
+    push(`sets banner_detail ${q(s.bannerDetail)}`, "bannerDetail");
+  if (s.bannerConnecting.trim())
+    push(`sets banner_connecting ${q(s.bannerConnecting)}`, "bannerConnecting");
   if (s.serverIcon.trim()) {
     push("# 96x96 PNG, sits next to this file.");
     push(`load_server_icon ${s.serverIcon.trim()}`, "serverIcon");
@@ -270,7 +278,10 @@ export function buildCfg(s: CfgState): Line[] {
   push("# Slots and keys");
   push(`sv_maxclients ${s.maxClients}`, "maxClients");
   if (s.licenseInStartup) {
-    push("# sv_licenseKey comes in from FIVEM_LICENSE in the Startup tab.", "licenseKey");
+    push(
+      "# sv_licenseKey comes in from FIVEM_LICENSE in the Startup tab.",
+      "licenseKey",
+    );
     push("# A line here would override it, so there isn't one.", "licenseKey");
   } else {
     push(`sv_licenseKey ${q(s.licenseKey.trim() || "changeme")}`, "licenseKey");
@@ -288,14 +299,16 @@ export function buildCfg(s: CfgState): Line[] {
     push(`set sv_syncTickRate ${s.syncTickRate}`, "syncTickRate");
   } else {
     if (s.gameBuild) push(`sv_enforceGameBuild ${s.gameBuild}`, "gameBuild");
-    else push("# No build pinned, clients load whatever they have.", "gameBuild");
+    else
+      push("# No build pinned, clients load whatever they have.", "gameBuild");
     push(`set onesync ${s.onesync}`, "onesync");
   }
   push(`sv_scriptHookAllowed ${s.scriptHook ? 1 : 0}`, "scriptHook");
   blank();
 
   push("# Listing and access");
-  if (s.rconPassword.trim()) push(`set rcon_password ${q(s.rconPassword)}`, "rconPassword");
+  if (s.rconPassword.trim())
+    push(`set rcon_password ${q(s.rconPassword)}`, "rconPassword");
   else push("# RCON is off. Set a password to turn it on.", "rconPassword");
   push(`sv_endpointPrivacy ${s.endpointPrivacy}`, "endpointPrivacy");
   if (s.lan) push("sv_lan true", "lan");
@@ -320,9 +333,11 @@ export function buildCfg(s: CfgState): Line[] {
   }
   for (const r of BASE_RESOURCES) push(`ensure ${r}`, "framework");
   if (s.framework !== "vanilla") push("ensure baseevents", "framework");
-  if (s.dbEnabled && s.framework !== "vanilla") push("ensure oxmysql", "framework");
+  if (s.dbEnabled && s.framework !== "vanilla")
+    push("ensure oxmysql", "framework");
   for (const r of fw.resources) push(`ensure ${r}`, "framework");
-  for (const r of splitLines(s.extraResources)) push(`ensure ${r}`, "extraResources");
+  for (const r of splitLines(s.extraResources))
+    push(`ensure ${r}`, "extraResources");
   for (const e of fw.extras ?? []) push(e, "framework");
   blank();
 
@@ -333,7 +348,8 @@ export function buildCfg(s: CfgState): Line[] {
   if (admins.length === 0) {
     push("# Nobody yet. Add an identifier and it lands here.", "admins");
   }
-  for (const id of admins) push(`add_principal identifier.${id} group.admin`, "admins");
+  for (const id of admins)
+    push(`add_principal identifier.${id} group.admin`, "admins");
   if (s.framework === "qbcore") {
     push("add_ace resource.qb-core command allow", "admins");
     push("add_principal qbcore.god group.admin", "admins");
@@ -355,78 +371,136 @@ export type Warning = { level: "stop" | "warn"; field: string; text: string };
 
 export function warnings(s: CfgState): Warning[] {
   const w: Warning[] = [];
-  const stop = (field: string, text: string) => w.push({ level: "stop", field, text });
-  const warn = (field: string, text: string) => w.push({ level: "warn", field, text });
+  const stop = (field: string, text: string) =>
+    w.push({ level: "stop", field, text });
+  const warn = (field: string, text: string) =>
+    w.push({ level: "warn", field, text });
 
   const key = s.licenseKey.trim();
   if (s.licenseInStartup) {
     // Nothing to check here, but the key still has to exist over there.
-    if (key) warn("licenseKey", "Key is set to come from the Startup tab, so what you typed here isn't in the file.");
+    if (key)
+      warn(
+        "licenseKey",
+        "Key is set to come from the Startup tab, so what you typed here isn't in the file.",
+      );
   } else if (!key || key === "changeme") {
-    stop("licenseKey", "No license key. The server won't start without one from portal.cfx.re.");
+    stop(
+      "licenseKey",
+      "No license key. The server won't start without one from portal.cfx.re.",
+    );
   } else if (!/^cfxk_/.test(key)) {
-    warn("licenseKey", "Keys from portal.cfx.re start with cfxk_. Check you pasted the whole thing.");
+    warn(
+      "licenseKey",
+      "Keys from portal.cfx.re start with cfxk_. Check you pasted the whole thing.",
+    );
   }
 
   if (s.edition === "enhanced" && s.gameBuild && s.gameBuild !== "1") {
-    stop("gameBuild", "Enhanced rejects pinned Legacy builds and won't register. Cleared from the file.");
+    stop(
+      "gameBuild",
+      "Enhanced rejects pinned Legacy builds and won't register. Cleared from the file.",
+    );
   }
 
   if (s.maxClients > 48) {
-    warn("maxClients", "Free keys stop at 48 slots. Above that needs Element Club or an approved request from Cfx.");
+    warn(
+      "maxClients",
+      "Free keys stop at 48 slots. Above that needs Element Club or an approved request from Cfx.",
+    );
   }
   if (s.maxClients < 1 || s.maxClients > 2048) {
     stop("maxClients", "Slots must be between 1 and 2048.");
   }
   if (s.edition === "legacy" && s.onesync !== "on" && s.maxClients > 32) {
-    stop("onesync", "OneSync has to be on above 32 slots. The master list rejects the server otherwise.");
+    stop(
+      "onesync",
+      "OneSync has to be on above 32 slots. The master list rejects the server otherwise.",
+    );
   }
 
   if (s.port < 1024 || s.port > 65535) {
     stop("port", "Use a port between 1024 and 65535.");
   } else if (s.port === 30120) {
-    warn("port", "30120 is the template default. Check the game allocation in the Network tab; a different number here means nobody connects and the server never lists.");
+    warn(
+      "port",
+      "30120 is the template default. Check the game allocation in the Network tab; a different number here means nobody connects and the server never lists.",
+    );
   }
 
   if (s.privateListing) {
-    warn("privateListing", "sv_master1 \"\" takes you off the public list. If that's not on purpose, untick it; it's the usual reason a server 'doesn't show up'.");
+    warn(
+      "privateListing",
+      "sv_master1 \"\" takes you off the public list. If that's not on purpose, untick it; it's the usual reason a server 'doesn't show up'.",
+    );
   }
 
-  if (!s.projectName.trim()) warn("projectName", "No project name. The listing shows a placeholder.");
-  if (s.locale === "root-AQ") warn("locale", "root-AQ is the docs' placeholder locale. Pick a real one.");
+  if (!s.projectName.trim())
+    warn("projectName", "No project name. The listing shows a placeholder.");
+  if (s.locale === "root-AQ")
+    warn("locale", "root-AQ is the docs' placeholder locale. Pick a real one.");
 
   if (s.rconPassword && s.rconPassword.length < 12) {
-    warn("rconPassword", "RCON is UDP with no lockout. Under 12 characters is asking for it.");
+    warn(
+      "rconPassword",
+      "RCON is UDP with no lockout. Under 12 characters is asking for it.",
+    );
   }
 
   if (s.dbEnabled) {
     if (!s.dbHost.trim()) {
-      stop("db", "No database host. Paste the Endpoint from the Databases tab.");
+      stop(
+        "db",
+        "No database host. Paste the Endpoint from the Databases tab.",
+      );
     } else if (LOCALHOST.test(s.dbHost.trim())) {
-      stop("db", "The database doesn't run on your game server. Use the Endpoint from the Databases tab; localhost is ECONNREFUSED every time.");
+      stop(
+        "db",
+        "The database doesn't run on your game server. Use the Endpoint from the Databases tab; localhost is ECONNREFUSED every time.",
+      );
     }
     if (s.dbFormat === "uri" && URI_UNSAFE.test(s.dbPass)) {
-      stop("db", "The password has a character the URI form can't carry. Switch to key=value.");
+      stop(
+        "db",
+        "The password has a character the URI form can't carry. Switch to key=value.",
+      );
     }
-    if (!s.dbPass) warn("db", "Empty database password. Copy it from the Databases tab.");
+    if (!s.dbPass)
+      warn("db", "Empty database password. Copy it from the Databases tab.");
     if (s.framework === "vrp" && s.dbFormat === "uri") {
       warn("db", "vRP expects the key=value connection string.");
     }
   } else if (s.framework !== "vanilla" && s.framework !== "custom") {
-    stop("db", `${FRAMEWORKS[s.framework].label} needs a database. Turn it on.`);
+    stop(
+      "db",
+      `${FRAMEWORKS[s.framework].label} needs a database. Turn it on.`,
+    );
   }
 
   if (splitLines(s.admins).length === 0) {
-    warn("admins", "No admin identifiers. Nobody can run commands until you add one.");
+    warn(
+      "admins",
+      "No admin identifiers. Nobody can run commands until you add one.",
+    );
   }
   for (const id of splitLines(s.admins)) {
-    if (!/^(license|license2|fivem|steam|discord|xbl|live|ip):[A-Za-z0-9]+$/.test(id)) {
-      warn("admins", `"${id}" doesn't look like an identifier. Expected license:… or fivem:… or discord:….`);
+    if (
+      !/^(license|license2|fivem|steam|discord|xbl|live|ip):[A-Za-z0-9]+$/.test(
+        id,
+      )
+    ) {
+      warn(
+        "admins",
+        `"${id}" doesn't look like an identifier. Expected license:… or fivem:… or discord:….`,
+      );
     }
   }
 
   if (!s.steamKey.trim()) {
-    warn("steamKey", "No Steam Web API key. steam: identifiers won't resolve. Optional, but most admin tools want it.");
+    warn(
+      "steamKey",
+      "No Steam Web API key. steam: identifiers won't resolve. Optional, but most admin tools want it.",
+    );
   }
 
   return w;
