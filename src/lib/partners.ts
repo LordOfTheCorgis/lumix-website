@@ -81,7 +81,7 @@ export const partners: Partner[] = [
       "Animation commissions",
       "Supporting scripts",
     ],
-    note: "Newest partner. Animations are the thing; go watch them in the Discord.",
+    note: "Animations are the thing; go watch them in the Discord.",
     discord: "https://discord.gg/EnVMwY7HeH",
   },
   {
