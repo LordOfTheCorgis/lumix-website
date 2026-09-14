@@ -1,0 +1,116 @@
+---
+// The tools shelf. One live tool today and the honest shape of what's next.
+// Planned ones sit dimmed in the same grid, same reasoning as /games: hiding
+// them in a "coming soon" corner reads as an apology, and the Discord ask at
+// the bottom is where the queue actually gets decided.
+import Layout from "../../layouts/Layout.astro";
+import { links } from "../../config";
+
+const tools = [
+  {
+    slug: "fivem-server-cfg",
+    game: "FiveM",
+    name: "server.cfg maker",
+    blurb:
+      "Every convar that matters, explained where you type it. Picks the right resource order for QBCore, ESX or vRP and warns you before the file fails to boot.",
+    status: "live",
+  },
+  {
+    slug: "minecraft-server-properties",
+    game: "Minecraft",
+    name: "server.properties maker",
+    blurb: "Difficulty, view distance, whitelist, the JVM flags that actually fix lag.",
+    status: "planned",
+  },
+  {
+    slug: "rust-startup-flags",
+    game: "Rust",
+    name: "Startup command builder",
+    blurb: "Map size, seed, wipe schedule and every +server flag in one line.",
+    status: "planned",
+  },
+  {
+    slug: "fivem-permissions",
+    game: "FiveM",
+    name: "permissions.cfg maker",
+    blurb: "Groups, ACE inheritance, per-resource command grants.",
+    status: "planned",
+  },
+] as const;
+
+const live = tools.filter((t) => t.status === "live");
+const planned = tools.filter((t) => t.status !== "live");
+---
+
+<Layout
+  title="Free server tools"
+  description="Config generators for the games we host. Fill in the form, copy the file, boot the server. No signup."
+>
+  <section class="section border-b border-[var(--edge)]">
+    <div class="shell">
+      <p class="instrument text-fog">Tools · {live.length} live · {planned.length} planned</p>
+      <h1 class="display-xl mt-6 max-w-2xl">Config files, done right<span class="text-red">.</span></h1>
+      <p class="lead text-fog mt-6 max-w-lg">
+        The files everyone copies off a forum post and breaks. Fill in the
+        form, read what each line does, copy the result. No account, nothing
+        stored.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <h2 class="title">Pick a tool</h2>
+        <p class="instrument text-slate">{live.length} live / {tools.length} total</p>
+      </div>
+
+      <div data-grid-anchor class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3">
+        {tools.map((tool) => {
+          const isPlanned = tool.status !== "live";
+          const href = isPlanned ? links.discord : `/tools/${tool.slug}`;
+          return (
+            <a
+              href={href}
+              rel={isPlanned ? "noopener" : undefined}
+              aria-label={isPlanned ? `${tool.game} ${tool.name}, planned. Ask for it in Discord.` : undefined}
+              class:list={[
+                "group relative flex min-h-[calc(7*var(--grid-cell))] flex-col border border-[var(--edge)] bg-ink-soft p-6 transition-colors duration-150",
+                isPlanned ? "opacity-50 hover:opacity-70" : "hover:border-[var(--edge-strong)]",
+              ]}
+            >
+              <div class="flex items-center justify-between">
+                <span class="instrument text-fog">{tool.game}</span>
+                <span class="instrument text-slate">{isPlanned ? "planned" : "live"}</span>
+              </div>
+              <h3 class="title mt-4">{tool.name}</h3>
+              <p class="small text-fog mt-3 flex-1">{tool.blurb}</p>
+              <span class="small mt-6 flex items-center gap-2 text-paper">
+                {isPlanned ? "Ask for it" : "Open the tool"}
+                <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">&rarr;</span>
+              </span>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <section class="section band border-t border-[var(--edge)]">
+    <div class="shell">
+      <h2 class="title">Want a different one?</h2>
+      <p class="lead text-fog mt-6 max-w-lg">
+        The dimmed ones get built in the order people ask. Say which file you
+        keep getting wrong and it moves up.
+      </p>
+      <a
+        href={links.discord}
+        rel="noopener"
+        class="chamfer mt-8 inline-flex items-center gap-2 border border-[var(--edge-strong)] px-7 py-4 font-medium text-paper transition-colors duration-150 hover:border-red hover:text-red"
+      >
+        Ask in Discord
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+  </section>
+</Layout>
