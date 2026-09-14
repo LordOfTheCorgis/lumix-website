@@ -330,7 +330,10 @@ export function buildCfg(s: CfgState): CfgOutput {
 
   if (s.dbEnabled) {
     push("# Database. Must be set before anything that reads it starts.");
-    if (lumix) push("# Host is the Databases tab endpoint. Never localhost here.", "db");
+    // No field on this comment on purpose: with the split on, the string
+    // moves to secrets.cfg and the tab switch only fires if nothing in the
+    // main file claims the field.
+    if (lumix) push("# Host is the Databases tab endpoint. Never localhost here.");
     secret(`set mysql_connection_string ${q(connectionString(s))}`, "db");
     blank();
   }

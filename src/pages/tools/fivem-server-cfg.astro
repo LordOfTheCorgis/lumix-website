@@ -134,7 +134,7 @@ const faqSchema = {
                 <span class="field-hint">
                   The coloured line in the browser. Left blank it copies the project name. Colours:
                   {Object.entries(HOSTNAME_COLOURS).map(([n, hex]) => (
-                    <code style={`color:${hex}`}>^{n}</code>
+                    <><code style={`color:${hex}`}>^{n}</code>{" "}</>
                   ))}
                 </span>
               </div>
