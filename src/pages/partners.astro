@@ -73,6 +73,11 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
                   {host(p.url)} <span aria-hidden="true">&nearr;</span>
                 </a>
               )}
+              {p.gallery && (
+                <a href={p.gallery} rel="noopener" target="_blank" class="small inline-flex items-center gap-1.5 text-paper hover:text-red">
+                  Gallery <span aria-hidden="true">&nearr;</span>
+                </a>
+              )}
               <a href={p.discord} rel="noopener" target="_blank" class="small inline-flex items-center gap-1.5 text-paper hover:text-red">
                 Discord <span aria-hidden="true">&nearr;</span>
               </a>
