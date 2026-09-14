@@ -25,11 +25,11 @@ const frameworks = (["qbcore", "esx", "vrp", "vanilla", "custom"] as const).map(
 const faq = [
   {
     q: "Where does this file go?",
-    a: "On Lumix: the Files tab, server root, or txAdmin's cfg editor at http://YOUR_IP:TXADMIN_PORT. Anywhere else: server-data/server.cfg next to the resources folder. Either way it's only read on boot, so restart after saving.",
+    a: "Files tab, server root, or txAdmin's cfg editor at http://YOUR_IP:TXADMIN_PORT. It's only read on boot, so restart from the Console after saving.",
   },
   {
-    q: "Why no license key line?",
-    a: "On Lumix the server boots with +set sv_licenseKey from the FIVEM_LICENSE variable in the Startup tab. A line in the file would override it, so in Lumix mode the tool leaves it out. Untick the box if you'd rather it live in the file.",
+    q: "Does the key go here or in the Startup tab?",
+    a: "Either works. Lumi-Panel boots with +set sv_licenseKey from the FIVEM_LICENSE variable, and a line in this file overrides it. Tick the box under the key field to keep it in the panel and out of the file.",
   },
   {
     q: "Legacy or Enhanced?",
@@ -80,33 +80,7 @@ const faqSchema = {
   <section class="section">
     <div class="shell">
       <div class="grid items-start gap-[var(--grid-cell)] lg:grid-cols-2">
-        <form id="cfg" data-cfg-form class="flex flex-col gap-[var(--grid-cell)]" novalidate autocomplete="off">
-          <!-- ── Where ────────────────────────────────────────────── -->
-          <fieldset class="panel">
-            <legend class="panel-head">
-              <span class="instrument text-fog">00 · Where</span>
-              <span class="title block mt-2">Where does it run?</span>
-            </legend>
-            <div class="field">
-              <div class="seg" role="radiogroup" aria-label="Host">
-                <label class="seg-opt">
-                  <input type="radio" name="host" data-field="port" value="lumix" checked />
-                  <span>On Lumix</span>
-                </label>
-                <label class="seg-opt">
-                  <input type="radio" name="host" data-field="port" value="other" />
-                  <span>Somewhere else</span>
-                </label>
-              </div>
-              <span class="field-hint" data-host="lumix">
-                Lumi-Panel hands out a game port, a txAdmin port and a database endpoint per server. The form asks for those instead of the FiveM defaults, because the defaults are the usual reason a first boot fails.
-              </span>
-              <span class="field-hint" data-host="other" hidden>
-                Plain FXServer. Defaults are FiveM's own.
-              </span>
-            </div>
-          </fieldset>
-
+        <form data-cfg-form class="flex flex-col gap-[var(--grid-cell)]" novalidate autocomplete="off">
           <!-- ── Identity ─────────────────────────────────────────── -->
           <fieldset class="panel">
             <legend class="panel-head">
@@ -186,8 +160,7 @@ const faqSchema = {
               <label class="field">
                 <span class="field-label">Port</span>
                 <input name="port" data-field="port" type="number" min="1024" max="65535" value={DEFAULTS.port} inputmode="numeric" />
-                <span class="field-hint" data-host="lumix">The <strong>game</strong> allocation from the Network tab, not the txAdmin one. Same number for TCP and UDP.</span>
-                <span class="field-hint" data-host="other" hidden>TCP and UDP, same number. 30120 unless you have a reason.</span>
+                <span class="field-hint">The <strong>game</strong> allocation from the Network tab, not the txAdmin one. Same number for TCP and UDP.</span>
               </label>
 
               <label class="field">
@@ -198,15 +171,15 @@ const faqSchema = {
 
               <div class="field sm:col-span-2">
                 <label class="field-label" for="licenseKey">License key</label>
-                <label class="check mb-1" data-host="lumix">
-                  <input type="checkbox" name="licenseInStartup" data-field="licenseKey" checked />
+                <label class="check mb-1">
+                  <input type="checkbox" name="licenseInStartup" data-field="licenseKey" />
                   <span>
                     <span class="block text-paper">It's in the Startup tab as <code class="text-fog">FIVEM_LICENSE</code></span>
                     <span class="field-hint">The panel boots with <code>+set sv_licenseKey</code> from that variable. Leave this ticked and the file carries no key at all.</span>
                   </span>
                 </label>
                 <input id="licenseKey" name="licenseKey" data-field="licenseKey" type="text" spellcheck="false" placeholder="cfxk_…" data-secret />
-                <span class="field-hint">From <a href="https://portal.cfx.re" rel="noopener" target="_blank">portal.cfx.re</a>. Bound to the IP you registered it on<span data-host="lumix">, which is the one in the Network tab. A key from an old host won't work here</span>.</span>
+                <span class="field-hint">From <a href="https://portal.cfx.re" rel="noopener" target="_blank">portal.cfx.re</a>. Bound to the IP you registered it on, which is the one in the Network tab. A key from an old host won't work here.</span>
               </div>
 
               <label class="field sm:col-span-2">
@@ -301,7 +274,7 @@ const faqSchema = {
             </label>
 
             <div class="grid gap-5 sm:grid-cols-2" data-db-fields>
-              <label class="field sm:col-span-2" data-host="lumix">
+              <label class="field sm:col-span-2">
                 <span class="field-label">Endpoint from the Databases tab</span>
                 <input data-db-endpoint data-field="db" type="text" spellcheck="false" placeholder="db.example.lumixsolutions.org:3306" />
                 <span class="field-hint">Paste it whole and the host and port below fill in. The database runs on its own box, so <code>localhost</code> never works here.</span>
@@ -325,7 +298,7 @@ const faqSchema = {
               <label class="field">
                 <span class="field-label">Database</span>
                 <input name="dbName" data-field="db" type="text" spellcheck="false" value={DEFAULTS.dbName} />
-                <span class="field-hint" data-host="lumix">Full name as the Databases tab shows it. Import your framework's .sql at <a href="https://db.lumixsolutions.org" rel="noopener" target="_blank">db.lumixsolutions.org</a>.</span>
+                <span class="field-hint">Full name as the Databases tab shows it. Import your framework's .sql at <a href="https://db.lumixsolutions.org" rel="noopener" target="_blank">db.lumixsolutions.org</a>.</span>
               </label>
               <div class="field">
                 <span class="field-label">String format</span>
@@ -455,10 +428,7 @@ const faqSchema = {
         <aside id="file" class="scroll-mt-24 lg:sticky lg:top-24 lg:flex lg:max-h-[calc(100vh-7rem)] lg:flex-col" aria-label="Generated server.cfg">
           <figure class="file m-0 flex min-h-0 flex-col border border-[var(--edge)] bg-ink-soft">
             <figcaption class="flex flex-wrap items-center gap-3 border-b border-[var(--edge)] px-4 py-3">
-              <span class="flex items-center gap-1" role="tablist" aria-label="Generated files">
-                <button type="button" role="tab" data-tab="main" aria-selected="true" class="file-tab">server.cfg</button>
-                <button type="button" role="tab" data-tab="secrets" aria-selected="false" class="file-tab" hidden>secrets.cfg</button>
-              </span>
+              <span class="instrument text-paper">server.cfg</span>
               <span class="instrument text-slate" data-line-count>0 lines</span>
               <span class="ml-auto flex items-center gap-2">
                 <button type="button" data-download class="btn-ghost">Download</button>
@@ -468,15 +438,6 @@ const faqSchema = {
               </span>
             </figcaption>
             <pre class="file-body m-0 min-h-0 flex-1 overflow-auto" data-file-scroll><code data-file aria-live="off"></code></pre>
-            <!-- Lives outside the <form> in the DOM but belongs to it via the
-                 form attribute, so readState picks it up with everything else. -->
-            <label class="check border-t border-[var(--edge)] px-4 py-3">
-              <input type="checkbox" name="splitSecrets" form="cfg" data-field="splitSecrets" />
-              <span>
-                <span class="block text-sm text-paper">Keep keys and passwords in a separate secrets.cfg</span>
-                <span class="field-hint">The main file gets <code>exec secrets.cfg</code>. Paste server.cfg into Discord all you like.</span>
-              </span>
-            </label>
           </figure>
 
           <div class="mt-4 shrink-0 border border-[var(--edge)] bg-ink-soft" data-checks>
@@ -733,110 +694,12 @@ const faqSchema = {
     overflow-wrap: anywhere;
   }
   .hostname-preview:empty::before { content: " "; }
-
-  .file-tab {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 0.6875rem;
-    line-height: 1;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-slate);
-    padding: 0.375rem 0.5rem;
-    margin: -0.375rem 0;
-    cursor: pointer;
-    transition: color 150ms;
-  }
-  .file-tab:hover { color: var(--color-fog); }
-  .file-tab[aria-selected="true"] { color: var(--color-paper); box-shadow: inset 0 -1px 0 var(--color-paper); }
-
-  /* ── The file ────────────────────────────────────────────────────────────
-     Mono is the subject here, same exception the Terminal takes. Line numbers
-     are a counter so the copied text never contains them. */
-  .file-body {
-    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
-    font-size: 0.8125rem;
-    line-height: 1.6;
-    tab-size: 2;
-    max-height: 60vh;
-    padding: 1rem 0;
-    counter-reset: line;
-  }
-
-  @media (min-width: 1024px) {
-    /* Height comes from the flex column above lg, not from here. */
-    .file-body { max-height: none; }
-  }
-
-  .file-body :global(.line) {
-    display: grid;
-    grid-template-columns: 3rem 1fr;
-    padding-right: 1rem;
-    /* Wrap under the gutter rather than scroll sideways. The connection
-       string alone is 80 chars; a permanent scrollbar for one line is worse
-       than a wrapped one. Copy reads the text, not the DOM, so it's unaffected. */
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-    box-shadow: inset 2px 0 0 transparent;
-    transition: background-color 150ms, box-shadow 150ms;
-  }
-
-  .file-body :global(.line)::before {
-    counter-increment: line;
-    content: counter(line);
-    text-align: right;
-    padding-right: 1rem;
-    color: var(--color-slate);
-    opacity: 0.6;
-    user-select: none;
-  }
-
-  /* Mirrors the input's focus ring. See the note at the top of the file. */
-  .file-body :global(.line[data-hot]) {
-    background: rgba(255, 76, 76, 0.07);
-    box-shadow: inset 2px 0 0 var(--color-red);
-  }
-
-  .file-body :global(.c) { color: var(--color-slate); }
-  .file-body :global(.k) { color: var(--color-paper); font-weight: 500; }
-  .file-body :global(.a) { color: var(--color-fog); }
-  .file-body :global(.s) { color: var(--color-ember); }
-
-  /* ── Checks ──────────────────────────────────────────────────────────── */
-  [data-check-list] :global(li) {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0.75rem;
-    align-items: start;
-    padding: 0.75rem 1rem;
-    border-top: 1px solid var(--edge);
-    font-size: 0.8125rem;
-    line-height: 1.5;
-    color: var(--color-fog);
-  }
-  [data-check-list] :global(li:first-child) { border-top: 0; }
-  [data-check-list] :global(li button) {
-    text-align: left;
-    color: inherit;
-    cursor: pointer;
-  }
-  [data-check-list] :global(li button:hover) { color: var(--color-paper); }
-  [data-check-list] :global(.mark) {
-    width: 0.5rem;
-    height: 0.5rem;
-    margin-top: 0.45rem;
-    background: var(--color-slate);
-  }
-  /* Stop is ember, not red. A stop is a fact about the file, not a call to action. */
-  [data-check-list] :global(.mark.stop) { background: var(--color-ember); }
-  [data-check-list] :global(.all-clear) { color: var(--color-fog); }
 </style>
 
 <script>
-  import { DEFAULTS, HOSTNAME_COLOURS, buildCfg, warnings, type CfgState, type Line } from "../../lib/fivem";
+  import { DEFAULTS, HOSTNAME_COLOURS, buildCfg, warnings, type CfgState } from "../../lib/fivem";
 
   const form = document.querySelector<HTMLFormElement>("[data-cfg-form]")!;
-  const aside = document.querySelector<HTMLElement>("aside#file")!;
   const fileEl = document.querySelector<HTMLElement>("[data-file]")!;
   const scrollEl = document.querySelector<HTMLElement>("[data-file-scroll]")!;
   const lineCount = document.querySelector<HTMLElement>("[data-line-count]")!;
@@ -849,17 +712,12 @@ const faqSchema = {
   const dbFields = document.querySelector<HTMLElement>("[data-db-fields]")!;
   const dbEndpoint = document.querySelector<HTMLInputElement>("[data-db-endpoint]")!;
   const hostPreview = document.querySelector<HTMLElement>("[data-hostname-preview]")!;
-  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-tab]"));
 
   const STORE = "lumix:fivem-cfg";
   // Never persisted, whatever else is. Shared machines exist.
   const SECRET = new Set(["licenseKey", "steamKey", "rconPassword", "dbPass"]);
 
   type Ctl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
-  type Tab = "main" | "secrets";
-  // form.elements includes the splitSecrets box in the aside; it points at
-  // the form with form="cfg". Events from it don't bubble here though, see
-  // the listener on the aside below.
   const controls = () => Array.from(form.elements).filter((e) => (e as Ctl).name) as Ctl[];
 
   function readState(): CfgState {
@@ -925,31 +783,20 @@ const faqSchema = {
     return html;
   }
 
-  let files: Record<Tab, Line[]> = { main: [], secrets: [] };
-  let activeTab: Tab = "main";
+  let currentText = "";
   let hotField: string | null = null;
 
-  const text = (tab: Tab) => files[tab].map((l) => l.text).join("\n") + "\n";
+  function render() {
+    const s = readState();
+    const lines = buildCfg(s);
+    currentText = lines.map((l) => l.text).join("\n") + "\n";
 
-  function renderFile() {
-    const lines = files[activeTab];
     fileEl.innerHTML = lines
       // One wrapper span per line: .line is a grid and every direct child is a
       // cell, so the highlight spans have to be nested or they each get a column.
       .map((l) => `<span class="line"${l.field ? ` data-field="${l.field}"` : ""}><span>${highlight(l.text) || " "}</span></span>`)
       .join("");
     lineCount.textContent = `${lines.length} lines`;
-    for (const t of tabs) t.setAttribute("aria-selected", String(t.dataset.tab === activeTab));
-    copyBtn.textContent = activeTab === "main" ? "Copy file" : "Copy secrets";
-  }
-
-  function render() {
-    const s = readState();
-    files = buildCfg(s);
-    const split = files.secrets.length > 0;
-    tabs.find((t) => t.dataset.tab === "secrets")!.hidden = !split;
-    if (!split && activeTab === "secrets") activeTab = "main";
-    renderFile();
 
     hostPreview.innerHTML = hostnamePreview(s.hostname.trim() || s.projectName.trim() || "");
 
@@ -959,7 +806,7 @@ const faqSchema = {
       ? `${stops ? `${stops} will stop the server` : "nothing fatal"} · ${w.length - stops} worth a look`
       : "";
     const mobile = document.querySelector<HTMLElement>("[data-mobile-status]");
-    if (mobile) mobile.textContent = `${files.main.length} lines · ${stops ? `${stops} stop` : "no stops"}`;
+    if (mobile) mobile.textContent = `${lines.length} lines · ${stops ? `${stops} stop` : "no stops"}`;
     checkList.innerHTML = w.length
       ? w
           .map(
@@ -974,17 +821,6 @@ const faqSchema = {
   }
 
   function applyHot() {
-    // If the field only exists in the other file, go there. Focusing the
-    // license key with the split on should show you secrets.cfg, not a
-    // server.cfg with nothing lit.
-    if (hotField) {
-      const inActive = files[activeTab].some((l) => l.field === hotField);
-      const other: Tab = activeTab === "main" ? "secrets" : "main";
-      if (!inActive && files[other].some((l) => l.field === hotField)) {
-        activeTab = other;
-        renderFile();
-      }
-    }
     fileEl.querySelectorAll<HTMLElement>(".line[data-hot]").forEach((l) => l.removeAttribute("data-hot"));
     if (!hotField) return;
     const hot = fileEl.querySelectorAll<HTMLElement>(`.line[data-field="${hotField}"]`);
@@ -1005,12 +841,9 @@ const faqSchema = {
     form.querySelectorAll<HTMLElement>("[data-edition]").forEach((el) => {
       el.hidden = el.dataset.edition !== s.edition;
     });
-    form.querySelectorAll<HTMLElement>("[data-host]").forEach((el) => {
-      el.hidden = el.dataset.host !== s.host;
-    });
     dbFields.classList.toggle("is-off", !s.dbEnabled);
     dbFields.querySelectorAll<Ctl>("input").forEach((i) => (i.tabIndex = s.dbEnabled ? 0 : -1));
-    const keyOff = s.host === "lumix" && s.licenseInStartup;
+    const keyOff = s.licenseInStartup;
     form.querySelector<HTMLInputElement>('[name="licenseKey"]')!.classList.toggle("is-off", keyOff);
   }
 
@@ -1033,13 +866,7 @@ const faqSchema = {
   // ── Events ────────────────────────────────────────────────────────────
   const onChange = (e: Event) => {
     const t = e.target as Ctl;
-    if (["edition", "dbEnabled", "host", "licenseInStartup"].includes(t.name)) syncVisibility();
-    // Moving off Lumix means the key has to be in the file. Moving on, the
-    // Startup tab is the default again.
-    if (t.name === "host") {
-      form.querySelector<HTMLInputElement>('[name="licenseInStartup"]')!.checked = t.value === "lumix";
-      syncVisibility();
-    }
+    if (["edition", "dbEnabled", "licenseInStartup"].includes(t.name)) syncVisibility();
     // vRP wants kv. Flip it once on selection; the user can flip it back and
     // the check will nag them, which is the right amount of nagging.
     if (t.name === "framework" && t.value === "vrp") {
@@ -1050,7 +877,6 @@ const faqSchema = {
   };
   form.addEventListener("input", render);
   form.addEventListener("change", onChange);
-  aside.addEventListener("change", onChange);
 
   // The Databases tab gives one string, host:port. Split it into the two
   // fields the emitter reads. Keep the box's own text as typed.
@@ -1070,29 +896,17 @@ const faqSchema = {
     }
   };
   form.addEventListener("focusin", onFocusIn);
-  aside.addEventListener("focusin", (e) => {
-    // Only the split checkbox has a field; the tabs and buttons don't.
-    if ((e.target as HTMLElement).closest("[data-field]")) onFocusIn(e);
-  });
 
   form.addEventListener("focusout", () => {
     // Let the next focusin win first, otherwise tabbing between fields
     // flickers the marker off and on.
     requestAnimationFrame(() => {
-      if (!form.contains(document.activeElement) && !aside.contains(document.activeElement)) {
+      if (!form.contains(document.activeElement)) {
         hotField = null;
         applyHot();
       }
     });
   });
-
-  for (const t of tabs) {
-    t.addEventListener("click", () => {
-      activeTab = t.dataset.tab as Tab;
-      renderFile();
-      applyHot();
-    });
-  }
 
   checkList.addEventListener("click", (e) => {
     const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-goto]");
@@ -1115,7 +929,7 @@ const faqSchema = {
   copyBtn.addEventListener("click", async () => {
     const label = copyBtn.textContent;
     try {
-      await navigator.clipboard.writeText(text(activeTab));
+      await navigator.clipboard.writeText(currentText);
       copyBtn.textContent = "Copied";
     } catch {
       copyBtn.textContent = "Select and copy";
@@ -1128,11 +942,11 @@ const faqSchema = {
   });
 
   dlBtn.addEventListener("click", () => {
-    const blob = new Blob([text(activeTab)], { type: "text/plain" });
+    const blob = new Blob([currentText], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = activeTab === "main" ? "server.cfg" : "secrets.cfg";
+    a.download = "server.cfg";
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
@@ -1151,7 +965,6 @@ const faqSchema = {
     try { localStorage.removeItem(STORE); } catch {}
     writeState(DEFAULTS);
     dbEndpoint.value = "";
-    activeTab = "main";
     syncVisibility();
     render();
   });

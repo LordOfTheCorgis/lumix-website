@@ -5,9 +5,9 @@
 // Sources, 2026-09-14: docs.fivem.net server-commands and the vanilla setup
 // guide's default server.cfg, the QBCore txAdminRecipe server.cfg, ESX's
 // esx_core server.cfg, oxmysql's readme. The Enhanced rules come from
-// docs.fivem.net/docs/developers/legacy-vs-enhanced. The Lumix-specific
-// rules (port allocations, the database endpoint, FIVEM_LICENSE in the
-// Startup tab, secrets.cfg) come from docs.lumixsolutions.org/games/fivem,
+// docs.fivem.net/docs/developers/legacy-vs-enhanced. The Lumi-Panel rules
+// (port allocations, the database endpoint, FIVEM_LICENSE in the Startup
+// tab) come from docs.lumixsolutions.org/games/fivem,
 // also available to a session as the lumix-docs MCP server in .mcp.json.
 // If cfx moves a goalpost it'll show up here first, so check those before
 // "fixing" a preset.
@@ -17,19 +17,12 @@ export type Framework = "vanilla" | "qbcore" | "esx" | "vrp" | "custom";
 export type DbFormat = "uri" | "kv";
 export type OneSync = "on" | "legacy" | "off";
 export type PureLevel = "0" | "1" | "2";
-export type Host = "lumix" | "other";
 
 export interface CfgState {
-  // Where the server runs. Lumix mode turns on everything the panel docs say
-  // trips people: the port allocation, the database endpoint, the key in the
-  // Startup tab. "other" is a plain FXServer anywhere.
-  host: Host;
-  // Lumix only. The egg boots with `+set sv_licenseKey {{FIVEM_LICENSE}}`, so
-  // the key never has to be in the file. A cfg line would override it.
+  // Lumi-Panel boots with `+set sv_licenseKey {{FIVEM_LICENSE}}`, so the key
+  // can live in the Startup tab instead of the file. Off by default: a file
+  // with a redundant key boots everywhere, a file with no key boots nowhere.
   licenseInStartup: boolean;
-  // Keys and passwords into secrets.cfg, main file gets `exec secrets.cfg`.
-  // The docs recommend it; people paste server.cfg into Discord for help.
-  splitSecrets: boolean;
 
   projectName: string;
   projectDesc: string;
@@ -71,9 +64,7 @@ export interface CfgState {
 }
 
 export const DEFAULTS: CfgState = {
-  host: "lumix",
-  licenseInStartup: true,
-  splitSecrets: false,
+  licenseInStartup: false,
 
   projectName: "",
   projectDesc: "",
@@ -102,7 +93,7 @@ export const DEFAULTS: CfgState = {
   syncTickRate: 60,
 
   dbEnabled: true,
-  dbHost: "127.0.0.1",
+  dbHost: "",
   dbPort: 3306,
   dbUser: "root",
   dbPass: "",
@@ -214,13 +205,7 @@ export const FRAMEWORKS: Record<
   },
 };
 
-export type Line = { text: string; field?: string; secret?: boolean };
-
-export interface CfgOutput {
-  main: Line[];
-  // Empty unless splitSecrets. Header plus every line flagged secret.
-  secrets: Line[];
-}
+export type Line = { text: string; field?: string };
 
 const LOCALHOST = /^(localhost|127\.0\.0\.1|::1|0\.0\.0\.0)$/i;
 
@@ -243,13 +228,11 @@ export function connectionString(s: CfgState): string {
   return `mysql://${auth}@${s.dbHost}:${s.dbPort}/${s.dbName}?charset=utf8mb4`;
 }
 
-export function buildCfg(s: CfgState): CfgOutput {
+export function buildCfg(s: CfgState): Line[] {
   const out: Line[] = [];
   const push = (text: string, field?: string) => out.push({ text, field });
-  const secret = (text: string, field?: string) => out.push({ text, field, secret: true });
   const blank = () => push("");
   const enhanced = s.edition === "enhanced";
-  const lumix = s.host === "lumix";
   const name = s.projectName.trim() || "My FiveM Server";
 
   push(`# ${name} · server.cfg`, "projectName");
@@ -258,19 +241,8 @@ export function buildCfg(s: CfgState): CfgOutput {
   push("# Only read on boot. Restart after every edit.");
   blank();
 
-  if (s.splitSecrets) {
-    push("# Keys and passwords live in secrets.cfg. Keep that file out of", "splitSecrets");
-    push("# git and out of Discord.", "splitSecrets");
-    push("exec secrets.cfg", "splitSecrets");
-    blank();
-  }
-
-  if (lumix) {
-    push("# Port = the game allocation in the Network tab, not the", "port");
-    push("# txAdmin one. 0.0.0.0 is fine, the container has one interface.", "port");
-  } else {
-    push("# Change the IP only if the box has several interfaces.");
-  }
+  push("# Port = the game allocation in the Network tab, not the", "port");
+  push("# txAdmin one. 0.0.0.0 is fine, the container has one interface.", "port");
   push(`endpoint_add_tcp "0.0.0.0:${s.port}"`, "port");
   push(`endpoint_add_udp "0.0.0.0:${s.port}"`, "port");
   blank();
@@ -291,14 +263,14 @@ export function buildCfg(s: CfgState): CfgOutput {
 
   push("# Slots and keys");
   push(`sv_maxclients ${s.maxClients}`, "maxClients");
-  if (lumix && s.licenseInStartup) {
+  if (s.licenseInStartup) {
     push("# sv_licenseKey comes in from FIVEM_LICENSE in the Startup tab.", "licenseKey");
     push("# A line here would override it, so there isn't one.", "licenseKey");
   } else {
-    secret(`sv_licenseKey ${q(s.licenseKey.trim() || "changeme")}`, "licenseKey");
+    push(`sv_licenseKey ${q(s.licenseKey.trim() || "changeme")}`, "licenseKey");
   }
   push("# Without this, steam: identifiers never resolve.");
-  secret(`set steam_webApiKey ${q(s.steamKey.trim() || "")}`, "steamKey");
+  push(`set steam_webApiKey ${q(s.steamKey.trim() || "")}`, "steamKey");
   blank();
 
   push("# Game");
@@ -317,7 +289,7 @@ export function buildCfg(s: CfgState): CfgOutput {
   blank();
 
   push("# Listing and access");
-  if (s.rconPassword.trim()) secret(`set rcon_password ${q(s.rconPassword)}`, "rconPassword");
+  if (s.rconPassword.trim()) push(`set rcon_password ${q(s.rconPassword)}`, "rconPassword");
   else push("# RCON is off. Set a password to turn it on.", "rconPassword");
   push(`sv_endpointPrivacy ${s.endpointPrivacy}`, "endpointPrivacy");
   if (s.lan) push("sv_lan true", "lan");
@@ -330,11 +302,8 @@ export function buildCfg(s: CfgState): CfgOutput {
 
   if (s.dbEnabled) {
     push("# Database. Must be set before anything that reads it starts.");
-    // No field on this comment on purpose: with the split on, the string
-    // moves to secrets.cfg and the tab switch only fires if nothing in the
-    // main file claims the field.
-    if (lumix) push("# Host is the Databases tab endpoint. Never localhost here.");
-    secret(`set mysql_connection_string ${q(connectionString(s))}`, "db");
+    push("# Host is the Databases tab endpoint. Never localhost here.", "db");
+    push(`set mysql_connection_string ${q(connectionString(s))}`, "db");
     blank();
   }
 
@@ -366,17 +335,7 @@ export function buildCfg(s: CfgState): CfgOutput {
     push("add_principal qbcore.admin qbcore.mod", "admins");
   }
 
-  if (!s.splitSecrets) return { main: out, secrets: [] };
-
-  // Pull the flagged lines into their own file. The exec line at the top of
-  // the main file runs before anything that needs them.
-  const secrets: Line[] = [
-    { text: `# ${name} · secrets.cfg` },
-    { text: "# Loaded by server.cfg. Do not commit, do not paste anywhere." },
-    { text: "" },
-    ...out.filter((l) => l.secret).map((l) => ({ ...l, secret: false })),
-  ];
-  return { main: out.filter((l) => !l.secret), secrets };
+  return out;
 }
 
 export function splitLines(v: string): string[] {
@@ -393,9 +352,8 @@ export function warnings(s: CfgState): Warning[] {
   const stop = (field: string, text: string) => w.push({ level: "stop", field, text });
   const warn = (field: string, text: string) => w.push({ level: "warn", field, text });
 
-  const lumix = s.host === "lumix";
   const key = s.licenseKey.trim();
-  if (lumix && s.licenseInStartup) {
+  if (s.licenseInStartup) {
     // Nothing to check here, but the key still has to exist over there.
     if (key) warn("licenseKey", "Key is set to come from the Startup tab, so what you typed here isn't in the file.");
   } else if (!key || key === "changeme") {
@@ -420,12 +378,8 @@ export function warnings(s: CfgState): Warning[] {
 
   if (s.port < 1024 || s.port > 65535) {
     stop("port", "Use a port between 1024 and 65535.");
-  } else if (lumix) {
-    if (s.port === 30120) {
-      warn("port", "30120 is the template default. Check the game allocation in the Network tab; a different number here means nobody connects and the server never lists.");
-    }
-  } else if (s.port !== 30120) {
-    warn("port", `Open ${s.port} for both TCP and UDP in the firewall, or nobody connects.`);
+  } else if (s.port === 30120) {
+    warn("port", "30120 is the template default. Check the game allocation in the Network tab; a different number here means nobody connects and the server never lists.");
   }
 
   if (s.privateListing) {
@@ -440,13 +394,15 @@ export function warnings(s: CfgState): Warning[] {
   }
 
   if (s.dbEnabled) {
-    if (lumix && LOCALHOST.test(s.dbHost.trim())) {
+    if (!s.dbHost.trim()) {
+      stop("db", "No database host. Paste the Endpoint from the Databases tab.");
+    } else if (LOCALHOST.test(s.dbHost.trim())) {
       stop("db", "The database doesn't run on your game server. Use the Endpoint from the Databases tab; localhost is ECONNREFUSED every time.");
     }
     if (s.dbFormat === "uri" && URI_UNSAFE.test(s.dbPass)) {
       stop("db", "The password has a character the URI form can't carry. Switch to key=value.");
     }
-    if (!s.dbPass) warn("db", lumix ? "Empty database password. Copy it from the Databases tab." : "Empty database password. Fine on localhost, nowhere else.");
+    if (!s.dbPass) warn("db", "Empty database password. Copy it from the Databases tab.");
     if (s.framework === "vrp" && s.dbFormat === "uri") {
       warn("db", "vRP expects the key=value connection string.");
     }
