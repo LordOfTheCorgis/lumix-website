@@ -1,0 +1,947 @@
+---
+// The FiveM server.cfg maker. Form on the left, the actual file on the right,
+// and the file is the point: it rewrites as you type and the line you're
+// editing lights up in it, so the tool teaches the format while it fills it in.
+//
+// Red budget on this page: the copy button and the headline stop. The hot-line
+// marker in the file is also red, but it mirrors the input's focus ring and
+// only exists while something has focus, so it's counted as focus feedback,
+// which the system already allows to be red, not as a third UI element.
+//
+// Ember gets one new job here: string literals in the file. It was only ever
+// the warm end of the hero beams, and a warm value colour on a dark file reads
+// as "this is the bit you typed". Documented in DESIGN.md too.
+import Layout from "../../layouts/Layout.astro";
+import { GAME_BUILDS, LOCALES, FRAMEWORKS, DEFAULTS } from "../../lib/fivem";
+import { links } from "../../config";
+
+const frameworks = (["qbcore", "esx", "vrp", "vanilla", "custom"] as const).map((k) => ({
+  key: k,
+  ...FRAMEWORKS[k],
+}));
+
+const faq = [
+  {
+    q: "Where does this file go?",
+    a: "server-data/server.cfg, next to the resources folder. On txAdmin it's the file the deployer wrote; replace the contents, keep the path.",
+  },
+  {
+    q: "Legacy or Enhanced?",
+    a: "Whichever your players run. They can't cross over: a Legacy client can't join an Enhanced server and the other way round. Enhanced only ships the newest build, which is why the build picker goes away when you switch.",
+  },
+  {
+    q: "Why ink text on the red button?",
+    a: "Because white on that red fails contrast. It looks off for a minute. It's correct.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+---
+
+<Layout
+  title="FiveM server.cfg maker"
+  description="Build a FiveM server.cfg that boots first time. Endpoints, license key, game build, OneSync, MySQL string, QBCore, ESX and vRP resource order, admin ACEs. Free, nothing stored."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <section class="section border-b border-[var(--edge)]">
+    <div class="shell">
+      <p class="instrument text-fog">
+        <a href="/tools" class="hover:text-paper">Tools</a> · FiveM
+      </p>
+      <h1 class="display-xl mt-6 max-w-3xl">A server.cfg that boots first time<span class="text-red">.</span></h1>
+      <p class="lead text-fog mt-6 max-w-xl">
+        Fill in the left, watch the file write itself on the right. Every line
+        you touch lights up in the file so you learn what it does. Copy it when
+        the checks go quiet.
+      </p>
+      <p class="small text-slate mt-4">
+        Saved in this browser as you go, except the license key, RCON and database passwords.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <div class="grid items-start gap-[var(--grid-cell)] lg:grid-cols-2">
+        <form data-cfg-form class="flex flex-col gap-[var(--grid-cell)]" novalidate autocomplete="off">
+          <!-- ── Identity ─────────────────────────────────────────── -->
+          <fieldset class="panel">
+            <legend class="panel-head">
+              <span class="instrument text-fog">01 · Listing</span>
+              <span class="title block mt-2">What players see</span>
+            </legend>
+
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="field sm:col-span-2">
+                <span class="field-label">Project name</span>
+                <input name="projectName" data-field="projectName" type="text" maxlength="80" placeholder="Bayou Roleplay" />
+                <span class="field-hint">The big line in the server browser. <code>sv_projectName</code>.</span>
+              </label>
+
+              <label class="field sm:col-span-2">
+                <span class="field-label">Description</span>
+                <input name="projectDesc" data-field="projectDesc" type="text" maxlength="160" placeholder="Serious RP, whitelisted, 18+" />
+                <span class="field-hint">Under the name in the browser. Keep it to one line.</span>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Hostname</span>
+                <input name="hostname" data-field="hostname" type="text" maxlength="80" placeholder="Same as project name" />
+                <span class="field-hint">Rarely shown anywhere. Left blank it copies the project name.</span>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Tags</span>
+                <input name="tags" data-field="tags" type="text" maxlength="120" value={DEFAULTS.tags} placeholder="roleplay, whitelist, esx" />
+                <span class="field-hint">Comma separated. What the browser's filters search.</span>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Language</span>
+                <select name="locale" data-field="locale">
+                  {LOCALES.map((l) => (
+                    <option value={l.value} selected={l.value === DEFAULTS.locale}>{l.label} · {l.value}</option>
+                  ))}
+                </select>
+                <span class="field-hint">Groups you with servers in that language.</span>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Server icon</span>
+                <input name="serverIcon" data-field="serverIcon" type="text" maxlength="80" placeholder="logo.png" />
+                <span class="field-hint">96×96 PNG next to the cfg. Blank to skip.</span>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Banner (detail)</span>
+                <input name="bannerDetail" data-field="bannerDetail" type="url" placeholder="https://…/banner.png" />
+                <span class="field-hint">Shown on your server's info page. Optional.</span>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Banner (connecting)</span>
+                <input name="bannerConnecting" data-field="bannerConnecting" type="url" placeholder="https://…/loading.png" />
+                <span class="field-hint">Shown while a player loads in. Optional.</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- ── Connection ───────────────────────────────────────── -->
+          <fieldset class="panel">
+            <legend class="panel-head">
+              <span class="instrument text-fog">02 · Connection</span>
+              <span class="title block mt-2">Port, slots, keys</span>
+            </legend>
+
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="field">
+                <span class="field-label">Port</span>
+                <input name="port" data-field="port" type="number" min="1024" max="65535" value={DEFAULTS.port} inputmode="numeric" />
+                <span class="field-hint">TCP and UDP, same number. 30120 unless you have a reason.</span>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Max players</span>
+                <input name="maxClients" data-field="maxClients" type="number" min="1" max="2048" value={DEFAULTS.maxClients} inputmode="numeric" />
+                <span class="field-hint">48 is the ceiling on a free key.</span>
+              </label>
+
+              <label class="field sm:col-span-2">
+                <span class="field-label">License key</span>
+                <input name="licenseKey" data-field="licenseKey" type="text" spellcheck="false" placeholder="cfxk_…" data-secret />
+                <span class="field-hint">From <a href="https://portal.cfx.re" rel="noopener" target="_blank">portal.cfx.re</a>. Bound to the IP you registered it on.</span>
+              </label>
+
+              <label class="field sm:col-span-2">
+                <span class="field-label">Steam Web API key</span>
+                <input name="steamKey" data-field="steamKey" type="text" spellcheck="false" placeholder="32 hex characters" data-secret />
+                <span class="field-hint">Optional. Without it steam: identifiers never resolve, and most admin menus want them. <a href="https://steamcommunity.com/dev/apikey" rel="noopener" target="_blank">Get one</a>.</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- ── Game ─────────────────────────────────────────────── -->
+          <fieldset class="panel">
+            <legend class="panel-head">
+              <span class="instrument text-fog">03 · Game</span>
+              <span class="title block mt-2">Build and sync</span>
+            </legend>
+
+            <div class="grid gap-5 sm:grid-cols-2">
+              <div class="field sm:col-span-2">
+                <span class="field-label">Edition</span>
+                <div class="seg" role="radiogroup" aria-label="GTA V edition">
+                  <label class="seg-opt">
+                    <input type="radio" name="edition" data-field="edition" value="legacy" checked />
+                    <span>Legacy</span>
+                  </label>
+                  <label class="seg-opt">
+                    <input type="radio" name="edition" data-field="edition" value="enhanced" />
+                    <span>Enhanced</span>
+                  </label>
+                </div>
+                <span class="field-hint">Players can't cross over. Pick whichever your community runs.</span>
+              </div>
+
+              <label class="field" data-edition="legacy">
+                <span class="field-label">Game build</span>
+                <select name="gameBuild" data-field="gameBuild">
+                  {GAME_BUILDS.map((b) => (
+                    <option value={b.value} selected={b.value === DEFAULTS.gameBuild}>{b.label}</option>
+                  ))}
+                </select>
+                <span class="field-hint">Newest DLC your scripts support. 3095 is where most frameworks sit.</span>
+              </label>
+
+              <label class="field" data-edition="legacy">
+                <span class="field-label">OneSync</span>
+                <select name="onesync" data-field="onesync">
+                  <option value="on" selected>On (required for 32+ slots)</option>
+                  <option value="legacy">Legacy</option>
+                  <option value="off">Off</option>
+                </select>
+                <span class="field-hint">Server-side state. Leave it on unless a script tells you otherwise.</span>
+              </label>
+
+              <label class="field" data-edition="enhanced" hidden>
+                <span class="field-label">Game build</span>
+                <select name="gameBuildEnhanced" data-field="gameBuild">
+                  <option value="" selected>Current build (default)</option>
+                  <option value="1">1 · Base game, no DLC</option>
+                </select>
+                <span class="field-hint">Enhanced only ships the current build. Pinning an old number stops the server registering.</span>
+              </label>
+
+              <label class="field" data-edition="enhanced" hidden>
+                <span class="field-label">Sync tick rate</span>
+                <input name="syncTickRate" data-field="syncTickRate" type="number" min="1" max="120" value={DEFAULTS.syncTickRate} inputmode="numeric" />
+                <span class="field-hint">1 to 120. 60 is the default and fine.</span>
+              </label>
+
+              <label class="check sm:col-span-2">
+                <input type="checkbox" name="scriptHook" data-field="scriptHook" />
+                <span>
+                  <span class="block text-paper">Allow Script Hook</span>
+                  <span class="field-hint">Lets clients with Script Hook V join. Off for anything public: it's how menus get in.</span>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- ── Database ─────────────────────────────────────────── -->
+          <fieldset class="panel">
+            <legend class="panel-head">
+              <span class="instrument text-fog">04 · Database</span>
+              <span class="title block mt-2">MySQL connection</span>
+            </legend>
+
+            <label class="check mb-5">
+              <input type="checkbox" name="dbEnabled" data-field="db" checked />
+              <span>
+                <span class="block text-paper">This server uses a database</span>
+                <span class="field-hint">Every framework does. Only a bare freeroam gets away without one.</span>
+              </span>
+            </label>
+
+            <div class="grid gap-5 sm:grid-cols-2" data-db-fields>
+              <label class="field">
+                <span class="field-label">Host</span>
+                <input name="dbHost" data-field="db" type="text" spellcheck="false" value={DEFAULTS.dbHost} />
+              </label>
+              <label class="field">
+                <span class="field-label">Port</span>
+                <input name="dbPort" data-field="db" type="number" min="1" max="65535" value={DEFAULTS.dbPort} inputmode="numeric" />
+              </label>
+              <label class="field">
+                <span class="field-label">User</span>
+                <input name="dbUser" data-field="db" type="text" spellcheck="false" value={DEFAULTS.dbUser} />
+              </label>
+              <label class="field">
+                <span class="field-label">Password</span>
+                <input name="dbPass" data-field="db" type="password" data-secret />
+              </label>
+              <label class="field">
+                <span class="field-label">Database</span>
+                <input name="dbName" data-field="db" type="text" spellcheck="false" value={DEFAULTS.dbName} />
+              </label>
+              <div class="field">
+                <span class="field-label">String format</span>
+                <div class="seg" role="radiogroup" aria-label="Connection string format">
+                  <label class="seg-opt">
+                    <input type="radio" name="dbFormat" data-field="db" value="uri" checked />
+                    <span>mysql://</span>
+                  </label>
+                  <label class="seg-opt">
+                    <input type="radio" name="dbFormat" data-field="db" value="kv" />
+                    <span>key=value</span>
+                  </label>
+                </div>
+                <span class="field-hint">Same thing, two spellings. key=value survives odd characters in the password.</span>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- ── Resources ────────────────────────────────────────── -->
+          <fieldset class="panel">
+            <legend class="panel-head">
+              <span class="instrument text-fog">05 · Resources</span>
+              <span class="title block mt-2">Framework and start order</span>
+            </legend>
+
+            <div class="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Framework">
+              {frameworks.map((f) => (
+                <label class="card-opt">
+                  <input type="radio" name="framework" data-field="framework" value={f.key} checked={f.key === DEFAULTS.framework} />
+                  <span class="card-opt-body">
+                    <span class="block text-paper">{f.label}</span>
+                    <span class="field-hint">{f.hint}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+
+            <label class="field mt-5">
+              <span class="field-label">Extra resources</span>
+              <textarea name="extraResources" data-field="extraResources" rows="4" spellcheck="false" placeholder="ox_lib&#10;ox_inventory&#10;[custom]"></textarea>
+              <span class="field-hint">One per line. Folders in square brackets start everything inside them. Order matters: a resource that needs another one goes after it.</span>
+            </label>
+          </fieldset>
+
+          <!-- ── Admins ───────────────────────────────────────────── -->
+          <fieldset class="panel">
+            <legend class="panel-head">
+              <span class="instrument text-fog">06 · Admins</span>
+              <span class="title block mt-2">Who gets the console</span>
+            </legend>
+
+            <label class="field">
+              <span class="field-label">Admin identifiers</span>
+              <textarea name="admins" data-field="admins" rows="4" spellcheck="false" placeholder="license:1234567890abcdef…&#10;discord:123456789012345678"></textarea>
+              <span class="field-hint">One per line. Your license: identifier is in the F8 console after you join, or on <a href="https://portal.cfx.re" rel="noopener" target="_blank">portal.cfx.re</a>. Each one gets <code>group.admin</code>.</span>
+            </label>
+          </fieldset>
+
+          <!-- ── Advanced ─────────────────────────────────────────── -->
+          <details class="panel" data-advanced>
+            <summary class="panel-head cursor-pointer list-none">
+              <span class="instrument text-fog">07 · Advanced</span>
+              <span class="title mt-2 flex items-center justify-between">
+                RCON, listing, purity
+                <svg aria-hidden="true" viewBox="0 0 10 6" class="details-arrow h-1.5 w-2.5 transition-transform duration-200">
+                  <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" />
+                </svg>
+              </span>
+            </summary>
+
+            <div class="mt-6 grid gap-5 sm:grid-cols-2">
+              <div class="field sm:col-span-2">
+                <label class="field-label" for="rconPassword">RCON password</label>
+                <div class="flex gap-2">
+                  <input id="rconPassword" name="rconPassword" data-field="rconPassword" type="text" spellcheck="false" placeholder="Blank keeps RCON off" class="min-w-0 flex-1" data-secret />
+                  <button type="button" data-gen-rcon class="btn-ghost shrink-0">Generate</button>
+                </div>
+                <span class="field-hint">Remote console over UDP, no lockout, no rate limit. If you don't know you need it, leave it off.</span>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Pure mode</span>
+                <select name="pureLevel" data-field="pureLevel">
+                  <option value="0" selected>Off</option>
+                  <option value="1">1 · Block modified files, allow audio and graphics mods</option>
+                  <option value="2">2 · Block every modified file</option>
+                </select>
+                <span class="field-hint">Rejects clients with edited game files. Level 1 is the sane public setting.</span>
+              </label>
+
+              <div class="flex flex-col gap-4">
+                <label class="check">
+                  <input type="checkbox" name="endpointPrivacy" data-field="endpointPrivacy" checked />
+                  <span>
+                    <span class="block text-paper">Hide player IPs</span>
+                    <span class="field-hint">Strips addresses from the public /players endpoint.</span>
+                  </span>
+                </label>
+                <label class="check">
+                  <input type="checkbox" name="privateListing" data-field="privateListing" />
+                  <span>
+                    <span class="block text-paper">Private listing</span>
+                    <span class="field-hint">Not in the server browser. Direct connect still works.</span>
+                  </span>
+                </label>
+                <label class="check">
+                  <input type="checkbox" name="lan" data-field="lan" />
+                  <span>
+                    <span class="block text-paper">LAN only</span>
+                    <span class="field-hint">Never registers with Cfx. For a box on your desk.</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </details>
+
+          <div class="flex items-center justify-between">
+            <button type="button" data-reset class="small text-slate underline underline-offset-4 hover:text-paper">Start over</button>
+          </div>
+        </form>
+
+        <!-- ── The file ─────────────────────────────────────────── -->
+        <aside class="lg:sticky lg:top-24" aria-label="Generated server.cfg">
+          <figure class="file m-0 border border-[var(--edge)] bg-ink-soft">
+            <figcaption class="flex flex-wrap items-center gap-3 border-b border-[var(--edge)] px-4 py-3">
+              <span class="instrument text-paper">server.cfg</span>
+              <span class="instrument text-slate" data-line-count>0 lines</span>
+              <span class="ml-auto flex items-center gap-2">
+                <button type="button" data-download class="btn-ghost">Download</button>
+                <button type="button" data-copy class="chamfer bg-red px-4 py-2 text-sm font-medium text-ink transition-colors duration-150 hover:bg-red-pressed">
+                  Copy file
+                </button>
+              </span>
+            </figcaption>
+            <pre class="file-body m-0 overflow-auto" data-file-scroll><code data-file aria-live="off"></code></pre>
+          </figure>
+
+          <div class="mt-4 border border-[var(--edge)] bg-ink-soft" data-checks>
+            <div class="flex items-center gap-3 border-b border-[var(--edge)] px-4 py-3">
+              <span class="instrument text-paper">Checks</span>
+              <span class="instrument text-slate" data-check-count></span>
+            </div>
+            <ul class="m-0 list-none p-0" data-check-list></ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band border-t border-[var(--edge)]">
+    <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h2 class="title">Somewhere to run it</h2>
+        <p class="lead text-fog mt-6 max-w-lg">
+          FiveM servers from us come with txAdmin and MySQL already provisioned,
+          so this file drops straight in. Four US regions, dedicated vCores.
+        </p>
+        <a
+          href="/games/fivem"
+          class="chamfer mt-8 inline-flex items-center gap-2 border border-[var(--edge-strong)] px-7 py-4 font-medium text-paper transition-colors duration-150 hover:border-red hover:text-red"
+        >
+          FiveM hosting
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+      <dl class="m-0">
+        {faq.map((f) => (
+          <div class="border-t border-[var(--edge)] py-5 first:border-t-0 first:pt-0">
+            <dt class="text-paper">{f.q}</dt>
+            <dd class="small text-fog m-0 mt-2">{f.a}</dd>
+          </div>
+        ))}
+        <div class="border-t border-[var(--edge)] py-5">
+          <dt class="text-paper">Something wrong in the output?</dt>
+          <dd class="small text-fog m-0 mt-2">
+            Cfx moves things. <a href={links.discord} rel="noopener" class="text-paper underline underline-offset-4 hover:text-red">Tell us in Discord</a> and it gets fixed the same day.
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* ── Form furniture ──────────────────────────────────────────────────────
+     A panel is its hairline. Inputs are darker than the panel so they read
+     as wells; the strong edge on them is what makes a field findable on ink
+     without a fill. */
+  .panel {
+    border: 1px solid var(--edge);
+    background: var(--color-ink-soft);
+    padding: 1.5rem;
+    margin: 0;
+    min-width: 0;
+  }
+
+  .panel-head {
+    display: block;
+    margin-bottom: 1.5rem;
+    padding: 0;
+    float: none;
+    width: 100%;
+  }
+
+  /* <legend> floats out of the fieldset's border box by default and eats
+     the padding. Resetting it to a block puts it back in flow. */
+  fieldset.panel { padding-top: 1.5rem; }
+  fieldset.panel > legend { float: left; width: 100%; }
+  fieldset.panel > legend + * { clear: both; }
+
+  details.panel summary::-webkit-details-marker { display: none; }
+  details[open] .details-arrow { transform: rotate(180deg); }
+  details.panel > summary { margin-bottom: 0; }
+
+  .field { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+
+  .field-label {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.6875rem;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .field-hint {
+    display: block;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-slate);
+  }
+
+  .field-hint code {
+    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    color: var(--color-fog);
+  }
+
+  .field-hint a {
+    color: var(--color-fog);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .field-hint a:hover { color: var(--color-paper); }
+
+  .field input:not([type="radio"]):not([type="checkbox"]),
+  .field select,
+  .field textarea {
+    width: 100%;
+    background: var(--color-ink);
+    border: 1px solid var(--edge-strong);
+    color: var(--color-paper);
+    padding: 0.625rem 0.75rem;
+    font: inherit;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    transition: border-color 150ms;
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder { color: var(--color-slate); opacity: 1; }
+
+  .field input:hover,
+  .field select:hover,
+  .field textarea:hover { border-color: rgba(255, 235, 225, 0.3); }
+
+  /* Red at focus is the global ring; the border just goes quiet under it. */
+  .field input:focus-visible,
+  .field select:focus-visible,
+  .field textarea:focus-visible { border-color: transparent; }
+
+  .field textarea {
+    resize: vertical;
+    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .field select {
+    appearance: none;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23b7afb5' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 10px 6px;
+  }
+
+  /* Segmented radios. The selected one is paper on ink-soft-on-ink, not red:
+     the budget's spent. */
+  .seg {
+    display: inline-flex;
+    border: 1px solid var(--edge-strong);
+    background: var(--color-ink);
+  }
+  .seg-opt { position: relative; }
+  .seg-opt input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .seg-opt span {
+    display: block;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: var(--color-fog);
+    transition: color 150ms, background-color 150ms;
+  }
+  .seg-opt + .seg-opt span { border-left: 1px solid var(--edge-strong); }
+  .seg-opt input:checked + span { color: var(--color-ink); background: var(--color-paper); }
+  .seg-opt input:focus-visible + span { outline: 2px solid var(--color-red); outline-offset: -2px; }
+
+  /* Framework cards. Same trick, bigger target. */
+  .card-opt { position: relative; display: block; }
+  .card-opt input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+  .card-opt-body {
+    display: block;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--edge-strong);
+    background: var(--color-ink);
+    transition: border-color 150ms;
+  }
+  .card-opt:hover .card-opt-body { border-color: rgba(255, 235, 225, 0.3); }
+  .card-opt input:checked + .card-opt-body { border-color: var(--color-paper); }
+  .card-opt input:focus-visible + .card-opt-body { outline: 2px solid var(--color-red); outline-offset: 2px; }
+
+  .check { display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; }
+  .check input {
+    appearance: none;
+    flex: none;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin-top: 0.2rem;
+    border: 1px solid var(--edge-strong);
+    background: var(--color-ink);
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+  }
+  .check input::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--color-paper);
+    transform: scale(0);
+    transition: transform 120ms;
+  }
+  .check input:checked::before { transform: scale(1); }
+
+  .btn-ghost {
+    border: 1px solid var(--edge-strong);
+    color: var(--color-fog);
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: color 150ms, border-color 150ms;
+    cursor: pointer;
+  }
+  .btn-ghost:hover { color: var(--color-paper); border-color: var(--color-paper); }
+
+  [data-db-fields].is-off { opacity: 0.4; pointer-events: none; }
+
+  /* ── The file ────────────────────────────────────────────────────────────
+     Mono is the subject here, same exception the Terminal takes. Line numbers
+     are a counter so the copied text never contains them. */
+  .file-body {
+    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    tab-size: 2;
+    max-height: min(68vh, 44rem);
+    padding: 1rem 0;
+    counter-reset: line;
+  }
+
+  .file-body :global(.line) {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    padding-right: 1rem;
+    white-space: pre;
+    box-shadow: inset 2px 0 0 transparent;
+    transition: background-color 150ms, box-shadow 150ms;
+  }
+
+  .file-body :global(.line)::before {
+    counter-increment: line;
+    content: counter(line);
+    text-align: right;
+    padding-right: 1rem;
+    color: var(--color-slate);
+    opacity: 0.6;
+    user-select: none;
+  }
+
+  /* Mirrors the input's focus ring. See the note at the top of the file. */
+  .file-body :global(.line[data-hot]) {
+    background: rgba(255, 76, 76, 0.07);
+    box-shadow: inset 2px 0 0 var(--color-red);
+  }
+
+  .file-body :global(.c) { color: var(--color-slate); }
+  .file-body :global(.k) { color: var(--color-paper); font-weight: 500; }
+  .file-body :global(.a) { color: var(--color-fog); }
+  .file-body :global(.s) { color: var(--color-ember); }
+
+  /* ── Checks ──────────────────────────────────────────────────────────── */
+  [data-check-list] :global(li) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    align-items: start;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--edge);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-fog);
+  }
+  [data-check-list] :global(li:first-child) { border-top: 0; }
+  [data-check-list] :global(li button) {
+    text-align: left;
+    color: inherit;
+    cursor: pointer;
+  }
+  [data-check-list] :global(li button:hover) { color: var(--color-paper); }
+  [data-check-list] :global(.mark) {
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-top: 0.45rem;
+    background: var(--color-slate);
+  }
+  /* Stop is ember, not red. A stop is a fact about the file, not a call to action. */
+  [data-check-list] :global(.mark.stop) { background: var(--color-ember); }
+  [data-check-list] :global(.all-clear) { color: var(--color-fog); }
+</style>
+
+<script>
+  import { DEFAULTS, buildCfg, warnings, type CfgState } from "../../lib/fivem";
+
+  const form = document.querySelector<HTMLFormElement>("[data-cfg-form]")!;
+  const fileEl = document.querySelector<HTMLElement>("[data-file]")!;
+  const scrollEl = document.querySelector<HTMLElement>("[data-file-scroll]")!;
+  const lineCount = document.querySelector<HTMLElement>("[data-line-count]")!;
+  const checkList = document.querySelector<HTMLElement>("[data-check-list]")!;
+  const checkCount = document.querySelector<HTMLElement>("[data-check-count]")!;
+  const copyBtn = document.querySelector<HTMLButtonElement>("[data-copy]")!;
+  const dlBtn = document.querySelector<HTMLButtonElement>("[data-download]")!;
+  const resetBtn = document.querySelector<HTMLButtonElement>("[data-reset]")!;
+  const genRcon = document.querySelector<HTMLButtonElement>("[data-gen-rcon]")!;
+  const dbFields = document.querySelector<HTMLElement>("[data-db-fields]")!;
+
+  const STORE = "lumix:fivem-cfg";
+  // Never persisted, whatever else is. Shared machines exist.
+  const SECRET = new Set(["licenseKey", "steamKey", "rconPassword", "dbPass"]);
+
+  type Ctl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+  const controls = () => Array.from(form.elements).filter((e) => (e as Ctl).name) as Ctl[];
+
+  function readState(): CfgState {
+    const s: Record<string, unknown> = { ...DEFAULTS };
+    let enhancedBuild = "";
+    for (const el of controls()) {
+      const key = el.name;
+      if (el instanceof HTMLInputElement && el.type === "checkbox") s[key] = el.checked;
+      else if (el instanceof HTMLInputElement && el.type === "radio") { if (el.checked) s[key] = el.value; }
+      else if (el instanceof HTMLInputElement && el.type === "number") s[key] = Number(el.value);
+      else if (key === "gameBuildEnhanced") enhancedBuild = el.value;
+      else s[key] = el.value;
+    }
+    if (s.edition === "enhanced") s.gameBuild = enhancedBuild;
+    return s as unknown as CfgState;
+  }
+
+  function writeState(s: Partial<CfgState>) {
+    for (const el of controls()) {
+      const key = el.name === "gameBuildEnhanced" ? "gameBuild" : el.name;
+      if (!(key in s)) continue;
+      const v = (s as Record<string, unknown>)[key];
+      if (el instanceof HTMLInputElement && el.type === "checkbox") el.checked = Boolean(v);
+      else if (el instanceof HTMLInputElement && el.type === "radio") el.checked = el.value === String(v);
+      else el.value = String(v ?? "");
+    }
+  }
+
+  // ── Rendering ─────────────────────────────────────────────────────────
+  const esc = (t: string) =>
+    t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  // Comment, or command + args with quoted strings picked out. Two tones plus
+  // dim, on purpose; a third colour for numbers looked like an IDE theme.
+  function highlight(text: string): string {
+    if (text.startsWith("#")) return `<span class="c">${esc(text)}</span>`;
+    if (!text) return "";
+    const parts = text.split('"');
+    let html = "";
+    parts.forEach((part, i) => {
+      if (i % 2 === 1) {
+        html += `<span class="s">"${esc(part)}"</span>`;
+      } else if (i === 0) {
+        const m = part.match(/^(\S+)(.*)$/s);
+        if (m) html += `<span class="k">${esc(m[1])}</span><span class="a">${esc(m[2])}</span>`;
+        else html += `<span class="a">${esc(part)}</span>`;
+      } else {
+        html += `<span class="a">${esc(part)}</span>`;
+      }
+    });
+    return html;
+  }
+
+  let currentText = "";
+  let hotField: string | null = null;
+
+  function render() {
+    const s = readState();
+    const lines = buildCfg(s);
+    currentText = lines.map((l) => l.text).join("\n") + "\n";
+
+    fileEl.innerHTML = lines
+      .map((l) => `<span class="line"${l.field ? ` data-field="${l.field}"` : ""}>${highlight(l.text) || " "}</span>`)
+      .join("");
+    lineCount.textContent = `${lines.length} lines`;
+
+    const w = warnings(s);
+    const stops = w.filter((x) => x.level === "stop").length;
+    checkCount.textContent = w.length
+      ? `${stops ? `${stops} will stop the server` : "nothing fatal"} · ${w.length - stops} worth a look`
+      : "";
+    checkList.innerHTML = w.length
+      ? w
+          .map(
+            (x) =>
+              `<li><span class="mark ${x.level}"></span><button type="button" data-goto="${x.field}">${esc(x.text)}</button></li>`
+          )
+          .join("")
+      : `<li><span class="mark"></span><span class="all-clear">All quiet. Copy it.</span></li>`;
+
+    applyHot();
+    persist(s);
+  }
+
+  function applyHot() {
+    fileEl.querySelectorAll<HTMLElement>(".line[data-hot]").forEach((l) => l.removeAttribute("data-hot"));
+    if (!hotField) return;
+    const hot = fileEl.querySelectorAll<HTMLElement>(`.line[data-field="${hotField}"]`);
+    hot.forEach((l) => l.setAttribute("data-hot", ""));
+    const first = hot[0];
+    if (!first) return;
+    // Scroll the file, not the page. scrollIntoView would drag the whole
+    // document around every time you tab to a field.
+    const top = first.offsetTop - scrollEl.clientHeight / 2 + first.offsetHeight / 2;
+    scrollEl.scrollTo({ top: Math.max(0, top), behavior: reduced ? "auto" : "smooth" });
+  }
+
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ── Edition and db toggles ────────────────────────────────────────────
+  function syncVisibility() {
+    const s = readState();
+    form.querySelectorAll<HTMLElement>("[data-edition]").forEach((el) => {
+      el.hidden = el.dataset.edition !== s.edition;
+    });
+    dbFields.classList.toggle("is-off", !s.dbEnabled);
+    dbFields.querySelectorAll<Ctl>("input").forEach((i) => (i.tabIndex = s.dbEnabled ? 0 : -1));
+  }
+
+  // ── Persistence ───────────────────────────────────────────────────────
+  function persist(s: CfgState) {
+    try {
+      const safe: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(s)) if (!SECRET.has(k)) safe[k] = v;
+      localStorage.setItem(STORE, JSON.stringify(safe));
+    } catch {}
+  }
+
+  function restore() {
+    try {
+      const raw = localStorage.getItem(STORE);
+      if (raw) writeState(JSON.parse(raw));
+    } catch {}
+  }
+
+  // ── Events ────────────────────────────────────────────────────────────
+  form.addEventListener("input", render);
+  form.addEventListener("change", (e) => {
+    const t = e.target as Ctl;
+    if (t.name === "edition" || t.name === "dbEnabled") syncVisibility();
+    // vRP wants kv. Flip it once on selection; the user can flip it back and
+    // the check will nag them, which is the right amount of nagging.
+    if (t.name === "framework" && t.value === "vrp") {
+      const kv = form.querySelector<HTMLInputElement>('input[name="dbFormat"][value="kv"]');
+      if (kv) kv.checked = true;
+    }
+    render();
+  });
+
+  form.addEventListener("focusin", (e) => {
+    const t = e.target as HTMLElement;
+    const f = t.closest<HTMLElement>("[data-field]")?.dataset.field ?? null;
+    if (f !== hotField) {
+      hotField = f;
+      applyHot();
+    }
+  });
+
+  form.addEventListener("focusout", () => {
+    // Let the next focusin win first, otherwise tabbing between fields
+    // flickers the marker off and on.
+    requestAnimationFrame(() => {
+      if (!form.contains(document.activeElement)) {
+        hotField = null;
+        applyHot();
+      }
+    });
+  });
+
+  checkList.addEventListener("click", (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-goto]");
+    if (!btn) return;
+    const target = form.querySelector<Ctl>(`[data-field="${btn.dataset.goto}"]`);
+    if (!target) return;
+    // Advanced is closed by default and a field inside it can't take focus.
+    target.closest("details")?.setAttribute("open", "");
+    target.focus();
+    target.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" });
+  });
+
+  copyBtn.addEventListener("click", async () => {
+    const label = copyBtn.textContent;
+    try {
+      await navigator.clipboard.writeText(currentText);
+      copyBtn.textContent = "Copied";
+    } catch {
+      copyBtn.textContent = "Select and copy";
+      const range = document.createRange();
+      range.selectNodeContents(fileEl);
+      getSelection()?.removeAllRanges();
+      getSelection()?.addRange(range);
+    }
+    setTimeout(() => (copyBtn.textContent = label), 1500);
+  });
+
+  dlBtn.addEventListener("click", () => {
+    const blob = new Blob([currentText], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "server.cfg";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+
+  genRcon.addEventListener("click", () => {
+    const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+    const bytes = crypto.getRandomValues(new Uint8Array(24));
+    const pw = Array.from(bytes, (b) => alphabet[b % alphabet.length]).join("");
+    const input = form.querySelector<HTMLInputElement>('[name="rconPassword"]')!;
+    input.value = pw;
+    input.focus();
+    render();
+  });
+
+  resetBtn.addEventListener("click", () => {
+    try { localStorage.removeItem(STORE); } catch {}
+    writeState(DEFAULTS);
+    syncVisibility();
+    render();
+  });
+
+  restore();
+  syncVisibility();
+  render();
+</script>
