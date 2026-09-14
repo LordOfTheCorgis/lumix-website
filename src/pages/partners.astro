@@ -37,7 +37,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
     <div class="shell">
       <ol class="m-0 list-none p-0 border-t border-[var(--edge)]" data-grid-anchor>
         {partners.map((p, i) => (
-          <li class="group grid gap-6 border-b border-[var(--edge)] py-[var(--grid-cell)] lg:grid-cols-[calc(2*var(--grid-cell))_minmax(0,5fr)_minmax(0,6fr)_auto] lg:gap-10">
+          <li class="group grid gap-6 border-b border-[var(--edge)] py-[var(--grid-cell)] lg:grid-cols-[calc(2*var(--grid-cell))_minmax(0,5fr)_minmax(0,6fr)_12rem] lg:gap-10">
             <a
               href={p.url ?? p.discord}
               rel="noopener"
