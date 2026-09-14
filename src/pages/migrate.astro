@@ -1,0 +1,263 @@
+---
+// Moving a server in from another host. Two paths, both real: Lumi-Panel's
+// Server Importer pulls files over SFTP by itself (docs: lumi-panel/
+// management/server-importer), or support does it on a ticket. The form
+// below is the ticket path: it builds the message so people don't open one
+// that says "help me move" with nothing in it. Nothing is sent from here; the
+// site never talks to a backend. Copy, then paste into the ticket.
+import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import { links, demoPanel } from "../config";
+
+const games = (await getCollection("games"))
+  .filter((g) => g.data.status === "live")
+  .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
+
+const docs = `${links.docs}/lumi-panel/management/server-importer`;
+
+// Straight from the importer docs. Files come across; these don't.
+const notCopied = ["Subusers", "Schedules", "Port allocations", "Databases"];
+---
+
+<Layout
+  title="Move your server to Lumix"
+  description="Pull an existing game server in over SFTP with the Server Importer, or let support do it on a ticket. Files come across as-is; you're online the same day."
+  stickyCta={false}
+>
+  <section class="section border-b border-[var(--edge)]">
+    <div class="shell">
+      <p class="instrument text-fog">Migrate</p>
+      <h1 class="display-xl mt-6 max-w-3xl">Bring the server you already have<span class="text-red">.</span></h1>
+      <p class="lead text-fog mt-6 max-w-xl">
+        Every panel we've seen speaks SFTP. Lumi-Panel pulls your files
+        straight off the old host, no archive, no re-upload. Do it yourself in
+        the panel, or hand us the details and we'll do it on a ticket.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell grid gap-[var(--grid-cell)] lg:grid-cols-2">
+      <!-- Path one: self-service -->
+      <div class="border border-[var(--edge)] p-6 lg:p-8">
+        <p class="instrument text-fog">Path one · yourself, in the panel</p>
+        <h2 class="title mt-2">Server Importer</h2>
+        <ol class="mt-6 m-0 list-none space-y-4 p-0">
+          {[
+            ["Order the plan and open your new server in Lumi-Panel.", "/games"],
+            ["Stop the old server so nothing writes to disk mid-copy.", null],
+            ["Get SFTP details from the old host: hostname, port, username, password.", null],
+            ["Server Importer tab: enter them, set source and destination paths, Start Import.", docs],
+            ["Watch the progress bar. When it finishes, press Start.", null],
+          ].map(([text, href], i) => (
+            <li class="grid grid-cols-[2rem_1fr] gap-3">
+              <span class="instrument tabular pt-1 text-slate">{String(i + 1).padStart(2, "0")}</span>
+              <span class="small text-fog">
+                {text}{" "}
+                {href && (
+                  <a href={href} rel={href.startsWith("http") ? "noopener" : undefined} class="text-slate underline underline-offset-4 hover:text-paper">
+                    {href.startsWith("http") ? "Docs" : "Plans"}
+                  </a>
+                )}
+              </span>
+            </li>
+          ))}
+        </ol>
+
+        <p class="small text-slate mt-6">
+          Files copy recursively. These don't, and you set them up fresh in the
+          panel: {notCopied.join(", ").toLowerCase()}. Busy server? Run the
+          importer twice: once for the bulk, again during a maintenance window
+          for what changed.
+        </p>
+
+        {demoPanel.url && (
+          <a
+            href={demoPanel.url}
+            rel="noopener"
+            class="small mt-6 inline-flex items-center gap-1.5 text-fog hover:text-paper"
+          >
+            Look around the panel first <span aria-hidden="true">&rarr;</span>
+          </a>
+        )}
+      </div>
+
+      <!-- Path two: the ticket, with the message written for you -->
+      <div class="border border-[var(--edge)] p-6 lg:p-8">
+        <p class="instrument text-fog">Path two · we do it</p>
+        <h2 class="title mt-2">Hand it to support</h2>
+        <p class="small text-fog mt-3">
+          Fill this in and it writes the ticket. Nothing leaves this page until
+          you paste it. Passwords go in the ticket, not here.
+        </p>
+
+        <form data-migrate class="mt-6 grid gap-5 sm:grid-cols-2" novalidate autocomplete="off">
+          <label class="field">
+            <span class="field-label">Game</span>
+            <select name="game">
+              {games.map((g) => <option value={g.data.shortLabel}>{g.data.shortLabel}</option>)}
+              <option value="Something else">Something else</option>
+            </select>
+          </label>
+          <label class="field">
+            <span class="field-label">Current host</span>
+            <input name="host" type="text" placeholder="Apex, ZAP, Bisect…" maxlength="60" />
+          </label>
+          <label class="field">
+            <span class="field-label">SFTP hostname</span>
+            <input name="sftpHost" type="text" spellcheck="false" placeholder="sftp.oldhost.com" maxlength="120" />
+          </label>
+          <label class="field">
+            <span class="field-label">SFTP port</span>
+            <input name="sftpPort" type="number" min="1" max="65535" value="22" inputmode="numeric" />
+          </label>
+          <label class="field">
+            <span class="field-label">SFTP username</span>
+            <input name="sftpUser" type="text" spellcheck="false" placeholder="user.abc123" maxlength="120" />
+          </label>
+          <label class="field">
+            <span class="field-label">Server size on disk</span>
+            <input name="size" type="text" placeholder="12 GB, roughly" maxlength="40" />
+          </label>
+          <label class="field sm:col-span-2">
+            <span class="field-label">Anything we should know</span>
+            <textarea name="notes" rows="3" placeholder="Wipe day is Thursday. Keep the old one up until then."></textarea>
+          </label>
+        </form>
+
+        <div class="mt-6 border border-[var(--edge)]">
+          <div class="flex items-center gap-3 border-b border-[var(--edge)] px-4 py-3">
+            <span class="instrument text-paper">Your ticket</span>
+            <button type="button" data-copy class="chamfer ml-auto bg-red px-4 py-2 text-sm font-medium text-ink transition-colors duration-150 hover:bg-red-pressed">Copy</button>
+          </div>
+          <pre class="ticket m-0 p-4" data-ticket></pre>
+        </div>
+
+        <p class="small text-fog mt-6">
+          Then{" "}
+          <a href={links.ticket} rel="noopener" class="text-paper underline underline-offset-4 hover:text-red">open a ticket</a>,
+          paste, add the SFTP password there. We stop the old one, pull it,
+          start it here, and tell you when to point players at the new IP.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band border-t border-[var(--edge)]">
+    <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h2 class="title">What to expect</h2>
+        <p class="lead text-fog mt-6 max-w-lg">
+          Same files, new address. Your players change one IP and everything
+          they had is still there.
+        </p>
+      </div>
+      <dl class="m-0">
+        {[
+          ["How long does it take?", "The copy runs at whatever the old host's SFTP will give. A 10 GB server is usually under an hour. Running the importer a second time only moves what changed."],
+          ["Does the old host need to stay up?", "Only until the copy finishes. Keep it a day past that if you want a safety net; cancel it once the new one has taken a restart cleanly."],
+          ["What about the database?", "Export it from the old host, request one from the Databases tab here, import at db.lumixsolutions.org, then point your config at the new endpoint."],
+          ["Ports change?", "Yes. Lumi-Panel assigns them per server in the Network tab. Anything hardcoded in a config, like a FiveM endpoint line, gets updated to match."],
+        ].map(([q, a]) => (
+          <div class="border-t border-[var(--edge)] py-5 first:border-t-0 first:pt-0">
+            <dt class="text-paper">{q}</dt>
+            <dd class="small text-fog m-0 mt-2">{a}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .field { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+  .field-label {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.6875rem;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    background: var(--color-ink-soft);
+    border: 1px solid var(--edge-strong);
+    color: var(--color-paper);
+    padding: 0.625rem 0.75rem;
+    font: inherit;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+  }
+  .field input::placeholder, .field textarea::placeholder { color: var(--color-slate); opacity: 1; }
+  .field input:focus-visible, .field select:focus-visible, .field textarea:focus-visible { border-color: transparent; }
+  .field textarea { resize: vertical; }
+  .field select {
+    appearance: none;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23b7afb5' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 10px 6px;
+  }
+
+  /* The ticket is text someone is about to paste, so it's mono, same
+     exception the terminal and the cfg file take. */
+  .ticket {
+    background: var(--color-ink-soft);
+    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--color-fog);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    min-height: 9rem;
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("[data-migrate]")!;
+  const out = document.querySelector<HTMLElement>("[data-ticket]")!;
+  const copy = document.querySelector<HTMLButtonElement>("[data-copy]")!;
+
+  const v = (name: string) => (form.elements.namedItem(name) as HTMLInputElement | null)?.value.trim() ?? "";
+
+  function render() {
+    const lines = [
+      `Subject: Migrate my ${v("game") || "server"} from ${v("host") || "my current host"}`,
+      "",
+      `Game: ${v("game") || "(fill in)"}`,
+      `Current host: ${v("host") || "(fill in)"}`,
+      `SFTP host: ${v("sftpHost") || "(fill in)"}`,
+      `SFTP port: ${v("sftpPort") || "22"}`,
+      `SFTP user: ${v("sftpUser") || "(fill in)"}`,
+      "SFTP password: (I'll put it in this ticket, not on the website)",
+      `Size on disk: ${v("size") || "(rough number is fine)"}`,
+      "",
+      v("notes") ? `Notes: ${v("notes")}` : "Notes: none",
+      "",
+      "I've stopped the old server, or tell me when to.",
+    ];
+    out.textContent = lines.join("\n");
+  }
+
+  form.addEventListener("input", render);
+  form.addEventListener("change", render);
+  render();
+
+  copy.addEventListener("click", async () => {
+    const label = copy.textContent;
+    try {
+      await navigator.clipboard.writeText(out.textContent ?? "");
+      copy.textContent = "Copied";
+    } catch {
+      copy.textContent = "Select and copy";
+      const r = document.createRange();
+      r.selectNodeContents(out);
+      getSelection()?.removeAllRanges();
+      getSelection()?.addRange(r);
+    }
+    setTimeout(() => (copy.textContent = label), 1500);
+  });
+</script>
