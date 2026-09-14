@@ -26,7 +26,10 @@
      dark room lit by something warm, which is also what the hero's light is
      doing. Still ink, still the only ground. */
   --color-ink: #161114;
-  --color-ink-soft: #221a1f;
+  /* Was #221a1f, which had its blue above its green and read faintly pink
+     wherever a lot of it sat together. Evan called it on the tools page,
+     2026-09-14. Now r >= g >= b: still warm, no magenta. */
+  --color-ink-soft: #201c1c;
 
   /* ── Light ───────────────────────────────────────────────────────────────
      Two warm hues. Ember is the source end of the hero beams. Gold is the

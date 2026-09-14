@@ -93,7 +93,7 @@ record.
 | `red-pressed` | `#C43535` | Hover and active. **Also the only red allowed for text on Paper.** |
 | `red-tint` | `#FF8A8A` | Highlights on dark surfaces only. |
 | `ink` | `#161114` | Default background. Warm, leaning toward the red. |
-| `ink-soft` | `#221A1F` | Cards and panels on Ink, and the ground for `.band` sections. |
+| `ink-soft` | `#201C1C` | Cards and panels on Ink, and the ground for `.band` sections. |
 | `ember` | `#FF7A45` | The source end of the hero beams, and string literals in a generated config file (the tools). Nothing else. |
 | `gold` | `#FFB347` | The promo bar fill and the price. Nothing else. |
 | `paper` | `#F7F5F1` | Primary text on Ink. The one light fill. |

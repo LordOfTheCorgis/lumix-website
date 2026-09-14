@@ -563,8 +563,9 @@ const faqSchema = {
   }
   .field-hint a:hover { color: var(--color-paper); }
 
-  /* A neutral lift over ink, r >= g >= b, so it warms without going pink. */
-  .file, .panel, aside { --well: #1e1b1b; }
+  /* The wells are the raised tone. Panels don't use it: a fill on a fill
+     is the thing the hairline rule exists to prevent. */
+  .file, .panel, aside { --well: var(--color-ink-soft); }
 
   .field input:not([type="radio"]):not([type="checkbox"]),
   .field select,
