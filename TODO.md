@@ -80,6 +80,17 @@ the commit and point at this file.
       Enhanced builds" on your word. If the panel needs a manual step for
       Enhanced, say so on the page or take the line out.
 
+## Tools
+
+- [ ] **Confirm or cut the three planned tools** on `/tools`: Minecraft
+      server.properties, Rust startup command, FiveM permissions.cfg. They're
+      dimmed and link to Discord, so nothing's promised, but they're on the
+      page in your name. Edit `tools` in `src/pages/tools/index.astro`.
+- [ ] **Sanity-check the cfg maker output** against a server you actually
+      run. The framework blocks come from QBCore's own recipe and ESX's
+      repo, the Enhanced rules from cfx's Legacy-vs-Enhanced page, all read
+      2026-09-14. If a preset is wrong for how you deploy, `src/lib/fivem.ts`.
+
 ## Later, not blocking
 
 - [ ] **Capacity Board.** DESIGN.md section 8's signature element, never built.

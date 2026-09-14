@@ -41,6 +41,24 @@ three dated 2026-09-10.
 **Components:** Header, Footer, GameTile, StickyCta, CookieBanner, Analytics,
 LightRays, GridPattern, and a three-part Terminal.
 
+**Header has a "More" drawer** (2026-09-14). Desktop: hover or click, arrow
+flips, Escape closes, ArrowDown from the toggle lands on the first link,
+focus leaving the panel closes it. Mobile: rendered as a labelled group in the
+existing panel, no dropdown. Items come from `moreNav` in `src/config.ts`.
+The panel is deliberately not chamfered; the cut corner clipped focus rings on
+the first and last link.
+
+**`/tools` and `/tools/fivem-server-cfg`** (2026-09-14). The shelf lists one
+live tool and three dimmed planned ones, hardcoded in the page; Evan has not
+confirmed the planned three, see TODO.md. The cfg maker is a vanilla-JS form
+that rewrites a server.cfg live. All the knowledge is in `src/lib/fivem.ts`:
+builds, locales, framework presets, the emitter, the checks. Sources are
+cited at the top of that file. The page imports it in its client script and
+Vite bundles it. Focusing a field marks its lines in the file with a red edge
+(counted as focus feedback, not a third red). Secrets are never written to
+localStorage; everything else is. `Layout` grew a `stickyCta` prop because
+this page needs the bottom edge for its own "See the file" bar on mobile.
+
 **CursorTrail** is in Layout, so it is behind every page. It fills a positioned
 wrapper around the header and main, which is what makes it stop at the top of the
 footer, and recycles twelve divs at `z-index: -1` that light up under the cursor and fade out
@@ -139,6 +157,12 @@ mid-session, and the open tab kept the stale module URL. `optimizeDeps.include`
 in astro.config.mjs pre-bundles it now. If it ever comes back: hard reload, and
 if that fails, stop dev and delete `node_modules/.vite`. The build was never
 affected.
+
+**Tailwind in dev doesn't see a brand new file.** Add a page under a new
+directory and its utilities (`.items-start`, `.overflow-auto`, `lg:top-24`,
+whatever it alone uses) don't get generated until the dev server restarts.
+Symptom is a layout that's subtly wrong in dev and correct in `astro build`.
+`astro dev stop && npm run dev`, nothing else needed.
 
 **Content store goes stale after a schema change.** Adding `logo` to the games
 schema left the dev store without the field on every entry even after a clean
