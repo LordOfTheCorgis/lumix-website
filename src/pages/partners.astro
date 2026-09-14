@@ -29,48 +29,57 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
     </div>
   </section>
 
+  <!-- A ledger, not a card grid. Seven studios with no logos turned into
+       seven grey boxes of text; this gives each one a line of its own, a
+       monogram where a logo would sit, and room. Rows sit on the module:
+       the monogram is two cells square and the row padding is one. -->
   <section class="section">
     <div class="shell">
-      <div data-grid-anchor class="grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3">
-        {partners.map((p) => (
-          <article class="flex min-h-[calc(9*var(--grid-cell))] flex-col border border-[var(--edge)] p-6">
-            <p class="instrument text-slate">{p.founder}</p>
-            <h2 class="title mt-2">{p.name}</h2>
-            <p class="small text-fog mt-3">{p.description}</p>
+      <ol class="m-0 list-none p-0 border-t border-[var(--edge)]" data-grid-anchor>
+        {partners.map((p, i) => (
+          <li class="group grid gap-6 border-b border-[var(--edge)] py-[var(--grid-cell)] lg:grid-cols-[calc(2*var(--grid-cell))_minmax(0,5fr)_minmax(0,6fr)_auto] lg:gap-10">
+            <a
+              href={p.url ?? p.discord}
+              rel="noopener"
+              target="_blank"
+              aria-label={p.name}
+              class="chamfer flex h-[calc(2*var(--grid-cell))] w-[calc(2*var(--grid-cell))] items-center justify-center border border-[var(--edge-strong)] bg-ink-soft font-display text-xl font-semibold tracking-tight text-paper transition-colors duration-150 group-hover:border-paper"
+            >
+              {p.mark}
+            </a>
 
-            <ul class="mt-5 flex flex-wrap gap-x-4 gap-y-1.5">
-              {p.services.map((s) => (
-                <li class="small flex items-center gap-2 text-fog">
-                  <span class="h-1 w-1 shrink-0 bg-slate" aria-hidden="true"></span>
-                  {s}
-                </li>
-              ))}
-            </ul>
+            <div class="min-w-0">
+              <p class="instrument text-slate">{String(i + 1).padStart(2, "0")} · {p.founder}</p>
+              <h2 class="display-l mt-2 break-words">{p.name}</h2>
+              <p class="small text-fog mt-4">{p.services.join(" · ")}</p>
+            </div>
 
-            {p.note && <p class="small text-slate mt-4">{p.note}</p>}
+            <div class="min-w-0 lg:pt-1">
+              <p class="text-fog">{p.description}</p>
+              {p.note && <p class="small text-slate mt-3">{p.note}</p>}
+            </div>
 
-            <div class="mt-auto pt-6">
+            <div class="flex flex-col gap-3 lg:items-end lg:pt-1 lg:text-right">
               {p.offer && (
-                <p class="small border-t border-[var(--edge)] pt-4 text-fog">
+                <p class="small text-fog">
                   <!-- normal-case: .instrument uppercases, and a Tebex code
                        is typed exactly as the studio wrote it. -->
-                  Code <span class="instrument normal-case text-paper">{p.offer.code}</span> · {p.offer.text}
+                  <span class="instrument normal-case text-paper">{p.offer.code}</span>
+                  <span class="block text-slate">{p.offer.text}</span>
                 </p>
               )}
-              <div class:list={["flex flex-wrap gap-x-6 gap-y-2", p.offer ? "mt-4" : "border-t border-[var(--edge)] pt-4"]}>
-                {p.url && (
-                  <a href={p.url} rel="noopener" target="_blank" class="small inline-flex items-center gap-1.5 text-paper hover:text-red">
-                    {host(p.url)} <span aria-hidden="true">&nearr;</span>
-                  </a>
-                )}
-                <a href={p.discord} rel="noopener" target="_blank" class="small inline-flex items-center gap-1.5 text-paper hover:text-red">
-                  Discord <span aria-hidden="true">&nearr;</span>
+              {p.url && (
+                <a href={p.url} rel="noopener" target="_blank" class="small inline-flex items-center gap-1.5 text-paper hover:text-red">
+                  {host(p.url)} <span aria-hidden="true">&nearr;</span>
                 </a>
-              </div>
+              )}
+              <a href={p.discord} rel="noopener" target="_blank" class="small inline-flex items-center gap-1.5 text-paper hover:text-red">
+                Discord <span aria-hidden="true">&nearr;</span>
+              </a>
             </div>
-          </article>
+          </li>
         ))}
-      </div>
+      </ol>
 
       <p class="small text-slate mt-8 max-w-2xl">
         Codes are redeemed with the partner, not with us. What they sell,

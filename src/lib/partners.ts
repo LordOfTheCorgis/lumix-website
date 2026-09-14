@@ -4,6 +4,8 @@
 
 export interface Partner {
   name: string;
+  /** Two to three letters, stands in for a logo. Same idea as `mark` on a game. */
+  mark: string;
   founder: string;
   description: string;
   services: string[];
@@ -18,6 +20,7 @@ export interface Partner {
 export const partners: Partner[] = [
   {
     name: "Elite Modification",
+    mark: "EM",
     founder: "EM Team",
     description:
       "Elite Modification is back and focused on helping communities level up with premium, practical server assets. Their work is built for immersive gameplay, clean branding, and dependable performance.",
@@ -38,6 +41,7 @@ export const partners: Partner[] = [
   },
   {
     name: "FG Development Studio",
+    mark: "FG",
     founder: "Freedom_Gaming23",
     description:
       "FG Development Studios is a veteran-run FiveM development studio focused on quality assets at prices server owners can actually afford. Every release is actively maintained and supported after purchase. No abandonware, no upsells.",
@@ -55,6 +59,7 @@ export const partners: Partner[] = [
   },
   {
     name: "Kez Modifications",
+    mark: "KEZ",
     founder: "Kez",
     description:
       "Kez Modifications is focused on delivering high-quality assets for the FiveM community, with a strong emphasis on reliability, professionalism, and long-term trust.",
@@ -71,6 +76,7 @@ export const partners: Partner[] = [
   },
   {
     name: "Natural Light Enhanced",
+    mark: "NLE",
     founder: "NLE",
     description:
       "NLE specializes in creating realistic, performance-friendly graphics mods for FiveM focused on natural lighting. Their mission is to continually improve and refine visuals for everyone to enjoy.",
@@ -86,6 +92,7 @@ export const partners: Partner[] = [
   },
   {
     name: "Marco's Presets",
+    mark: "MP",
     founder: "Marco",
     description:
       "Marco's Presets offers high-quality ENB and Reshade products for FiveM, enhancing visual fidelity and performance while preserving the freedom of custom media configurations. With a focus on reliability and customer satisfaction, they provide tailored solutions to elevate your server's aesthetics.",
@@ -95,6 +102,7 @@ export const partners: Partner[] = [
   },
   {
     name: "Valerisn Upfitting",
+    mark: "VU",
     founder: "Valerisn",
     description:
       "Focused on creating clean, high quality Non-ELS vehicles for FiveM with realistic designs, optimized builds, and attention to detail, Valerisn's mission is to provide communities with reliable, immersive vehicle assets that enhance gameplay and fit seamlessly into any server.",
@@ -103,6 +111,7 @@ export const partners: Partner[] = [
   },
   {
     name: "Centrix Development Hub",
+    mark: "CDH",
     founder: "Mike",
     description:
       "Centrix Development Hub is a versatile FiveM development team offering a wide range of services, including custom vehicle modifications and graphics design. With a focus on quality and client satisfaction, they provide tailored solutions to enhance your server's experience.",
