@@ -49,6 +49,7 @@ const faqSchema = {
 <Layout
   title="FiveM server.cfg maker"
   description="Build a FiveM server.cfg that boots first time. Endpoints, license key, game build, OneSync, MySQL string, QBCore, ESX and vRP resource order, admin ACEs. Free, nothing stored."
+  stickyCta={false}
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 
@@ -59,9 +60,9 @@ const faqSchema = {
       </p>
       <h1 class="display-xl mt-6 max-w-3xl">A server.cfg that boots first time<span class="text-red">.</span></h1>
       <p class="lead text-fog mt-6 max-w-xl">
-        Fill in the left, watch the file write itself on the right. Every line
-        you touch lights up in the file so you learn what it does. Copy it when
-        the checks go quiet.
+        Fill in the form and the file writes itself as you go. Every line you
+        touch lights up in it so you learn what it does. Copy it when the checks
+        go quiet.
       </p>
       <p class="small text-slate mt-4">
         Saved in this browser as you go, except the license key, RCON and database passwords.
@@ -398,7 +399,7 @@ const faqSchema = {
              checks don't. A tall sticky column just pins its top and hides the
              bottom until the form runs out, which put the checks off-screen
              for the whole time anyone was actually typing. -->
-        <aside class="lg:sticky lg:top-24 lg:flex lg:max-h-[calc(100vh-7rem)] lg:flex-col" aria-label="Generated server.cfg">
+        <aside id="file" class="scroll-mt-24 lg:sticky lg:top-24 lg:flex lg:max-h-[calc(100vh-7rem)] lg:flex-col" aria-label="Generated server.cfg">
           <figure class="file m-0 flex min-h-0 flex-col border border-[var(--edge)] bg-ink-soft">
             <figcaption class="flex flex-wrap items-center gap-3 border-b border-[var(--edge)] px-4 py-3">
               <span class="instrument text-paper">server.cfg</span>
@@ -425,7 +426,19 @@ const faqSchema = {
     </div>
   </section>
 
-  <section class="section band border-t border-[var(--edge)]">
+  <!-- Below lg the file is a long way under the form. This is the mobile
+       StickyCta's slot, with the file as the destination instead of the cart. -->
+  <div class="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--edge)] bg-ink/95 backdrop-blur-md lg:hidden">
+    <div class="shell flex items-center justify-between gap-4 py-3">
+      <span class="instrument text-fog" data-mobile-status>server.cfg</span>
+      <a href="#file" class="chamfer inline-flex items-center gap-2 bg-red px-5 py-2.5 text-sm font-medium text-ink">
+        See the file
+        <span aria-hidden="true">&darr;</span>
+      </a>
+    </div>
+  </div>
+
+  <section class="section band border-t border-[var(--edge)] pb-28 lg:pb-[var(--spacing-section)]">
     <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
         <h2 class="title">Somewhere to run it</h2>
@@ -815,6 +828,8 @@ const faqSchema = {
     checkCount.textContent = w.length
       ? `${stops ? `${stops} will stop the server` : "nothing fatal"} · ${w.length - stops} worth a look`
       : "";
+    const mobile = document.querySelector<HTMLElement>("[data-mobile-status]");
+    if (mobile) mobile.textContent = `${lines.length} lines · ${stops ? `${stops} stop` : "no stops"}`;
     checkList.innerHTML = w.length
       ? w
           .map(

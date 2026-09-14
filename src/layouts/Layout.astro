@@ -16,6 +16,9 @@ interface Props {
   noindex?: boolean;
   /** Absolute or root-relative path. Defaults to the brand card. */
   image?: string;
+  /** The mobile "Order a server" bar. Off for pages that need the bottom edge
+      for something of their own, like the tools. */
+  stickyCta?: boolean;
 }
 
 const DEFAULT_DESCRIPTION =
@@ -26,6 +29,7 @@ const {
   description = DEFAULT_DESCRIPTION,
   noindex = false,
   image = "/images/og-image.png",
+  stickyCta = true,
 } = Astro.props;
 
 const siteUrl = "https://lumixsolutions.org";
@@ -105,7 +109,7 @@ const organizationSchema = {
       </main>
     </div>
     <Footer />
-    <StickyCta />
+    {stickyCta && <StickyCta />}
     <CookieBanner />
   </body>
 </html>
