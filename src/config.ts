@@ -1,5 +1,5 @@
-// Everything here becomes settings.yaml when the admin panel lands. Keeping it in
-// one file now so Header and Footer don't grow their own copies of the nav.
+// becomes settings.yaml if the admin panel ever lands. one file so header and
+// footer don't each grow a copy of the nav
 
 export const site = {
   name: "Lumix Solutions",
@@ -10,19 +10,16 @@ export const site = {
   tagline: "Low-latency game servers in four US regions, capped on purpose.",
 };
 
-// The one public code. Has to exist in WHMCS as a promotion with the same
-// string or the site is advertising a discount the cart rejects; create it
-// there first, then flip `live`. Evan's call 2026-09-11: LUMIX10, evergreen.
+// has to exist in WHMCS with the same string or we're advertising a code the
+// cart rejects. make it there first, then flip live
 export const promo = {
   code: "LUMIX10",
   percent: 10,
   live: true,
 };
 
-// Trustpilot, by hand. The embeddable TrustBoxes are behind Trustpilot's paid
-// tier, so the score and count are copied off the public profile page and the
-// hero line links there. Both null = the line doesn't render. Update `updated`
-// when you update the numbers; it's what stops this quietly going stale.
+// trustpilot by hand, their widgets are paid tier. both null = line doesn't
+// render. bump `updated` when you change the numbers or this goes stale quietly
 export const trust = {
   score: null as number | null,
   reviews: null as number | null,
@@ -30,17 +27,14 @@ export const trust = {
   url: "https://www.trustpilot.com/review/lumixsolutions.org",
 };
 
-// Not a game, so it doesn't get a tile. Priced per Evan 2026-09-11. `pid` is
-// the WHMCS product; until it's known the link lands on the store front.
+// not a game, no tile. pid is the WHMCS product, unknown = link to store front
 export const botHosting = {
   monthly: 4,
   pid: null as number | null,
 };
 
-// A read-only demo server on Lumi-Panel so people can click around before
-// they pay. Pterodactyl supports a demo user; Evan makes it, the values go
-// here. Nothing renders until `url` is set. Credentials are shown in the open
-// on purpose, it's a demo account with no power.
+// read-only demo server on the panel. nothing renders until url is set.
+// credentials are public on purpose, it's a demo account with no power
 export const demoPanel = {
   url: null as string | null,
   user: "",
@@ -55,18 +49,15 @@ export const links = {
   careers: "https://careers.lumixsolutions.org/",
   discord: "https://discord.com/invite/uaNYBJQtvn",
   x: "https://x.com/LumixSolutions",
-  // youtube.com/@officiallumixsolutions has been a hard 404 since at least
-  // 07-31 per the marketing log. Put it back here AND in `social` below once
-  // there's a channel that resolves.
+  // youtube handle has been a 404 since july. put it back here AND in social
+  // once it resolves
   instagram: "https://www.instagram.com/lumixsolutionsllc/",
   tiktok: "https://tiktok.com/@lumix.solutions",
   github: "https://github.com/lumixsolutions",
 };
 
-// Four items. The old header carried six and a premium header carries four.
-// Staff and Careers moved to the footer where nobody misses them, and on
-// 2026-09-11 Contact went there too: Evan's answer to "where's live chat" is
-// Discord, so Discord gets the header slot.
+// four items, the old header had six. contact went to the footer, discord is
+// the answer to "where's live chat" so it gets the slot
 export const nav = [
   { label: "Game Hosting", href: "/games" },
   { label: "Partners", href: "/partners" },
@@ -74,9 +65,7 @@ export const nav = [
   { label: "Discord", href: links.discord },
 ];
 
-// The "More" drawer. Five header slots where one is a disclosure is still four
-// destinations plus a drawer, which is why this doesn't break the four-item rule
-// in the handoff. Everything in here already existed in the footer except Tools.
+// the More drawer. still four destinations plus a drawer, not five items
 export const moreNav = [
   { label: "Tools", href: "/tools", note: "Free config generators" },
   { label: "Regions", href: "/regions", note: "Where the nodes are, and your ping" },

@@ -1,93 +1,71 @@
 @import "tailwindcss";
 
-/*
-  Foundation only. Tokens, base, type scale, a11y. No component classes.
-  Traces back to DESIGN.md. If you're adding a color that isn't in @theme,
-  go read section 5 first, especially the three contrast rules.
-*/
+/* tokens, base, type scale, a11y. no component classes. see DESIGN.md
+   before adding a colour, section 5 especially */
 
 @theme {
-  /* ── Red, on a leash ─────────────────────────────────────────────────────
-     Two per viewport, max. Logo S doesn't count. A third red thing is
-     decoration and gets cut. */
+  /* red. two per viewport max, logo doesn't count. a third one is decoration
+     and gets cut */
   --color-red: #ff4c4c;
   --color-red-pressed: #c43535;  /* hover/active, AND the only red for text on paper */
   --color-red-tint: #ff8a8a;     /* dark surfaces only */
 
-  /* ── Surfaces ────────────────────────────────────────────────────────────
-     Dark only. There is no light mode and there is no theme toggle; ink is the
-     ground everywhere. `paper` survived the cut because it stopped being a
-     background a while ago and is now the primary text colour and the one
-     light fill (cookie banner Accept). `mist` was hairlines-on-paper and had
-     nothing left to do, so it's gone. Hairlines are --edge. */
-  /* Warm now, not neutral. Every competitor's "dark" is tinted (RocketNode
-     navy, Apex brown, Pebble blue) and that tint is most of why theirs read
-     as colour and ours read as gloom. Lumix's tint leans toward its red: a
-     dark room lit by something warm, which is also what the hero's light is
-     doing. Still ink, still the only ground. */
+  /* surfaces. dark only, no toggle. paper is text and the one light fill now,
+     not a background. hairlines are --edge */
+  /* warm not neutral. every competitor's dark is tinted and that's why theirs
+     reads as colour and ours read as gloom. leans toward the red */
   --color-ink: #161114;
-  /* Was #221a1f, which had its blue above its green and read faintly pink
-     wherever a lot of it sat together. Evan called it on the tools page,
-     2026-09-14. Now r >= g >= b: still warm, no magenta. */
+  /* was #221a1f, blue above green, went pink anywhere there was a lot of
+     it. r >= g >= b now */
   --color-ink-soft: #201c1c;
 
-  /* ── Light ───────────────────────────────────────────────────────────────
-     Two warm hues. Ember is the source end of the hero beams. Gold is the
-     price and nothing else, the number the page most wants you to see.
-     Solid fills only; the ambient-glow version of this lasted twenty minutes
-     before Evan killed it ("fuck the gradients"). Red stays the UI accent. */
+  /* two warm hues. ember = source end of the beams (and string literals in
+     the cfg tool). gold = the price and nothing else. solid fills only, the
+     gradient version lasted twenty minutes */
   --color-ember: #ff7a45;
   --color-gold: #ffb347;
   --color-paper: #f7f5f1;
 
-  /* ── Secondary text, both ink-only now ───────────────────────────────────
-     fog is the normal dim. slate is the dimmer one under it, for labels that
-     sit beside the thing they name. Old slate was #6B6B72, a paper-only value,
-     and it had quietly crept onto ink at 3.54:1 under 11px uppercase labels,
-     which is a fail twice over. Lifted to 4.58:1. Don't push it back down. */
-  --color-slate: #97909a;  /* warmed to sit on the warm ink; 5.8:1 */
+  /* fog is normal dim, slate is dimmer for labels. old slate was a paper-only
+     value that crept onto ink at 3.54:1. don't push it back down */
+  --color-slate: #97909a;  /* 5.8:1 */
   --color-fog: #b7afb5;    /* 8.6:1 */
 
-  /* Space Grotesk flattens into a generic geometric sans below ~24px, so it's
-     display and instrument only. Inter carries everything anyone actually reads.
-     No mono anywhere, that was the old site's terminal cosplay. */
+  /* grotesk goes generic below ~24px, display and instrument only. inter
+     for anything anyone reads. no mono token, that was the old site */
   --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 
-  /* The monogram's cut. The only diagonal in the system. Nothing else tilts. */
+  /* the monogram's cut. only diagonal in the system, nothing else tilts */
   --shear: -16deg;
   --chamfer: 10px;
 
-  /* Panels are invisible against ink on fill alone (1.08:1). The hairline IS
-     the panel. Don't reach for a box-shadow, it won't read on this ground. */
+  /* ink-soft on ink is 1.08:1, invisible. the hairline IS the panel. no
+     shadows, they don't read on this ground */
   --edge: rgba(255, 235, 225, 0.09);
   --edge-strong: rgba(255, 235, 225, 0.18);
 
   --spacing-section: 6rem;
   --spacing-section-mobile: 3.5rem;
 
-  /* ── The module ──────────────────────────────────────────────────────────
-     Nothing draws this. It exists so the cursor trail's cells land on tile
-     edges and gutters instead of across them, which means the layout has to be
-     built to it: see the shell snapping below. Change it and the layout
-     follows; change the layout without it and the cells go back to straddling. */
+  /* the module. nothing draws it, it's so the cursor trail cells land on tile
+     edges. layout is built to it (shell snapping below). change one, change
+     both */
   --grid-cell: 40px;
 }
 
-/* The content column snaps down to a width the tile grid divides evenly.
-   Which multiple depends on how many columns the tiles are in, because for
-   n columns with a one-cell gutter the width has to be (n·a + n-1) cells:
-   3 columns lands on 120k+80, 2 columns on 80k+40, 1 column on any 40k.
-   Whatever is left over becomes gutter, which is why the page has a little
-   more air at some widths than others. That is the trade for registration. */
+/* content column snaps to a width the tile grid divides evenly. n columns
+   with a one-cell gutter needs (n*a + n-1) cells: 3 cols = 120k+80, 2 cols =
+   80k+40, 1 col = any 40k. leftover becomes gutter, that's why some widths
+   have more air */
 :root {
   --shell-pad: 1.25rem;
-  --shell-max: 83rem;  /* 1328px, so the capped column is exactly 1280 = 32 cells */
+  --shell-max: 83rem;  /* 1328, so the capped column is 1280 = 32 cells */
   --shell-base: 0px;
   --shell-step: var(--grid-cell);
 
-  /* The `100%` here resolves wherever it is used, not here. Every user sits on a
-     full-width parent, so they all resolve to the same number. */
+  /* the 100% resolves where it's used. everyone's on a full-width parent so
+     it's the same number everywhere */
   --shell-avail: calc(min(100%, var(--shell-max)) - 2 * var(--shell-pad));
   --shell-content: calc(
     round(down, var(--shell-avail) - var(--shell-base), var(--shell-step)) + var(--shell-base)
@@ -111,8 +89,7 @@
 
 @layer base {
   html {
-    /* Tells the UA to render form controls, scrollbars and the like dark, so we
-       don't get a white select popping out of nowhere on a page that has none. */
+    /* dark form controls and scrollbars, no white select popping out */
     color-scheme: dark;
     background-color: var(--color-ink);
     scroll-behavior: smooth;
@@ -120,10 +97,8 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Body stays transparent on purpose: the ground lives on <html> so the grid
-     can sit at z-index -1 behind everything without body's own background
-     painting over it. Put a background back on body and the grid vanishes with
-     no error to tell you why. */
+  /* body stays transparent. ground is on html so the grid can sit at z -1.
+     put a background on body and the grid vanishes, no error */
   body {
     font-family: var(--font-sans);
     color: var(--color-paper);
@@ -134,12 +109,11 @@
 
   ::selection {
     background-color: var(--color-red);
-    color: var(--color-ink);  /* not white. paper-on-red is 3.02:1 and fails */
+    color: var(--color-ink);  /* not white, paper on red is 3.02:1 */
   }
 
-  /* :where() keeps specificity at zero so components can override without a fight.
-     Wherever .chamfer is applied, put this ring on a wrapper instead: clip-path
-     eats outlines with no warning and no error. */
+  /* :where() so components can override. anywhere .chamfer is used put this
+     on a wrapper, clip-path eats outlines silently */
   :where(a, button, input, select, textarea, [tabindex]):focus-visible {
     outline: 2px solid var(--color-red);
     outline-offset: 2px;
@@ -179,7 +153,7 @@
   .lead { font-size: 1.25rem; line-height: 1.55; }
   .small { font-size: 0.875rem; line-height: 1.6; }
 
-  /* Region codes, slot IDs, ping, SKUs. The only uppercase on the site. */
+  /* region codes, ids, ping. the only uppercase on the site */
   .instrument {
     font-family: var(--font-display);
     font-weight: 500;
@@ -189,19 +163,18 @@
     text-transform: uppercase;
   }
 
-  /* Rhythm lives on this ONE class. Never also pad `section` as an element
-     selector: when both exist they take turns winning on import order. */
+  /* rhythm lives here. never also pad `section` as an element, they take
+     turns winning on import order */
   .section { padding-block: var(--spacing-section-mobile); }
 
-  /* Gold's one text job. */
+  /* gold's one job */
   .price { color: var(--color-gold); }
   .lit-tr { --lit-x: 88%; --lit-y: 0%;  --lit-x2: 8%;  --lit-y2: 100%; }
   .lit-tl { --lit-x: 10%; --lit-y: 0%;  --lit-x2: 92%; --lit-y2: 100%; }
   .lit-br { --lit-x: 90%; --lit-y: 100%; --lit-x2: 5%; --lit-y2: 0%; }
 
-  /* A section on the raised ground. Alternate these with plain sections so a
-     long page has tonal rhythm instead of being one black slab with hairlines
-     across it. Panels inside a band sit on ink, not ink-soft, or they vanish. */
+  /* raised ground. alternate with plain sections or a long page is one black
+     slab. panels inside a band sit on ink or they vanish */
   .band { background-color: var(--color-ink-soft); }
 
   @media (min-width: 1024px) {
@@ -214,7 +187,7 @@
     padding-inline: var(--shell-pad);
   }
 
-  /* Cut top-left and bottom-right, matching the monogram. Chamfer, not radius. */
+  /* cut top-left and bottom-right like the monogram. chamfer, not radius */
   .chamfer {
     clip-path: polygon(
       var(--chamfer) 0,
@@ -227,7 +200,7 @@
   }
 }
 
-/* Final state, instantly. Not a slower animation. None. */
+/* final state instantly. not slower, none */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 
@@ -238,9 +211,9 @@
   }
 }
 
-/* Has to live in the utilities layer: Tailwind's own .bg-ink-soft is there,
-   and a components-layer rule loses to it no matter the specificity. Same
-   layer, two classes beat one. Checked with getComputedStyle, not assumed. */
+/* has to be in utilities, tailwind's .bg-ink-soft is there and a components
+   rule loses regardless of specificity. same layer, two classes beat one.
+   checked with getComputedStyle */
 @layer utilities {
   .band .bg-ink-soft { background-color: var(--color-ink); }
 }
