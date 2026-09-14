@@ -97,6 +97,17 @@ the commit and point at this file.
       path done by support. If support doesn't do migrations on a ticket,
       the second column comes out.
 
+## Staff page
+
+- [ ] **Community manager's name and photo.** `src/lib/staff.ts`, third
+      entry. Name is blank so the card renders by title; drop a headshot in
+      `src/assets/staff/` and point `image` at it. Any aspect works, the
+      card crops to 4:5 from the top.
+- [ ] **Bios.** All three are mine, written in the site's voice from the
+      old site's titles. Rewrite yours; ask Keaghan to rewrite his.
+- [ ] **Links.** `links` is empty on all three on purpose. LinkedIn, GitHub,
+      X: add `{ label, href }` pairs for whatever's meant to be public.
+
 ## Tools
 
 - [ ] **Confirm or cut the three planned tools** on `/tools`: Minecraft

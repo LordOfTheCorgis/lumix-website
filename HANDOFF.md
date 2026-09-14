@@ -83,6 +83,19 @@ render greyed with "soon" instead of being dropped. Add the URL in
 home page. Reuses the Globe. `serves` on each `HOSTING` entry is the one
 line of copy per region.
 
+**`/staff`** is three portraits at 4:5, grayscale at rest and colour on
+hover or focus-within, the one motion on the page. Data in
+`src/lib/staff.ts`; photos are Astro image imports in `src/assets/staff/`
+(the old site served the 1.5MB PNG raw). No `image` gets the monogram tile,
+no `name` renders by title. The community manager is both until Evan fills
+them in.
+
+**`/partners`** is a ledger, one studio per row, after a card grid that Evan
+called a wall of grey boxes. Monogram tile where a logo would go, name in
+display size, services as one running line, code and links in a fixed-width
+right column so the middle column doesn't wander. Data and Evan's ordering
+in `src/lib/partners.ts`; Cartoon's blurb is ours, the rest is the studios'.
+
 **`.mcp.json` registers the docs site as an MCP server** (`lumix-docs`,
 streamable HTTP at docs.lumixsolutions.org/mcp, Mintlify-hosted, no auth).
 Tools: `search_lumix_solutions`, `query_docs_filesystem_lumix_solutions`,
