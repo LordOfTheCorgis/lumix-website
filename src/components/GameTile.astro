@@ -1,19 +1,13 @@
 ---
-// The whole tile is the link. Key art carries the recognition, the price carries
-// the decision, and nothing here is red: the hero button already spends the
-// budget (DESIGN.md section 5). The arrow picks up the game's accent on hover,
-// not red, which was the old behaviour and quietly a third red per viewport.
+// whole tile is the link. art carries recognition, price carries the
+// decision, nothing here is red. the arrow goes to the game's accent on hover,
+// it used to go red and that was a third red per viewport.
 //
-// Each tile carries its game's accent from the yaml, in the hairline, and only
-// on hover. A panel on this site is its hairline (DESIGN.md rule 3), so that's
-// where the colour goes; the arrow matches. At rest it's the normal edge.
-// Went through a glow washing up from the corner, then a tinted edge at rest,
-// and Evan cut both. The art already brings the colour, the edge names it
-// when you reach for it.
+// accent from the yaml, in the hairline, hover only. tried a glow from the
+// corner and a tinted edge at rest, evan cut both.
 //
-// Height is seven cells rather than a round 256px so the bottom edge lands on
-// the module the cursor trail snaps to. Stays a min, not a fixed height: a long
-// tagline still needs somewhere to go.
+// height is seven cells so the bottom edge lands on the module. min not
+// fixed, long taglines need somewhere to go
 
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
@@ -25,16 +19,15 @@ interface Props {
   name: string;
   tagline: string;
   image: ImageMetadata;
-  /** Cheapest monthly price. Omit for a planned game, there isn't one. */
+  /** cheapest monthly. omit for planned */
   from?: number;
   planCount?: number;
-  /** The game's own colour, from its yaml. Hex. */
+  /** hex, from the yaml */
   accent: string;
-  /** The game's own logo, from the yaml. Rendered 56px tall, top-left. */
+  /** renders 56px tall top-left */
   logo: ImageMetadata;
-  /** "planned" renders the tile dimmed in place with no price and no order
-      link. Same grid as the live ones, on purpose: exiling them to a "coming
-      soon" ghetto reads as an apology. */
+  /** planned = dimmed in place, no price, no order link. same grid on
+      purpose, a "coming soon" corner reads as an apology */
   status?: "live" | "beta" | "planned";
   eager?: boolean;
 }
@@ -53,7 +46,7 @@ const {
 } = Astro.props;
 
 const planned = status === "planned";
-// A planned tile still links somewhere useful: the place to ask for it.
+// planned links to where you ask for it
 const href = planned ? links.discord : `/games/${slug}`;
 ---
 
@@ -75,18 +68,14 @@ const href = planned ? links.discord : `/games/${slug}`;
     decoding="async"
     class="absolute inset-0 h-full w-full object-cover opacity-70 transition-[opacity,transform] duration-300 group-hover:scale-[1.03] group-hover:opacity-85"
   />
-  <!-- Scrim, not a tint. Key art on these games is dark and busy, and text over
-       it fails contrast without a real gradient underneath. -->
+  <!-- scrim not a tint, the art is dark and busy and text over it was unreadable -->
   <div
     class="absolute inset-0 bg-gradient-to-t from-ink via-ink/75 to-ink/10"
     aria-hidden="true"
   >
   </div>
 
-  <!-- The publisher's mark, top-left, in its own colours. This is where the
-       grid's colour comes from: nine publishers' marks, not one of ours.
-       Decorative, the name is in the h3 below. Tried logo-only for a minute;
-       FiveM's mark is a glyph with no wordmark, so the name came back. -->
+  <!-- publisher's logo, its own colours -->
   <Image
     src={logo}
     alt=""
@@ -99,15 +88,12 @@ const href = planned ? links.discord : `/games/${slug}`;
 
   <div class="relative">
     <h3 class="title">{name}</h3>
-    <!-- No reserved height any more: Evan wants the text sitting on the
-         price, not floating above a blank line. A one-line tagline means
-         that tile's title sits a line lower than its neighbour's; the logo
-         top-left is what lines the grid up now. -->
+    <!-- no reserved height, text hugs the price row -->
     <p class="small text-fog mt-1 line-clamp-2">{tagline}</p>
 
     {planned ? (
       <>
-        <!-- Same height as the price row so the grid doesn't ripple. -->
+        <!-- same height as the price row or the grid ripples -->
         <div class="mt-3 flex items-baseline gap-2">
           <span class="title text-fog">Coming soon</span>
           <span
@@ -157,8 +143,7 @@ const href = planned ? links.discord : `/games/${slug}`;
     color: var(--color-fog);
   }
 
-  /* Dimmed in place. Art drops to a third, the title to fog. The accent still
-     comes up on hover so it doesn't read as dead, just not yet. */
+  /* dimmed. art to a third, title to fog, accent still on hover */
   .planned :global(img) {
     opacity: 0.3;
   }
