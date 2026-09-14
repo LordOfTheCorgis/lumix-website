@@ -791,7 +791,9 @@ const faqSchema = {
     currentText = lines.map((l) => l.text).join("\n") + "\n";
 
     fileEl.innerHTML = lines
-      .map((l) => `<span class="line"${l.field ? ` data-field="${l.field}"` : ""}>${highlight(l.text) || " "}</span>`)
+      // One wrapper span per line: .line is a grid and every direct child is a
+      // cell, so the highlight spans have to be nested or they each get a column.
+      .map((l) => `<span class="line"${l.field ? ` data-field="${l.field}"` : ""}><span>${highlight(l.text) || " "}</span></span>`)
       .join("");
     lineCount.textContent = `${lines.length} lines`;
 
