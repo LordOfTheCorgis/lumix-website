@@ -1,0 +1,110 @@
+---
+// Seven FiveM asset shops and the codes they give Lumix customers. The page's
+// job is to send someone who just bought a server to the people who'll fill
+// it, so each card ends in their links, not ours.
+//
+// Codes are paper in an instrument, same treatment as LUMIX10 in the promo
+// bar: a code is a thing you read and type, not a button. Red on this page is
+// the headline stop and the one CTA at the bottom.
+import Layout from "../layouts/Layout.astro";
+import { partners } from "../lib/partners";
+
+const withOffer = partners.filter((p) => p.offer).length;
+const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
+---
+
+<Layout
+  title="Partners"
+  description={`${partners.length} FiveM studios we work alongside: EUP, liveries, MLOs, vehicles, graphics. ${withOffer} of them give Lumix customers a discount code.`}
+>
+  <section class="section border-b border-[var(--edge)]">
+    <div class="shell">
+      <p class="instrument text-fog">Partners · {partners.length} studios · {withOffer} with a code</p>
+      <h1 class="display-xl mt-6 max-w-3xl">The people who fill the server<span class="text-red">.</span></h1>
+      <p class="lead text-fog mt-6 max-w-xl">
+        We run the box. These are the studios our customers buy the cars, the
+        uniforms, the interiors and the lighting from. Where there's a code,
+        it's yours to use at their checkout.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <div data-grid-anchor class="grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3">
+        {partners.map((p) => (
+          <article class="flex min-h-[calc(9*var(--grid-cell))] flex-col border border-[var(--edge)] p-6">
+            <p class="instrument text-slate">{p.founder}</p>
+            <h2 class="title mt-2">{p.name}</h2>
+            <p class="small text-fog mt-3">{p.description}</p>
+
+            <ul class="mt-5 flex flex-wrap gap-x-4 gap-y-1.5">
+              {p.services.map((s) => (
+                <li class="small flex items-center gap-2 text-fog">
+                  <span class="h-1 w-1 shrink-0 bg-slate" aria-hidden="true"></span>
+                  {s}
+                </li>
+              ))}
+            </ul>
+
+            {p.note && <p class="small text-slate mt-4">{p.note}</p>}
+
+            <div class="mt-auto pt-6">
+              {p.offer && (
+                <p class="small border-t border-[var(--edge)] pt-4 text-fog">
+                  Code <span class="instrument text-paper">{p.offer.code}</span> · {p.offer.text}
+                </p>
+              )}
+              <div class:list={["flex flex-wrap gap-x-6 gap-y-2", p.offer ? "mt-4" : "border-t border-[var(--edge)] pt-4"]}>
+                {p.url && (
+                  <a href={p.url} rel="noopener" target="_blank" class="small inline-flex items-center gap-1.5 text-paper hover:text-red">
+                    {host(p.url)} <span aria-hidden="true">&nearr;</span>
+                  </a>
+                )}
+                <a href={p.discord} rel="noopener" target="_blank" class="small inline-flex items-center gap-1.5 text-paper hover:text-red">
+                  Discord <span aria-hidden="true">&nearr;</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <p class="small text-slate mt-8 max-w-2xl">
+        Codes are redeemed with the partner, not with us. What they sell,
+        support and refund is theirs to answer for.
+      </p>
+    </div>
+  </section>
+
+  <section class="section band border-t border-[var(--edge)]">
+    <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h2 class="title">Make something for FiveM?</h2>
+        <p class="lead text-fog mt-6 max-w-lg">
+          We list studios whose work we'd put on our own servers. Send what
+          you make, where it's sold, and who's already running it.
+        </p>
+        <a
+          href="mailto:partners@lumixsolutions.org"
+          class="chamfer mt-8 inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+        >
+          partners@lumixsolutions.org
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+      <dl class="m-0">
+        {[
+          ["What a partner gets", "A card here with your links, and a code of your choosing shown to every Lumix customer who lands on this page."],
+          ["What we don't do", "Paid placement or affiliate deals. The old site said it in a config file and it's still true: technical fit over marketing arrangements."],
+          ["Not a FiveM studio?", "Infrastructure, networks, security and software vendors go to the same address. Say what you'd integrate with."],
+        ].map(([q, a]) => (
+          <div class="border-t border-[var(--edge)] py-5 first:border-t-0 first:pt-0">
+            <dt class="text-paper">{q}</dt>
+            <dd class="small text-fog m-0 mt-2">{a}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+</Layout>
