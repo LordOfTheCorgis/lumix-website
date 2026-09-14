@@ -662,7 +662,11 @@ const faqSchema = {
     display: grid;
     grid-template-columns: 3rem 1fr;
     padding-right: 1rem;
-    white-space: pre;
+    /* Wrap under the gutter rather than scroll sideways. The connection
+       string alone is 80 chars; a permanent scrollbar for one line is worse
+       than a wrapped one. Copy reads the text, not the DOM, so it's unaffected. */
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
     box-shadow: inset 2px 0 0 transparent;
     transition: background-color 150ms, box-shadow 150ms;
   }
