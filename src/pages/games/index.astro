@@ -1,11 +1,6 @@
 ---
-// The catalogue. One job: show everything Lumix runs, and everything it
-// doesn't yet, in one grid, and get the reader onto a game page.
-//
-// The readout in the hero is generated from the collection. The old site
-// hand-typed four rows into a terminal, then sold five games underneath it,
-// and the marketing log flagged the missing Terraria row for weeks. Nothing on
-// this page is typed twice.
+// the catalogue. the readout is generated from the collection, the old site
+// hand typed four rows and sold five games under it. nothing typed twice
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import GameTile from "../../components/GameTile.astro";
@@ -28,8 +23,7 @@ const catalog = [...live, ...planned];
 const cheapest = (g: (typeof live)[number]) =>
   Math.min(...g.data.plans.map((p) => p.pricing.monthly));
 
-// Column widths for the readout. Longest slug plus two, so it survives a new
-// game with a long name without anyone touching this.
+// longest slug + 2 so a long new game name doesn't break it
 const col = Math.max(...all.map((g) => g.data.slug.length)) + 2;
 const pad = (s: string, n = col) => s.padEnd(n);
 
@@ -60,15 +54,14 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
         </div>
       </div>
 
-      <!-- Every row here is a game in src/content/games. Add a yaml, get a row. -->
+      <!-- one row per yaml in src/content/games -->
       <Terminal label="catalogue" class="lg:ml-auto">
         <TypingAnimation>$ lumix catalog --all</TypingAnimation>
         <AnimatedSpan class="text-fog">Resolving node capacity across 4 regions...</AnimatedSpan>
         <AnimatedSpan>&nbsp;</AnimatedSpan>
         <AnimatedSpan class="text-slate">{pad("GAME")}{pad("STATUS", 10)}ORDER</AnimatedSpan>
-        <!-- Twenty-one rows is a wall. Eight show at a time; the arrows below
-             page through the rest a row at a time. Every row is still in the
-             DOM, so no-JS and screen readers get the whole list. -->
+        <!-- 21 rows is a wall. 8 visible, arrows page the rest. all still in the
+             DOM for no-js and screen readers -->
         <div class="rows grid gap-y-1" data-rows style="--visible: 8">
           {live.map((g) => (
             <AnimatedSpan>
@@ -153,8 +146,7 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
 </Layout>
 
 <style>
-  /* The window. Height is N rows of the terminal's own line box plus the
-     gaps between them, so it never cuts a row in half. */
+  /* N rows of the terminal's line box plus gaps, never cuts a row in half */
   .rows {
     --line: calc(0.8125rem * 1.6);
     max-height: calc(var(--visible) * var(--line) + (var(--visible) - 1) * 0.25rem);
@@ -207,8 +199,7 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
     const visible = Number(getComputedStyle(rows).getPropertyValue("--visible")) || 8;
     let first = 0;
 
-    // One row = its box plus the grid gap. Measured, not assumed, because the
-    // terminal's font stack differs per OS and so does the line box.
+    // measured, the mono font stack differs per OS and so does the line box
     const step = () => (items[1]?.offsetTop ?? 0) - (items[0]?.offsetTop ?? 0) || 21;
 
     function render() {
@@ -221,8 +212,7 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
     up.addEventListener("click", () => { first = Math.max(0, first - 1); render(); });
     down.addEventListener("click", () => { first = Math.min(items.length - visible, first + 1); render(); });
 
-    // Wheel over the list pages it too, one row per notch, and stops the
-    // page from scrolling underneath while you're doing it.
+    // wheel pages it a row per notch and stops the page scrolling under it
     rows.addEventListener("wheel", (e) => {
       const dir = Math.sign(e.deltaY);
       const next = Math.min(Math.max(0, first + dir), Math.max(0, items.length - visible));

@@ -1,24 +1,19 @@
-// The partner roster, as Evan supplied it 2026-09-14. Copy is theirs, not
-// ours, so it's kept as given; tighten it with them, not here. All of them
-// are FiveM asset shops, which is why /partners reads as a FiveM page.
-//
-// Order is Evan's, 2026-09-14. Cartoon's blurb is ours, written from what
-// Evan said (animations, LEO emotes, scripts as a side line); the rest is
-// each studio's own copy.
+// partner roster as evan gave it. copy is theirs, tighten it with them not
+// here. order is evan's. cartoon's blurb is ours, he had nothing for them
 
 export interface Partner {
   name: string;
-  /** Two to three letters, stands in for a logo. Same idea as `mark` on a game. */
+  /** stands in for a logo */
   mark: string;
   founder: string;
   description: string;
   services: string[];
-  /** Hiring, commissions open, roadmap: whatever they want said. */
+  /** hiring, commissions open, whatever they want said */
   note?: string;
-  /** A code Lumix customers can use at their checkout, not ours. */
+  /** redeemed at their checkout, not ours */
   offer?: { code: string; text: string };
   url?: string;
-  /** A second link when the shop and the portfolio are different pages. */
+  /** when the shop and the portfolio are different pages */
   gallery?: string;
   discord: string;
 }

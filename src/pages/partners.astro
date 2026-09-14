@@ -1,11 +1,7 @@
 ---
-// Seven FiveM asset shops and the codes they give Lumix customers. The page's
-// job is to send someone who just bought a server to the people who'll fill
-// it, so each card ends in their links, not ours.
-//
-// Codes are paper in an instrument, same treatment as LUMIX10 in the promo
-// bar: a code is a thing you read and type, not a button. Red on this page is
-// the headline stop and the one CTA at the bottom.
+// fivem studios and the codes they give our customers. each row ends in
+// their links, not ours. codes are paper instrument like LUMIX10, red is the
+// headline stop and the mailto at the bottom
 import Layout from "../layouts/Layout.astro";
 import { partners } from "../lib/partners";
 
@@ -29,10 +25,8 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
     </div>
   </section>
 
-  <!-- A ledger, not a card grid. Seven studios with no logos turned into
-       seven grey boxes of text; this gives each one a line of its own, a
-       monogram where a logo would sit, and room. Rows sit on the module:
-       the monogram is two cells square and the row padding is one. -->
+  <!-- a ledger. the card grid version was seven grey boxes of text. monogram
+       is two cells square, row padding is one -->
   <section class="section">
     <div class="shell">
       <ol class="m-0 list-none p-0 border-t border-[var(--edge)]" data-grid-anchor>
@@ -62,8 +56,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
             <div class="flex flex-col gap-3 lg:items-end lg:pt-1 lg:text-right">
               {p.offer && (
                 <p class="small text-fog">
-                  <!-- normal-case: .instrument uppercases, and a Tebex code
-                       is typed exactly as the studio wrote it. -->
+                  <!-- normal-case, tebex codes are case sensitive -->
                   <span class="instrument normal-case text-paper">{p.offer.code}</span>
                   <span class="block text-slate">{p.offer.text}</span>
                 </p>

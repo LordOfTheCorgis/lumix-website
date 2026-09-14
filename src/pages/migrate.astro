@@ -1,10 +1,7 @@
 ---
-// Moving a server in from another host. Two paths, both real: Lumi-Panel's
-// Server Importer pulls files over SFTP by itself (docs: lumi-panel/
-// management/server-importer), or support does it on a ticket. The form
-// below is the ticket path: it builds the message so people don't open one
-// that says "help me move" with nothing in it. Nothing is sent from here; the
-// site never talks to a backend. Copy, then paste into the ticket.
+// two paths: the panel's Server Importer pulls over sftp by itself, or
+// support does it on a ticket. the form writes the ticket text so nobody
+// opens one that just says "help me move". nothing is sent from here
 import Layout from "../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import { links, demoPanel } from "../config";
@@ -15,7 +12,7 @@ const games = (await getCollection("games"))
 
 const docs = `${links.docs}/lumi-panel/management/server-importer`;
 
-// Straight from the importer docs. Files come across; these don't.
+// from the importer docs, files copy and these don't
 const notCopied = ["Subusers", "Schedules", "Port allocations", "Databases"];
 ---
 
@@ -38,7 +35,7 @@ const notCopied = ["Subusers", "Schedules", "Port allocations", "Databases"];
 
   <section class="section">
     <div class="shell grid gap-[var(--grid-cell)] lg:grid-cols-2">
-      <!-- Path one: self-service -->
+      <!-- path one -->
       <div class="border border-[var(--edge)] p-6 lg:p-8">
         <p class="instrument text-fog">Path one · yourself, in the panel</p>
         <h2 class="title mt-2">Server Importer</h2>
@@ -82,7 +79,7 @@ const notCopied = ["Subusers", "Schedules", "Port allocations", "Databases"];
         )}
       </div>
 
-      <!-- Path two: the ticket, with the message written for you -->
+      <!-- path two -->
       <div class="border border-[var(--edge)] p-6 lg:p-8">
         <p class="instrument text-fog">Path two · we do it</p>
         <h2 class="title mt-2">Hand it to support</h2>
@@ -202,8 +199,7 @@ const notCopied = ["Subusers", "Schedules", "Port allocations", "Databases"];
     background-size: 10px 6px;
   }
 
-  /* The ticket is text someone is about to paste, so it's mono, same
-     exception the terminal and the cfg file take. */
+  /* mono, it's text you're about to paste */
   .ticket {
     background: var(--color-ink-soft);
     font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;

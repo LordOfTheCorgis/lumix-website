@@ -18,14 +18,11 @@ const { game } = Astro.props;
 const g = game.data;
 const steps = firstTen(g.slug);
 
-// Cheapest first. Seven rows of ascending specs is the shape people actually
-// scan; sorting any other way makes them hunt for the entry price.
+// cheapest first, people scan for the entry price
 const plans = [...g.plans].sort((a, b) => a.pricing.monthly - b.pricing.monthly);
 
-// Product + one Offer per plan, built off the same yaml the page renders, so
-// the structured data can't say a different price than the table. The
-// marketing log flagged the old site for shipping only Organization schema
-// on pages with a visible $8.99 and a full spec table; six weeks unfixed there.
+// Product + an Offer per plan off the same yaml so schema and table can't
+// disagree. old site shipped Organization only on a page with a price table
 const siteUrl = "https://lumixsolutions.org";
 const productSchema = {
   "@context": "https://schema.org",
@@ -55,10 +52,8 @@ const productSchema = {
 <Layout title={g.label} description={g.description}>
   <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
 
-  <!-- The colour story pays off here. The home hero picks a game at random and
-       lights it in that game's accent; this page is that game, so the same
-       light lands in its own colour every time. Accent is the beam and the
-       eyebrow mark. Red stays on the CTA and the popular plan. -->
+  <!-- same light as the home hero but always this game's accent. accent is
+       the beam and the eyebrow mark, red stays on the CTA -->
   <section
     class="relative overflow-hidden border-b border-[var(--edge)]"
     style={`--game-accent:${g.accent}`}
@@ -71,8 +66,7 @@ const productSchema = {
       class="absolute inset-0 h-full w-full object-cover opacity-60 [object-position:68%_45%]"
       loading="eager"
     />
-    <!-- Same idea as the home hero: an ink shelf under the copy on the left,
-         the art allowed to be itself on the right. -->
+    <!-- ink shelf under the copy, art on the right -->
     <div class="absolute inset-0 bg-gradient-to-r from-ink via-ink/70 to-ink/15" aria-hidden="true"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-ink to-transparent" aria-hidden="true"></div>
     <LightRays seed={11} count={7} />
@@ -150,8 +144,7 @@ const productSchema = {
                   <span class="small text-fog">/mo</span>
                 </p>
 
-                <!-- Only the popular plan is filled red. Seven red buttons would
-                     be seven equally loud choices, which is no choice at all. -->
+                <!-- only the popular one is red, seven red buttons is no choice -->
                 <a
                   href={orderUrl(plan.pid)}
                   class:list={[
@@ -170,17 +163,14 @@ const productSchema = {
       </ul>
 
       <p class="small text-fog mt-10 max-w-xl">{g.description}</p>
-      <!-- Straight answers to the two questions the marketing log kept asking
-           on our behalf. No trial, refunds case by case; matches terms.md. -->
+      <!-- no trial, refunds case by case, matches terms.md -->
       <p class="small text-slate mt-4 max-w-xl">
         No free trial. Refunds are handled case by case, not on a fixed window.
       </p>
     </div>
   </section>
 
-  <!-- What happens after you pay. The thing that stops people isn't the
-       price, it's not knowing what they'll be looking at afterwards. Steps
-       come from the docs, see src/lib/firstTen.ts. -->
+  <!-- what happens after you pay. steps from the docs, src/lib/firstTen.ts -->
   <section class="section border-t border-[var(--edge)]">
     <div class="shell grid gap-12 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-16">
       <div>

@@ -1,24 +1,19 @@
-// Who runs it. Three people today. Photos are Astro image imports so they get
-// resized and served as webp; the old site shipped an 840px PNG to everyone.
-//
-// Bios are ours, short, and in the site's voice rather than the old site's
-// "overseeing operational efficiency" register. Evan rewrites his own.
-// A person with no `image` gets a monogram tile, same as a partner with no
-// logo. A person with no `name` renders by title only; that's the community
-// manager until Evan fills it in.
+// who runs it. photos are image imports so they get resized, the old site
+// shipped a 1.5MB png. bios are mine, evan rewrites his. no image = monogram
+// tile, no name = title only (community manager until evan fills it in)
 import type { ImageMetadata } from "astro";
 import evan from "../assets/staff/evan-v.png";
 import keaghan from "../assets/staff/keaghan-g.png";
 
 export interface Person {
   name: string;
-  /** Two or three letters, for when there's no photo. */
+  /** for when there's no photo */
   mark: string;
   title: string;
-  /** What the title actually means here, in one or two lines. */
+  /** what the title actually means here */
   bio: string;
   image?: ImageMetadata;
-  /** Whatever's public. Leave it empty rather than linking a personal account. */
+  /** public stuff only */
   links: { label: string; href: string }[];
 }
 

@@ -1,16 +1,10 @@
-// What happens after checkout, per game. Rendered on the game pages under the
-// plans. The point is to kill the "what will I be looking at once I've paid"
-// question, which is the one that actually stops people.
-//
-// Everything here is from docs.lumixsolutions.org, read 2026-09-14: the FiveM
-// full setup guide for fivem, the Lumi-Panel pages (console, files, startup,
-// backups, schedules, databases) for the rest. Don't invent a step that isn't
-// in the docs; if the panel changes, the docs change first and this follows.
+// what happens after checkout, per game. all from docs.lumixsolutions.org
+// (fivem setup guide, lumi-panel pages). don't invent a step
 
 export interface Step {
   title: string;
   body: string;
-  /** Deep link into the docs for that step. */
+  /** docs link for the step */
   href?: string;
 }
 
