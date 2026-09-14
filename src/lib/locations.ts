@@ -1,22 +1,20 @@
-// The one copy of where things are. The globe draws from this and the home
-// page prints it as text, so the information exists without WebGL.
+// the one copy of where things are. globe and the text list both read this
 
 export interface Location {
   city: string;
   region: string;
   lat: number;
   lng: number;
-  /** URL-safe id, for /regions#dallas and the like. Hosting regions only. */
+  /** for /regions#dallas. hosting only */
   slug?: string;
-  /** Who it's for, in one line. Hosting regions only, read by /regions. */
+  /** one line on who it serves. hosting only */
   serves?: string;
-  /** Something HTTP in that region that answers fast. The ping test times a
-      no-cors fetch against it, so it needs no CORS headers and can 404 for
-      all we care. Leave it off and the region is skipped. */
+  /** anything http in that dc that answers fast. no-cors fetch, so no CORS
+      needed and a 404 is fine. missing = region skipped */
   pingUrl?: string;
 }
 
-// Where servers run. West to east.
+// where servers run, west to east
 export const HOSTING: Location[] = [
   {
     city: "Salt Lake City",
@@ -52,18 +50,11 @@ export const HOSTING: Location[] = [
   },
 ];
 
-// Where attack traffic gets scrubbed before it reaches one of the above.
-//
-// The page never names the providers, Evan's call, so `region` is a flat label
-// here. Sources for the maintainer though, because someone will ask: CosmicGuard
-// lists exactly six PoPs on cosmicguard.com (Los Angeles, Dallas, Ashburn,
-// London, Amsterdam, Frankfurt). Cloudflare has no scrubbing centres as such,
-// Magic Transit scrubs at every one of its ~348 cities, so the rest are its
-// major hubs rather than a complete list. Dallas and Ashburn are CosmicGuard
-// PoPs too but they're already red above; a paper dot under a red one is
-// invisible so they aren't repeated.
-//
-// Ordered so the list reads west to east across the map, then south.
+// scrubbing points. page never names providers (evan's call) so region is a
+// flat label. for whoever asks: cosmicguard has six PoPs (LA, dallas, ashburn,
+// london, amsterdam, frankfurt), cloudflare magic transit scrubs everywhere so
+// the rest are its big hubs. dallas/ashburn skipped, a paper dot under a red
+// one is invisible. west to east then south
 export const MITIGATION: Location[] = [
   { city: "Los Angeles", region: "Mitigation", lat: 34.0522, lng: -118.2437 },
   { city: "Chicago", region: "Mitigation", lat: 41.8781, lng: -87.6298 },

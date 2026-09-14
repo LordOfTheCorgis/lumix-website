@@ -6,14 +6,12 @@ const legal = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    // Display string, not an ISO date, so nobody has to think about timezones
-    // on a "last updated" line.
+    // display string not a date, nobody wants to think about timezones here
     lastUpdated: z.string(),
   }),
 });
 
-// Specs come out of YAML quoted because some vCore counts are fractional
-// ("2.5"), hence coerce on the numeric ones.
+// yaml quotes these because some vcore counts are "2.5", hence coerce
 const specs = z.object({
   vcores: z.string(),
   ramGb: z.coerce.number(),
@@ -26,8 +24,7 @@ const specs = z.object({
 const plan = z.object({
   key: z.string(),
   name: z.string(),
-  // WHMCS product ID. A wrong one here sells the wrong product at the wrong
-  // price, so it fails the build rather than the cart.
+  // WHMCS pid. wrong one sells the wrong product, so fail the build not the cart
   pid: z.number().int().positive(),
   popular: z.boolean().default(false),
   specs,
@@ -36,9 +33,8 @@ const plan = z.object({
 
 const games = defineCollection({
   loader: glob({ pattern: "*.yaml", base: "./src/content/games" }),
-  // image() hands back ImageMetadata so <Image> can emit webp, a srcset, and
-  // intrinsic width/height. Keeping key art in public/ meant shipping a 472KB
-  // Palworld jpg to every visitor.
+  // image() so <Image> can do webp + srcset. art in public/ meant shipping a
+  // 472KB palworld jpg to everyone
   schema: ({ image }) => z.object({
     slug: z.string(),
     label: z.string(),
@@ -47,18 +43,14 @@ const games = defineCollection({
     tagline: z.string(),
     description: z.string(),
     image: image(),
-    // The game's own logo, pulled from its publisher or Wikimedia Commons on
-    // 2026-09-11 and shrunk to 112px tall (2x of the 56px it renders at).
-    // SVG where one existed, webp otherwise. Black-on-transparent ones were
-    // recoloured to paper. See src/assets/logos.
+    // logo from the publisher or wikimedia, 112px tall (2x of 56). svg where
+    // there was one. black-on-transparent ones recoloured to paper
     logo: image(),
     accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
     mark: z.string().min(2).max(4),
     highlights: z.array(z.string()).optional(),
-    // A live game needs something to sell. A planned one has nothing yet and
-    // that's the point of listing it: the /games catalogue shows it dimmed so
-    // people can ask for it. Enforced below rather than with min(1) so the
-    // error names the game instead of "array too short".
+    // live needs plans. planned has none and that's the point, /games shows
+    // it dimmed so people can ask. superRefine so the error names the game
     plans: z.array(plan).default([]),
   }).superRefine((g, ctx) => {
     if (g.status === "live" && g.plans.length === 0) {

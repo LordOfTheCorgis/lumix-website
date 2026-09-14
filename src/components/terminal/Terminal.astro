@@ -1,14 +1,11 @@
 ---
-// Console output, sequenced. Each child starts when the previous one finishes.
+// console output, sequenced. each child starts when the last one finishes.
 //
-// The traffic lights are real macOS hex, not palette tokens, and that's on
-// purpose: they're window chrome quoting another OS, not Lumix color. Keeping
-// them out of @theme is what stops someone "fixing" them to brand red later.
-// They also don't count against the two-reds-per-viewport rule in DESIGN.md
-// section 5 for the same reason.
+// traffic lights are real macOS hex, not tokens. they're window chrome from
+// another OS, keeping them out of @theme stops someone "fixing" them to brand
+// red. they don't count against the red budget either.
 //
-// Mono is a deliberate local exception to DESIGN.md section 6. Real console
-// output is monospace; that's the subject, not costume. Scoped here, no token.
+// mono is a local exception, real console output is mono. no token
 
 interface Props {
   label?: string;          // e.g. "MIA-04 · console"
@@ -47,15 +44,15 @@ const {
 
 <style>
   .terminal-body {
-    /* Local exception. See the note in the frontmatter before adding a token. */
+    /* local exception, see top of file */
     font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
     font-size: 0.8125rem;
     line-height: 1.6;
     tab-size: 2;
   }
 
-  /* Hidden by default so the script can blank the typed lines without a flash of
-     finished text. The two escape hatches below put it back. */
+  /* hidden by default so the script can blank the typed lines without a
+     flash of finished text */
   .terminal-body :global([data-line]) {
     opacity: 0;
     transform: translateY(-5px);
@@ -67,7 +64,7 @@ const {
     transform: none;
   }
 
-  /* Blinking block caret, parked on whichever line is currently typing. */
+  /* block caret on whichever line is typing */
   .terminal-body :global([data-caret])::after {
     content: "";
     display: inline-block;
@@ -102,7 +99,7 @@ const {
 </noscript>
 
 <script>
-  // One script per page regardless of how many terminals are on it.
+  // one script per page however many terminals
   const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -130,8 +127,7 @@ const {
     const state = terminal.querySelector<HTMLElement>("[data-terminal-state]");
     const sequenced = terminal.dataset.sequence !== "false";
 
-    // Stash the server-rendered text before blanking anything, otherwise a
-    // re-run (hot reload, back button) types an empty string.
+    // stash the rendered text first or a re-run (hmr, back button) types ""
     const originals = new Map<HTMLElement, string>();
     for (const line of lines) {
       if (line.dataset.kind === "type") {
@@ -152,7 +148,7 @@ const {
     if (state) state.textContent = "running";
 
     if (!sequenced) {
-      // Unsequenced: every line runs off its own delay, in parallel.
+      // unsequenced, every line on its own delay
       await Promise.all(
         lines.map(async (line) => {
           await sleep(Number(line.dataset.delay ?? 0));
