@@ -68,7 +68,7 @@ const pings = Object.entries(capacity.ping).filter(([, v]) => v !== null) as [
 ][];
 ---
 
-<section class="section band border-t border-[var(--edge)]" aria-labelledby="cap-h">
+<section class="section border-t border-[var(--edge)]" aria-labelledby="cap-h">
   <div class="shell">
     <p class="instrument text-fog">Live capacity</p>
     <h2 id="cap-h" class="title mt-4">
@@ -202,9 +202,11 @@ const pings = Object.entries(capacity.ping).filter(([, v]) => v !== null) as [
     display: block;
   }
 
-  /* open: hollow, the border IS the cell. a real link */
+  /* open: hollow and the brightest thing on the board. it has to pop against
+     the filled mass or "what's left" isn't scannable, which is the one job.
+     paper hairline not red, red stays on the leash for capped + hover */
   .cap-cell--open {
-    border: 1px solid var(--edge-strong);
+    border: 1px solid rgba(247, 245, 241, 0.34);
     background: transparent;
     transition: border-color 150ms, background-color 150ms;
   }
@@ -231,10 +233,14 @@ const pings = Object.entries(capacity.ping).filter(([, v]) => v !== null) as [
     clip-path: inherit;
     transform-origin: bottom;
   }
+  /* running is an occupied slot. pure ink-soft is 1.08:1 on ink (invisible, per
+     DESIGN's own note), so it lifts a touch past ink-soft to actually read as
+     filled mass. edge-strong hairline defines the square */
+  .cap-cell--running {
+    border-color: var(--edge-strong);
+  }
   .cap-cell--running .cap-cell__fill {
-    background: var(--color-ink);
-    border: 1px solid var(--edge-strong);
-    clip-path: none;
+    background: #2b2528;
   }
   /* capped: red with a 16deg hatch, the system's one angle */
   .cap-cell--capped .cap-cell__fill {
