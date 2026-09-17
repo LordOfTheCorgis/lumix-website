@@ -172,8 +172,8 @@ const pings = Object.entries(capacity.ping).filter(([, v]) => v !== null) as [
   /* below 640 this scrolls sideways instead of squashing, per DESIGN 10 */
   .cap-strip {
     display: flex;
-    gap: 1.5rem;
-    margin-top: 1rem;
+    gap: 2.5rem;
+    margin-top: 1.1rem;
     overflow-x: auto;
     padding-bottom: 0.5rem;
     scrollbar-width: thin;
@@ -187,8 +187,8 @@ const pings = Object.entries(capacity.ping).filter(([, v]) => v !== null) as [
   }
 
   .cap-cells {
-    --cap-size: 20px;
-    --cap-gap: 5px;
+    --cap-size: 24px;
+    --cap-gap: 6px;
     display: grid;
     grid-template-columns: repeat(4, var(--cap-size));
     gap: var(--cap-gap);
@@ -196,9 +196,9 @@ const pings = Object.entries(capacity.ping).filter(([, v]) => v !== null) as [
 
   .cap-cell {
     position: relative;
-    width: 20px;
-    height: 20px;
-    --chamfer: 5px;
+    width: 24px;
+    height: 24px;
+    --chamfer: 6px;
     display: block;
   }
 
