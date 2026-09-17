@@ -110,11 +110,14 @@ const pings = Object.entries(capacity.ping).filter(([, v]) => v !== null) as [
                   <div class="cap-cells" role="presentation">
                     {expand(rc).map((cell) =>
                       cell.state === "open" ? (
+                        // no chamfer on the <a> itself: clip-path eats the focus
+                        // outline, so the cut lives on the inner box and the ring
+                        // lands on the unclipped wrapper (DESIGN.md 10)
                         <a
-                          class="cap-cell cap-cell--open chamfer"
+                          class="cap-cell cap-cell--open"
                           href={`/games/${rc.game}`}
                           aria-label={`Open ${info.label} slot in ${CITY[rc.region] ?? rc.region}. Configure a server.`}
-                        ></a>
+                        ><span class="cap-cell__box chamfer"></span></a>
                       ) : (
                         <span class:list={["cap-cell", "chamfer", `cap-cell--${cell.state}`]} aria-hidden="true">
                           <span class="cap-cell__fill"></span>
@@ -133,7 +136,7 @@ const pings = Object.entries(capacity.ping).filter(([, v]) => v !== null) as [
 
     <!-- legend. three states, said once -->
     <ul class="cap-legend mt-8" aria-hidden="true">
-      <li><span class="cap-cell cap-cell--open chamfer cap-swatch"></span> Open</li>
+      <li><span class="cap-cell cap-cell--open cap-swatch"><span class="cap-cell__box chamfer"></span></span> Open</li>
       <li><span class="cap-cell cap-cell--running chamfer cap-swatch"><span class="cap-cell__fill"></span></span> Running</li>
       <li><span class="cap-cell cap-cell--capped chamfer cap-swatch"><span class="cap-cell__fill"></span></span> Capped on purpose</li>
     </ul>
@@ -202,23 +205,25 @@ const pings = Object.entries(capacity.ping).filter(([, v]) => v !== null) as [
     display: block;
   }
 
+  /* the chamfered box lives inside every cell now. for open cells it's the only
+     thing with a clip-path so the <a> wrapper stays free to show a focus ring */
+  .cap-cell__box {
+    position: absolute;
+    inset: 0;
+  }
+
   /* open: hollow and the brightest thing on the board. it has to pop against
      the filled mass or "what's left" isn't scannable, which is the one job.
      paper hairline not red, red stays on the leash for capped + hover */
-  .cap-cell--open {
+  .cap-cell--open .cap-cell__box {
     border: 1px solid rgba(247, 245, 241, 0.34);
     background: transparent;
     transition: border-color 150ms, background-color 150ms;
   }
-  .cap-cell--open:hover,
-  .cap-cell--open:focus-visible {
+  .cap-cell--open:hover .cap-cell__box,
+  .cap-cell--open:focus-visible .cap-cell__box {
     border-color: var(--color-red);
     background: rgba(255, 76, 76, 0.1);
-  }
-  /* chamfer eats the outline, so ring the wrapper cell via box-shadow instead */
-  .cap-cell--open:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--color-ink-soft), 0 0 0 4px var(--color-red);
   }
 
   /* running + capped: the fill is a child so it can animate independently of
