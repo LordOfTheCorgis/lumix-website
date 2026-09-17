@@ -1,0 +1,355 @@
+---
+// The Capacity Board. DESIGN.md section 8, the signature element that was
+// speced and never built. one cell per real slot, grouped by game then region.
+// open = a real link into the game's configurator, running = someone's server
+// lives there, capped = held back on purpose. the capping policy as interface.
+//
+// the ONE piece of homepage motion (DESIGN.md section 9): outlines draw left
+// to right, then occupied cells fill. driven by anime.js in the script below,
+// and only when motion is allowed. no-JS and reduced-motion get the finished
+// board on first paint, which is why nothing here starts hidden in CSS.
+import { getCollection } from "astro:content";
+import { capacity, type CapacityCell } from "../config";
+
+const games = await getCollection("games");
+const meta = new Map(
+  games.map((g) => [g.data.slug, { label: g.data.shortLabel, accent: g.data.accent }])
+);
+
+// region code -> city, for the aria labels. codes match locations.ts cities
+const CITY: Record<string, string> = {
+  MIA: "Miami",
+  IAD: "Ashburn",
+  DFW: "Dallas",
+  SLC: "Salt Lake City",
+};
+
+// group cells by game, keep config order (it's the render order)
+const order: string[] = [];
+const groups = new Map<string, CapacityCell[]>();
+for (const c of capacity.cells) {
+  if (!groups.has(c.game)) {
+    groups.set(c.game, []);
+    order.push(c.game);
+  }
+  groups.get(c.game)!.push(c);
+}
+
+const sum = (f: (c: CapacityCell) => number) =>
+  capacity.cells.reduce((n, c) => n + f(c), 0);
+const totalOpen = sum((c) => c.open);
+const total = sum((c) => c.open + c.running + c.capped);
+const openOf = (cells: CapacityCell[]) => cells.reduce((n, c) => n + c.open, 0);
+const slotsOf = (cells: CapacityCell[]) =>
+  cells.reduce((n, c) => n + c.open + c.running + c.capped, 0);
+
+// expand one region's counts into individual cell descriptors, open first so
+// the actionable slots sit at the top-left of each cluster
+type Cell = { state: "open" | "running" | "capped" };
+function expand(c: CapacityCell): Cell[] {
+  return [
+    ...Array.from({ length: c.open }, () => ({ state: "open" as const })),
+    ...Array.from({ length: c.running }, () => ({ state: "running" as const })),
+    ...Array.from({ length: c.capped }, () => ({ state: "capped" as const })),
+  ];
+}
+
+// "2026-09-16" -> "SEP 16", instrument style. no year, it's this year or the
+// updated line is doing its job wrong
+const [, m, d] = capacity.updated.split("-");
+const MON = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+const updated = m && d ? `${MON[Number(m) - 1]} ${Number(d)}` : "";
+
+// only regions with a real measured figure get a number, same null-guard as
+// the trustpilot line. no made-up latency in a component about honesty
+const pings = Object.entries(capacity.ping).filter(([, v]) => v !== null) as [
+  string,
+  number
+][];
+---
+
+<section class="section band border-t border-[var(--edge)]" aria-labelledby="cap-h">
+  <div class="shell">
+    <p class="instrument text-fog">Live capacity</p>
+    <h2 id="cap-h" class="title mt-4">
+      Every slot we run, and what's left<span class="text-red">.</span>
+    </h2>
+    <p class="lead text-fog mt-6 max-w-xl">
+      One cell per server we host. Nothing hidden, no waitlist theatre. When a
+      region fills, the open cells run out and the page just says so.
+    </p>
+
+    <!-- the honest number. computed from the same config the cells render from,
+         so the headline and the grid can't disagree -->
+    <p class="instrument mt-8" data-cap-line>
+      <span class="text-paper">{totalOpen}</span>
+      <span class="text-slate"> of {total} slots open</span>
+      {pings.map(([code, ms]) => (
+        <span class="text-slate"> · {code} {ms}ms</span>
+      ))}
+      {updated && <span class="text-slate"> · updated {updated}</span>}
+    </p>
+
+    <div class="cap-board mt-10" data-cap-board>
+      {order.map((slug) => {
+        const cells = groups.get(slug)!;
+        const info = meta.get(slug) ?? { label: slug, accent: "#ffffff" };
+        return (
+          <div class="cap-game">
+            <div class="cap-game__head">
+              <span class="cap-tick chamfer" style={`--accent:${info.accent}`}></span>
+              <span class="cap-game__name">{info.label}</span>
+              <span class="small text-slate">
+                {openOf(cells)} open · {slotsOf(cells)} slots
+              </span>
+            </div>
+
+            <div class="cap-strip">
+              {cells.map((rc) => (
+                <div class="cap-region">
+                  <div class="cap-cells" role="presentation">
+                    {expand(rc).map((cell) =>
+                      cell.state === "open" ? (
+                        <a
+                          class="cap-cell cap-cell--open chamfer"
+                          href={`/games/${rc.game}`}
+                          aria-label={`Open ${info.label} slot in ${CITY[rc.region] ?? rc.region}. Configure a server.`}
+                        ></a>
+                      ) : (
+                        <span class:list={["cap-cell", "chamfer", `cap-cell--${cell.state}`]} aria-hidden="true">
+                          <span class="cap-cell__fill"></span>
+                        </span>
+                      )
+                    )}
+                  </div>
+                  <span class="instrument text-slate cap-region__code">{rc.region}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- legend. three states, said once -->
+    <ul class="cap-legend mt-8" aria-hidden="true">
+      <li><span class="cap-cell cap-cell--open chamfer cap-swatch"></span> Open</li>
+      <li><span class="cap-cell cap-cell--running chamfer cap-swatch"><span class="cap-cell__fill"></span></span> Running</li>
+      <li><span class="cap-cell cap-cell--capped chamfer cap-swatch"><span class="cap-cell__fill"></span></span> Capped on purpose</li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .cap-board {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .cap-game__head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* the accent tick, only place a game's own colour appears on this board */
+  .cap-tick {
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    --chamfer: 4px;
+    flex: none;
+  }
+
+  .cap-game__name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    color: var(--color-paper);
+  }
+
+  /* below 640 this scrolls sideways instead of squashing, per DESIGN 10 */
+  .cap-strip {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+  }
+
+  .cap-region {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .cap-cells {
+    --cap-size: 20px;
+    --cap-gap: 5px;
+    display: grid;
+    grid-template-columns: repeat(4, var(--cap-size));
+    gap: var(--cap-gap);
+  }
+
+  .cap-cell {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    --chamfer: 5px;
+    display: block;
+  }
+
+  /* open: hollow, the border IS the cell. a real link */
+  .cap-cell--open {
+    border: 1px solid var(--edge-strong);
+    background: transparent;
+    transition: border-color 150ms, background-color 150ms;
+  }
+  .cap-cell--open:hover,
+  .cap-cell--open:focus-visible {
+    border-color: var(--color-red);
+    background: rgba(255, 76, 76, 0.1);
+  }
+  /* chamfer eats the outline, so ring the wrapper cell via box-shadow instead */
+  .cap-cell--open:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-ink-soft), 0 0 0 4px var(--color-red);
+  }
+
+  /* running + capped: the fill is a child so it can animate independently of
+     the outline. cell itself carries the hairline */
+  .cap-cell--running,
+  .cap-cell--capped {
+    border: 1px solid var(--edge);
+  }
+  .cap-cell__fill {
+    position: absolute;
+    inset: 0;
+    clip-path: inherit;
+    transform-origin: bottom;
+  }
+  .cap-cell--running .cap-cell__fill {
+    background: var(--color-ink);
+    border: 1px solid var(--edge-strong);
+    clip-path: none;
+  }
+  /* capped: red with a 16deg hatch, the system's one angle */
+  .cap-cell--capped .cap-cell__fill {
+    background: repeating-linear-gradient(
+      calc(-1 * 16deg),
+      var(--color-red) 0,
+      var(--color-red) 2px,
+      #b83636 2px,
+      #b83636 4px
+    );
+  }
+
+  .cap-region__code {
+    text-align: left;
+  }
+
+  .cap-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 1.5rem;
+    font-size: 0.875rem;
+    color: var(--color-fog);
+  }
+  .cap-legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .cap-swatch {
+    width: 16px;
+    height: 16px;
+    --chamfer: 4px;
+  }
+
+  @media (min-width: 640px) {
+    /* enough room now, let the region clusters wrap instead of scroll */
+    .cap-strip {
+      flex-wrap: wrap;
+      overflow-x: visible;
+    }
+  }
+</style>
+
+<script>
+  import { animate } from "animejs";
+
+  const board = document.querySelector<HTMLElement>("[data-cap-board]");
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // no board, no motion, or reduced-motion: leave the finished board alone.
+  // it already renders complete, that's the whole progressive-enhancement play
+  if (board && !still.matches) {
+    const cells = Array.from(board.querySelectorAll<HTMLElement>(".cap-cell"));
+    const fills = Array.from(board.querySelectorAll<HTMLElement>(".cap-cell__fill"));
+
+    // hide immediately on parse so the finished board never flashes before the
+    // sweep. done in JS not CSS so the no-JS path keeps the visible board
+    for (const c of cells) {
+      c.style.opacity = "0";
+      c.style.transform = "translateX(-6px)";
+    }
+    for (const f of fills) {
+      f.style.opacity = "0";
+      f.style.transform = "scaleY(0.55)";
+    }
+
+    let played = false;
+    function play() {
+      if (played) return;
+      played = true;
+
+      // real left-to-right: sort by screen x so the sweep ignores DOM grouping.
+      // top breaks ties so a column lights top-down, not scattered
+      const sorted = [...cells].sort((a, b) => {
+        const ra = a.getBoundingClientRect();
+        const rb = b.getBoundingClientRect();
+        return ra.left - rb.left || ra.top - rb.top;
+      });
+      sorted.forEach((c, i) => (c.dataset.d = String(i * 9)));
+
+      // phase 1: outlines draw in, left to right
+      animate(cells, {
+        opacity: 1,
+        translateX: 0,
+        duration: 420,
+        delay: (el: HTMLElement) => Number((el as HTMLElement).dataset.d) || 0,
+        ease: "out(3)",
+      });
+
+      // phase 2: occupied cells fill, once the sweep has mostly landed. keyed to
+      // the parent cell's draw delay so a fill never beats its own outline
+      animate(fills, {
+        opacity: 1,
+        scaleY: 1,
+        duration: 220,
+        delay: (el: HTMLElement) => {
+          const parent = el.closest<HTMLElement>(".cap-cell");
+          return 260 + (Number(parent?.dataset.d) || 0);
+        },
+        ease: "out(2)",
+      });
+    }
+
+    // fire once, when the board actually scrolls into view
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            play();
+            io.disconnect();
+          }
+        }
+      },
+      { threshold: 0.2 }
+    );
+    io.observe(board);
+  }
+</script>
