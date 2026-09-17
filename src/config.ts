@@ -41,6 +41,53 @@ export const demoPanel = {
   password: "",
 };
 
+// the capacity board. DESIGN.md section 8, the signature element. this is the
+// capping policy rendered as interface, so the numbers have to be REAL. edit
+// them by hand when inventory moves. no fake scarcity timer, and if the open
+// count is high we say so, the credibility is the whole point.
+//
+// each cell is one literal slot. open = purchasable now, running = someone's
+// server lives there, capped = held back on purpose to keep nodes honest.
+// game is a slug, label/accent get pulled from the games collection so colour
+// stays single-sourced. region is the short code, cities live in locations.ts.
+export type SlotState = "open" | "running" | "capped";
+
+export interface CapacityCell {
+  game: string;    // slug into the games collection
+  region: string;  // MIA / IAD / DFW / SLC
+  open: number;
+  running: number;
+  capped: number;
+}
+
+export const capacity = {
+  // bump when you touch the numbers below, same deal as trust.updated
+  updated: "2026-09-16",
+  // node backbone latency per region, operator-measured. null renders nothing
+  // rather than a made-up number, same pattern as trust.score. fill these with
+  // real figures from the nodes, not a guess
+  ping: {
+    MIA: null as number | null,
+    IAD: null as number | null,
+    DFW: null as number | null,
+    SLC: null as number | null,
+  } as Record<string, number | null>,
+  // fivem carries the capped slots because fivem is the product the capping
+  // announcement was about. order here is the render order, west-to-east-ish
+  cells: [
+    { game: "fivem", region: "SLC", open: 2, running: 7, capped: 0 },
+    { game: "fivem", region: "DFW", open: 1, running: 8, capped: 2 },
+    { game: "fivem", region: "IAD", open: 3, running: 9, capped: 4 },
+    { game: "fivem", region: "MIA", open: 2, running: 10, capped: 4 },
+    { game: "minecraft", region: "IAD", open: 1, running: 7, capped: 0 },
+    { game: "minecraft", region: "MIA", open: 1, running: 8, capped: 0 },
+    { game: "palworld", region: "DFW", open: 1, running: 5, capped: 0 },
+    { game: "palworld", region: "IAD", open: 2, running: 6, capped: 0 },
+    { game: "terraria", region: "SLC", open: 0, running: 6, capped: 0 },
+    { game: "terraria", region: "MIA", open: 1, running: 6, capped: 0 },
+  ] as CapacityCell[],
+};
+
 export const links = {
   billing: "https://billing.lumixsolutions.org",
   ticket: "https://billing.lumixsolutions.org/submitticket.php",
