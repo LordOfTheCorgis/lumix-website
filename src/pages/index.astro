@@ -8,7 +8,6 @@ import Faq from "../components/Faq.astro";
 import Included from "../components/Included.astro";
 import PingTest from "../components/PingTest.astro";
 import Globe from "../components/Globe.astro";
-import CapacityBoard from "../components/CapacityBoard.astro";
 import { orderUrl, price } from "../lib/order";
 import { HOSTING, MITIGATION } from "../lib/locations";
 import { botHosting, links, trust } from "../config";
@@ -69,10 +68,6 @@ const cheapest = Math.min(
       </div>
     </div>
   </section>
-
-  <!-- the signature element. this is the capping policy made visible, and the
-       one place the homepage spends its motion budget -->
-  <CapacityBoard />
 
   <section id="pick" class="section border-t border-[var(--edge)] pt-12 lg:pt-16">
     <div class="shell">
