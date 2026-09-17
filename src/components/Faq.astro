@@ -54,7 +54,7 @@ const schema = {
       </div>
     </div>
 
-    <div class="faq divide-y divide-[var(--edge)] border-y border-[var(--edge)]">
+    <div class="faq divide-y divide-[var(--edge)] border-y border-[var(--edge)]" data-faq>
       {FAQ.map((f) => (
         <details class="group">
           <summary class="flex cursor-pointer list-none items-center gap-6 py-5 font-medium text-paper">
@@ -64,7 +64,9 @@ const schema = {
               class="ml-auto shrink-0 text-fog transition-transform duration-150 group-open:rotate-45"
             >+</span>
           </summary>
-          <p class="text-fog max-w-2xl pb-6">{f.a}</p>
+          <div class="faq-a" data-faq-a>
+            <p class="text-fog max-w-2xl pb-6">{f.a}</p>
+          </div>
         </details>
       ))}
     </div>
@@ -88,3 +90,63 @@ const schema = {
     }
   }
 </style>
+
+<script>
+  import { animate } from "animejs";
+
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const box = document.querySelector<HTMLElement>("[data-faq]");
+
+  // no js / reduced motion = the native <details> snap, which is fine. this only
+  // layers a height tween on top for everyone else. semantics + json-ld are
+  // untouched either way
+  if (box && !still.matches) {
+    box.querySelectorAll<HTMLDetailsElement>("details").forEach((d) => {
+      const summary = d.querySelector<HTMLElement>("summary")!;
+      const panel = d.querySelector<HTMLElement>("[data-faq-a]")!;
+      let busy = false;
+
+      // <details> renders its content only while open, so we drive open/close
+      // by hand: open first, animate up; animate down, then close. keeps the
+      // panel measurable and the content from vanishing mid-close
+      summary.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (busy) return;
+        busy = true;
+        panel.style.overflow = "hidden";
+
+        if (!d.open) {
+          d.open = true;
+          animate(panel, {
+            height: [0, panel.scrollHeight],
+            opacity: [0, 1],
+            translateY: [-6, 0],
+            duration: 260,
+            ease: "out(3)",
+            onComplete: () => {
+              // hand height back to the layout so it reflows on resize
+              panel.style.height = "";
+              panel.style.overflow = "";
+              busy = false;
+            },
+          });
+        } else {
+          animate(panel, {
+            height: [panel.scrollHeight, 0],
+            opacity: [1, 0],
+            duration: 200,
+            ease: "out(2)",
+            onComplete: () => {
+              d.open = false;
+              panel.style.height = "";
+              panel.style.opacity = "";
+              panel.style.transform = "";
+              panel.style.overflow = "";
+              busy = false;
+            },
+          });
+        }
+      });
+    });
+  }
+</script>
