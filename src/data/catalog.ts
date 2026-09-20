@@ -105,8 +105,14 @@ export const locationOptions: ConfigOptionGroup = {
     values: [
         // Both notes previously read "US East · DDoS protected", which gave a
         // customer nothing to choose on. Each now says who it is actually for.
-        { key: "miami", label: "Miami, FL", valueId: 3, note: "Best for the Southeast US, Caribbean, and Latin America"},
-        { key: "ashburn", label: "Ashburn, VA", valueId: 5, note: "Best for the Northeast US, Midwest, Canada, and Europe"},
+        //
+        // Dallas is the only region with capacity right now, so it sits first
+        // and the builder picks it by default. Miami and Ashburn stay listed
+        // (sold out) rather than deleted — existing services still live there
+        // and the region list reads better with the full footprint visible.
+        { key: "dallas", label: "Dallas, TX", valueId: 5, note: "Best for the Central US, Texas, and Mexico"},
+        { key: "miami", label: "Miami, FL", valueId: 3, note: "Best for the Southeast US, Caribbean, and Latin America", soldOut: true},
+        { key: "ashburn", label: "Ashburn, VA", valueId: 5, note: "Best for the Northeast US, Midwest, Canada, and Europe", soldOut: true},
     ],
 };
 
