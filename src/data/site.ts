@@ -14,7 +14,7 @@ export const announcementBanner = {
         },
         {
             id: "2",
-            text: "Miami datacenters are now live - choose your region for lower latency.",
+            text: "Our Dallas, TX datacenter is now live - central US routing with lower latency.",
             link: "/games"
         },
         {
