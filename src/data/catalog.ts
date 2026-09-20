@@ -110,7 +110,11 @@ export const locationOptions: ConfigOptionGroup = {
         // and the builder picks it by default. Miami and Ashburn stay listed
         // (sold out) rather than deleted — existing services still live there
         // and the region list reads better with the full footprint visible.
-        { key: "dallas", label: "Dallas, TX", valueId: 5, note: "Best for the Central US, Texas, and Mexico"},
+        //
+        // valueId is the WHMCS option value, NOT the Pterodactyl node id — they
+        // do not line up and never will. Dallas is node 5 in the panel but
+        // value 7 here. Grab the number from WHMCS admin, not from Pterodactyl.
+        { key: "dallas", label: "Dallas, TX", valueId: 7, note: "Best for the Central US, Texas, and Mexico"},
         { key: "miami", label: "Miami, FL", valueId: 3, note: "Best for the Southeast US, Caribbean, and Latin America", soldOut: true},
         { key: "ashburn", label: "Ashburn, VA", valueId: 5, note: "Best for the Northeast US, Midwest, Canada, and Europe", soldOut: true},
     ],
