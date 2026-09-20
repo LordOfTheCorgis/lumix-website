@@ -111,10 +111,17 @@ export const locationOptions: ConfigOptionGroup = {
         // (sold out) rather than deleted — existing services still live there
         // and the region list reads better with the full footprint visible.
         //
-        // valueId is the WHMCS option value, NOT the Pterodactyl node id — they
-        // do not line up and never will. Dallas is node 5 in the panel but
-        // value 7 here. Grab the number from WHMCS admin, not from Pterodactyl.
-        { key: "dallas", label: "Dallas, TX", valueId: 7, note: "Best for the Central US, Texas, and Mexico"},
+        // Three different numbers describe Dallas and it is very easy to grab
+        // the wrong one:
+        //   node 5 — Pterodactyl node id, never appears in a cart URL
+        //   "5|Dallas, TX" — the WHMCS option NAME in admin, which is the
+        //     location_id handed to the provisioning module. Also not the
+        //     number we want, even though admin puts it right in your face.
+        //   6 — the sub-option row id, and the only one cart.php accepts.
+        // Admin never shows that last one. Pull it from the live order form
+        // instead: cart.php?a=add&pid=16, then read data-val off the location
+        // card (or the option value if the template ever goes back to a select).
+        { key: "dallas", label: "Dallas, TX", valueId: 6, note: "Best for the Central US, Texas, and Mexico"},
         { key: "miami", label: "Miami, FL", valueId: 3, note: "Best for the Southeast US, Caribbean, and Latin America", soldOut: true},
         { key: "ashburn", label: "Ashburn, VA", valueId: 5, note: "Best for the Northeast US, Midwest, Canada, and Europe", soldOut: true},
     ],
