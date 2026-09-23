@@ -26,6 +26,10 @@
   --color-gold: #ffb347;
   --color-paper: #f7f5f1;
 
+  /* status "up" and nothing else. evan wanted green over paper for it, which
+     is fair, nobody reads a white tick as good news. ~10:1 on ink */
+  --color-go: #4fd98a;
+
   /* fog is normal dim, slate is dimmer for labels. old slate was a paper-only
      value that crept onto ink at 3.54:1. don't push it back down */
   --color-slate: #97909a;  /* 5.8:1 */

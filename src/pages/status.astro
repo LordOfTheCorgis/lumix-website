@@ -99,7 +99,6 @@ const groups = [
               >
                 <div class="min-w-0">
                   <p class="instrument normal-case text-fog truncate">{vm.name}</p>
-                  {vm.ip && <p class="instrument tabular text-slate mt-1">{vm.ip}</p>}
                 </div>
                 <p class="tabular small text-fog text-right" data-status-ms>
                   {vm.ip && <span aria-hidden="true">···</span>}
@@ -159,8 +158,7 @@ const groups = [
   }
 
   /* the diagonal again, sheared like everything else. slate while checking,
-     paper when it answers, red when it doesn't. no green, red is the only
-     accent this site gets */
+     green when it answers, red when it doesn't */
   .tick {
     display: inline-block;
     width: 0.55rem;
@@ -169,7 +167,8 @@ const groups = [
     background: var(--color-slate);
     transition: background-color 150ms;
   }
-  [data-state="up"] .tick { background: var(--color-paper); }
+  [data-state="up"] .tick { background: var(--color-go); }
+  [data-state="up"] [data-status-text] { color: var(--color-go); }
   [data-state="down"] .tick { background: var(--color-red); }
   [data-state="down"] [data-status-text] { color: var(--color-red-tint); }
   [data-state="checking"] .tick { opacity: 0.5; }
