@@ -44,10 +44,12 @@ export async function medianPing(url: string, n = 5): Promise<number | null> {
   const times: number[] = [];
   for (let i = 0; i < n; i++) {
     const p = await probe(url);
-    if (p) times.push(p.ms);
+    // one timeout means nothing's there. waiting out four more of them made a
+    // dead box take 16s to show up as dead
+    if (!p) return null;
+    times.push(p.ms);
   }
   if (times.length > 1) times.shift();
-  if (!times.length) return null;
   times.sort((a, b) => a - b);
   return Math.round(times[Math.floor(times.length / 2)]);
 }
