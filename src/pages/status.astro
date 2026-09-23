@@ -3,8 +3,8 @@
 // history on purpose, the old page had a hand-typed 99.99% and that's exactly
 // the kind of number DESIGN.md says we don't print.
 //
-// regions time a refused https connect to the node (see lib/ping.ts). services
-// need a real http answer, a RST from billing means billing is down.
+// regions and vms time a refused https connect (see lib/ping.ts). billing,
+// panel and docs used to be on here too, evan cut them.
 import Layout from "../layouts/Layout.astro";
 import { HOSTING } from "../lib/locations";
 import { links } from "../config";
@@ -13,25 +13,14 @@ const regions = HOSTING.filter((r) => r.pingUrl).map((r) => ({
   name: r.city,
   detail: r.region,
   url: r.pingUrl!,
-  kind: "region",
   vms: r.vms ?? [],
 }));
 
-const services = [
-  { name: "Billing", detail: "Orders, invoices, tickets", url: links.billing, kind: "service", vms: [] },
-  { name: "Control panel", detail: "Start, stop, files, console", url: links.panel, kind: "service", vms: [] },
-  { name: "Docs", detail: "Guides and setup", url: links.docs, kind: "service", vms: [] },
-];
-
-const groups = [
-  { heading: "Regions", note: "Round trip from your browser to the node.", rows: regions },
-  { heading: "Services", note: "Whether it answered, and how fast.", rows: services },
-];
 ---
 
 <Layout
   title="Status"
-  description="Is it us or you? Checks every Lumix region and service from your own browser, right now."
+  description="Is it us or you? Checks every Lumix region and server from your own browser, right now."
 >
   <section class="section border-b border-[var(--edge)]">
     <div class="shell">
@@ -41,7 +30,7 @@ const groups = [
       </h1>
       <p class="lead text-fog mt-6 max-w-xl">
         This page doesn't read a dashboard we control. Your browser reaches out
-        to each region and service itself, so if something here says down, it's
+        to each region and server itself, so if something here says down, it's
         down from where you're sitting.
       </p>
       <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
@@ -57,21 +46,19 @@ const groups = [
     </div>
   </section>
 
-  {groups.map((g) => (
     <section class="section">
       <div class="shell">
         <div class="flex flex-wrap items-end justify-between gap-4">
-          <h2 class="title">{g.heading}</h2>
-          <p class="small text-slate">{g.note}</p>
+          <h2 class="title">Regions</h2>
+          <p class="small text-slate">Round trip from your browser to each server.</p>
         </div>
         <ul class="m-0 mt-8 list-none p-0 border-t border-[var(--edge)]">
-          {g.rows.map((r) => (
+          {regions.map((r) => (
             <>
             <li
               class="status-row border-b border-[var(--edge)] py-6"
               data-status-row
               data-url={r.url}
-              data-kind={r.kind}
               data-name={r.name}
               data-state="checking"
             >
@@ -92,7 +79,6 @@ const groups = [
                 class="status-row status-vm border-b border-[var(--edge)] py-3"
                 data-status-row={vm.ip ? "" : undefined}
                 data-url={vm.ip ? `https://${vm.ip}/` : undefined}
-                data-kind="region"
                 data-name={vm.name}
                 data-vm-of={vm.ip ? undefined : r.name}
                 data-state="checking"
@@ -114,7 +100,6 @@ const groups = [
         </ul>
       </div>
     </section>
-  ))}
 
   <section class="section band border-t border-[var(--edge)]">
     <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
@@ -180,7 +165,7 @@ const groups = [
 </style>
 
 <script>
-  import { probe, medianPing } from "../lib/ping";
+  import { medianPing } from "../lib/ping";
 
   const rows = [...document.querySelectorAll<HTMLElement>("[data-status-row]")];
   const headline = document.querySelector<HTMLElement>("[data-status-headline]")!;
@@ -203,16 +188,10 @@ const groups = [
   }
 
   async function check(row: HTMLElement) {
-    const url = row.dataset.url!;
-    if (row.dataset.kind === "region") {
-      const ms = await medianPing(url, 4);
-      set(row, ms === null ? "down" : "up", ms);
-      return;
-    }
-    // services: one real answer is enough, a RST doesn't count
-    const p = await probe(url, 6000);
-    set(row, p?.answered ? "up" : "down", p?.answered ? Math.round(p.ms) : null);
+    const ms = await medianPing(row.dataset.url!, 4);
+    set(row, ms === null ? "down" : "up", ms);
   }
+
 
   function summarise() {
     const down = rows.filter((r) => r.dataset.state === "down").map((r) => r.dataset.name!);
