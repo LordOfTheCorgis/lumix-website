@@ -15,11 +15,6 @@ the commit and point at this file.
       PostHog. Goes in `.env` as `PUBLIC_POSTHOG_KEY` (see `.env.example`).
       Confirm the host is US (`https://us.i.posthog.com`) or set EU. Until
       it's set, analytics and the cookie banner both render nothing.
-- [ ] **Trustpilot score and review count, by hand.** The embeddable widgets
-      turned out to be paid-tier only, so the hero line is typed. Read the
-      TrustScore and review count off trustpilot.com/review/lumixsolutions.org
-      and put them in `trust` in `src/config.ts` with today's date. Line
-      doesn't render until both are set.
 - [ ] **One HTTP URL per region for the ping test.** Anything in that
       datacenter that answers fast: a node's panel host, a status endpoint,
       even a 404 page. Goes in `pingUrl` on each `HOSTING` entry in

@@ -21,9 +21,9 @@ export const promo = {
 // trustpilot by hand, their widgets are paid tier. both null = line doesn't
 // render. bump `updated` when you change the numbers or this goes stale quietly
 export const trust = {
-  score: null as number | null,
-  reviews: null as number | null,
-  updated: "",
+  score: 4.1 as number | null,
+  reviews: 5 as number | null,
+  updated: "2026-09-23",
   url: "https://www.trustpilot.com/review/lumixsolutions.org",
 };
 
