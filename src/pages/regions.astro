@@ -1,5 +1,5 @@
 ---
-// one page four anchors, not four thin pages. ping rows grey out until a
+// one page three anchors, not three thin pages. ping rows grey out until a
 // region has a pingUrl in locations.ts, no status flag
 import Layout from "../layouts/Layout.astro";
 import { getCollection } from "astro:content";
@@ -23,7 +23,7 @@ const live = HOSTING.filter((r) => r.pingUrl).length;
     <div class="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
         <p class="instrument text-fog">Regions · {HOSTING.length} US · {MITIGATION.length} scrubbing points</p>
-        <h1 class="display-xl mt-6 max-w-2xl">Four rooms, one country<span class="text-red">.</span></h1>
+        <h1 class="display-xl mt-6 max-w-2xl">Three rooms, one country<span class="text-red">.</span></h1>
         <p class="lead text-fog mt-6 max-w-lg">
           Every plan can live in any of them, and you pick at checkout. The
           only thing that should decide it is the number on the right.
@@ -37,11 +37,11 @@ const live = HOSTING.filter((r) => r.pingUrl).length;
   <section class="section">
     <div class="shell">
       <div class="flex flex-wrap items-end justify-between gap-4">
-        <h2 class="title">The four</h2>
+        <h2 class="title">The three</h2>
         <p class="instrument text-slate">{live} of {HOSTING.length} with a ping endpoint</p>
       </div>
 
-      <div data-grid-anchor class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2">
+      <div data-grid-anchor class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3">
         {HOSTING.map((r) => (
           <article
             id={r.slug}
@@ -99,7 +99,7 @@ const live = HOSTING.filter((r) => r.pingUrl).length;
       </div>
       <dl class="m-0">
         {[
-          ["Does every game go in every region?", "Yes. Same plans, same prices, any of the four. The region is a dropdown at checkout."],
+          ["Does every game go in every region?", "Yes. Same plans, same prices, any of the three. The region is a dropdown at checkout."],
           ["Can I move regions later?", "Ask on a ticket. A move between two of our own nodes is a copy, not an import, so it's the quick kind."],
           ["What does the ping test actually measure?", "A handful of no-cors fetches from your browser to something in that datacentre, median of the last four. It isn't the game's netcode but it's the same path."],
         ].map(([q, a]) => (

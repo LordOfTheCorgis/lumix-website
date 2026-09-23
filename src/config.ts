@@ -7,7 +7,7 @@ export const site = {
   domain: "lumixsolutions.org",
   description:
     "Game server hosting for communities. A finite number of servers, run properly.",
-  tagline: "Low-latency game servers in four US regions, capped on purpose.",
+  tagline: "Low-latency game servers in three US regions, capped on purpose.",
 };
 
 // has to exist in WHMCS with the same string or we're advertising a code the

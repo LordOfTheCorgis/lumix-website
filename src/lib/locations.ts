@@ -14,16 +14,9 @@ export interface Location {
   pingUrl?: string;
 }
 
-// where servers run, west to east
+// where servers run, west to east. salt lake city was on here once, dallas
+// won the third slot instead. don't add it back until there's a node
 export const HOSTING: Location[] = [
-  {
-    city: "Salt Lake City",
-    region: "Utah",
-    slug: "salt-lake-city",
-    lat: 40.7608,
-    lng: -111.891,
-    serves: "The Mountain West and the Pacific coast. Seattle to San Diego lands here.",
-  },
   {
     city: "Dallas",
     region: "Texas",
