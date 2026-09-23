@@ -1,0 +1,215 @@
+---
+// status from the visitor's own browser, not a hosted monitor. no uptime
+// history on purpose, the old page had a hand-typed 99.99% and that's exactly
+// the kind of number DESIGN.md says we don't print.
+//
+// regions time a refused https connect to the node (see lib/ping.ts). services
+// need a real http answer, a RST from billing means billing is down.
+import Layout from "../layouts/Layout.astro";
+import { HOSTING } from "../lib/locations";
+import { links } from "../config";
+
+const regions = HOSTING.filter((r) => r.pingUrl).map((r) => ({
+  name: r.city,
+  detail: r.region,
+  url: r.pingUrl!,
+  kind: "region",
+}));
+
+const services = [
+  { name: "Billing", detail: "Orders, invoices, tickets", url: links.billing, kind: "service" },
+  { name: "Control panel", detail: "Start, stop, files, console", url: links.panel, kind: "service" },
+  { name: "Docs", detail: "Guides and setup", url: links.docs, kind: "service" },
+];
+
+const groups = [
+  { heading: "Regions", note: "Round trip from your browser to the node.", rows: regions },
+  { heading: "Services", note: "Whether it answered, and how fast.", rows: services },
+];
+---
+
+<Layout
+  title="Status"
+  description="Is it us or you? Checks every Lumix region and service from your own browser, right now."
+>
+  <section class="section border-b border-[var(--edge)]">
+    <div class="shell">
+      <p class="instrument text-fog">Status · checked from your browser</p>
+      <h1 class="display-xl mt-6 max-w-3xl" data-status-headline aria-live="polite">
+        Checking everything<span class="text-red">.</span>
+      </h1>
+      <p class="lead text-fog mt-6 max-w-xl">
+        This page doesn't read a dashboard we control. Your browser reaches out
+        to each region and service itself, so if something here says down, it's
+        down from where you're sitting.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <button
+          type="button"
+          data-status-recheck
+          class="chamfer inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed disabled:opacity-60"
+        >
+          Check again
+        </button>
+        <p class="small text-slate" data-status-stamp>Rechecks every minute while this tab is open.</p>
+      </div>
+    </div>
+  </section>
+
+  {groups.map((g) => (
+    <section class="section">
+      <div class="shell">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <h2 class="title">{g.heading}</h2>
+          <p class="small text-slate">{g.note}</p>
+        </div>
+        <ul class="m-0 mt-8 list-none p-0 border-t border-[var(--edge)]">
+          {g.rows.map((r) => (
+            <li
+              class="status-row border-b border-[var(--edge)] py-6"
+              data-status-row
+              data-url={r.url}
+              data-kind={r.kind}
+              data-name={r.name}
+              data-state="checking"
+            >
+              <div class="min-w-0">
+                <p class="font-display text-xl font-semibold tracking-tight">{r.name}</p>
+                <p class="small text-fog mt-1">{r.detail}</p>
+              </div>
+              <p class="tabular text-fog text-right" data-status-ms>
+                <span aria-hidden="true">···</span>
+              </p>
+              <p class="instrument flex items-center justify-end gap-3" data-status-label>
+                <span class="tick" aria-hidden="true"></span>
+                <span data-status-text>Checking</span>
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  ))}
+
+  <section class="section band border-t border-[var(--edge)]">
+    <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h2 class="title">Down for you, up here?</h2>
+        <p class="lead text-fog mt-6 max-w-lg">
+          Open a ticket and paste what this page shows. The numbers tell us
+          whether it's the node, the route, or your end.
+        </p>
+      </div>
+      <div class="flex flex-col items-start gap-4 lg:pt-2">
+        <a
+          href={links.ticket}
+          class="chamfer inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+        >
+          Open a ticket
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+        <a href={links.discord} rel="noopener" target="_blank" class="small text-fog underline-offset-4 hover:text-paper hover:underline">
+          Or ask in Discord
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* in here and not as tailwind arbitrary classes, those never made it into
+     the css for this file and the rows stacked. didn't dig into why */
+  .status-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 4.5rem auto;
+    align-items: center;
+    column-gap: 1rem;
+  }
+  @media (min-width: 40rem) {
+    .status-row {
+      grid-template-columns: minmax(0, 1fr) 7rem 10rem;
+      column-gap: 1.5rem;
+    }
+  }
+
+  /* the diagonal again, sheared like everything else. slate while checking,
+     paper when it answers, red when it doesn't. no green, red is the only
+     accent this site gets */
+  .tick {
+    display: inline-block;
+    width: 0.55rem;
+    height: 0.9rem;
+    transform: skewX(var(--shear));
+    background: var(--color-slate);
+    transition: background-color 150ms;
+  }
+  [data-state="up"] .tick { background: var(--color-paper); }
+  [data-state="down"] .tick { background: var(--color-red); }
+  [data-state="down"] [data-status-text] { color: var(--color-red-tint); }
+  [data-state="checking"] .tick { opacity: 0.5; }
+</style>
+
+<script>
+  import { probe, medianPing } from "../lib/ping";
+
+  const rows = [...document.querySelectorAll<HTMLElement>("[data-status-row]")];
+  const headline = document.querySelector<HTMLElement>("[data-status-headline]")!;
+  const stamp = document.querySelector<HTMLElement>("[data-status-stamp]")!;
+  const button = document.querySelector<HTMLButtonElement>("[data-status-recheck]")!;
+
+  function set(row: HTMLElement, state: "checking" | "up" | "down", ms: number | null) {
+    row.dataset.state = state;
+    row.querySelector("[data-status-text]")!.textContent =
+      state === "checking" ? "Checking" : state === "up" ? "Up" : "Not answering";
+    row.querySelector("[data-status-ms]")!.textContent = ms === null ? "—" : `${ms} ms`;
+  }
+
+  async function check(row: HTMLElement) {
+    const url = row.dataset.url!;
+    if (row.dataset.kind === "region") {
+      const ms = await medianPing(url, 4);
+      set(row, ms === null ? "down" : "up", ms);
+      return;
+    }
+    // services: one real answer is enough, a RST doesn't count
+    const p = await probe(url, 6000);
+    set(row, p?.answered ? "up" : "down", p?.answered ? Math.round(p.ms) : null);
+  }
+
+  function summarise() {
+    const down = rows.filter((r) => r.dataset.state === "down").map((r) => r.dataset.name!);
+    const dot = '<span class="text-red">.</span>';
+    if (!down.length) headline.innerHTML = `Everything's answering${dot}`;
+    else if (down.length === rows.length) headline.innerHTML = `Nothing's answering. Check your connection${dot}`;
+    else if (down.length === 1) headline.innerHTML = `${down[0]} isn't answering${dot}`;
+    else headline.innerHTML = `${down.slice(0, -1).join(", ")} and ${down.at(-1)} aren't answering${dot}`;
+  }
+
+  let running = false;
+  async function run() {
+    if (running) return;
+    running = true;
+    button.disabled = true;
+    // rows keep their last answer until the new one lands, resetting them
+    // every minute just made the whole list blink
+    button.textContent = "Checking";
+    if (!navigator.onLine) {
+      headline.innerHTML = `You're offline<span class="text-red">.</span>`;
+      stamp.textContent = "Reconnect and check again.";
+    } else {
+      await Promise.all(rows.map(check));
+      summarise();
+      stamp.textContent = `Last checked ${new Date().toLocaleTimeString()}. Rechecks every minute while this tab is open.`;
+    }
+    button.disabled = false;
+    button.textContent = "Check again";
+    running = false;
+  }
+
+  button.addEventListener("click", run);
+  run();
+  // hidden tabs skip the tick, no point pinging for nobody
+  setInterval(() => {
+    if (document.visibilityState === "visible") run();
+  }, 60_000);
+</script>
