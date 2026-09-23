@@ -52,11 +52,11 @@ const regions = HOSTING.filter((r) => r.pingUrl).map((r) => ({
           <h2 class="title">Regions</h2>
           <p class="small text-slate">Round trip from your browser to each server.</p>
         </div>
-        <ul class="m-0 mt-8 list-none p-0 border-t border-[var(--edge)]">
+        <ul class="status-list m-0 mt-8 list-none p-0" data-grid-anchor>
           {regions.map((r) => (
             <>
             <li
-              class="status-row border-b border-[var(--edge)] py-6"
+              class="status-row"
               data-status-row
               data-url={r.url}
               data-name={r.name}
@@ -76,7 +76,7 @@ const regions = HOSTING.filter((r) => r.pingUrl).map((r) => ({
             </li>
             {r.vms.map((vm) => (
               <li
-                class="status-row status-vm border-b border-[var(--edge)] py-3"
+                class="status-row status-vm"
                 data-status-row={vm.ip ? "" : undefined}
                 data-url={vm.ip ? `https://${vm.ip}/` : undefined}
                 data-name={vm.name}
@@ -127,18 +127,26 @@ const regions = HOSTING.filter((r) => r.pingUrl).map((r) => ({
 </Layout>
 
 <style>
-  /* in here and not as tailwind arbitrary classes, those never made it into
-     the css for this file and the rows stacked. didn't dig into why */
+  /* everything here sits on the 40px module so the cursor trail cells land
+     on row lines, not across them. regions are two cells tall, vms one, the
+     vm indent is one cell and the columns are whole cells too. content column
+     is always a multiple of 40 so the 1fr name column comes out whole as well.
+     lines are inset shadows not borders, a 1px border pushes every row below
+     it a pixel off the anchor and it adds up by the bottom */
+  .status-list {
+    box-shadow: inset 0 1px 0 var(--edge);
+  }
   .status-row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 4.5rem auto;
+    grid-template-columns: minmax(0, 1fr) calc(2 * var(--grid-cell)) calc(3 * var(--grid-cell));
     align-items: center;
-    column-gap: 1rem;
+    height: calc(2 * var(--grid-cell));
+    box-shadow: inset 0 -1px 0 var(--edge);
   }
-  @media (min-width: 40rem) {
+  @media (min-width: 640px) {
     .status-row {
-      grid-template-columns: minmax(0, 1fr) 7rem 10rem;
-      column-gap: 1.5rem;
+      grid-template-columns: minmax(0, 1fr) calc(3 * var(--grid-cell)) calc(4 * var(--grid-cell));
+      column-gap: var(--grid-cell);
     }
   }
 
@@ -160,7 +168,10 @@ const regions = HOSTING.filter((r) => r.pingUrl).map((r) => ({
 
   /* vms hang off their region. indented and quieter so the three cities stay
      the thing you read first */
-  .status-vm { padding-left: 1.5rem; }
+  .status-vm {
+    height: var(--grid-cell);
+    padding-left: var(--grid-cell);
+  }
   .status-vm .tick { width: 0.4rem; height: 0.65rem; }
 </style>
 
