@@ -88,9 +88,22 @@ const groups = [
               </p>
             </li>
             {r.vms.map((vm) => (
-              <li class="status-row status-vm border-b border-[var(--edge)] py-3" data-vm-of={r.name} data-state="checking">
-                <p class="instrument normal-case text-fog min-w-0 truncate">{vm}</p>
-                <span aria-hidden="true"></span>
+              <li
+                class="status-row status-vm border-b border-[var(--edge)] py-3"
+                data-status-row={vm.ip ? "" : undefined}
+                data-url={vm.ip ? `https://${vm.ip}/` : undefined}
+                data-kind="region"
+                data-name={vm.name}
+                data-vm-of={vm.ip ? undefined : r.name}
+                data-state="checking"
+              >
+                <div class="min-w-0">
+                  <p class="instrument normal-case text-fog truncate">{vm.name}</p>
+                  {vm.ip && <p class="instrument tabular text-slate mt-1">{vm.ip}</p>}
+                </div>
+                <p class="tabular small text-fog text-right" data-status-ms>
+                  {vm.ip && <span aria-hidden="true">···</span>}
+                </p>
                 <p class="instrument flex items-center justify-end gap-3">
                   <span class="tick" aria-hidden="true"></span>
                   <span data-status-text class="text-slate">Checking</span>
@@ -181,8 +194,8 @@ const groups = [
       state === "checking" ? "Checking" : state === "up" ? "Up" : "Not answering";
     row.querySelector("[data-status-ms]")!.textContent = ms === null ? "—" : `${ms} ms`;
 
-    // vms have no address of their own yet, so all we actually know is the
-    // node under them answered. say "host up", not "up"
+    // vms without an ip in locations.ts only know the node under them
+    // answered. say "host up", not "up". ones with an ip are rows of their own
     if (state === "checking") return;
     document.querySelectorAll<HTMLElement>(`[data-vm-of="${row.dataset.name}"]`).forEach((vm) => {
       vm.dataset.state = state;

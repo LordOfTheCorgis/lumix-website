@@ -13,9 +13,9 @@ export interface Location {
       see lib/ping.ts for why a refused connection still times right.
       missing = region skipped */
   pingUrl?: string;
-  /** vm hostnames on that node, /status lists them under the region. no ips
-      of their own yet so they ride on the node's check */
-  vms?: string[];
+  /** vms on that node, /status lists them under the region. empty ip = no
+      ping of its own, it shows "host up/down" off the node's check instead */
+  vms?: { name: string; ip: string }[];
 }
 
 // where servers run, west to east. salt lake city was on here once, dallas
@@ -29,7 +29,9 @@ export const HOSTING: Location[] = [
     lng: -96.797,
     serves: "Texas, the South, the Midwest, and most of Mexico. The middle of the country.",
     pingUrl: "https://193.31.31.102/",
-    vms: ["gm-srv-03"],
+    vms: [
+      { name: "gm-srv-03", ip: "" },
+    ],
   },
   {
     city: "Ashburn",
@@ -39,7 +41,10 @@ export const HOSTING: Location[] = [
     lng: -77.4874,
     serves: "The Northeast, the Mid-Atlantic, eastern Canada, and the shortest hop from Europe.",
     pingUrl: "https://206.168.173.77/",
-    vms: ["gm-srv-02", "staff-gm-srv-01"],
+    vms: [
+      { name: "gm-srv-02", ip: "" },
+      { name: "staff-gm-srv-01", ip: "" },
+    ],
   },
   {
     city: "Miami",
@@ -49,7 +54,12 @@ export const HOSTING: Location[] = [
     lng: -80.1918,
     serves: "Florida, the Gulf, the Caribbean, and South America.",
     pingUrl: "https://216.173.77.231/",
-    vms: ["gm-srv-01", "web-srv-01", "web-srv-02", "dev-srv-01"],
+    vms: [
+      { name: "gm-srv-01", ip: "" },
+      { name: "web-srv-01", ip: "" },
+      { name: "web-srv-02", ip: "" },
+      { name: "dev-srv-01", ip: "" },
+    ],
   },
 ];
 
