@@ -14,12 +14,13 @@ const regions = HOSTING.filter((r) => r.pingUrl).map((r) => ({
   detail: r.region,
   url: r.pingUrl!,
   kind: "region",
+  vms: r.vms ?? [],
 }));
 
 const services = [
-  { name: "Billing", detail: "Orders, invoices, tickets", url: links.billing, kind: "service" },
-  { name: "Control panel", detail: "Start, stop, files, console", url: links.panel, kind: "service" },
-  { name: "Docs", detail: "Guides and setup", url: links.docs, kind: "service" },
+  { name: "Billing", detail: "Orders, invoices, tickets", url: links.billing, kind: "service", vms: [] },
+  { name: "Control panel", detail: "Start, stop, files, console", url: links.panel, kind: "service", vms: [] },
+  { name: "Docs", detail: "Guides and setup", url: links.docs, kind: "service", vms: [] },
 ];
 
 const groups = [
@@ -65,6 +66,7 @@ const groups = [
         </div>
         <ul class="m-0 mt-8 list-none p-0 border-t border-[var(--edge)]">
           {g.rows.map((r) => (
+            <>
             <li
               class="status-row border-b border-[var(--edge)] py-6"
               data-status-row
@@ -85,6 +87,17 @@ const groups = [
                 <span data-status-text>Checking</span>
               </p>
             </li>
+            {r.vms.map((vm) => (
+              <li class="status-row status-vm border-b border-[var(--edge)] py-3" data-vm-of={r.name} data-state="checking">
+                <p class="instrument normal-case text-fog min-w-0 truncate">{vm}</p>
+                <span aria-hidden="true"></span>
+                <p class="instrument flex items-center justify-end gap-3">
+                  <span class="tick" aria-hidden="true"></span>
+                  <span data-status-text class="text-slate">Checking</span>
+                </p>
+              </li>
+            ))}
+            </>
           ))}
         </ul>
       </div>
@@ -147,6 +160,11 @@ const groups = [
   [data-state="down"] .tick { background: var(--color-red); }
   [data-state="down"] [data-status-text] { color: var(--color-red-tint); }
   [data-state="checking"] .tick { opacity: 0.5; }
+
+  /* vms hang off their region. indented and quieter so the three cities stay
+     the thing you read first */
+  .status-vm { padding-left: 1.5rem; }
+  .status-vm .tick { width: 0.4rem; height: 0.65rem; }
 </style>
 
 <script>
@@ -162,6 +180,14 @@ const groups = [
     row.querySelector("[data-status-text]")!.textContent =
       state === "checking" ? "Checking" : state === "up" ? "Up" : "Not answering";
     row.querySelector("[data-status-ms]")!.textContent = ms === null ? "—" : `${ms} ms`;
+
+    // vms have no address of their own yet, so all we actually know is the
+    // node under them answered. say "host up", not "up"
+    if (state === "checking") return;
+    document.querySelectorAll<HTMLElement>(`[data-vm-of="${row.dataset.name}"]`).forEach((vm) => {
+      vm.dataset.state = state;
+      vm.querySelector("[data-status-text]")!.textContent = state === "up" ? "Host up" : "Host down";
+    });
   }
 
   async function check(row: HTMLElement) {
