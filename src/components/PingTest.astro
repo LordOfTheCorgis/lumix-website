@@ -2,8 +2,8 @@
 // ping to each region from the browser. every competitor has one and for
 // fivem it's the number that closes the sale.
 //
-// no-cors fetch, opaque response you can't read but can time. 5 samples,
-// drop the first (connection setup), median. rough and the page says so.
+// timing lives in lib/ping.ts, /status uses the same one. 5 samples, drop
+// the first, median. rough and the page says so.
 // no pingUrl = skipped, none at all = renders nothing
 import { HOSTING } from "../lib/locations";
 
@@ -50,33 +50,18 @@ const measurable = regions.filter((r) => r.pingUrl).length;
 )}
 
 <script>
+  import { medianPing } from "../lib/ping";
+
   const cells = document.querySelectorAll<HTMLElement>("[data-ping-value]");
 
-  async function sample(url: string): Promise<number> {
-    const t = performance.now();
-    // no-store plus a nonce or something caches it and reports 0ms to
-    // ashburn from perth
-    await fetch(`${url}${url.includes("?") ? "&" : "?"}t=${Date.now()}`, {
-      mode: "no-cors",
-      cache: "no-store",
-      credentials: "omit",
-    });
-    return performance.now() - t;
-  }
-
   async function measure(cell: HTMLElement) {
-    const url = cell.dataset.url!;
-    try {
-      const times: number[] = [];
-      for (let i = 0; i < 5; i++) times.push(await sample(url));
-      times.shift(); // first one pays for the connection
-      times.sort((a, b) => a - b);
-      const ms = Math.round(times[Math.floor(times.length / 2)]);
-      cell.textContent = `${ms} ms`;
-      cell.classList.add("text-paper");
-    } catch {
+    const ms = await medianPing(cell.dataset.url!);
+    if (ms === null) {
       cell.textContent = "—";
+      return;
     }
+    cell.textContent = `${ms} ms`;
+    cell.classList.add("text-paper");
   }
 
   // on scroll into view, not load. 20 requests nobody asked for otherwise

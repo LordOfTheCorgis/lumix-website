@@ -9,8 +9,9 @@ export interface Location {
   slug?: string;
   /** one line on who it serves. hosting only */
   serves?: string;
-  /** anything http in that dc that answers fast. no-cors fetch, so no CORS
-      needed and a 404 is fine. missing = region skipped */
+  /** something in that dc. the node ips work even with nothing listening,
+      see lib/ping.ts for why a refused connection still times right.
+      missing = region skipped */
   pingUrl?: string;
 }
 
@@ -24,6 +25,7 @@ export const HOSTING: Location[] = [
     lat: 32.7767,
     lng: -96.797,
     serves: "Texas, the South, the Midwest, and most of Mexico. The middle of the country.",
+    pingUrl: "https://193.31.31.102/",
   },
   {
     city: "Ashburn",
@@ -32,6 +34,7 @@ export const HOSTING: Location[] = [
     lat: 39.0438,
     lng: -77.4874,
     serves: "The Northeast, the Mid-Atlantic, eastern Canada, and the shortest hop from Europe.",
+    pingUrl: "https://206.168.173.77/",
   },
   {
     city: "Miami",
@@ -40,6 +43,7 @@ export const HOSTING: Location[] = [
     lat: 25.7617,
     lng: -80.1918,
     serves: "Florida, the Gulf, the Caribbean, and South America.",
+    pingUrl: "https://216.173.77.231/",
   },
 ];
 

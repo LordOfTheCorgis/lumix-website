@@ -15,11 +15,6 @@ the commit and point at this file.
       PostHog. Goes in `.env` as `PUBLIC_POSTHOG_KEY` (see `.env.example`).
       Confirm the host is US (`https://us.i.posthog.com`) or set EU. Until
       it's set, analytics and the cookie banner both render nothing.
-- [ ] **One HTTP URL per region for the ping test.** Anything in that
-      datacenter that answers fast: a node's panel host, a status endpoint,
-      even a 404 page. Goes in `pingUrl` on each `HOSTING` entry in
-      `src/lib/locations.ts`. The "Your ping from here" block is hidden until
-      at least one is set.
 - [ ] **Support hours and a real response time.** The "Every server comes
       with" section and the FAQ say ticket + Discord and promise no hours,
       because nobody's given a number. If you have one (average first reply,
