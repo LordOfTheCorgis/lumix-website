@@ -35,7 +35,7 @@ export const FAQ: Faq[] = [
   },
   {
     q: "How do I get support?",
-    a: "Open a ticket from the client area or ask in Discord. Either way you're talking to the people who run the hardware, not a first-line script.",
+    a: "Open a ticket from the client area, ask in Discord, or email support@lumixsolutions.org. Replies usually land within a few hours, and either way you're talking to the people who run the hardware, not a first-line script.",
   },
   {
     q: "Is there a free trial or a refund?",
