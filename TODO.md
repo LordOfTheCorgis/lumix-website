@@ -79,8 +79,7 @@ the commit and point at this file.
 - Changelog: dropped from the redesign. Not maintained, so not shipped.
 - Free trial: none. Page says so.
 - Refunds: case by case. Page says so, matches terms.md.
-- Deploy: Evan uploads `dist/` by hand. The workflow in `.github/` is main's
-  and doesn't touch this branch.
+- Deploy: CI. Push to main builds and rsyncs to /srv/www/lumixsolutions.org (secrets were already set, PostHog comes from repo variables).
 - YouTube: left out for good.
 - Support: "within a few hours", plus support@lumixsolutions.org. On
   `/contact`, the FAQ and Included.
