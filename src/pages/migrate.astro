@@ -151,7 +151,7 @@ const notCopied = ["Subusers", "Schedules", "Port allocations", "Databases"];
       </div>
       <dl class="m-0">
         {[
-          ["How long does it take?", "The copy runs at whatever the old host's SFTP will give. A 10 GB server is usually under an hour. Running the importer a second time only moves what changed."],
+          ["How long does it take?", "The copy runs at whatever the old host's SFTP will give. Running the importer a second time only moves what changed."],
           ["Does the old host need to stay up?", "Only until the copy finishes. Keep it a day past that if you want a safety net; cancel it once the new one has taken a restart cleanly."],
           ["What about the database?", "Export it from the old host, request one from the Databases tab here, import at db.lumixsolutions.org, then point your config at the new endpoint."],
           ["Ports change?", "Yes. Lumi-Panel assigns them per server in the Network tab. Anything hardcoded in a config, like a FiveM endpoint line, gets updated to match."],
