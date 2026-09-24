@@ -1,6 +1,6 @@
 // who runs it. photos are image imports so they get resized, the old site
 // shipped a 1.5MB png. bios are mine, evan rewrites his. no image = monogram
-// tile, no name = title only (community manager until evan fills it in)
+// tile, no name = title only. caleb has no last initial or photo yet
 import type { ImageMetadata } from "astro";
 import evan from "../assets/staff/evan-v.png";
 import keaghan from "../assets/staff/keaghan-g.png";
@@ -35,8 +35,8 @@ export const staff: Person[] = [
     links: [],
   },
   {
-    name: "",
-    mark: "CM",
+    name: "Caleb",
+    mark: "C",
     title: "Community Manager",
     bio: "Runs the Discord. First reply on most questions, keeps the partner list honest, and is the reason the FAQ says what people actually ask.",
     links: [],
