@@ -25,6 +25,6 @@ plans:
       backups: "3"
     pricing:
       monthly: 5.0
-      quarterly: 14.0
+      quarterly: 13.99
       semiannually: 27.0
       annually: 48.0

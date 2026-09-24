@@ -27,10 +27,10 @@ plans:
     pricing:
       monthly: 14.99
       quarterly: 42.99
-      semiannually: 83.99
-      annually: 167.99
-      biennially: 323.99
-      triennially: 467.99
+      semiannually: 82.99
+      annually: 161.99
+      biennially: 305.99
+      triennially: 431.99
   - key: "budget"
     name: "Budget Minecraft Plan"
     pid: 25
@@ -45,10 +45,10 @@ plans:
     pricing:
       monthly: 19.99
       quarterly: 56.99
-      semiannually: 113.99
-      annually: 227.99
-      biennially: 431.99
-      triennially: 647.99
+      semiannually: 109.99
+      annually: 215.99
+      biennially: 407.99
+      triennially: 575.99
   - key: "standard"
     name: "Standard Minecraft Plan"
     pid: 26
@@ -63,10 +63,10 @@ plans:
     pricing:
       monthly: 27.99
       quarterly: 79.99
-      semiannually: 155.99
-      annually: 323.99
-      biennially: 623.99
-      triennially: 899.99
+      semiannually: 154.99
+      annually: 301.99
+      biennially: 570.99
+      triennially: 805.99
   - key: "advanced"
     name: "Advanced Minecraft Plan"
     pid: 27
@@ -81,10 +81,10 @@ plans:
     pricing:
       monthly: 34.99
       quarterly: 99.99
-      semiannually: 203.99
-      annually: 407.99
-      biennially: 791.99
-      triennially: 1151.99
+      semiannually: 192.99
+      annually: 377.99
+      biennially: 713.99
+      triennially: 1007.99
   - key: "premium"
     name: "Premium Minecraft Plan"
     pid: 28
@@ -99,10 +99,10 @@ plans:
     pricing:
       monthly: 42.99
       quarterly: 122.99
-      semiannually: 251.99
-      annually: 503.99
-      biennially: 983.99
-      triennially: 1439.99
+      semiannually: 236.99
+      annually: 463.99
+      biennially: 876.99
+      triennially: 1237.99
   - key: "elite"
     name: "Elite Minecraft Plan"
     pid: 29
@@ -117,10 +117,10 @@ plans:
     pricing:
       monthly: 58.99
       quarterly: 167.99
-      semiannually: 335.99
-      annually: 671.99
-      biennially: 1343.99
-      triennially: 1943.99
+      semiannually: 325.99
+      annually: 636.99
+      biennially: 1202.99
+      triennially: 1698.99
   - key: "ultimate"
     name: "Ultimate Minecraft Plan"
     pid: 30
@@ -135,7 +135,7 @@ plans:
     pricing:
       monthly: 67.99
       quarterly: 191.99
-      semiannually: 383.99
-      annually: 767.99
-      biennially: 1535.99
-      triennially: 2303.99
+      semiannually: 374.99
+      annually: 733.99
+      biennially: 1386.99
+      triennially: 1957.99
