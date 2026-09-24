@@ -11,30 +11,9 @@ the commit and point at this file.
       product ID. Drop it into `botHosting.pid` in `src/config.ts` and the
       "Order one" link on the homepage goes straight to a preloaded cart
       instead of the store front.
-- [ ] **PostHog project API key.** Settings > Project > Project API Key in
-      PostHog. Goes in `.env` as `PUBLIC_POSTHOG_KEY` (see `.env.example`).
-      Confirm the host is US (`https://us.i.posthog.com`) or set EU. Until
-      it's set, analytics and the cookie banner both render nothing.
-- [ ] **Support hours and a real response time.** The "Every server comes
-      with" section and the FAQ say ticket + Discord and promise no hours,
-      because nobody's given a number. If you have one (average first reply,
-      hours staffed), it goes in `src/components/Included.astro` and
-      `src/lib/faq.ts`. Every competitor quantifies this.
 - [ ] **Read the FAQ answers** in `src/lib/faq.ts`. Ten answers written from
-      the yaml and what you've told me. The proration claim on plan changes
-      is WHMCS's default; confirm it's on.
-- [ ] **cPanel Node version.** Astro 7 needs Node 22.12+. Nobody has checked
-      whether the cPanel box offers it. If it doesn't, the admin panel plan
-      in BUILD-PLAN.md is dead and static-only deploy is the fallback.
-- [ ] **Deploy path.** `.github/workflows/deploy.yml` is the old, dead
-      workflow. Decide: build in CI and rsync `dist/` to cPanel, or build on
-      the box. Depends on the Node answer above.
-- [ ] **Pages the nav links to that don't exist yet:** `/partners`,
-      `/status`, `/contact`, `/staff`, `/privacy`, `/terms`, `/ccpa`. Header
-      and footer currently point at 404s. Legal three have content in
-      `src/content/legal/` and just need routing checked. (`/games` is built,
-      readout generated from the collection.)
-
+      the yaml and what you've told me. The proration line came out
+      2026-09-23 since nobody's confirmed it's on in WHMCS; put it back if it is.
 ## Pricing (WHMCS, not the site)
 
 - [ ] **Fix the annual-cycle dips.** Discount is supposed to rise with
@@ -57,49 +36,26 @@ the commit and point at this file.
       thumbnail. It's the one game that never gets the hero because anything
       under 1200 wide is skipped. Drop a real 1600+ image in and it joins the
       rotation on its own.
-- [ ] **YouTube channel.** `youtube.com/@officiallumixsolutions` is a hard 404
-      and was pulled from the footer. Either fix the handle or leave it out.
-      Restore in `links` and `social` in `src/config.ts` when it resolves.
 - [ ] **Louisiana counsel on Terms sections 7 and 9.** Louisiana is civil law;
       broad liability disclaimers behave differently there. Nobody's reviewed.
-- [ ] **Confirm the FiveM Enhanced line.** Page now says "GTA V Legacy and
-      Enhanced builds" on your word. If the panel needs a manual step for
-      Enhanced, say so on the page or take the line out.
-
 ## Pages added 2026-09-14
 
 - [ ] **Demo panel user.** Make a read-only user on Lumi-Panel with one
       server on it, put the URL and credentials in `demoPanel` in
       `src/config.ts`. The "Look around the panel first" button on every
       game page and on `/migrate` appears on its own.
-- [ ] **Ping endpoints, again.** `/regions` now shows all four greyed with
-      "soon" until `pingUrl` is set per region in `src/lib/locations.ts`.
-      Anything HTTP in the datacentre that answers fast.
-- [ ] **Confirm the `/regions` FAQ.** It says moving between regions is
-      "ask on a ticket" and every game goes in every region at the same
-      price. Both are what the site already implied; say if either is wrong.
-- [ ] **Confirm the `/migrate` promises.** "Under an hour for 10 GB" and
-      "we stop the old one, pull it, start it here" describe the importer
-      path done by support. If support doesn't do migrations on a ticket,
-      the second column comes out.
-
 ## Staff page
 
-- [ ] **Community manager's name and photo.** `src/lib/staff.ts`, third
-      entry. Name is blank so the card renders by title; drop a headshot in
-      `src/assets/staff/` and point `image` at it. Any aspect works, the
-      card crops to 4:5 from the top.
+- [ ] **Caleb's last initial and photo.** `src/lib/staff.ts`, third entry.
+      Card shows "Caleb" with a monogram until then. Headshot goes in
+      `src/assets/staff/`, any aspect, the card crops to 4:5 from the top.
 - [ ] **Bios.** All three are mine, written in the site's voice from the
-      old site's titles. Rewrite yours; ask Keaghan to rewrite his.
+      old site's titles. Rewrite yours; ask Keaghan and Caleb to rewrite theirs.
 - [ ] **Links.** `links` is empty on all three on purpose. LinkedIn, GitHub,
       X: add `{ label, href }` pairs for whatever's meant to be public.
 
 ## Tools
 
-- [ ] **Confirm or cut the three planned tools** on `/tools`: Minecraft
-      server.properties, Rust startup command, FiveM permissions.cfg. They're
-      dimmed and link to Discord, so nothing's promised, but they're on the
-      page in your name. Edit `tools` in `src/pages/tools/index.astro`.
 - [ ] **Sanity-check the cfg maker output** against a server you actually
       run. The framework blocks come from QBCore's own recipe and ESX's
       repo, the Enhanced rules from cfx's Legacy-vs-Enhanced page, all read
@@ -109,7 +65,8 @@ the commit and point at this file.
 
 - [ ] **Capacity Board.** DESIGN.md section 8's signature element, never built.
       Needs a live source for slot counts and per-region ping.
-- [ ] **Admin panel** per BUILD-PLAN.md. Gated on the cPanel Node question.
+- [ ] **Admin panel** per BUILD-PLAN.md. Gated on whether the cPanel box
+      runs Node 22.12+, which nobody has checked.
 - [ ] **Game detail pages should open in their own accent and art**, same
       treatment as the home hero. That's where the colour story pays off after
       the click.
@@ -122,3 +79,13 @@ the commit and point at this file.
 - Changelog: dropped from the redesign. Not maintained, so not shipped.
 - Free trial: none. Page says so.
 - Refunds: case by case. Page says so, matches terms.md.
+- Deploy: Evan uploads `dist/` by hand. The workflow in `.github/` is main's
+  and doesn't touch this branch.
+- YouTube: left out for good.
+- Support: "within a few hours", plus support@lumixsolutions.org. On
+  `/contact`, the FAQ and Included.
+- FiveM: no Legacy/Enhanced claim on the game page.
+- `/migrate`: support does migrations on a ticket, no time promise.
+- Miami and Ashburn are sold out, via `soldOut` in `src/lib/locations.ts`.
+  Flip it off there and regions, home and FAQ all follow.
+- `/tools`: the three planned tools stay, dimmed.
