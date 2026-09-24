@@ -16,6 +16,8 @@ export interface Location {
   /** vms on that node, /status lists them under the region. empty ip = no
       ping of its own, it shows "host up/down" off the node's check instead */
   vms?: { name: string; ip: string }[];
+  /** node's at its cap, not taking new servers. existing ones keep running */
+  soldOut?: boolean;
 }
 
 // where servers run, west to east. salt lake city was on here once, dallas
@@ -35,6 +37,7 @@ export const HOSTING: Location[] = [
   },
   {
     city: "Ashburn",
+    soldOut: true,
     region: "Virginia",
     slug: "ashburn",
     lat: 39.0438,
@@ -48,6 +51,7 @@ export const HOSTING: Location[] = [
   },
   {
     city: "Miami",
+    soldOut: true,
     region: "Florida",
     slug: "miami",
     lat: 25.7617,
