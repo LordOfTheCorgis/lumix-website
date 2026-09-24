@@ -32,7 +32,7 @@ export const FAQ: Faq[] = [
   },
   {
     q: "Can I change my plan later?",
-    a: "Yes. Upgrade or downgrade from the client area at any time. Your files and world stay where they are.",
+    a: "Yes. Upgrade or downgrade from the client area at any time and you pay the difference. Your files and world stay where they are.",
   },
   {
     q: "Do you support mods, plugins and frameworks?",
@@ -53,7 +53,7 @@ export const FAQ: Faq[] = [
       : "Not right now. Discord is where any code gets announced first.",
   },
   {
-    q: "Can I host a Discord bot or a Node.js app?",
-    a: `Yes. Application hosting is $${botHosting.monthly.toFixed(2)} a month, on the same network and with the same DDoS protection as the game servers.`,
+    q: "Can I host a Discord bot or an app?",
+    a: `Yes. Application hosting is $${botHosting.monthly.toFixed(2)} a month for ${botHosting.runtimes.map((r) => r.label).join(", ").replace(/, ([^,]*)$/, " or $1")}, on the same network and with the same DDoS protection as the game servers.`,
   },
 ];
