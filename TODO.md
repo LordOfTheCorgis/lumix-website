@@ -7,35 +7,16 @@ the commit and point at this file.
 
 ## Blocks the launch
 
-- [ ] **Bot / application hosting product in WHMCS.** $4.00/mo. Need the
-      product ID. Drop it into `botHosting.pid` in `src/config.ts` and the
-      "Order one" link on the homepage goes straight to a preloaded cart
-      instead of the store front.
-- [ ] **Read the FAQ answers** in `src/lib/faq.ts`. Ten answers written from
-      the yaml and what you've told me. The proration line came out
-      2026-09-23 since nobody's confirmed it's on in WHMCS; put it back if it is.
 ## Pricing (WHMCS, not the site)
 
-- [ ] **Fix the annual-cycle dips.** Discount is supposed to rise with
-      commitment and it wobbles on most plans. Worst ones, from the yaml:
-      - FiveM pid 22: annual saves 4% while semiannual saves 7%
-      - Minecraft pid 26: same shape, annual 4% vs semiannual 7%
-      - BeamMP pid 42: biennial saves 0% after annual saves 8%
-      - Palworld pid 37: biennial 2% after annual 4%
-      - Minecraft 27/28, BeamMP 44/45/46: semiannual saves less than quarterly
-      Fix in WHMCS, then mirror the new numbers into `src/content/games/*.yaml`
-      so the Offer schema stays honest. Run this to see the whole curve:
-      `python3 -c` over the yaml (or ask for the script again).
-- [ ] **Decide the discount ceiling.** Every tracked competitor gives ~20% at
-      annual; Lumix gives 5%. Margin call. Nothing on the site depends on it
-      since only monthly is shown.
+- [ ] **Type the new term prices into WHMCS.** The yaml files in
+      `src/content/games/` hold them now: 95/92/90/85/80% of monthly for
+      quarterly through triennial, and no price went up (commit c7f4cfe).
+      Monthly didn't change. Until WHMCS matches, checkout charges the old
+      term prices.
 
 ## Content
 
-- [ ] **Terraria key art.** `src/assets/games/terraria.jpg` is 460×215, a
-      thumbnail. It's the one game that never gets the hero because anything
-      under 1200 wide is skipped. Drop a real 1600+ image in and it joins the
-      rotation on its own.
 - [ ] **Louisiana counsel on Terms sections 7 and 9.** Louisiana is civil law;
       broad liability disclaimers behave differently there. Nobody's reviewed.
 ## Pages added 2026-09-14
@@ -49,10 +30,9 @@ the commit and point at this file.
 - [ ] **Caleb's last initial and photo.** `src/lib/staff.ts`, third entry.
       Card shows "Caleb" with a monogram until then. Headshot goes in
       `src/assets/staff/`, any aspect, the card crops to 4:5 from the top.
-- [ ] **Bios.** All three are mine, written in the site's voice from the
-      old site's titles. Rewrite yours; ask Keaghan and Caleb to rewrite theirs.
-- [ ] **Links.** `links` is empty on all three on purpose. LinkedIn, GitHub,
-      X: add `{ label, href }` pairs for whatever's meant to be public.
+- [ ] **Staff links.** Evan wants them (2026-09-23). Need the actual URLs
+      (LinkedIn, GitHub, X) for Evan, Keaghan, and Caleb. They go in as
+      `{ label, href }` in `src/lib/staff.ts`.
 
 ## Tools
 
@@ -67,9 +47,6 @@ the commit and point at this file.
       Needs a live source for slot counts and per-region ping.
 - [ ] **Admin panel** per BUILD-PLAN.md. Gated on whether the cPanel box
       runs Node 22.12+, which nobody has checked.
-- [ ] **Game detail pages should open in their own accent and art**, same
-      treatment as the home hero. That's where the colour story pays off after
-      the click.
 - [ ] **Minecraft modpack/loader choice at checkout.** Apex and ZAP sell it at
       order time. Decision was: handled on the panel. Page says so now. Revisit
       if conversion on Minecraft lags the others.
@@ -88,3 +65,10 @@ the commit and point at this file.
 - Miami and Ashburn are sold out, via `soldOut` in `src/lib/locations.ts`.
   Flip it off there and regions, home and FAQ all follow.
 - `/tools`: the three planned tools stay, dimmed.
+- Bot hosting: Node.js pid 7, Python pid 8, Go pid 9, all $4/mo.
+- Plan changes: you pay the difference. The FAQ says so.
+- VM IPs: never on the site. VMs show host up/down off the node ping.
+- Term discounts: 95/92/90/85/80% of monthly, prices only ever go down.
+- Terraria: Steam's library_hero, 1920x620.
+- Bios: the ones I wrote stay.
+- Game detail pages already use the game's own accent and art.
