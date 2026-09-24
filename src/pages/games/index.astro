@@ -10,6 +10,10 @@ import AnimatedSpan from "../../components/terminal/AnimatedSpan.astro";
 import { price } from "../../lib/order";
 import { links } from "../../config";
 import BotLine from "../../components/BotLine.astro";
+import { HOSTING } from "../../lib/locations";
+
+// sold out regions aren't a pick
+const openRegions = HOSTING.filter((r) => !r.soldOut).map((r) => r.city);
 
 const all = await getCollection("games");
 const live = all
@@ -115,7 +119,7 @@ const pad = (s: string, n = col) => s.padEnd(n);
 
       <p class="small text-fog mt-8 max-w-2xl">
         Every plan includes DDoS protection, full file access, and your pick of
-        Dallas, Ashburn or Miami.
+        {openRegions.join(" or ")}.
       </p>
       <BotLine class="mt-3 max-w-2xl" />
     </div>
