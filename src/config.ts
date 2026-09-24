@@ -44,6 +44,7 @@ export const demoPanel = {
 export const links = {
   billing: "https://billing.lumixsolutions.org",
   ticket: "https://billing.lumixsolutions.org/submitticket.php",
+  email: "support@lumixsolutions.org",
   panel: "https://panel.lumixsolutions.org",
   docs: "https://docs.lumixsolutions.org",
   careers: "https://careers.lumixsolutions.org/",

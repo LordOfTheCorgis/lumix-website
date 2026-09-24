@@ -1,0 +1,66 @@
+---
+// three ways in, sorted by what the person needs rather than by channel.
+// "a few hours" is the same number Included.astro and the faq use, change
+// all three or none
+import Layout from "../layouts/Layout.astro";
+import { links } from "../config";
+
+const ways = [
+  {
+    need: "Something's wrong with my server",
+    channel: "Ticket",
+    text: "Tickets go to the people with access to the nodes, and they keep the history, so nobody asks you to explain it twice. Log in first so we can see which server it is.",
+    href: links.ticket,
+    cta: "Open a ticket",
+  },
+  {
+    need: "A quick question before I buy",
+    channel: "Discord",
+    text: "Ask in the support channel. Staff and customers who already run the same game are both in there, and most questions get answered before a ticket would be read.",
+    href: links.discord,
+    cta: "Join the Discord",
+  },
+  {
+    need: "Billing, partnerships, or anything else",
+    channel: "Email",
+    text: "For anything that doesn't fit a ticket, or when you can't log in to open one. Use the address on your account if it's about your account.",
+    href: `mailto:${links.email}`,
+    cta: links.email,
+  },
+];
+---
+
+<Layout
+  title="Contact Lumix Solutions"
+  description="Open a ticket for server problems, ask in Discord before you buy, or email support@lumixsolutions.org. Replies usually land within a few hours."
+>
+  <section class="section border-b border-[var(--edge)]">
+    <div class="shell">
+      <p class="instrument text-fog">Contact</p>
+      <h1 class="display-xl mt-6 max-w-3xl">Talk to the people who run the hardware<span class="text-red">.</span></h1>
+      <p class="lead text-fog mt-6 max-w-xl">
+        Pick the one that matches what you need. Whichever you use, expect a
+        reply within a few hours.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell grid gap-[var(--grid-cell)] lg:grid-cols-3">
+      {ways.map((w) => (
+        <div class="flex flex-col border border-[var(--edge)] p-6 lg:p-8">
+          <p class="instrument text-fog">{w.channel}</p>
+          <h2 class="title mt-2">{w.need}</h2>
+          <p class="small text-fog mt-4 flex-1">{w.text}</p>
+          <a
+            href={w.href}
+            rel={w.href.startsWith("http") ? "noopener" : undefined}
+            class="small mt-8 self-start text-paper underline underline-offset-4 break-all hover:text-red"
+          >
+            {w.cta}
+          </a>
+        </div>
+      ))}
+    </div>
+  </section>
+</Layout>
