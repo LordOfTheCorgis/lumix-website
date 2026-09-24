@@ -14,7 +14,9 @@ export interface Location {
       missing = region skipped */
   pingUrl?: string;
   /** vms on that node, /status lists them under the region. empty ip = no
-      ping of its own, it shows "host up/down" off the node's check instead */
+      ping of its own, it shows "host up/down" off the node's check instead.
+      leave them empty: a browser ping puts the ip in the page source, and
+      evan doesn't want vm ips public (2026-09-23) */
   vms?: { name: string; ip: string }[];
   /** node's at its cap, not taking new servers. existing ones keep running */
   soldOut?: boolean;
