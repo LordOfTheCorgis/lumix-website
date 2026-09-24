@@ -27,10 +27,14 @@ export const trust = {
   url: "https://www.trustpilot.com/review/lumixsolutions.org",
 };
 
-// not a game, no tile. pid is the WHMCS product, unknown = link to store front
+// not a game, no tile. one WHMCS product per runtime, same price on all three
 export const botHosting = {
   monthly: 4,
-  pid: null as number | null,
+  runtimes: [
+    { label: "Node.js", pid: 7 },
+    { label: "Python", pid: 8 },
+    { label: "Go", pid: 9 },
+  ],
 };
 
 // read-only demo server on the panel. nothing renders until url is set.

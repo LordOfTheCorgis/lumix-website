@@ -1,0 +1,19 @@
+---
+// the one line about app hosting. home and /games both had their own copy,
+// then it grew three links and that stopped being fine
+import { botHosting } from "../config";
+import { orderUrl, price } from "../lib/order";
+
+const { class: cls } = Astro.props;
+---
+
+<p class:list={["small text-fog", cls]}>
+  Running a Discord bot or an app instead? Application hosting is{" "}
+  {price(botHosting.monthly)} a month in{" "}
+  {botHosting.runtimes.map((r, i) => (
+    <>
+      {i > 0 && (i === botHosting.runtimes.length - 1 ? " or " : ", ")}
+      <a href={orderUrl(r.pid)} class="text-paper underline underline-offset-4 hover:text-red">{r.label}</a>
+    </>
+  ))}.
+</p>

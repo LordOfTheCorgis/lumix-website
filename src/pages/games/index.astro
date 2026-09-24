@@ -8,8 +8,8 @@ import Terminal from "../../components/terminal/Terminal.astro";
 import TypingAnimation from "../../components/terminal/TypingAnimation.astro";
 import AnimatedSpan from "../../components/terminal/AnimatedSpan.astro";
 import { price } from "../../lib/order";
-import { botHosting, links } from "../../config";
-import { orderUrl } from "../../lib/order";
+import { links } from "../../config";
+import BotLine from "../../components/BotLine.astro";
 
 const all = await getCollection("games");
 const live = all
@@ -27,7 +27,6 @@ const cheapest = (g: (typeof live)[number]) =>
 const col = Math.max(...all.map((g) => g.data.slug.length)) + 2;
 const pad = (s: string, n = col) => s.padEnd(n);
 
-const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
 ---
 
 <Layout
@@ -118,11 +117,7 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
         Every plan includes DDoS protection, full file access, and your pick of
         Dallas, Ashburn or Miami.
       </p>
-      <p class="small text-fog mt-3 max-w-2xl">
-        Running a Discord bot or a Node.js app instead? Application hosting is{" "}
-        {price(botHosting.monthly)} a month.
-        <a href={botUrl} class="text-paper underline underline-offset-4 hover:text-red">Order one</a>.
-      </p>
+      <BotLine class="mt-3 max-w-2xl" />
     </div>
   </section>
 
