@@ -14,7 +14,7 @@ interface Props {
 
 const { games, class: className = "" } = Astro.props;
 
-// under 1200 wide gets skipped. terraria's is a 460px thumbnail and it's mush
+// under 1200 wide gets skipped. steam's 460px header capsules are mush at hero size, use library_hero
 // at hero size. width rule not a slug list so it comes back when someone drops
 // a real image in
 const HERO_MIN_WIDTH = 1200;
