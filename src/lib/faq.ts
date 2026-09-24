@@ -2,6 +2,11 @@
 // list. every answer is a claim, keep to what the yaml, the terms, or evan
 // has said. support and backup lines drift the most
 import { promo, botHosting } from "../config";
+import { HOSTING } from "./locations";
+
+// so the answer can't drift from the flag in locations.ts
+const full = HOSTING.filter((r) => r.soldOut).map((r) => r.city);
+const open = HOSTING.filter((r) => !r.soldOut).map((r) => r.city);
 
 export interface Faq {
   q: string;
@@ -15,7 +20,7 @@ export const FAQ: Faq[] = [
   },
   {
     q: "Where can my server run?",
-    a: "Dallas, Ashburn or Miami. You pick the region at checkout, and you should pick the one closest to most of your players, not to you.",
+    a: `Dallas, Ashburn or Miami. You pick the region at checkout, and you should pick the one closest to most of your players, not to you.${full.length ? ` ${full.join(" and ")} ${full.length > 1 ? "are" : "is"} full right now, so new servers go in ${open.join(" or ")}.` : ""}`,
   },
   {
     q: "Is DDoS protection included?",

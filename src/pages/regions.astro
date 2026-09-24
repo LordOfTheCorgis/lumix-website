@@ -13,6 +13,9 @@ const games = (await getCollection("games"))
   .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
 
 const live = HOSTING.filter((r) => r.pingUrl).length;
+// capped nodes stay on the page, they just stop taking orders
+const soldOut = HOSTING.filter((r) => r.soldOut);
+const open = HOSTING.filter((r) => !r.soldOut);
 ---
 
 <Layout
@@ -52,8 +55,8 @@ const live = HOSTING.filter((r) => r.pingUrl).length;
           >
             <div class="flex items-center justify-between">
               <span class="instrument text-fog">{r.region}</span>
-              <span class="instrument text-slate">
-                {r.pingUrl ? "ping live" : "ping soon"}
+              <span class:list={["instrument", r.soldOut ? "text-red" : "text-slate"]}>
+                {r.soldOut ? "sold out" : r.pingUrl ? "ping live" : "ping soon"}
               </span>
             </div>
             <h3 class="title mt-4">{r.city}</h3>
@@ -99,7 +102,7 @@ const live = HOSTING.filter((r) => r.pingUrl).length;
       </div>
       <dl class="m-0">
         {[
-          ["Does every game go in every region?", "Yes. Same plans, same prices, any of the three. The region is a dropdown at checkout."],
+          ["Does every game go in every region?", `Yes. Same plans, same prices in all three. ${soldOut.length ? `${soldOut.map((r) => r.city).join(" and ")} ${soldOut.length > 1 ? "are" : "is"} full right now, so new servers go in ${open.map((r) => r.city).join(" or ")} until space opens up.` : "The region is a dropdown at checkout."}`],
           ["Can I move regions later?", "Ask on a ticket. A move between two of our own nodes is a copy, not an import, so it's the quick kind."],
           ["What does the ping test actually measure?", "A handful of no-cors fetches from your browser to something in that datacentre, median of the last four. It isn't the game's netcode but it's the same path."],
         ].map(([q, a]) => (
