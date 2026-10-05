@@ -36,7 +36,7 @@ export const FAQ: Faq[] = [
   },
   {
     q: "Do you support mods, plugins and frameworks?",
-    a: "Yes. FiveM servers run QBCore, ESX, vRP or a custom framework with txAdmin provisioned on deploy. Minecraft modpacks, Paper, Forge and Fabric install from the panel. Terraria supports tModLoader, and Palworld takes mod and map uploads.",
+    a: "Yes. FiveM servers run QBCore, ESX, vRP or a custom framework with txAdmin provisioned on deploy. Minecraft modpacks, Paper, Forge and Fabric install from the panel. Palworld takes mod and map uploads.",
   },
   {
     q: "How do I get support?",
