@@ -28,7 +28,7 @@ export const FAQ: Faq[] = [
   },
   {
     q: "What comes with every plan?",
-    a: "Dedicated vCores that are never oversold, NVMe storage on RAID 1, automatic backups, MySQL databases, full file access over SFTP and the panel, and unmetered player slots on the games that support it. The exact backup and database counts are listed on each plan.",
+    a: "Dedicated vCores that are never oversold, NVMe storage on RAID 1, backup slots you run on demand or on a schedule, MySQL databases, full file access over SFTP and the panel, and unmetered player slots on the games that support it. The exact backup and database counts are listed on each plan.",
   },
   {
     q: "Can I change my plan later?",
