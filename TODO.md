@@ -7,14 +7,6 @@ the commit and point at this file.
 
 ## Blocks the launch
 
-## Pricing (WHMCS, not the site)
-
-- [ ] **Advanced FiveM (pid 22) won't add to cart.** `cart.php?a=add&pid=22`
-      bounces to the FiveM store page, every other pid adds fine. Prices are
-      right. Probably stock control at 0 or the product is hidden, check its
-      Details tab in WHMCS. Until then the site's Deploy button on that plan
-      dead-ends.
-
 ## Content
 
 - [ ] **Louisiana counsel on Terms sections 7 and 9.** Louisiana is civil law;
@@ -69,6 +61,7 @@ the commit and point at this file.
 - Plan changes: you pay the difference. The FAQ says so.
 - VM IPs: never on the site. VMs show host up/down off the node ping.
 - Term discounts: 95/92/90/85/80% of monthly, prices only ever go down. WHMCS matches as of 2026-10-05.
+- WHMCS products need a URL slug or `cart.php?a=add` bounces to the group page. pid 22 had none, fixed 2026-10-05.
 - Terraria: hidden. yaml deleted (git has it at f40e53e), pid 14 left alone in WHMCS.
 - Bios: the ones I wrote stay.
 - Game detail pages already use the game's own accent and art.
