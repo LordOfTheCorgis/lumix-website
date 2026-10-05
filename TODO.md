@@ -69,23 +69,7 @@ the commit and point at this file.
 
 | Plan | pid | Monthly | Quarterly | Semi | Annual | Biennial | Triennial |
 |---|---|---|---|---|---|---|---|
-| Starter Terraria Server | 14 | 5.00 | **13.99** (14.00) | 27.00 | 48.00 | - | - |
-
-- [ ] **Six new Terraria products in WHMCS.** Budget, Standard, Advanced,
-      Premium, Elite, Ultimate. Specs and all six cycle prices are in the
-      commented block in `src/content/games/terraria.yaml`, same curve as
-      everything else. Put them in the Terraria group next to pid 14 (and
-      rename pid 14 to "Starter Terraria Server" so the cart matches the
-      site). Then send me the six pids, or fill `pid:` and uncomment.
-
-| Plan | Monthly | Quarterly | Semi | Annual | Biennial | Triennial | Specs |
-|---|---|---|---|---|---|---|---|
-| Budget Terraria Server | 6.99 | 19.99 | 38.99 | 75.99 | 142.99 | 200.99 | 2c / 3 GB / 20 GB / 1 db / 3 backups |
-| Standard Terraria Server | 8.99 | 25.99 | 49.99 | 96.99 | 182.99 | 258.99 | 2.5c / 4 GB / 25 GB / 2 db / 3 backups |
-| Advanced Terraria Server | 11.99 | 33.99 | 65.99 | 129.99 | 244.99 | 344.99 | 3c / 6 GB / 35 GB / 2 db / 4 backups |
-| Premium Terraria Server | 14.99 | 42.99 | 82.99 | 161.99 | 305.99 | 431.99 | 3.5c / 8 GB / 45 GB / 3 db / 4 backups |
-| Elite Terraria Server | 18.99 | 53.99 | 104.99 | 204.99 | 386.99 | 546.99 | 4c / 10 GB / 60 GB / 4 db / 5 backups |
-| Ultimate Terraria Server | 22.99 | 65.99 | 126.99 | 247.99 | 468.99 | 661.99 | 4c / 12 GB / 75 GB / 5 db / 5 backups |
+| Terraria Server | 14 | 5.00 | **13.99** (14.00) | 27.00 | 48.00 | - | - |
 
 ## Content
 
