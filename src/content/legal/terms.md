@@ -1,7 +1,7 @@
 ---
 title: Terms of Service
 description: The agreement covering game servers, hosting, and related infrastructure from Lumix Solutions.
-lastUpdated: September 10, 2026
+lastUpdated: October 5, 2026
 ---
 
 ## 1. Agreement to Terms
@@ -112,11 +112,15 @@ Outside our control includes upstream transit providers, datacenter facilities, 
 
 ## 7. Data & Backups
 
-You are solely responsible for maintaining backups of your data.
+Each plan includes a set number of backup slots. You create backups yourself, either on demand from the panel or on a schedule you set. We do not create backups for you.
 
-Any backup feature we provide is a convenience and not a guarantee. It is not a substitute for keeping your own copies somewhere you control, and you should assume a backup you have not tested does not exist.
+Our storage runs on RAID 1, which keeps the server running if a single drive fails. It is not a backup: deleted or corrupted files are mirrored immediately and cannot be recovered from it.
 
-We are not liable for any data loss under any circumstance, including hardware failure, misconfiguration, or termination.
+Backups you create are stored on our infrastructure and remain available to you for as long as your service is active. When your service is terminated, your server and all of its backups are permanently deleted.
+
+Backups protect against mistakes, not against everything. You are responsible for keeping your own copies of anything you cannot afford to lose, somewhere you control, and you should assume a backup you have not tested does not exist.
+
+To the extent the law allows, we are not liable for data loss, including loss caused by hardware failure, misconfiguration, or termination. Nothing in these Terms limits our liability for loss caused by our intentional or gross fault.
 
 ## 8. Suspension & Termination
 

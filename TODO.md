@@ -11,6 +11,10 @@ the commit and point at this file.
 
 - [ ] **Louisiana counsel on Terms sections 7 and 9.** Louisiana is civil law;
       broad liability disclaimers behave differently there. Nobody's reviewed.
+      Section 7 got rewritten 2026-10-05 to say what backups actually are
+      (customer-run slots, RAID 1 isn't a backup, deleted on termination)
+      with an art. 2004 carve-out. Section 9 still has no carve-out for
+      gross fault and still uses UCC words Louisiana never adopted.
 ## Pages added 2026-09-14
 
 - [ ] **Demo panel user.** Make a read-only user on Lumi-Panel with one
