@@ -45,7 +45,7 @@ the commit and point at this file.
       the nav until one exists. Not a fake uptime history like main had.
 - [ ] **Click one order button and check the 10% lands.** Game-server cart
       links carry `&promocode=LUMIX10` since 2026-10-08. Nobody has seen
-      WHMCS apply it from the URL yet. Bot hosting (pid 7) is left without
+      WHMCS apply it from the URL yet. Bot hosting (pid 6, Node.js) is left without
       it; if LUMIX10 is valid for that product too, say so and it goes on.
 - [ ] **Read `/staff` and `/contact`** (2026-10-08). Both bios in
       `src/lib/staff.ts` are rewritten from main's and said in your and

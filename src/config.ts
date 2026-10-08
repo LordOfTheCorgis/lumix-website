@@ -32,12 +32,14 @@ export const trust = {
 
 // Not a game, so it doesn't get a tile. Priced per Evan 2026-09-11. `pid` is
 // the WHMCS product; null sends the link to the store front instead.
-// WHMCS has three: Node.js 7, Python 8, Go 9. Only Node is linked because Evan
-// plans a language swapper on the panel, at which point one product covers all
-// three and 8/9 probably get retired. Don't add a picker here for them.
+// WHMCS has three: Node.js 6, Python 7, Golang 8. Checked by adding each to a
+// cart on 2026-10-08; 9 doesn't exist and bounces to the FiveM store. (Evan
+// remembered them as 7/8/9, which put Python behind the "Node.js" link for a
+// few hours.) Only Node is linked because Evan plans a language swapper on the
+// panel, at which point one product covers all three. Don't add a picker here.
 export const botHosting = {
   monthly: 4,
-  pid: 7 as number | null,
+  pid: 6 as number | null,
 };
 
 // A read-only demo server on Lumi-Panel so people can click around before
