@@ -56,28 +56,14 @@ const measurable = regions.filter((r) => r.pingUrl).length;
 )}
 
 <script>
-  const cells = document.querySelectorAll<HTMLElement>("[data-ping-value]");
+  import { pingMs } from "../scripts/ping";
 
-  async function sample(url: string): Promise<number> {
-    const t = performance.now();
-    // cache: "no-store" plus a nonce so no layer between here and there
-    // answers from cache and reports 0 ms to Ashburn from Perth.
-    await fetch(`${url}${url.includes("?") ? "&" : "?"}t=${Date.now()}`, {
-      mode: "no-cors",
-      cache: "no-store",
-      credentials: "omit",
-    });
-    return performance.now() - t;
-  }
+  const cells = document.querySelectorAll<HTMLElement>("[data-ping-value]");
 
   async function measure(cell: HTMLElement) {
     const url = cell.dataset.url!;
     try {
-      const times: number[] = [];
-      for (let i = 0; i < 5; i++) times.push(await sample(url));
-      times.shift(); // first one pays for the connection
-      times.sort((a, b) => a - b);
-      const ms = Math.round(times[Math.floor(times.length / 2)]);
+      const ms = await pingMs(url);
       cell.textContent = `${ms} ms`;
       cell.classList.add("text-paper");
     } catch {
