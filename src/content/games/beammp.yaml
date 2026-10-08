@@ -10,7 +10,7 @@ accent: "#f59e0b"
 mark: "BMP"
 highlights:
   - "Mod and map uploads straight from the panel"
-  - "Dedicated vCores on RAID 1 NVMe, never oversold"
+  - "Ryzen CPUs on RAID 1 NVMe"
 plans:
   - key: "starter"
     name: "BeamMP Starter Plan"

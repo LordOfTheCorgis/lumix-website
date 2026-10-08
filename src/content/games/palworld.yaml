@@ -10,7 +10,7 @@ accent: "#60a5fa"
 mark: "PW"
 highlights:
   - "8 GB entry, up to 32 GB for a fully built world"
-  - "Dedicated vCores on RAID 1 NVMe, never oversold"
+  - "Ryzen CPUs on RAID 1 NVMe"
 plans:
   - key: "starter"
     name: "Palworld Starter Plan"
