@@ -7,14 +7,6 @@ the commit and point at this file.
 
 ## Blocks the launch
 
-- [ ] **Create `LUMIX10` in WHMCS.** 10% off, evergreen. The site already
-      advertises it (hero, every game page). Until the promotion exists the
-      cart rejects the code. Config: `promo` in `src/config.ts`; flip `live`
-      to false if you want it off the page in the meantime.
-- [ ] **Bot / application hosting product in WHMCS.** $4.00/mo. Need the
-      product ID. Drop it into `botHosting.pid` in `src/config.ts` and the
-      "Order one" link on the homepage goes straight to a preloaded cart
-      instead of the store front.
 - [ ] **PostHog project API key.** Settings > Project > Project API Key in
       PostHog. Goes in `.env` as `PUBLIC_POSTHOG_KEY` (see `.env.example`).
       Confirm the host is US (`https://us.i.posthog.com`) or set EU. Until
