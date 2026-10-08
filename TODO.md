@@ -43,6 +43,10 @@ the commit and point at this file.
       (UptimeRobot, BetterStack, Instatus), a page that only pings the four
       regions live off the same `pingUrl`s as `/regions`, or pull it from
       the nav until one exists. Not a fake uptime history like main had.
+- [ ] **Click one order button and check the 10% lands.** Game-server cart
+      links carry `&promocode=LUMIX10` since 2026-10-08. Nobody has seen
+      WHMCS apply it from the URL yet. Bot hosting (pid 7) is left without
+      it; if LUMIX10 is valid for that product too, say so and it goes on.
 - [ ] **Read `/staff` and `/contact`** (2026-10-08). Both bios in
       `src/lib/staff.ts` are rewritten from main's and said in your and
       Keaghan's names. `/contact` leaves `support@` off on purpose (tickets
