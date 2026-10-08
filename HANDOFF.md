@@ -134,14 +134,37 @@ listens on `window` rather than on itself, which is why cells light up under the
 header and the copy. Needs a fine pointer and no reduced-motion preference; does
 nothing at all otherwise.
 
-**The module and the layout are one system, not two.** `--grid-cell` is 40px, and
-`.shell` snaps its content column down to a width the tile grid divides evenly.
-DESIGN.md section 7 has the families. Consequences worth knowing before you touch
-anything: the tile gutter is one cell and the tiles are seven cells tall, so
-changing `gap-[var(--grid-cell)]` or that `min-h` on GameTile puts the staircase
-back. Vertical registration is measured off `[data-grid-anchor]`, which is on the
-tile grid; put it on whatever matters most on a new page, or leave it off and the
-cells just register to the document top.
+**The module and the layout are one system, not two.** `--grid-cell` is 40px
+and since 2026-10-08 everything with a visible edge sits on it, every page, at
+every width (Evan: "make sure EVERYTHING is aligned"). How it holds together:
+
+- **Origin is `<main>`** (`data-grid-anchor`, in Layout). One per page, don't
+  add more; CursorTrail reads it.
+- **Widths**: `.shell` snaps the content column to whole cells (DESIGN.md
+  section 7). Inside it, use `.cell-split` for two columns (`--left` in cells,
+  default about half) and `.cell-cols` with `[--cols:N]` for N equal columns.
+  Plain `grid-cols-2` with a gap does NOT land on the module at desktop
+  widths; that's why those are gone.
+- **Heights**: `src/scripts/grid.ts` rounds heights up to whole cells:
+  every `.section`, anything with `data-snap` (`data-snap="both"` also rounds
+  width, for buttons), children of `.cell-stack` / `.snap-kids` /
+  `.cell-split`. `.legal-prose > h2` and `[data-align-top]` get pushed down
+  to the next line instead. Section padding is 80/40.
+- **Borders cost a pixel.** A 1px border outside a snapped height pushes
+  everything after it off by one. Sections take it back out of their
+  padding; boxes with inner content use `p-[calc(var(--grid-cell)-1px)]`;
+  rules that would drift (FAQ rows, the toggle frame, the cfg caption) are
+  inset box-shadows instead of borders.
+- **Buttons** are one cell tall (`h-10`) with `data-snap="both"`.
+- **Fieldsets** default to min-content width; global.css resets that, or a
+  `.cell-cols` inside one sizes itself off its own columns and overflows.
+- Sticky and fixed things (FAQ side column, order summary, cfg file panel,
+  mobile bars) move with scroll and can't stay registered; they're on the
+  grid at rest.
+
+To check: an audit that walks every bordered/filled element in `<main>` and
+reports any edge more than 1.5px off a line, run at 1440/1100/700/400. It was
+clean on all 20 pages when this was written. Ask for it if you need it again.
 
 **A tile's text block is bottom-justified,** so anything with a variable line count
 above the price shoves the title up or down. The tagline reserves two lines with
