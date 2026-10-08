@@ -1,0 +1,98 @@
+---
+// The community asked for exact specs. This is them, per region, in the
+// same ledger idiom as /partners and /contact. The CPU name is the headline
+// of each row because it's the thing people search for and the thing they
+// can verify from inside their own server.
+//
+// Deliberately doesn't repeat "never oversold" or name DDoS providers: the
+// first is a claim about how many servers share a node, which a CPU list
+// doesn't prove, and the second is still Evan's call (locations.ts).
+import Layout from "../layouts/Layout.astro";
+import { NODES, HARDWARE_CHECKED } from "../lib/hardware";
+import { HOSTING } from "../lib/locations";
+
+const rows = NODES.map((n) => ({ ...n, place: HOSTING.find((h) => h.slug === n.region)! }));
+const ghz = (n: number) => `${n.toFixed(1)} GHz`;
+---
+
+<Layout
+  title="Hardware"
+  description={`The exact CPU, memory and storage behind each Lumix region: ${rows.map((r) => `${r.cpu.replace("AMD ", "")} in ${r.place.city}`).join(", ")}.`}
+>
+  <section class="section border-b border-[var(--edge)]">
+    <div class="shell">
+      <p class="instrument text-fog">Hardware · checked {HARDWARE_CHECKED}</p>
+      <h1 class="display-xl mt-6 max-w-3xl">What your server runs on<span class="text-red">.</span></h1>
+      <p class="lead text-fog mt-6 max-w-xl">
+        One machine per region, listed exactly as it is. Desktop-class AMD
+        Ryzen, because game servers live and die on single-thread speed and
+        these clock higher than most server-grade chips.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <ol class="m-0 list-none border-t border-[var(--edge)] p-0" data-grid-anchor>
+        {rows.map((r) => (
+          <li
+            id={r.region}
+            class="grid gap-6 border-b border-[var(--edge)] py-[var(--grid-cell)] lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-10"
+          >
+            <div class="min-w-0">
+              <p class="instrument text-slate">{r.place.city} · {r.place.region}</p>
+              <h2 class="display-l mt-3 break-words">{r.cpu.replace("AMD ", "")}</h2>
+              <p class="small text-fog mt-3">AMD, {r.arch}</p>
+            </div>
+
+            <dl class="m-0 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-4 lg:pt-8">
+              <div>
+                <dt class="instrument text-slate">Cores</dt>
+                <dd class="mt-2 text-paper tabular">{r.cores} cores, {r.threads} threads</dd>
+              </div>
+              <div>
+                <dt class="instrument text-slate">Clock</dt>
+                <dd class="mt-2 text-paper tabular">
+                  {ghz(r.boostGhz)} boost
+                  <span class="small block text-fog">{ghz(r.baseGhz)} base</span>
+                </dd>
+              </div>
+              <div>
+                <dt class="instrument text-slate">Memory</dt>
+                <dd class="mt-2 text-paper tabular">{r.ramGb} GB {r.ramType}</dd>
+              </div>
+              <div>
+                <dt class="instrument text-slate">Storage</dt>
+                <dd class="mt-2 text-paper">{r.storage}</dd>
+              </div>
+            </dl>
+          </li>
+        ))}
+      </ol>
+
+      <p class="small text-slate mt-8 max-w-2xl">
+        Core count, base clock, memory and storage are read off the provider's
+        panel for each machine. Threads and boost clock are AMD's published
+        figures for that chip. Your plan's vCores and RAM are your share of the
+        machine in that region; the plan cards list them.
+      </p>
+    </div>
+  </section>
+
+  <section class="section band border-t border-[var(--edge)]">
+    <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h2 class="title">Want to check for yourself?</h2>
+        <p class="lead text-fog mt-6 max-w-lg">
+          You can. On FiveM, txAdmin's diagnostics page names the CPU. On
+          Minecraft, a spark profile does. If it ever doesn't match this page,
+          tell us and we'll fix whichever one is wrong.
+        </p>
+      </div>
+      <div class="flex flex-col justify-end gap-3">
+        <a href="/regions" class="small inline-flex items-center gap-1.5 text-paper hover:text-red">Where the regions are, and your ping <span aria-hidden="true">&rarr;</span></a>
+        <a href="/games" class="small inline-flex items-center gap-1.5 text-paper hover:text-red">Plans for every game <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+</Layout>

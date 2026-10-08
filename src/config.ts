@@ -85,6 +85,7 @@ export const nav = [
 export const moreNav = [
   { label: "Tools", href: "/tools", note: "Free config generators" },
   { label: "Regions", href: "/regions", note: "Where the nodes are, and your ping" },
+  { label: "Hardware", href: "/hardware", note: "The exact CPU, memory and storage per region" },
   { label: "Migrate", href: "/migrate", note: "Move a server from another host" },
   { label: "Staff", href: "/staff", note: "Who runs the nodes" },
   { label: "Contact", href: "/contact", note: "Tickets, Discord, email" },
@@ -97,6 +98,7 @@ export const footerNav = [
     items: [
       { label: "Game Hosting", href: "/games" },
       { label: "Regions", href: "/regions" },
+      { label: "Hardware", href: "/hardware" },
       { label: "Migrate", href: "/migrate" },
       { label: "Status", href: "/status" },
       { label: "Control Panel", href: links.panel },
