@@ -7,8 +7,10 @@ name: Deploy dev
 # page noindex and robots.txt disallow everything; see Layout.astro.
 #
 # Needs three repo secrets (Settings > Secrets and variables > Actions):
-#   CPANEL_FTP_SERVER    e.g. ftp.lumixsolutions.org, or the server hostname
-#                        cPanel shows under FTP Accounts > Configure FTP Client
+#   CPANEL_FTP_SERVER    dev.lumixsolutions.org. NOT ftp.lumixsolutions.org:
+#                        DNS is on Cloudflare and that record was never made.
+#                        dev. points straight at the cPanel box; if anyone
+#                        ever turns Cloudflare's proxy on for dev., FTP breaks.
 #   CPANEL_FTP_USERNAME  the cPanel FTP user
 #   CPANEL_FTP_PASSWORD
 # Until they're set the build still runs and the upload is skipped, so a push
@@ -55,6 +57,11 @@ jobs:
           # cPanel serves it on 21 by default. If the first run can't connect,
           # check cPanel has TLS on for FTP before dropping to plain "ftp".
           protocol: ftps
+          # The server's FTP cert is self-signed (CN=web-srv-02, checked
+          # 2026-10-08), so strict verification fails on any hostname.
+          # "loose" keeps the connection encrypted and skips the cert check.
+          # Still beats plain ftp, where the password goes over in the clear.
+          security: loose
           local-dir: ./dist/
           # Relative to the FTP account's root, not the server's. The deploy@
           # account is locked to /home/lumixsolutions/public_html/dev.lumixsolutions.org
