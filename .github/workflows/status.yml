@@ -1,0 +1,63 @@
+name: Status checks
+
+# Feeds /status. Every five minutes (GitHub treats that as "at least five",
+# runs can lag under load) it checks each node and the panel/billing sites and
+# commits the result to the `status-data` branch. See scripts/status-check.mjs.
+#
+# Scheduled workflows only run from the default branch, so this does nothing
+# until it's on main. Needs one secret: STATUS_TARGETS (format in the script).
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: status-checks
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+          path: site
+
+      # The data lives on its own orphan branch so a commit every five minutes
+      # never touches the site's history. First run creates it.
+      - name: Check out status-data
+        run: |
+          if git ls-remote --exit-code --heads "https://github.com/${{ github.repository }}" status-data >/dev/null; then
+            git clone --depth 1 --branch status-data "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" data
+          else
+            mkdir data && cd data && git init -b status-data
+            git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run checks
+        env:
+          STATUS_TARGETS: ${{ secrets.STATUS_TARGETS }}
+        run: node site/scripts/status-check.mjs data/status.json
+
+      # One commit, replaced every run. History lives inside status.json (90
+      # days of daily buckets), so git history would just be 288 copies a day
+      # of the same file growing forever.
+      - name: Publish
+        working-directory: data
+        run: |
+          git config user.name "status-bot"
+          git config user.email "status-bot@users.noreply.github.com"
+          git checkout -q --orphan publish
+          git add status.json
+          git commit -q -m "status $(date -u +%FT%RZ)"
+          git push -q --force origin publish:status-data

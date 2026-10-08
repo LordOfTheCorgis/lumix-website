@@ -1,9 +1,11 @@
 name: Deploy to server
 
+# Manual only until the cPanel deploy path is decided (TODO.md). This used to
+# fire on every push to main and rsync --delete over /srv/www, which means the
+# day redesign merges it would've wiped whatever lives there. Run it by hand
+# from the Actions tab once someone confirms the target and the secrets.
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build-deploy:
