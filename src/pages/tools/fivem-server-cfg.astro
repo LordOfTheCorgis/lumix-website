@@ -79,29 +79,29 @@ const faqSchema = {
 
   <section class="section">
     <div class="shell">
-      <div class="grid items-start gap-[var(--grid-cell)] lg:grid-cols-2">
+      <div class="cell-split items-start">
         <form data-cfg-form class="flex flex-col gap-[var(--grid-cell)]" novalidate autocomplete="off">
           <!-- ── Identity ─────────────────────────────────────────── -->
-          <fieldset class="panel">
-            <legend class="panel-head">
+          <fieldset class="panel" data-snap>
+            <legend class="panel-head" data-snap>
               <span class="instrument text-fog">01 · Listing</span>
               <span class="title block mt-2">What players see</span>
             </legend>
 
-            <div class="grid gap-5 sm:grid-cols-2">
-              <label class="field sm:col-span-2">
+            <div class="cell-cols [--cols:1] sm:[--cols:2]">
+              <label data-snap class="field sm:col-span-2">
                 <span class="field-label">Project name</span>
                 <input name="projectName" data-field="projectName" type="text" maxlength="80" placeholder="The Bayou Project" />
                 <span class="field-hint">The big line in the server browser. <code>sv_projectName</code>.</span>
               </label>
 
-              <label class="field sm:col-span-2">
+              <label data-snap class="field sm:col-span-2">
                 <span class="field-label">Description</span>
                 <input name="projectDesc" data-field="projectDesc" type="text" maxlength="160" placeholder="Serious RP, whitelisted, 18+" />
                 <span class="field-hint">Under the name in the browser. Keep it to one line.</span>
               </label>
 
-              <div class="field sm:col-span-2">
+              <div data-snap class="field sm:col-span-2">
                 <label class="field-label" for="hostname">Hostname</label>
                 <input id="hostname" name="hostname" data-field="hostname" type="text" maxlength="120" placeholder="^1Bayou ^7City ^0| ^4discord.gg/bayou" />
                 <span class="hostname-preview" aria-label="How the hostname renders in the server browser"><span data-hostname-preview></span></span>
@@ -113,13 +113,13 @@ const faqSchema = {
                 </span>
               </div>
 
-              <label class="field">
+              <label data-snap class="field">
                 <span class="field-label">Tags</span>
                 <input name="tags" data-field="tags" type="text" maxlength="120" value={DEFAULTS.tags} placeholder="roleplay, whitelist, esx" />
                 <span class="field-hint">Comma separated. What the browser's filters search.</span>
               </label>
 
-              <label class="field">
+              <label data-snap class="field">
                 <span class="field-label">Language</span>
                 <select name="locale" data-field="locale">
                   {LOCALES.map((l) => (
@@ -129,19 +129,19 @@ const faqSchema = {
                 <span class="field-hint">Groups you with servers in that language.</span>
               </label>
 
-              <label class="field">
+              <label data-snap class="field">
                 <span class="field-label">Server icon</span>
                 <input name="serverIcon" data-field="serverIcon" type="text" maxlength="80" placeholder="logo.png" />
                 <span class="field-hint">96×96 PNG next to the cfg. Blank to skip.</span>
               </label>
 
-              <label class="field">
+              <label data-snap class="field">
                 <span class="field-label">Banner (detail)</span>
                 <input name="bannerDetail" data-field="bannerDetail" type="url" placeholder="https://…/banner.png" />
                 <span class="field-hint">Shown on your server's info page. Optional.</span>
               </label>
 
-              <label class="field">
+              <label data-snap class="field">
                 <span class="field-label">Banner (connecting)</span>
                 <input name="bannerConnecting" data-field="bannerConnecting" type="url" placeholder="https://…/loading.png" />
                 <span class="field-hint">Shown while a player loads in. Optional.</span>
@@ -150,28 +150,28 @@ const faqSchema = {
           </fieldset>
 
           <!-- ── Connection ───────────────────────────────────────── -->
-          <fieldset class="panel">
-            <legend class="panel-head">
+          <fieldset class="panel" data-snap>
+            <legend class="panel-head" data-snap>
               <span class="instrument text-fog">02 · Connection</span>
               <span class="title block mt-2">Port, slots, keys</span>
             </legend>
 
-            <div class="grid gap-5 sm:grid-cols-2">
-              <label class="field">
+            <div class="cell-cols [--cols:1] sm:[--cols:2]">
+              <label data-snap class="field">
                 <span class="field-label">Port</span>
                 <input name="port" data-field="port" type="number" min="1024" max="65535" value={DEFAULTS.port} inputmode="numeric" />
                 <span class="field-hint">The <strong>game</strong> allocation from the Network tab, not the txAdmin one. Same number for TCP and UDP.</span>
               </label>
 
-              <label class="field">
+              <label data-snap class="field">
                 <span class="field-label">Max players</span>
                 <input name="maxClients" data-field="maxClients" type="number" min="1" max="2048" value={DEFAULTS.maxClients} inputmode="numeric" />
                 <span class="field-hint">48 is the ceiling on a free key. Above 10 with custom EUP streamed needs Element Club or the outfits don't load.</span>
               </label>
 
-              <div class="field sm:col-span-2">
+              <div data-snap class="field sm:col-span-2">
                 <label class="field-label" for="licenseKey">License key</label>
-                <label class="check mb-1">
+                <label data-snap class="check">
                   <input type="checkbox" name="licenseInStartup" data-field="licenseKey" />
                   <span>
                     <span class="block text-paper">It's in the Startup tab as <code class="text-fog">FIVEM_LICENSE</code></span>
@@ -182,7 +182,7 @@ const faqSchema = {
                 <span class="field-hint">From <a href="https://portal.cfx.re" rel="noopener" target="_blank">portal.cfx.re</a>. Bound to the IP you registered it on, which is the one in the Network tab. A key from an old host won't work here.</span>
               </div>
 
-              <label class="field sm:col-span-2">
+              <label data-snap class="field sm:col-span-2">
                 <span class="field-label">Steam Web API key</span>
                 <input name="steamKey" data-field="steamKey" type="text" spellcheck="false" placeholder="32 hex characters" data-secret />
                 <span class="field-hint">Optional. Without it steam: identifiers never resolve, and most admin menus want them. <a href="https://steamcommunity.com/dev/apikey" rel="noopener" target="_blank">Get one</a>.</span>
@@ -191,21 +191,21 @@ const faqSchema = {
           </fieldset>
 
           <!-- ── Game ─────────────────────────────────────────────── -->
-          <fieldset class="panel">
-            <legend class="panel-head">
+          <fieldset class="panel" data-snap>
+            <legend class="panel-head" data-snap>
               <span class="instrument text-fog">03 · Game</span>
               <span class="title block mt-2">Build and sync</span>
             </legend>
 
-            <div class="grid gap-5 sm:grid-cols-2">
-              <div class="field sm:col-span-2">
+            <div class="cell-cols [--cols:1] sm:[--cols:2]">
+              <div data-snap class="field sm:col-span-2">
                 <span class="field-label">Edition</span>
                 <div class="seg" role="radiogroup" aria-label="GTA V edition">
-                  <label class="seg-opt">
+                  <label class="seg-opt" data-snap="both">
                     <input type="radio" name="edition" data-field="edition" value="legacy" checked />
                     <span>Legacy</span>
                   </label>
-                  <label class="seg-opt">
+                  <label class="seg-opt" data-snap="both">
                     <input type="radio" name="edition" data-field="edition" value="enhanced" />
                     <span>Enhanced</span>
                   </label>
@@ -213,7 +213,7 @@ const faqSchema = {
                 <span class="field-hint">Players can't cross over. Pick whichever your community runs.</span>
               </div>
 
-              <label class="field" data-edition="legacy">
+              <label data-snap class="field" data-edition="legacy">
                 <span class="field-label">Game build</span>
                 <select name="gameBuild" data-field="gameBuild">
                   {GAME_BUILDS.map((b) => (
@@ -223,7 +223,7 @@ const faqSchema = {
                 <span class="field-hint">Newest DLC your scripts support. Each build includes everything before it. 3095 is where most frameworks still sit.</span>
               </label>
 
-              <label class="field" data-edition="legacy">
+              <label data-snap class="field" data-edition="legacy">
                 <span class="field-label">OneSync</span>
                 <select name="onesync" data-field="onesync">
                   <option value="on" selected>On (required for 32+ slots)</option>
@@ -233,7 +233,7 @@ const faqSchema = {
                 <span class="field-hint">Server-side state. Leave it on unless a script tells you otherwise.</span>
               </label>
 
-              <label class="field" data-edition="enhanced" hidden>
+              <label data-snap class="field" data-edition="enhanced" hidden>
                 <span class="field-label">Game build</span>
                 <select name="gameBuildEnhanced" data-field="gameBuild">
                   <option value="" selected>Current build · The Kortz Center Heist</option>
@@ -242,13 +242,13 @@ const faqSchema = {
                 <span class="field-hint">Enhanced only ships the current build. Pinning an old number stops the server registering.</span>
               </label>
 
-              <label class="field" data-edition="enhanced" hidden>
+              <label data-snap class="field" data-edition="enhanced" hidden>
                 <span class="field-label">Sync tick rate</span>
                 <input name="syncTickRate" data-field="syncTickRate" type="number" min="1" max="120" value={DEFAULTS.syncTickRate} inputmode="numeric" />
                 <span class="field-hint">1 to 120. 60 is the default and fine.</span>
               </label>
 
-              <label class="check sm:col-span-2">
+              <label data-snap class="check sm:col-span-2">
                 <input type="checkbox" name="scriptHook" data-field="scriptHook" />
                 <span>
                   <span class="block text-paper">Allow Script Hook</span>
@@ -259,13 +259,13 @@ const faqSchema = {
           </fieldset>
 
           <!-- ── Database ─────────────────────────────────────────── -->
-          <fieldset class="panel">
-            <legend class="panel-head">
+          <fieldset class="panel" data-snap>
+            <legend class="panel-head" data-snap>
               <span class="instrument text-fog">04 · Database</span>
               <span class="title block mt-2">MySQL connection</span>
             </legend>
 
-            <label class="check mb-5">
+            <label data-snap class="check mb-10">
               <input type="checkbox" name="dbEnabled" data-field="db" checked />
               <span>
                 <span class="block text-paper">This server uses a database</span>
@@ -273,41 +273,41 @@ const faqSchema = {
               </span>
             </label>
 
-            <div class="grid gap-5 sm:grid-cols-2" data-db-fields>
-              <label class="field sm:col-span-2">
+            <div class="cell-cols [--cols:1] sm:[--cols:2]" data-db-fields>
+              <label data-snap class="field sm:col-span-2">
                 <span class="field-label">Endpoint from the Databases tab</span>
                 <input data-db-endpoint data-field="db" type="text" spellcheck="false" placeholder="db.example.lumixsolutions.org:3306" />
                 <span class="field-hint">Paste it whole and the host and port below fill in. The database runs on its own box, so <code>localhost</code> never works here.</span>
               </label>
-              <label class="field">
+              <label data-snap class="field">
                 <span class="field-label">Host</span>
                 <input name="dbHost" data-field="db" type="text" spellcheck="false" value={DEFAULTS.dbHost} />
               </label>
-              <label class="field">
+              <label data-snap class="field">
                 <span class="field-label">Port</span>
                 <input name="dbPort" data-field="db" type="number" min="1" max="65535" value={DEFAULTS.dbPort} inputmode="numeric" />
               </label>
-              <label class="field">
+              <label data-snap class="field">
                 <span class="field-label">User</span>
                 <input name="dbUser" data-field="db" type="text" spellcheck="false" value={DEFAULTS.dbUser} />
               </label>
-              <label class="field">
+              <label data-snap class="field">
                 <span class="field-label">Password</span>
                 <input name="dbPass" data-field="db" type="password" data-secret />
               </label>
-              <label class="field">
+              <label data-snap class="field">
                 <span class="field-label">Database</span>
                 <input name="dbName" data-field="db" type="text" spellcheck="false" value={DEFAULTS.dbName} />
                 <span class="field-hint">Full name as the Databases tab shows it. Import your framework's .sql at <a href="https://db.lumixsolutions.org" rel="noopener" target="_blank">db.lumixsolutions.org</a>.</span>
               </label>
-              <div class="field">
+              <div data-snap class="field">
                 <span class="field-label">String format</span>
                 <div class="seg" role="radiogroup" aria-label="Connection string format">
-                  <label class="seg-opt">
+                  <label class="seg-opt" data-snap="both">
                     <input type="radio" name="dbFormat" data-field="db" value="uri" checked />
                     <span>mysql://</span>
                   </label>
-                  <label class="seg-opt">
+                  <label class="seg-opt" data-snap="both">
                     <input type="radio" name="dbFormat" data-field="db" value="kv" />
                     <span>key=value</span>
                   </label>
@@ -318,15 +318,15 @@ const faqSchema = {
           </fieldset>
 
           <!-- ── Resources ────────────────────────────────────────── -->
-          <fieldset class="panel">
-            <legend class="panel-head">
+          <fieldset class="panel" data-snap>
+            <legend class="panel-head" data-snap>
               <span class="instrument text-fog">05 · Resources</span>
               <span class="title block mt-2">Framework and start order</span>
             </legend>
 
-            <div class="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Framework">
+            <div class="cell-cols [--cols:1] sm:[--cols:2]" role="radiogroup" aria-label="Framework">
               {frameworks.map((f) => (
-                <label class="card-opt">
+                <label class="card-opt" data-snap>
                   <input type="radio" name="framework" data-field="framework" value={f.key} checked={f.key === DEFAULTS.framework} />
                   <span class="card-opt-body">
                     <span class="block text-paper">{f.label}</span>
@@ -336,7 +336,7 @@ const faqSchema = {
               ))}
             </div>
 
-            <label class="field mt-5">
+            <label data-snap class="field mt-10">
               <span class="field-label">Extra resources</span>
               <textarea name="extraResources" data-field="extraResources" rows="4" spellcheck="false" placeholder="ox_lib&#10;ox_inventory&#10;[custom]"></textarea>
               <span class="field-hint">One per line. Folders in square brackets start everything inside them. Order matters: a resource that needs another one goes after it.</span>
@@ -344,13 +344,13 @@ const faqSchema = {
           </fieldset>
 
           <!-- ── Admins ───────────────────────────────────────────── -->
-          <fieldset class="panel">
-            <legend class="panel-head">
+          <fieldset class="panel" data-snap>
+            <legend class="panel-head" data-snap>
               <span class="instrument text-fog">06 · Admins</span>
               <span class="title block mt-2">Who gets the console</span>
             </legend>
 
-            <label class="field">
+            <label data-snap class="field">
               <span class="field-label">Admin identifiers</span>
               <textarea name="admins" data-field="admins" rows="4" spellcheck="false" placeholder="license:1234567890abcdef…&#10;discord:123456789012345678"></textarea>
               <span class="field-hint">One per line. Your license: identifier is in the F8 console after you join, or on <a href="https://portal.cfx.re" rel="noopener" target="_blank">portal.cfx.re</a>. Each one gets <code>group.admin</code>.</span>
@@ -358,8 +358,8 @@ const faqSchema = {
           </fieldset>
 
           <!-- ── Advanced ─────────────────────────────────────────── -->
-          <details class="panel" data-advanced>
-            <summary class="panel-head cursor-pointer list-none">
+          <details class="panel" data-advanced data-snap>
+            <summary class="panel-head cursor-pointer list-none" data-snap>
               <span class="instrument text-fog">07 · Advanced</span>
               <span class="title mt-2 flex items-center justify-between">
                 RCON, listing, purity
@@ -369,17 +369,17 @@ const faqSchema = {
               </span>
             </summary>
 
-            <div class="mt-6 grid gap-5 sm:grid-cols-2">
-              <div class="field sm:col-span-2">
+            <div class="cell-cols mt-10 [--cols:1] sm:[--cols:2]">
+              <div data-snap class="field sm:col-span-2">
                 <label class="field-label" for="rconPassword">RCON password</label>
-                <div class="flex gap-2">
+                <div class="flex">
                   <input id="rconPassword" name="rconPassword" data-field="rconPassword" type="text" spellcheck="false" placeholder="Blank keeps RCON off" class="min-w-0 flex-1" data-secret />
-                  <button type="button" data-gen-rcon class="btn-ghost shrink-0">Generate</button>
+                  <button type="button" data-gen-rcon class="btn-ghost shrink-0" data-snap="both">Generate</button>
                 </div>
                 <span class="field-hint">Remote console over UDP, no lockout, no rate limit. If you don't know you need it, leave it off.</span>
               </div>
 
-              <label class="field">
+              <label data-snap class="field">
                 <span class="field-label">Pure mode</span>
                 <select name="pureLevel" data-field="pureLevel">
                   <option value="0" selected>Off</option>
@@ -389,22 +389,22 @@ const faqSchema = {
                 <span class="field-hint">Rejects clients with edited game files. Level 1 is the sane public setting.</span>
               </label>
 
-              <div class="flex flex-col gap-4">
-                <label class="check">
+              <div class="flex flex-col">
+                <label data-snap class="check">
                   <input type="checkbox" name="endpointPrivacy" data-field="endpointPrivacy" checked />
                   <span>
                     <span class="block text-paper">Hide player IPs</span>
                     <span class="field-hint">Strips addresses from the public /players endpoint.</span>
                   </span>
                 </label>
-                <label class="check">
+                <label data-snap class="check">
                   <input type="checkbox" name="privateListing" data-field="privateListing" />
                   <span>
                     <span class="block text-paper">Private listing</span>
                     <span class="field-hint">Not in the server browser. Direct connect still works.</span>
                   </span>
                 </label>
-                <label class="check">
+                <label data-snap class="check">
                   <input type="checkbox" name="lan" data-field="lan" />
                   <span>
                     <span class="block text-paper">LAN only</span>
@@ -415,7 +415,7 @@ const faqSchema = {
             </div>
           </details>
 
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between" data-snap>
             <button type="button" data-reset class="small text-slate underline underline-offset-4 hover:text-paper">Start over</button>
           </div>
         </form>
@@ -426,26 +426,26 @@ const faqSchema = {
              bottom until the form runs out, which put the checks off-screen
              for the whole time anyone was actually typing. -->
         <aside id="file" class="scroll-mt-24 lg:sticky lg:top-24 lg:flex lg:max-h-[calc(100vh-7rem)] lg:flex-col" aria-label="Generated server.cfg">
-          <figure class="file m-0 flex min-h-0 flex-col border border-[var(--edge)]">
-            <figcaption class="flex flex-wrap items-center gap-3 border-b border-[var(--edge)] px-4 py-3">
-              <span class="instrument text-paper">server.cfg</span>
-              <span class="instrument text-slate" data-line-count>0 lines</span>
-              <span class="ml-auto flex items-center gap-2">
-                <button type="button" data-download class="btn-ghost">Download</button>
-                <button type="button" data-copy class="chamfer bg-red px-4 py-2 text-sm font-medium text-ink transition-colors duration-150 hover:bg-red-pressed">
+          <figure class="file m-0 flex min-h-0 flex-col border border-[var(--edge)]" data-snap>
+            <figcaption class="flex min-h-10 flex-wrap items-center gap-3 pl-4 shadow-[inset_0_-1px_0_var(--edge)]" data-snap>
+              <span class="instrument inline-flex h-10 items-center text-paper">server.cfg</span>
+              <span class="instrument inline-flex h-10 items-center text-slate" data-line-count>0 lines</span>
+              <span class="ml-auto flex items-center">
+                <button type="button" data-download class="btn-ghost" data-snap="both">Download</button>
+                <button type="button" data-copy data-snap="both" class="chamfer inline-flex h-10 items-center justify-center bg-red px-4 text-sm font-medium text-ink transition-colors duration-150 hover:bg-red-pressed">
                   Copy file
                 </button>
               </span>
             </figcaption>
-            <pre class="file-body m-0 min-h-0 flex-1 overflow-auto" data-file-scroll><code data-file aria-live="off"></code></pre>
+            <pre class="file-body m-0 min-h-0 flex-1 overflow-auto" data-file-scroll data-snap><code data-file aria-live="off"></code></pre>
           </figure>
 
-          <div class="mt-4 shrink-0 border border-[var(--edge)]" data-checks>
-            <div class="flex items-center gap-3 border-b border-[var(--edge)] px-4 py-3">
+          <div class="mt-10 shrink-0 border border-[var(--edge)]" data-checks data-snap>
+            <div class="flex h-10 items-center gap-3 border-b border-[var(--edge)] px-4">
               <span class="instrument text-paper">Checks</span>
               <span class="instrument text-slate" data-check-count></span>
             </div>
-            <ul class="m-0 max-h-56 list-none overflow-auto p-0" data-check-list></ul>
+            <ul class="snap-kids m-0 max-h-56 list-none overflow-auto p-0" data-check-list></ul>
           </div>
         </aside>
       </div>
@@ -614,7 +614,9 @@ const faqSchema = {
      the budget's spent. */
   .seg {
     display: inline-flex;
-    border: 1px solid var(--edge-strong);
+    /* Inset shadow, not a border: a border makes the toggle 42px tall and
+       knocks everything under it off the cursor grid. */
+    box-shadow: inset 0 0 0 1px var(--edge-strong);
     background: var(--well);
   }
   .seg-opt { position: relative; }
@@ -784,6 +786,37 @@ const faqSchema = {
   /* Stop is ember, not red. A stop is a fact about the file, not a call to action. */
   [data-check-list] :global(.mark.stop) { background: var(--color-ember); }
   [data-check-list] :global(.all-clear) { color: var(--color-fog); }
+
+  /* ── On the cursor grid (2026-10-08) ─────────────────────────────────────
+     Every field is a one-cell label row over a one-cell control, so inputs in
+     the same row share edges and every input edge sits on a 40px line. Panel
+     padding is a cell minus the border pixel. Fields, checks, panels and
+     legends get snapped to whole cells by src/scripts/grid.ts. */
+  .field { gap: 0; }
+  .field-label {
+    min-height: var(--grid-cell);
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 0.5rem;
+  }
+  .field input:not([type="checkbox"]):not([type="radio"]),
+  .field select {
+    height: var(--grid-cell);
+    padding-block: 0;
+  }
+  .field textarea { min-height: calc(3 * var(--grid-cell)); }
+  .field-hint { margin-top: 0.5rem; }
+  .panel { padding: calc(var(--grid-cell) - 1px); }
+  fieldset.panel { padding-top: calc(var(--grid-cell) - 1px); }
+  .panel-head { margin-bottom: var(--grid-cell); }
+  .check { min-height: var(--grid-cell); align-items: center; }
+  .seg-opt span { height: var(--grid-cell); display: flex; align-items: center; padding-block: 0; }
+  .btn-ghost { height: var(--grid-cell); display: inline-flex; align-items: center; padding-block: 0; }
+  .hostname-preview { min-height: var(--grid-cell); }
+  /* The visible card is the body; make it fill the snapped label. */
+  .card-opt-body { height: 100%; }
+  /* Toggle segments fill their snapped width. */
+  .seg-opt span { width: 100%; justify-content: center; }
 </style>
 
 <script>
