@@ -52,7 +52,7 @@ const DAYS = 90;
   <section class="section" data-status data-url={statusData} data-days={DAYS}>
     <div class="shell">
       <div class="flex flex-wrap items-end justify-between gap-4">
-        <h2 class="title">Last {DAYS} days</h2>
+        <h2 class="title" data-window-title>Last {DAYS} days</h2>
         <p class="instrument text-slate" data-since></p>
       </div>
 
@@ -128,13 +128,17 @@ const DAYS = 90;
 </Layout>
 
 <style>
+  /* --cols is set by the script to however many days have been tracked,
+     up to 90, so the bars always fill the row. */
   .bars {
     display: grid;
-    grid-template-columns: repeat(90, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--cols, 90), minmax(0, 1fr));
     gap: 2px;
     height: 2rem;
   }
-  .bars span,
+  /* :global on the bar spans: the script builds them, so they never get
+     Astro's scoping attribute and a plain scoped selector misses them. */
+  .bars :global(span),
   .key {
     background: var(--edge);
   }
@@ -145,16 +149,16 @@ const DAYS = 90;
   }
   /* Red only means real downtime here. On a good day there's none on the
      page apart from the headline stop. */
-  .bars .ok, .key.ok { background: var(--color-up); }
-  .bars .part, .key.part { background: var(--color-gold); }
-  .bars .bad, .key.bad { background: var(--color-red); }
+  .bars :global(.ok), .key.ok { background: var(--color-up); }
+  .bars :global(.part), .key.part { background: var(--color-gold); }
+  .bars :global(.bad), .key.bad { background: var(--color-red); }
 
-  /* 90 two-pixel-gapped bars don't fit a phone. Show the last 30 there. */
+  /* 90 two-pixel-gapped bars don't fit a phone. Cap it at the last 30. */
   @media (max-width: 639px) {
     .bars {
-      grid-template-columns: repeat(30, minmax(0, 1fr));
+      grid-template-columns: repeat(min(var(--cols, 90), 30), minmax(0, 1fr));
     }
-    .bars span:nth-child(-n + 60) {
+    .bars :global(span:nth-last-child(n + 31)) {
       display: none;
     }
   }

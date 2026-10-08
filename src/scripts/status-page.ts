@@ -51,9 +51,19 @@ function setHeadline(text: string, subText: string) {
 }
 
 function paint(data: StatusFile) {
-  const days = lastNDays(Number(root?.dataset.days ?? 90));
+  const window90 = lastNDays(Number(root?.dataset.days ?? 90));
   const down: string[] = [];
-  let firstDay: string | null = null;
+
+  // Bars start at the first day anything was checked, not 90 days back. A
+  // strip of "no data" before tracking began read as missing uptime; this way
+  // the row is all real days and it grows to 90 on its own. Earliest day
+  // across every target so all the rows line up with each other.
+  const tracked = new Set(Object.values(data.targets).flatMap((t) => Object.keys(t.days)));
+  const firstDay = window90.find((d) => tracked.has(d)) ?? null;
+  const days = firstDay ? window90.filter((d) => d >= firstDay) : [];
+
+  const title = document.querySelector<HTMLElement>("[data-window-title]");
+  if (title && days.length) title.textContent = days.length === 1 ? "Today" : `Last ${days.length} days`;
 
   document.querySelectorAll<HTMLElement>("[data-row]").forEach((row) => {
     const id = row.dataset.row!;
@@ -65,13 +75,19 @@ function paint(data: StatusFile) {
       return;
     }
 
-    const bars = Array.from(row.querySelectorAll<HTMLElement>("[data-bars] span"));
+    // Rebuilt every paint rather than reusing the server-rendered 90, so the
+    // count always matches the window.
+    const strip = row.querySelector<HTMLElement>("[data-bars]");
+    const bars = days.map(() => document.createElement("span"));
+    if (strip) {
+      strip.replaceChildren(...bars);
+      strip.style.setProperty("--cols", String(days.length));
+    }
     let up = 0;
     let total = 0;
     days.forEach((d, i) => {
       const b = t.days[d];
       if (!b) return;
-      if (!firstDay || d < firstDay) firstDay = d;
       up += b[0];
       total += b[1];
       const failedMinutes = (b[1] - b[0]) * CHECK_MINUTES;
