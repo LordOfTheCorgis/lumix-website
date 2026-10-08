@@ -50,6 +50,18 @@ three dated 2026-09-10.
 LightRays, HeroArt, Globe, PingTest, PromoBar, Included, Faq, CursorTrail, and
 a three-part Terminal. GridPattern is gone; CursorTrail replaced it.
 
+**Game pages order through `OrderBuilder.astro`** (2026-10-08), modelled on
+Sparked's order screen: numbered steps (plan, one per WHMCS option group,
+billing period), a sticky summary on desktop, a bottom bar on mobile, one
+Place order link. The link is `cart.php?a=add` with `configoption[N]`,
+`billingcycle` and `skipconfig=1`, verified landing in the real cart with the
+right product, region, cycle and price. Option groups and their WHMCS value
+ids live in `src/lib/orderOptions.ts`; a choice with `valueId: null` renders
+greyed. Only Dallas (group 3, value 6) is orderable in WHMCS right now. No
+`promocode` on links: WHMCS ignores it on this install, tested three ways.
+Client code is `src/scripts/order-builder.ts`; the page renders the defaults
+server-side so the link works without JS.
+
 **`/staff` and `/contact`** (2026-10-08). Staff is two portraits from main
 (`src/assets/staff/`, data in `src/lib/staff.ts`) and a careers band; main's
 "Teams" grid of 24/7 departments was not carried over because nobody can name
