@@ -128,13 +128,18 @@ const DAYS = 90;
 </Layout>
 
 <style>
-  /* --cols is set by the script to however many days have been tracked,
-     up to 90, so the bars always fill the row. */
+  /* Always 90 slots, so each day is the same small tick it always was.
+     Tracked days fill in from the right; the script pushes the first one
+     over with --start, and the slots before tracking began are just empty
+     background, not "no data" blocks. */
   .bars {
     display: grid;
-    grid-template-columns: repeat(var(--cols, 90), minmax(0, 1fr));
+    grid-template-columns: repeat(90, minmax(0, 1fr));
     gap: 2px;
     height: 2rem;
+  }
+  .bars :global(span:first-child) {
+    grid-column-start: var(--start, 1);
   }
   /* :global on the bar spans: the script builds them, so they never get
      Astro's scoping attribute and a plain scoped selector misses them. */
@@ -153,10 +158,14 @@ const DAYS = 90;
   .bars :global(.part), .key.part { background: var(--color-gold); }
   .bars :global(.bad), .key.bad { background: var(--color-red); }
 
-  /* 90 two-pixel-gapped bars don't fit a phone. Cap it at the last 30. */
+  /* 90 two-pixel-gapped bars don't fit a phone. 30 slots there, last 30
+     days only. */
   @media (max-width: 639px) {
     .bars {
-      grid-template-columns: repeat(min(var(--cols, 90), 30), minmax(0, 1fr));
+      grid-template-columns: repeat(30, minmax(0, 1fr));
+    }
+    .bars :global(span:first-child) {
+      grid-column-start: var(--start-m, 1);
     }
     .bars :global(span:nth-last-child(n + 31)) {
       display: none;

@@ -55,9 +55,10 @@ function paint(data: StatusFile) {
   const down: string[] = [];
 
   // Bars start at the first day anything was checked, not 90 days back. A
-  // strip of "no data" before tracking began read as missing uptime; this way
-  // the row is all real days and it grows to 90 on its own. Earliest day
-  // across every target so all the rows line up with each other.
+  // strip of "no data" before tracking began read as missing uptime, and
+  // painting it green would be claiming checks that never ran. So only real
+  // days get a tick; they sit at the right and the row fills leftward. Earliest
+  // day across every target so all the rows line up with each other.
   const tracked = new Set(Object.values(data.targets).flatMap((t) => Object.keys(t.days)));
   const firstDay = window90.find((d) => tracked.has(d)) ?? null;
   const days = firstDay ? window90.filter((d) => d >= firstDay) : [];
@@ -81,7 +82,11 @@ function paint(data: StatusFile) {
     const bars = days.map(() => document.createElement("span"));
     if (strip) {
       strip.replaceChildren(...bars);
-      strip.style.setProperty("--cols", String(days.length));
+      // Right-align into the fixed 90 (30 on phones). On a phone the first
+      // *visible* span isn't the first child once there are more than 30, so
+      // --start-m only matters while there are 30 or fewer.
+      strip.style.setProperty("--start", String(91 - days.length));
+      strip.style.setProperty("--start-m", String(31 - Math.min(days.length, 30)));
     }
     let up = 0;
     let total = 0;
