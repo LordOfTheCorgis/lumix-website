@@ -65,7 +65,7 @@ const planned = tools.filter((t) => t.status !== "live");
         <p class="instrument text-slate">{live.length} live / {tools.length} total</p>
       </div>
 
-      <div data-grid-anchor class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3">
         {tools.map((tool) => {
           const isPlanned = tool.status !== "live";
           const href = isPlanned ? links.discord : `/tools/${tool.slug}`;

@@ -63,13 +63,13 @@ const stepOffset = 2; // 01 is the plan, then one per option group, then billing
 <section class="section band" style={`--game-accent:${accent}`} data-builder>
   <script type="application/json" data-builder-data set:html={JSON.stringify(data)} />
 
-  <div class="shell grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
-    <div class="min-w-0 space-y-16">
+  <div class="shell cell-split" style="--left: calc(var(--n, 32) - 9)">
+    <div class="min-w-0 space-y-20">
       <fieldset class="m-0 border-0 p-0">
-        <legend class="step p-0"><span class="step-n">01</span>Choose a plan</legend>
-        <div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <legend class="step p-0" data-snap><span class="step-n">01</span>Choose a plan</legend>
+        <div class="cell-cols mt-10 [--cols:1] sm:[--cols:2] xl:[--cols:3]">
           {plans.map((p) => (
-            <label class="option chamfer relative block cursor-pointer border border-[var(--edge)] bg-ink-soft p-5">
+            <label class="option chamfer relative block cursor-pointer border border-[var(--edge)] bg-ink-soft p-5" data-snap>
               <input type="radio" name="plan" value={p.pid} checked={p === startPlan} class="sr-only" />
               <span class="flex items-baseline justify-between gap-3">
                 <span class="font-medium text-paper">{title(p.key)}</span>
@@ -94,12 +94,13 @@ const stepOffset = 2; // 01 is the plan, then one per option group, then billing
         const picked = defaultChoice(g);
         return (
           <fieldset class="m-0 border-0 p-0" data-option-group={g.groupId}>
-            <legend class="step p-0">
+            <legend class="step p-0" data-snap>
               <span class="step-n">{String(gi + stepOffset).padStart(2, "0")}</span>{g.label}
             </legend>
-            <div class="mt-6 grid gap-3 sm:grid-cols-2">
+            <div class="cell-cols mt-10 [--cols:1] sm:[--cols:2]">
               {g.choices.map((c) => (
                 <label
+                  data-snap
                   class:list={[
                     "option chamfer relative flex items-center justify-between gap-4 border border-[var(--edge)] bg-ink-soft p-5",
                     c.valueId === null ? "is-off" : "cursor-pointer",
@@ -134,14 +135,15 @@ const stepOffset = 2; // 01 is the plan, then one per option group, then billing
       })}
 
       <fieldset class="m-0 border-0 p-0">
-        <legend class="step p-0">
+        <legend class="step p-0" data-snap>
           <span class="step-n">{String(groups.length + stepOffset).padStart(2, "0")}</span>How you pay
         </legend>
-        <div class="mt-6 space-y-3">
+        <div class="cell-cols mt-10 [--cols:1] sm:[--cols:2]">
           {CYCLES.map((c) => {
             const amount = startPlan.pricing[c.key];
             return (
               <label
+                data-snap
                 class:list={[
                   "option chamfer relative flex items-center gap-4 border border-[var(--edge)] bg-ink-soft px-5 py-4",
                   amount === undefined ? "is-off" : "cursor-pointer",
@@ -171,15 +173,15 @@ const stepOffset = 2; // 01 is the plan, then one per option group, then billing
 
       <!-- Whatever the page wants under the last step: the game's
            description and the no-trial line, on game pages. -->
-      <div><slot /></div>
+      <div data-snap><slot /></div>
     </div>
 
     <!-- Desktop summary. Sticky so the total and the button ride along with
          the steps, which is the whole point of Sparked's layout. -->
     <aside class="hidden lg:block">
-      <div class="chamfer sticky top-28 border border-[var(--edge)] bg-ink p-6">
+      <div class="chamfer snap-kids sticky top-28 border border-[var(--edge)] bg-ink p-10" data-snap>
         <p class="instrument text-slate">Your server</p>
-        <dl class="small m-0 mt-5 space-y-3">
+        <dl class="small m-0 space-y-3">
           <div class="flex justify-between gap-4">
             <dt class="text-fog">Plan</dt>
             <dd class="m-0 text-right text-paper" data-sum-plan>{title(startPlan.key)}</dd>
@@ -195,24 +197,24 @@ const stepOffset = 2; // 01 is the plan, then one per option group, then billing
             <dd class="m-0 text-right text-paper" data-sum-cycle>{cycleOf("monthly").label}</dd>
           </div>
         </dl>
-        <div class="mt-6 flex items-baseline justify-between border-t border-[var(--edge)] pt-5">
+        <div class="flex items-center justify-between border-t border-[var(--edge)]">
           <span class="text-fog">Due today</span>
           <span class="title price tabular" data-sum-total>{price(startPlan.pricing.monthly)}</span>
         </div>
         <a
           href={href}
           data-order-link
-          class="chamfer mt-6 flex w-full items-center justify-center gap-2 bg-red px-6 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+          class="chamfer flex h-10 w-full items-center justify-center gap-2 bg-red px-6 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
         >
           Place order <span aria-hidden="true">&rarr;</span>
         </a>
         {promo.live && (
-          <p class="small mt-4 text-fog">
+          <p class="small pt-4 text-fog">
             Code <span class="instrument normal-case text-paper">{promo.code}</span> takes
             {" "}{promo.percent}% off. Type it into the cart before checkout.
           </p>
         )}
-        <p class="small mt-4 border-l-2 border-[var(--game-accent)] pl-3 text-fog" data-cart-note hidden>
+        <p class="small border-l-2 border-[var(--game-accent)] pl-3 text-fog" data-cart-note hidden>
           You already sent a server to the cart this visit. Placing another
           order adds a second one.{" "}
           <a href={`${links.billing}/cart.php?a=view`} class="text-paper underline underline-offset-4 hover:text-red">Open the cart</a>.

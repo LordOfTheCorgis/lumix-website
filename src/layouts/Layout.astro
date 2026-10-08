@@ -108,12 +108,17 @@ const organizationSchema = {
       <CursorTrail />
       <PromoBar />
       <Header />
-      <main class="flex-1">
+      <!-- The grid origin. Everything inside is snapped to 40px from here by
+           src/scripts/grid.ts, so the cursor trail lines up page-wide. -->
+      <main class="flex-1" data-grid-anchor>
         <slot />
       </main>
     </div>
     <Footer />
     {stickyCta && <StickyCta />}
     <CookieBanner />
+    <script>
+      import "../scripts/grid";
+    </script>
   </body>
 </html>

@@ -66,8 +66,9 @@
   --edge: rgba(255, 235, 225, 0.09);
   --edge-strong: rgba(255, 235, 225, 0.18);
 
-  --spacing-section: 6rem;
-  --spacing-section-mobile: 3.5rem;
+  /* Whole cells, so section edges stay on the cursor grid (was 96/56). */
+  --spacing-section: calc(2 * var(--grid-cell));
+  --spacing-section-mobile: var(--grid-cell);
 
   /* ── The module ──────────────────────────────────────────────────────────
      Nothing draws this. It exists so the cursor trail's cells land on tile
@@ -209,6 +210,41 @@
 
   @media (min-width: 1024px) {
     .section { padding-block: var(--spacing-section); }
+  }
+
+  /* Two columns that land on the module at any width. The content column is
+     --n cells wide (set by grid.ts); left takes --left cells, one cell of
+     gutter, right takes the rest. Equal halves can't always exist (3-column
+     family widths are odd-cell-count minus one) so "half" here rounds the left
+     side down. Stacks below lg, where it's one column anyway. */
+  .cell-split {
+    display: grid;
+    gap: var(--grid-cell);
+  }
+  @media (min-width: 1024px) {
+    .cell-split {
+      grid-template-columns: repeat(var(--n, 32), minmax(0, 1fr));
+      column-gap: 0;
+    }
+    .cell-split > :first-child {
+      grid-column: 1 / span var(--left, round(down, calc((var(--n, 32) - 1) / 2), 1));
+    }
+    .cell-split > :nth-child(2) {
+      grid-column: calc(var(--left, round(down, calc((var(--n, 32) - 1) / 2), 1)) + 2) / -1;
+    }
+  }
+
+  /* N equal columns, each a whole number of cells, one-cell gutters. Set
+     the count with [--cols:N] (responsive variants work). --c is this grid's
+     own width in cells, written by grid.ts. If the cells don't divide evenly
+     the spare ones go to the right, so every card edge stays on a line. */
+  .cell-cols {
+    display: grid;
+    gap: var(--grid-cell);
+    grid-template-columns: repeat(
+      var(--cols, 1),
+      calc(var(--grid-cell) * round(down, calc((var(--c, 32) - var(--cols, 1) + 1) / var(--cols, 1)), 1))
+    );
   }
 
   .shell {

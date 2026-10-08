@@ -45,7 +45,7 @@ const nodeFor = (slug?: string) => NODES.find((n) => n.region === slug);
       <!-- Small cards on purpose: there are four facts per region, and the
            old seven-cell cards padded them out with coordinates and a games
            count nobody needed. Evan cut both 2026-10-08. -->
-      <div data-grid-anchor class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {HOSTING.map((r) => {
           const node = nodeFor(r.slug);
           const av = r.availability ?? "soon";
