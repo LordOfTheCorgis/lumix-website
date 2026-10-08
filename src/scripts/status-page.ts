@@ -54,17 +54,18 @@ function paint(data: StatusFile) {
   const window90 = lastNDays(Number(root?.dataset.days ?? 90));
   const down: string[] = [];
 
-  // Bars start at the first day anything was checked, not 90 days back. A
-  // strip of "no data" before tracking began read as missing uptime, and
-  // painting it green would be claiming checks that never ran. So only real
-  // days get a tick; they sit at the right and the row fills leftward. Earliest
-  // day across every target so all the rows line up with each other.
+  // Evan's call (2026-10-08): the full 90 render green, including the days
+  // before the checker existed, because there hadn't been an outage in ages.
+  // What keeps that from being a fabricated record: those days are marked
+  // "before tracking began" on hover, they never count toward the uptime %,
+  // and "Tracking since" stays on the page. Don't drop any of the three.
+  // A day AFTER tracking began with no data is a checker gap and stays dark.
   const tracked = new Set(Object.values(data.targets).flatMap((t) => Object.keys(t.days)));
   const firstDay = window90.find((d) => tracked.has(d)) ?? null;
-  const days = firstDay ? window90.filter((d) => d >= firstDay) : [];
+  const days = window90;
 
   const title = document.querySelector<HTMLElement>("[data-window-title]");
-  if (title && days.length) title.textContent = days.length === 1 ? "Today" : `Last ${days.length} days`;
+  if (title) title.textContent = `Last ${days.length} days`;
 
   document.querySelectorAll<HTMLElement>("[data-row]").forEach((row) => {
     const id = row.dataset.row!;
@@ -80,19 +81,19 @@ function paint(data: StatusFile) {
     // count always matches the window.
     const strip = row.querySelector<HTMLElement>("[data-bars]");
     const bars = days.map(() => document.createElement("span"));
-    if (strip) {
-      strip.replaceChildren(...bars);
-      // Right-align into the fixed 90 (30 on phones). On a phone the first
-      // *visible* span isn't the first child once there are more than 30, so
-      // --start-m only matters while there are 30 or fewer.
-      strip.style.setProperty("--start", String(91 - days.length));
-      strip.style.setProperty("--start-m", String(31 - Math.min(days.length, 30)));
-    }
+    if (strip) strip.replaceChildren(...bars);
     let up = 0;
     let total = 0;
+    const beforeTracking = firstDay ? `Before tracking began (${dayFmt.format(new Date(firstDay))})` : "";
     days.forEach((d, i) => {
       const b = t.days[d];
-      if (!b) return;
+      if (!b) {
+        if (firstDay && d < firstDay) {
+          bars[i].className = "ok";
+          bars[i].title = beforeTracking;
+        }
+        return;
+      }
       up += b[0];
       total += b[1];
       const failedMinutes = (b[1] - b[0]) * CHECK_MINUTES;
