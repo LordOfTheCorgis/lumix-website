@@ -1,0 +1,77 @@
+---
+// Two people and their faces. The page exists so a customer about to hand
+// over money can see who's on the other end, so it's portraits big and
+// copy short. No "our values", no team grid of icons.
+//
+// Red: the headline stop and the careers button. That's the two.
+import { Image } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
+import { staff } from "../lib/staff";
+import { links } from "../config";
+---
+
+<Layout
+  title="Staff"
+  description="The people who run Lumix Solutions and answer for every server on it."
+>
+  <section class="section border-b border-[var(--edge)]">
+    <div class="shell">
+      <p class="instrument text-fog">Staff · {staff.length} people</p>
+      <h1 class="display-xl mt-6 max-w-3xl">The names on the other end<span class="text-red">.</span></h1>
+      <p class="lead text-fog mt-6 max-w-xl">
+        Lumix is run by the people who own it. When you open a ticket or ask
+        in Discord, these are the people it ends up with.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <!-- Portraits are a fixed number of cells square so the faces sit on the
+         module like the partner monograms do. Both photos were shot in green
+         shade, which is the only colour on the page and it's theirs. -->
+    <div class="shell">
+      <ul class="m-0 grid list-none gap-[var(--grid-cell)] p-0 md:grid-cols-2" data-grid-anchor>
+        {staff.map((m, i) => (
+          <li>
+            <Image
+              src={m.photo}
+              alt={`${m.name}, ${m.title}`}
+              widths={[320, 480, 640, 960]}
+              sizes="(min-width: 768px) 40vw, 100vw"
+              format="webp"
+              class="chamfer aspect-square w-full border border-[var(--edge-strong)] object-cover"
+            />
+            <p class="instrument text-slate mt-8">{String(i + 1).padStart(2, "0")} · {m.title}</p>
+            <h2 class="display-l mt-3">{m.name}</h2>
+            <p class="text-fog mt-4 max-w-md">{m.bio}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section band border-t border-[var(--edge)]">
+    <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h2 class="title">Want your name here?</h2>
+        <p class="lead text-fog mt-6 max-w-lg">
+          We hire out of the community. If you already run servers, mod them,
+          or answer half the questions in our Discord, start there.
+        </p>
+        <a
+          href={links.careers}
+          rel="noopener"
+          class="chamfer mt-8 inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+        >
+          See open roles
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+      <p class="text-fog self-end max-w-md">
+        Need one of us about your server? A ticket from the client area or a
+        post in Discord beats a DM: more than one person sees it, and there's
+        a record of it. <a href="/contact" class="text-paper underline underline-offset-4 hover:text-red">Where to take what</a>.
+      </p>
+    </div>
+  </section>
+</Layout>
