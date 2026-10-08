@@ -212,6 +212,15 @@
     .section { padding-block: var(--spacing-section); }
   }
 
+  /* A top border is 1px of height above the padding, which put everything in
+     a bordered section 41px down instead of 40 and off the cursor grid. Take
+     the pixel back out of the padding. Bottom borders don't need this: the
+     section's snapped height already includes them. */
+  .section.border-t { padding-top: calc(var(--spacing-section-mobile) - 1px); }
+  @media (min-width: 1024px) {
+    .section.border-t { padding-top: calc(var(--spacing-section) - 1px); }
+  }
+
   /* Two columns that land on the module at any width. The content column is
      --n cells wide (set by grid.ts); left takes --left cells, one cell of
      gutter, right takes the rest. Equal halves can't always exist (3-column
@@ -232,6 +241,21 @@
     .cell-split > :nth-child(2) {
       grid-column: calc(var(--left, round(down, calc((var(--n, 32) - 1) / 2), 1)) + 2) / -1;
     }
+  }
+
+  /* A column of blocks one cell apart, each snapped to whole cells by
+     grid.ts, so a button under a paragraph lands on a line however the
+     paragraph wrapped. Margins on the children are ignored on purpose; the
+     gap is the spacing. !important because Tailwind's mt-* sit in a later
+     layer, and an important rule in an earlier layer wins. */
+  .cell-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--grid-cell);
+  }
+  .cell-stack > * {
+    margin-block: 0 !important;
   }
 
   /* N equal columns, each a whole number of cells, one-cell gutters. Set

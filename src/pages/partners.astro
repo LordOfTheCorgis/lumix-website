@@ -37,7 +37,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
     <div class="shell">
       <ol class="m-0 list-none p-0 border-t border-[var(--edge)]">
         {partners.map((p, i) => (
-          <li class="group grid gap-6 border-b border-[var(--edge)] py-[var(--grid-cell)] lg:grid-cols-[calc(2*var(--grid-cell))_minmax(0,5fr)_minmax(0,6fr)_12rem] lg:gap-10">
+          <li class="group grid gap-6 border-b border-[var(--edge)] py-[var(--grid-cell)] lg:grid-cols-[calc(2*var(--grid-cell))_minmax(0,5fr)_minmax(0,6fr)_12rem] lg:gap-10" data-snap>
             <a
               href={p.url ?? p.discord}
               rel="noopener"
@@ -94,8 +94,8 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
   </section>
 
   <section class="section band border-t border-[var(--edge)]">
-    <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
-      <div>
+    <div class="shell cell-split">
+      <div class="cell-stack">
         <h2 class="title">Make something for FiveM?</h2>
         <p class="lead text-fog mt-6 max-w-lg">
           We list studios whose work we'd put on our own servers. Send what
@@ -103,7 +103,8 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
         </p>
         <a
           href="mailto:partners@lumixsolutions.org"
-          class="chamfer mt-8 inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+          data-snap="both"
+          class="chamfer inline-flex h-10 items-center gap-2 bg-red px-7 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
         >
           partners@lumixsolutions.org
           <span aria-hidden="true">&rarr;</span>
@@ -115,7 +116,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
           ["What we don't do", "Paid placement or affiliate deals. The old site said it in a config file and it's still true: technical fit over marketing arrangements."],
           ["Not a FiveM studio?", "Infrastructure, networks, security and software vendors go to the same address. Say what you'd integrate with."],
         ].map(([q, a]) => (
-          <div class="border-t border-[var(--edge)] py-5 first:border-t-0 first:pt-0">
+          <div class="border-t border-[var(--edge)] py-5 first:border-t-0 first:pt-0" data-snap>
             <dt class="text-paper">{q}</dt>
             <dd class="small text-fog m-0 mt-2">{a}</dd>
           </div>

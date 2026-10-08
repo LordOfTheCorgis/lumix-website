@@ -32,14 +32,16 @@ const DAYS = 90;
 >
   <section class="section border-b border-[var(--edge)]">
     <div class="shell">
-      <p class="instrument text-fog">Status · checked every 5 minutes from outside our network</p>
-      <h1 class="display-xl mt-6 max-w-3xl" data-headline>Checking<span class="text-red">.</span></h1>
-      <p class="lead text-fog mt-6 max-w-xl" data-sub>
-        Reading the latest results.
-      </p>
+      <div data-snap>
+        <p class="instrument text-fog">Status · checked every 5 minutes from outside our network</p>
+        <h1 class="display-xl mt-6 max-w-3xl" data-headline>Checking<span class="text-red">.</span></h1>
+        <p class="lead text-fog mt-6 max-w-xl" data-sub>
+          Reading the latest results.
+        </p>
+      </div>
       <!-- Filled when incidents.json has anything not resolved. Accent edge,
            not a red box: the headline already says whether it's down. -->
-      <div class="mt-10 max-w-2xl space-y-4" data-active hidden></div>
+      <div class="snap-kids mt-10 max-w-2xl space-y-10" data-active hidden></div>
       <noscript>
         <p class="lead text-fog mt-6 max-w-xl">
           This page needs JavaScript to read the live results. The raw file is
@@ -51,18 +53,21 @@ const DAYS = 90;
 
   <section class="section" data-status data-url={statusData} data-days={DAYS}>
     <div class="shell">
-      <div class="flex flex-wrap items-end justify-between gap-4">
+      <div class="flex flex-wrap items-end justify-between gap-4" data-snap>
         <h2 class="title" data-window-title>Last {DAYS} days</h2>
         <p class="instrument text-slate" data-since></p>
       </div>
 
-      <ol class="m-0 mt-8 list-none border-t border-[var(--edge)] p-0">
+      <ol class="m-0 mt-10 list-none border-t border-[var(--edge)] p-0">
         {rows.map((r) => (
           <li
-            class:list={["border-b border-[var(--edge)] py-6", !r.tracked && "opacity-50"]}
+            class:list={["border-b border-[var(--edge)]", !r.tracked && "opacity-50"]}
             data-row={r.tracked ? r.id : undefined}
+            data-snap
           >
-            <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+            <!-- One cell for the name line, one for the bars, so both land on the
+                 module and the row snaps to three. -->
+            <div class="flex min-h-[var(--grid-cell)] flex-wrap items-center justify-between gap-x-6">
               <p>
                 <span class="font-medium text-paper">{r.name}</span>
                 <span class="small ml-2 text-slate">{r.note}</span>
@@ -75,7 +80,7 @@ const DAYS = 90;
                  otherwise; a day with no checks stays the edge colour
                  rather than pretending to be green. -->
             {r.tracked && (
-              <div class="bars mt-4" data-bars aria-hidden="true">
+              <div class="bars" data-bars aria-hidden="true">
                 {Array.from({ length: DAYS }, () => <span></span>)}
               </div>
             )}
@@ -93,7 +98,7 @@ const DAYS = 90;
   </section>
 
   <section class="section border-t border-[var(--edge)]" data-incidents-url={incidentsData}>
-    <div class="shell grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-16">
+    <div class="shell cell-split" style="--left: calc(var(--n, 32) / 3)">
       <div>
         <h2 class="title">Incident reports</h2>
         <p class="lead text-fog mt-6 max-w-sm">
@@ -108,7 +113,7 @@ const DAYS = 90;
   </section>
 
   <section class="section band border-t border-[var(--edge)]">
-    <div class="shell grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-16">
+    <div class="shell cell-split" style="--left: calc(var(--n, 32) / 3)">
       <div>
         <h2 class="title">Every outage</h2>
         <p class="lead text-fog mt-6 max-w-sm">
@@ -134,7 +139,7 @@ const DAYS = 90;
     display: grid;
     grid-template-columns: repeat(90, minmax(0, 1fr));
     gap: 2px;
-    height: 2rem;
+    height: var(--grid-cell);
   }
   /* :global on the bar spans: the script builds them, so they never get
      Astro's scoping attribute and a plain scoped selector misses them. */

@@ -41,18 +41,21 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
   description={`${live.map((g) => g.data.shortLabel).join(", ")} servers from ${price(Math.min(...live.map(cheapest)))} a month, plus ${planned.length} more on the way. Four US regions, DDoS protected, online in minutes.`}
 >
   <section class="section border-b border-[var(--edge)]">
-    <div class="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+    <div class="shell cell-split">
       <div>
+        <div data-snap>
         <p class="instrument text-fog">Catalogue · {live.length} live · {planned.length} planned</p>
         <h1 class="display-xl mt-6 max-w-2xl">Every game we run<span class="text-red">.</span></h1>
         <p class="lead text-fog mt-6 max-w-lg">
           Pick one, pick a size, pick a region. Anything dimmed isn't orderable
           yet; ask for it in Discord and it moves up the list.
         </p>
-        <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+        </div>
+        <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4" data-snap>
           <a
             href="#catalog"
-            class="chamfer inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+            data-snap="both"
+            class="chamfer inline-flex h-10 items-center gap-2 bg-red px-7 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
           >
             Browse the catalogue
             <span aria-hidden="true">&darr;</span>
@@ -96,13 +99,13 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
 
   <section id="catalog" class="section">
     <div class="shell">
-      <div class="flex flex-wrap items-end justify-between gap-4">
+      <div class="flex flex-wrap items-end justify-between gap-4" data-snap>
         <h2 class="title">Pick your game</h2>
         <p class="instrument text-slate">{live.length} live / {catalog.length} total</p>
       </div>
 
       <div
-        class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3"
+        class="mt-10 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3"
       >
         {catalog.map((game, i) => (
           <GameTile
@@ -133,7 +136,7 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
   </section>
 
   <section class="section band border-t border-[var(--edge)]">
-    <div class="shell">
+    <div class="shell cell-stack">
       <h2 class="title">Not seeing your game?</h2>
       <p class="lead text-fog mt-6 max-w-lg">
         We add titles by demand, not by what looks good on a homepage. Say what
@@ -142,7 +145,8 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
       <a
         href={links.discord}
         rel="noopener"
-        class="chamfer mt-8 inline-flex items-center gap-2 border border-[var(--edge-strong)] px-7 py-4 font-medium text-paper transition-colors duration-150 hover:border-red hover:text-red"
+        data-snap="both"
+          class="chamfer inline-flex h-10 items-center gap-2 border border-[var(--edge-strong)] px-7 font-medium text-paper transition-colors duration-150 hover:border-red hover:text-red"
       >
         Ask in Discord
         <span aria-hidden="true">&rarr;</span>

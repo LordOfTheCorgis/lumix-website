@@ -144,7 +144,7 @@ const notCopied = ["Subusers", "Schedules", "Port allocations", "Databases"];
   </section>
 
   <section class="section band border-t border-[var(--edge)]">
-    <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
+    <div class="shell cell-split">
       <div>
         <h2 class="title">What to expect</h2>
         <p class="lead text-fog mt-6 max-w-lg">
@@ -159,7 +159,7 @@ const notCopied = ["Subusers", "Schedules", "Port allocations", "Databases"];
           ["What about the database?", "Export it from the old host, request one from the Databases tab here, import at db.lumixsolutions.org, then point your config at the new endpoint."],
           ["Ports change?", "Yes. Lumi-Panel assigns them per server in the Network tab. Anything hardcoded in a config, like a FiveM endpoint line, gets updated to match."],
         ].map(([q, a]) => (
-          <div class="border-t border-[var(--edge)] py-5 first:border-t-0 first:pt-0">
+          <div class="border-t border-[var(--edge)] py-5 first:border-t-0 first:pt-0" data-snap>
             <dt class="text-paper">{q}</dt>
             <dd class="small text-fog m-0 mt-2">{a}</dd>
           </div>

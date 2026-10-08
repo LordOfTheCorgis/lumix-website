@@ -38,6 +38,7 @@ const ghz = (n: number) => `${n.toFixed(1)} GHz`;
           <li
             id={r.region}
             class="grid gap-6 border-b border-[var(--edge)] py-[var(--grid-cell)] lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-10"
+            data-snap
           >
             <div class="min-w-0">
               <p class="instrument text-slate">{r.place.city} · {r.place.region}</p>
@@ -80,7 +81,7 @@ const ghz = (n: number) => `${n.toFixed(1)} GHz`;
   </section>
 
   <section class="section band border-t border-[var(--edge)]">
-    <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
+    <div class="shell cell-split">
       <div>
         <h2 class="title">Want to check for yourself?</h2>
         <p class="lead text-fog mt-6 max-w-lg">

@@ -13,13 +13,14 @@
 //   [data-snap="both"]  same, plus width (buttons, which size to their label)
 //   .cell-split > *     both halves, so whichever stacks second on a phone
 //                       starts on a line
+//   .cell-stack > *     same, for stacks spaced one cell apart
 //   .snap-kids > *      every child of a stack, so whatever follows lands on a
 //                       line no matter how the text above it wrapped
 //
 // Also sets --n on <html>: how many cells wide the content column is, for the
 // .cell-split utility, which needs an integer CSS can't derive from a length.
 
-const SNAP = "[data-snap], .snap-kids > *, .cell-split > *, .section";
+const SNAP = "[data-snap], .snap-kids > *, .cell-stack > *, .cell-split > *, .section";
 
 function cell(): number {
   return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--grid-cell")) || 40;

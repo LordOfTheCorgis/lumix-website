@@ -30,9 +30,10 @@ const {
   data-sequence={String(sequence)}
   data-start-on-view={String(startOnView)}
   aria-label={`Terminal output: ${label}`}
-  class:list={["chamfer not-prose m-0 w-full max-w-lg border border-[var(--edge)] bg-ink-soft", className]}
+  data-snap
+  class:list={["chamfer not-prose m-0 w-full min-w-0 max-w-[calc(13*var(--grid-cell))] border border-[var(--edge)] bg-ink-soft", className]}
 >
-  <figcaption class="flex items-center gap-3 border-b border-[var(--edge)] px-4 py-3">
+  <figcaption class="flex h-10 items-center gap-3 border-b border-[var(--edge)] px-4">
     <span class="flex flex-row gap-x-2" aria-hidden="true">
       <span class="h-2 w-2 rounded-full bg-[#ff5f57]"></span>
       <span class="h-2 w-2 rounded-full bg-[#febc2e]"></span>

@@ -25,13 +25,15 @@ const measurable = regions.filter((r) => r.pingUrl).length;
 ---
 
 {regions.length > 0 && (
-  <div class:list={["ping", className]} data-ping>
+  <div class:list={["ping snap-kids", className]} data-ping>
     <p class="instrument text-slate">Your ping from here</p>
-    <ul class="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 max-w-sm">
+    <!-- Two columns in whole cells, rows one cell tall, so each rule sits on
+         the cursor grid. -->
+    <ul class="cell-cols m-0 w-full max-w-[calc(11*var(--grid-cell))] list-none gap-y-0 p-0 [--cols:2]">
       {regions.map((r) => (
         <li
           class:list={[
-            "flex items-baseline justify-between gap-4 border-b border-[var(--edge)] pb-2",
+            "flex h-10 items-center justify-between gap-4 border-b border-[var(--edge)]",
             !r.pingUrl && "opacity-40",
           ]}
         >
@@ -47,7 +49,7 @@ const measurable = regions.filter((r) => r.pingUrl).length;
         </li>
       ))}
     </ul>
-    <p class="small text-slate mt-3 max-w-sm">
+    <p class="small text-slate max-w-sm pt-3">
       {measurable > 0
         ? "Measured from your browser to each region just now. Rough, but in the right neighbourhood."
         : "Measured from your browser once each region has a test endpoint. Greyed ones aren't wired up yet."}

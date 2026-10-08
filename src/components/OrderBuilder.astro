@@ -179,7 +179,7 @@ const stepOffset = 2; // 01 is the plan, then one per option group, then billing
     <!-- Desktop summary. Sticky so the total and the button ride along with
          the steps, which is the whole point of Sparked's layout. -->
     <aside class="hidden lg:block">
-      <div class="chamfer snap-kids sticky top-28 border border-[var(--edge)] bg-ink p-10" data-snap>
+      <div class="chamfer snap-kids sticky top-28 border border-[var(--edge)] bg-ink p-[calc(var(--grid-cell)-1px)]" data-snap>
         <p class="instrument text-slate">Your server</p>
         <dl class="small m-0 space-y-3">
           <div class="flex justify-between gap-4">

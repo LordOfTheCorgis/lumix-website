@@ -136,6 +136,7 @@ function paint(data: StatusFile) {
   for (const o of list) {
     const li = document.createElement("li");
     li.className = "border-t border-[var(--edge)] py-4 first:border-t-0 first:pt-0";
+    li.dataset.snap = "";
     const ongoing = o.end === null;
     const span = (ongoing ? Date.now() : Date.parse(o.end!)) - Date.parse(o.start);
     // textContent, not innerHTML: ids come from a file anyone could PR.
@@ -207,6 +208,8 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, className: string, te
 
 function incidentBlock(i: Incident, compact: boolean): HTMLElement {
   const wrap = el("div", compact ? "border-l-2 border-[var(--color-gold)] pl-4" : "");
+  // Snapped by grid.ts so the gold edge starts and stops on the cursor grid.
+  wrap.dataset.snap = "";
   const head = el("p", "text-paper");
   head.textContent = i.title;
   const meta = el(
@@ -259,6 +262,7 @@ async function loadIncidents() {
   reportsEl.replaceChildren(
     ...list.slice(0, 20).map((i) => {
       const li = el("li", "border-t border-[var(--edge)] py-6 first:border-t-0 first:pt-0");
+      li.dataset.snap = "";
       li.append(incidentBlock(i, false));
       return li;
     })

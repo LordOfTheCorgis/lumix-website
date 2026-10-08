@@ -30,9 +30,9 @@ import { links } from "../config";
          module like the partner monograms do. Both photos were shot in green
          shade, which is the only colour on the page and it's theirs. -->
     <div class="shell">
-      <ul class="m-0 grid list-none gap-[var(--grid-cell)] p-0 md:grid-cols-2">
+      <ul class="cell-cols m-0 list-none p-0 [--cols:1] md:[--cols:2]">
         {staff.map((m, i) => (
-          <li>
+          <li data-snap>
             <Image
               src={m.photo}
               alt={`${m.name}, ${m.title}`}
@@ -51,8 +51,8 @@ import { links } from "../config";
   </section>
 
   <section class="section band border-t border-[var(--edge)]">
-    <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
-      <div>
+    <div class="shell cell-split">
+      <div class="cell-stack">
         <h2 class="title">Want your name here?</h2>
         <p class="lead text-fog mt-6 max-w-lg">
           We hire out of the community. If you already run servers, mod them,
@@ -61,7 +61,8 @@ import { links } from "../config";
         <a
           href={links.careers}
           rel="noopener"
-          class="chamfer mt-8 inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+          data-snap="both"
+          class="chamfer inline-flex h-10 items-center gap-2 bg-red px-7 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
         >
           See open roles
           <span aria-hidden="true">&rarr;</span>

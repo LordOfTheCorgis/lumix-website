@@ -8,17 +8,20 @@ import LightRays from "../components/LightRays.astro";
     <LightRays seed={44} />
 
     <div class="shell relative">
+      <div data-snap>
       <p class="instrument text-fog">Error 404</p>
       <h1 class="display-l mt-6 max-w-2xl">This page isn't here.</h1>
       <p class="lead text-fog mt-6 max-w-lg">
         The link is wrong or the page moved. Pick your game on the home page and
         you'll be back on track.
       </p>
+      </div>
 
-      <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+      <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4" data-snap>
         <a
           href="/"
-          class="chamfer inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+          data-snap="both"
+          class="chamfer inline-flex h-10 items-center gap-2 bg-red px-7 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
         >
           Order a server
           <span aria-hidden="true">&rarr;</span>

@@ -38,6 +38,7 @@ const cheapest = Math.min(
     <LightRays />
 
     <div class="shell relative">
+      <div data-snap>
       <p class="instrument text-fog">Game servers · Four US regions</p>
       <!-- The proof line. Every competitor puts the score above the fold;
            ours was a paid widget at the bottom of the page until 09-11. -->
@@ -58,10 +59,12 @@ const cheapest = Math.min(
         Pick your game, pick a size, and it's online in minutes. Plans start at {price(cheapest)} a month.
       </p>
 
-      <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+      </div>
+      <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4" data-snap>
         <a
           href="#pick"
-          class="chamfer inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+          data-snap="both"
+            class="chamfer inline-flex h-10 items-center gap-2 bg-red px-7 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
         >
           Order now
           <span aria-hidden="true">&rarr;</span>
@@ -73,15 +76,15 @@ const cheapest = Math.min(
     </div>
   </section>
 
-  <section id="pick" class="section border-t border-[var(--edge)] pt-12 lg:pt-16">
+  <section id="pick" class="section border-t border-[var(--edge)] pt-[calc(var(--grid-cell)-1px)] lg:pt-[calc(var(--grid-cell)-1px)]">
     <div class="shell">
-      <h2 class="title">Pick your game</h2>
+      <h2 class="title" data-snap>Pick your game</h2>
 
       <!-- Gutter is exactly one cell wide, and this row is what the trail
            registers to vertically. Change the gap and the cells go back to
            straddling the tile edges. -->
       <div
-        class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3"
+        class="mt-10 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3"
       >
         {games.map((game, i) => (
           <GameTile
@@ -114,7 +117,7 @@ const cheapest = Math.min(
        keeps four of them inside the two-per-viewport rule. The scrubbing points
        are paper so they add none. Don't add a CTA here. -->
   <section class="section band border-t border-[var(--edge)]">
-    <div class="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+    <div class="shell cell-split">
       <div>
         <h2 class="title">Where your server actually runs<span class="text-red">.</span></h2>
         <p class="lead text-fog mt-6 max-w-md">

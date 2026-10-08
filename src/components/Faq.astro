@@ -25,27 +25,28 @@ const schema = {
 <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 <section class:list={["section border-t border-[var(--edge)]", className]}>
-  <div class="shell grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
+  <div class="shell cell-split" style="--left: calc(var(--n, 32) / 3)">
     <!-- Sticky on desktop so the column rides alongside ten questions instead
          of leaving a hole under the heading. The exit for "read all of it,
          still not sure" lives here because this is where that person is. -->
-    <div class="lg:sticky lg:top-28 lg:self-start">
+    <div class="cell-stack lg:sticky lg:top-28 lg:self-start">
       <h2 class="title">Before you order<span class="text-red">.</span></h2>
       <p class="lead text-fog mt-6 max-w-sm">
         The questions people ask in Discord before they buy, answered once.
       </p>
 
-      <div class="chamfer mt-10 max-w-sm border border-[var(--edge)] bg-ink-soft p-6">
+      <div class="chamfer cell-stack w-full max-w-[calc(10*var(--grid-cell))] border border-[var(--edge)] bg-ink-soft p-[calc(var(--grid-cell)-1px)]">
         <p class="instrument text-slate">Not answered here</p>
-        <p class="mt-3 text-paper">
+        <p class="text-paper">
           Ask in Discord. You'll get someone who actually runs the
           hardware, and if it's a real gap we add it to this list.
         </p>
-        <div class="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
           <a
             href={links.discord}
             rel="noopener"
-            class="chamfer inline-flex items-center gap-2 border border-[var(--edge-strong)] px-5 py-3 text-sm font-medium text-paper transition-colors duration-150 hover:border-red hover:text-red"
+            data-snap="both"
+            class="chamfer inline-flex h-10 items-center gap-2 border border-[var(--edge-strong)] px-5 text-sm font-medium text-paper transition-colors duration-150 hover:border-red hover:text-red"
           >
             Ask in Discord
             <span aria-hidden="true">&rarr;</span>
@@ -57,17 +58,17 @@ const schema = {
       </div>
     </div>
 
-    <div class="faq divide-y divide-[var(--edge)] border-y border-[var(--edge)]">
+    <div class="faq">
       {FAQ.map((f) => (
         <details class="group">
-          <summary class="flex cursor-pointer list-none items-center gap-6 py-5 font-medium text-paper">
+          <summary class="flex cursor-pointer list-none items-center gap-6 py-5 font-medium text-paper" data-snap>
             <span>{f.q}</span>
             <span
               aria-hidden="true"
               class="ml-auto shrink-0 text-fog transition-transform duration-150 group-open:rotate-45"
             >+</span>
           </summary>
-          <p class="text-fog max-w-2xl pb-6">{f.a}</p>
+          <p class="text-fog max-w-2xl pb-6" data-snap>{f.a}</p>
         </details>
       ))}
     </div>
@@ -78,6 +79,16 @@ const schema = {
   /* Safari still draws the disclosure triangle unless you say so twice. */
   summary::-webkit-details-marker {
     display: none;
+  }
+
+  /* Row rules as inset shadows rather than borders. A 1px border per row
+     sits outside the snapped heights and drifts the list a pixel per
+     question off the cursor grid; a shadow takes no space. */
+  .faq {
+    box-shadow: inset 0 1px 0 var(--edge), inset 0 -1px 0 var(--edge);
+  }
+  .faq > details + details {
+    box-shadow: inset 0 1px 0 var(--edge);
   }
 
   summary:focus-visible {

@@ -465,8 +465,8 @@ const faqSchema = {
   </div>
 
   <section class="section band border-t border-[var(--edge)] pb-28 lg:pb-[var(--spacing-section)]">
-    <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
-      <div>
+    <div class="shell cell-split">
+      <div class="cell-stack">
         <h2 class="title">Somewhere to run it</h2>
         <p class="lead text-fog mt-6 max-w-lg">
           FiveM servers from us come with txAdmin and MySQL already provisioned,
@@ -474,7 +474,8 @@ const faqSchema = {
         </p>
         <a
           href="/games/fivem"
-          class="chamfer mt-8 inline-flex items-center gap-2 border border-[var(--edge-strong)] px-7 py-4 font-medium text-paper transition-colors duration-150 hover:border-red hover:text-red"
+          data-snap="both"
+          class="chamfer inline-flex h-10 items-center gap-2 border border-[var(--edge-strong)] px-7 font-medium text-paper transition-colors duration-150 hover:border-red hover:text-red"
         >
           FiveM hosting
           <span aria-hidden="true">&rarr;</span>
@@ -482,12 +483,12 @@ const faqSchema = {
       </div>
       <dl class="m-0">
         {faq.map((f) => (
-          <div class="border-t border-[var(--edge)] py-5 first:border-t-0 first:pt-0">
+          <div class="border-t border-[var(--edge)] py-5 first:border-t-0 first:pt-0" data-snap>
             <dt class="text-paper">{f.q}</dt>
             <dd class="small text-fog m-0 mt-2">{f.a}</dd>
           </div>
         ))}
-        <div class="border-t border-[var(--edge)] py-5">
+        <div class="border-t border-[var(--edge)] py-5" data-snap>
           <dt class="text-paper">Something wrong in the output?</dt>
           <dd class="small text-fog m-0 mt-2">
             Cfx moves things. <a href={links.discord} rel="noopener" class="text-paper underline underline-offset-4 hover:text-red">Tell us in Discord</a> and it gets fixed the same day.

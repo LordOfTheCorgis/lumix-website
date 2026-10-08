@@ -21,14 +21,16 @@ const nodeFor = (slug?: string) => NODES.find((n) => n.region === slug);
   description={`Where Lumix servers run: ${HOSTING.map((r) => `${r.city} (${AVAILABILITY_LABEL[r.availability ?? "soon"].toLowerCase()})`).join(", ")}. Measure your ping to each from your browser.`}
 >
   <section class="section border-b border-[var(--edge)]">
-    <div class="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+    <div class="shell cell-split">
       <div>
+        <div data-snap>
         <p class="instrument text-fog">Regions · {HOSTING.length} US · {MITIGATION.length} scrubbing points</p>
         <h1 class="display-xl mt-6 max-w-2xl">Where the servers are<span class="text-red">.</span></h1>
         <p class="lead text-fog mt-6 max-w-lg">
           We cap every region, so some fill up. Pick the open one closest to
           most of your players; the ping test below says which that is.
         </p>
+        </div>
         <PingTest all class="mt-10" />
       </div>
       <Globe class="lg:ml-auto" />
@@ -37,7 +39,7 @@ const nodeFor = (slug?: string) => NODES.find((n) => n.region === slug);
 
   <section class="section">
     <div class="shell">
-      <div class="flex flex-wrap items-end justify-between gap-4">
+      <div class="flex flex-wrap items-end justify-between gap-4" data-snap>
         <h2 class="title">Each region</h2>
         <p class="instrument text-slate">{open.length} of {HOSTING.length} taking orders · {live} with a ping endpoint</p>
       </div>
@@ -45,13 +47,14 @@ const nodeFor = (slug?: string) => NODES.find((n) => n.region === slug);
       <!-- Small cards on purpose: there are four facts per region, and the
            old seven-cell cards padded them out with coordinates and a games
            count nobody needed. Evan cut both 2026-10-08. -->
-      <div class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="cell-cols mt-10 [--cols:1] sm:[--cols:2] lg:[--cols:4]">
         {HOSTING.map((r) => {
           const node = nodeFor(r.slug);
           const av = r.availability ?? "soon";
           return (
             <article
               id={r.slug}
+              data-snap
               class:list={[
                 "scroll-mt-24 flex flex-col border border-[var(--edge)] p-5",
                 av !== "open" && "opacity-60",
@@ -85,8 +88,8 @@ const nodeFor = (slug?: string) => NODES.find((n) => n.region === slug);
   </section>
 
   <section class="section band border-t border-[var(--edge)]">
-    <div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
-      <div>
+    <div class="shell cell-split">
+      <div class="cell-stack">
         <h2 class="title">Which one?</h2>
         <p class="lead text-fog mt-6 max-w-lg">
           Lowest number wins. For a community spread across the country,
@@ -94,7 +97,8 @@ const nodeFor = (slug?: string) => NODES.find((n) => n.region === slug);
         </p>
         <a
           href="/games"
-          class="chamfer mt-8 inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+          data-snap="both"
+          class="chamfer inline-flex h-10 items-center gap-2 bg-red px-7 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
         >
           Pick a game
           <span aria-hidden="true">&rarr;</span>
@@ -106,12 +110,12 @@ const nodeFor = (slug?: string) => NODES.find((n) => n.region === slug);
           ["Can I move regions later?", "Ask on a ticket. A move between two of our own nodes is a copy, not an import, so it's the quick kind."],
           ["What does the ping test actually measure?", "A handful of no-cors fetches from your browser to something in that datacentre, median of the last four. It isn't the game's netcode but it's the same path."],
         ].map(([q, a]) => (
-          <div class="border-t border-[var(--edge)] py-5 first:border-t-0 first:pt-0">
+          <div class="border-t border-[var(--edge)] py-5 first:border-t-0 first:pt-0" data-snap>
             <dt class="text-paper">{q}</dt>
             <dd class="small text-fog m-0 mt-2">{a}</dd>
           </div>
         ))}
-        <div class="border-t border-[var(--edge)] py-5">
+        <div class="border-t border-[var(--edge)] py-5" data-snap>
           <dt class="text-paper">Still not sure?</dt>
           <dd class="small text-fog m-0 mt-2">
             Say where your players are in{" "}

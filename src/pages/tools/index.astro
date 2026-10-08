@@ -60,12 +60,12 @@ const planned = tools.filter((t) => t.status !== "live");
 
   <section class="section">
     <div class="shell">
-      <div class="flex flex-wrap items-end justify-between gap-4">
+      <div class="flex flex-wrap items-end justify-between gap-4" data-snap>
         <h2 class="title">Pick a tool</h2>
         <p class="instrument text-slate">{live.length} live / {tools.length} total</p>
       </div>
 
-      <div class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-10 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3">
         {tools.map((tool) => {
           const isPlanned = tool.status !== "live";
           const href = isPlanned ? links.discord : `/tools/${tool.slug}`;
@@ -97,7 +97,7 @@ const planned = tools.filter((t) => t.status !== "live");
   </section>
 
   <section class="section band border-t border-[var(--edge)]">
-    <div class="shell">
+    <div class="shell cell-stack">
       <h2 class="title">Want a different one?</h2>
       <p class="lead text-fog mt-6 max-w-lg">
         The dimmed ones get built in the order people ask. Say which file you
@@ -106,7 +106,8 @@ const planned = tools.filter((t) => t.status !== "live");
       <a
         href={links.discord}
         rel="noopener"
-        class="chamfer mt-8 inline-flex items-center gap-2 border border-[var(--edge-strong)] px-7 py-4 font-medium text-paper transition-colors duration-150 hover:border-red hover:text-red"
+        data-snap="both"
+          class="chamfer inline-flex h-10 items-center gap-2 border border-[var(--edge-strong)] px-7 font-medium text-paper transition-colors duration-150 hover:border-red hover:text-red"
       >
         Ask in Discord
         <span aria-hidden="true">&rarr;</span>
