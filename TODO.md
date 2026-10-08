@@ -44,22 +44,12 @@ the commit and point at this file.
       Decide: build in CI and rsync `dist/` to cPanel, or build on the box.
       Depends on the Node answer above. Then fix the target and put the
       trigger back.
-- [ ] **Only Dallas is orderable in WHMCS, the site says four regions.**
-      Checked 2026-10-08: the "Server Location" option (group 3) on every
-      FiveM, Minecraft, Palworld and Terraria product offers exactly one
-      value, Dallas (6). BeamMP has no location option at all. Meanwhile
-      the home page, /regions, the FAQ and the footer tagline all say
-      Salt Lake City, Dallas, Ashburn and Miami, and the billing footer says
-      "Miami and Dallas". The game page picker shows the other three greyed
-      as "Not taking orders yet". Either turn them on in WHMCS (then put each
-      value id in `REGION_VALUE_IDS`, `src/lib/orderOptions.ts`) or say
-      which regions are real and the copy gets cut back to match.
 - [ ] **Miami and Ashburn are sold out.** When one reopens, add it back to
       WHMCS's Server Location option, put its value id in
       `REGION_VALUE_IDS` (`src/lib/orderOptions.ts`) and flip its
       `availability` to "open" in `src/lib/locations.ts`.
 
-## Pricing (WHMCS, not the site)
+## Content
 
 - [ ] **Terraria key art.** `src/assets/games/terraria.jpg` is 460×215, a
       thumbnail. It's the one game that never gets the hero because anything
@@ -70,13 +60,14 @@ the commit and point at this file.
       Restore in `links` and `social` in `src/config.ts` when it resolves.
 - [ ] **Louisiana counsel on Terms sections 7 and 9.** Louisiana is civil law;
       broad liability disclaimers behave differently there. Nobody's reviewed.
+## Doing together (Evan, 2026-10-08)
+
 - [ ] **Demo panel user.** Make a read-only user on Lumi-Panel with one
       server on it, put the URL and credentials in `demoPanel` in
       `src/config.ts`. The "Look around the panel first" button on every
       game page and on `/migrate` appears on its own.
-- [ ] **Ping endpoints, again.** `/regions` now shows all four greyed with
-      "soon" until `pingUrl` is set per region in `src/lib/locations.ts`.
-      Anything HTTP in the datacentre that answers fast.
+## Later, not blocking
+
 - [ ] **Capacity Board.** DESIGN.md section 8's signature element, never built.
       Needs a live source for slot counts and per-region ping.
 - [ ] **Admin panel** per BUILD-PLAN.md. Gated on the cPanel Node question.
@@ -92,3 +83,9 @@ the commit and point at this file.
 - Changelog: dropped from the redesign. Not maintained, so not shipped.
 - Free trial: none. Page says so.
 - Refunds: case by case. Page says so, matches terms.md.
+- Plan changes: no proration, upgrades pay the difference. FAQ says so.
+- Overselling: not mentioned anywhere, and the site no longer says
+  "never oversold" or "dedicated vCores". Keep it that way.
+- Prices: pulled from WHMCS 2026-10-08, no cycle dips, yearly saves 10-20%.
+- Cart-side fixes (promo code from a link, duplicate adds): WHMCS's side,
+  not ours. The site tells people to type the code and warns on repeats.
