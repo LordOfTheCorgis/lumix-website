@@ -1,0 +1,302 @@
+---
+// The order screen, on the game page itself. Shape lifted from Sparked
+// (sparkedhost.com/game-server-hosting/fivem, looked at 2026-10-08): numbered
+// steps down the left, a summary that follows you down the right, one Place
+// Order at the bottom of it. Their Place Order is just a link into their WHMCS
+// with configoption[]s, billingcycle and skipconfig=1, same as ours, so this
+// is the same mechanism with the choices laid out first.
+//
+// What we didn't copy: their backups, migration and add-on steps. We don't
+// sell any of those in WHMCS, and a step for something you can't buy is a
+// lie with radio buttons. New WHMCS option groups go in orderOptions.ts and
+// show up here as their own step without touching this file.
+//
+// Everything renders with the defaults already chosen and the link already
+// built, so with no JS you still get a working order for the popular plan.
+import { orderUrl, price, CYCLES } from "../lib/order";
+import { groupsFor, defaultChoice, defaultOptions } from "../lib/orderOptions";
+import { promo, links } from "../config";
+
+interface Plan {
+  key: string;
+  name: string;
+  pid: number;
+  popular: boolean;
+  specs: { vcores: string; ramGb: number; storageGb: number; slots: string };
+  pricing: Record<string, number>;
+}
+
+interface Props {
+  slug: string;
+  accent: string;
+  plans: Plan[];
+}
+
+const { slug, accent, plans } = Astro.props;
+
+const groups = groupsFor(slug);
+const configOptions = defaultOptions(groups);
+const skipConfig = groups.every((g) => g.groupId in configOptions);
+const startPlan = plans.find((p) => p.popular) ?? plans[0];
+const startRegion = groups.find((g) => g.key === "region");
+const startRegionChoice = startRegion ? defaultChoice(startRegion) : null;
+const href = orderUrl(startPlan.pid, { configOptions, skipConfig });
+
+// Plan keys are "starter", "budget"... The yaml names repeat the game
+// ("Starter FiveM Server", "Palworld Standard Plan"), which is noise on a page
+// that already says FiveM in the hero.
+const title = (key: string) => key.charAt(0).toUpperCase() + key.slice(1);
+const cycleOf = (key: string) => CYCLES.find((c) => c.key === key)!;
+const twoDp = (n: number) => price(Math.round(n * 100) / 100);
+
+// What the client script needs, nothing more. Prices live here so the script
+// never has to scrape them back out of the DOM.
+const data = {
+  plans: plans.map((p) => ({ pid: p.pid, name: title(p.key), pricing: p.pricing })),
+  groups: groups.map((g) => ({ groupId: g.groupId, key: g.key, label: g.label })),
+  cycles: CYCLES,
+};
+
+const stepOffset = 2; // 01 is the plan, then one per option group, then billing.
+---
+
+<section class="section band" style={`--game-accent:${accent}`} data-builder>
+  <script type="application/json" data-builder-data set:html={JSON.stringify(data)} />
+
+  <div class="shell grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
+    <div class="min-w-0 space-y-16">
+      <fieldset class="m-0 border-0 p-0">
+        <legend class="step p-0"><span class="step-n">01</span>Choose a plan</legend>
+        <div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {plans.map((p) => (
+            <label class="option chamfer relative block cursor-pointer border border-[var(--edge)] bg-ink-soft p-5">
+              <input type="radio" name="plan" value={p.pid} checked={p === startPlan} class="sr-only" />
+              <span class="flex items-baseline justify-between gap-3">
+                <span class="font-medium text-paper">{title(p.key)}</span>
+                {p.popular && <span class="instrument text-red">Most popular</span>}
+              </span>
+              <span class="mt-3 block tabular">
+                <span class="title price">{price(p.pricing.monthly)}</span>
+                <span class="small text-fog">/mo</span>
+              </span>
+              <span class="small mt-4 grid grid-cols-2 gap-x-4 gap-y-1 text-fog tabular">
+                <span>{p.specs.vcores} vCores</span>
+                <span>{p.specs.ramGb} GB RAM</span>
+                <span>{p.specs.storageGb} GB NVMe</span>
+                <span>{p.specs.slots} slots</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      {groups.map((g, gi) => {
+        const picked = defaultChoice(g);
+        return (
+          <fieldset class="m-0 border-0 p-0" data-option-group={g.groupId}>
+            <legend class="step p-0">
+              <span class="step-n">{String(gi + stepOffset).padStart(2, "0")}</span>{g.label}
+            </legend>
+            <div class="mt-6 grid gap-3 sm:grid-cols-2">
+              {g.choices.map((c) => (
+                <label
+                  class:list={[
+                    "option chamfer relative flex items-center justify-between gap-4 border border-[var(--edge)] bg-ink-soft p-5",
+                    c.valueId === null ? "is-off" : "cursor-pointer",
+                  ]}
+                >
+                  <input
+                    type="radio"
+                    name={`configoption-${g.groupId}`}
+                    value={c.valueId ?? ""}
+                    data-label={c.label}
+                    checked={c === picked}
+                    disabled={c.valueId === null}
+                    class="sr-only"
+                  />
+                  <span>
+                    <span class="block font-medium text-paper">
+                      {c.label}
+                      <span class="closest instrument ml-2 align-middle" hidden data-closest>Closest to you</span>
+                    </span>
+                    <span class="small mt-1 block text-fog">
+                      {c.valueId === null ? "Not taking orders yet" : c.detail}
+                    </span>
+                  </span>
+                  <!-- Filled by the script when the region has a pingUrl
+                       (src/lib/locations.ts). Empty otherwise, not "?? ms". -->
+                  <span class="small tabular shrink-0 text-slate" data-ping-url={c.pingUrl}></span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        );
+      })}
+
+      <fieldset class="m-0 border-0 p-0">
+        <legend class="step p-0">
+          <span class="step-n">{String(groups.length + stepOffset).padStart(2, "0")}</span>How you pay
+        </legend>
+        <div class="mt-6 space-y-3">
+          {CYCLES.map((c) => {
+            const amount = startPlan.pricing[c.key];
+            return (
+              <label
+                class:list={[
+                  "option chamfer relative flex items-center gap-4 border border-[var(--edge)] bg-ink-soft px-5 py-4",
+                  amount === undefined ? "is-off" : "cursor-pointer",
+                ]}
+                data-cycle-row={c.key}
+              >
+                <input
+                  type="radio"
+                  name="billingcycle"
+                  value={c.key}
+                  checked={c.key === "monthly"}
+                  disabled={amount === undefined}
+                  class="sr-only"
+                />
+                <span class="font-medium text-paper">{c.label}</span>
+                <span class="small ml-auto text-right tabular">
+                  <span class="text-paper" data-cycle-total>{amount !== undefined ? `${price(amount)} today` : "Not offered"}</span>
+                  <span class="block text-slate" data-cycle-monthly>
+                    {amount !== undefined && c.months > 1 ? `${twoDp(amount / c.months)}/mo` : ""}
+                  </span>
+                </span>
+              </label>
+            );
+          })}
+        </div>
+      </fieldset>
+
+      <!-- Whatever the page wants under the last step: the game's
+           description and the no-trial line, on game pages. -->
+      <div><slot /></div>
+    </div>
+
+    <!-- Desktop summary. Sticky so the total and the button ride along with
+         the steps, which is the whole point of Sparked's layout. -->
+    <aside class="hidden lg:block">
+      <div class="chamfer sticky top-28 border border-[var(--edge)] bg-ink p-6">
+        <p class="instrument text-slate">Your server</p>
+        <dl class="small m-0 mt-5 space-y-3">
+          <div class="flex justify-between gap-4">
+            <dt class="text-fog">Plan</dt>
+            <dd class="m-0 text-right text-paper" data-sum-plan>{title(startPlan.key)}</dd>
+          </div>
+          {startRegion && (
+            <div class="flex justify-between gap-4">
+              <dt class="text-fog">{startRegion.label}</dt>
+              <dd class="m-0 text-right text-paper" data-sum-region>{startRegionChoice?.label ?? "Picked in the cart"}</dd>
+            </div>
+          )}
+          <div class="flex justify-between gap-4">
+            <dt class="text-fog">Billing</dt>
+            <dd class="m-0 text-right text-paper" data-sum-cycle>{cycleOf("monthly").label}</dd>
+          </div>
+        </dl>
+        <div class="mt-6 flex items-baseline justify-between border-t border-[var(--edge)] pt-5">
+          <span class="text-fog">Due today</span>
+          <span class="title price tabular" data-sum-total>{price(startPlan.pricing.monthly)}</span>
+        </div>
+        <a
+          href={href}
+          data-order-link
+          class="chamfer mt-6 flex w-full items-center justify-center gap-2 bg-red px-6 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+        >
+          Place order <span aria-hidden="true">&rarr;</span>
+        </a>
+        {promo.live && (
+          <p class="small mt-4 text-fog">
+            Code <span class="instrument normal-case text-paper">{promo.code}</span> takes
+            {" "}{promo.percent}% off. Type it into the cart before checkout.
+          </p>
+        )}
+        <p class="small mt-4 border-l-2 border-[var(--game-accent)] pl-3 text-fog" data-cart-note hidden>
+          You already sent a server to the cart this visit. Placing another
+          order adds a second one.{" "}
+          <a href={`${links.billing}/cart.php?a=view`} class="text-paper underline underline-offset-4 hover:text-red">Open the cart</a>.
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Mobile: the summary collapses to a bar on the bottom edge. Layout's own
+       "Order a server" bar is switched off on game pages for this. -->
+  <div class="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--edge)] bg-ink/95 backdrop-blur-md lg:hidden" style="padding-bottom: env(safe-area-inset-bottom, 0px)">
+    <div class="shell flex items-center gap-4 py-3">
+      <div class="min-w-0">
+        <p class="small truncate text-fog" data-sum-short>
+          {title(startPlan.key)}{startRegionChoice ? ` · ${startRegionChoice.label}` : ""} · {cycleOf("monthly").label}
+        </p>
+        <p class="font-medium price tabular" data-sum-total>{price(startPlan.pricing.monthly)}</p>
+      </div>
+      <a
+        href={href}
+        data-order-link
+        class="chamfer ml-auto inline-flex shrink-0 items-center gap-2 bg-red px-5 py-3 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+      >
+        Place order
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .step {
+    display: flex;
+    align-items: baseline;
+    gap: 0.875rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.375rem, 2.5vw, 1.75rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  /* Step numbers in the game's accent, same as the "first ten minutes" list
+     further down the page. */
+  .step-n {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--game-accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Picked = paper edge plus an accent stripe down the left, the game's
+     colour. Not red: red is Place order and the "Most popular" tag, and
+     that's the two. */
+  .option {
+    transition: border-color 150ms, box-shadow 150ms;
+  }
+  .option:not(.is-off):hover {
+    border-color: var(--color-slate);
+  }
+  .option:has(input:checked) {
+    border-color: var(--color-paper);
+    box-shadow: inset 3px 0 0 var(--game-accent);
+  }
+  /* sr-only input, so the ring goes on the card. */
+  .option:has(input:focus-visible) {
+    outline: 2px solid var(--color-red);
+    outline-offset: 2px;
+  }
+  .option.is-off {
+    opacity: 0.45;
+  }
+
+  .closest {
+    color: var(--game-accent);
+  }
+
+  /* Room for the fixed bar so it never sits on the last step. */
+  @media (max-width: 1023px) {
+    [data-builder] {
+      padding-bottom: calc(var(--spacing-section-mobile) + 5rem);
+    }
+  }
+</style>
+
+<script>
+  import "../scripts/order-builder";
+</script>

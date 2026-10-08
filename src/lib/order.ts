@@ -40,6 +40,19 @@ export function orderUrl(
   return `${BILLING_BASE}/cart.php?${params.toString()}`;
 }
 
+// WHMCS's own cycle names, which is also how the yaml keys `pricing`. Order is
+// shortest first. A plan only offers the ones its yaml lists (Terraria has 4).
+export const CYCLES = [
+  { key: "monthly", label: "Monthly", months: 1 },
+  { key: "quarterly", label: "Every 3 months", months: 3 },
+  { key: "semiannually", label: "Every 6 months", months: 6 },
+  { key: "annually", label: "Yearly", months: 12 },
+  { key: "biennially", label: "Every 2 years", months: 24 },
+  { key: "triennially", label: "Every 3 years", months: 36 },
+] as const;
+
+export type CycleKey = (typeof CYCLES)[number]["key"];
+
 const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 
 export function price(amount: number): string {

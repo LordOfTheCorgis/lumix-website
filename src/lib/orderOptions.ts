@@ -20,6 +20,8 @@ export interface OptionChoice {
   label: string;
   detail?: string;
   valueId: number | null;
+  /** Regions only. The builder measures it the way PingTest does. */
+  pingUrl?: string;
 }
 
 export interface OptionGroup {
@@ -51,6 +53,7 @@ export const OPTION_GROUPS: OptionGroup[] = [
       label: h.city,
       detail: h.region,
       valueId: REGION_VALUE_IDS[h.slug!] ?? null,
+      pingUrl: h.pingUrl,
     })),
   },
 ];
