@@ -38,6 +38,9 @@
      before Evan killed it ("fuck the gradients"). Red stays the UI accent. */
   --color-ember: #ff7a45;
   --color-gold: #ffb347;
+  /* Status bars only. Evan wanted up-all-day to read as green; nowhere else
+     on the site uses it, keep it that way so it stays a status colour. */
+  --color-up: #3fcf7e;
   --color-paper: #f7f5f1;
 
   /* ── Secondary text, both ink-only now ───────────────────────────────────
