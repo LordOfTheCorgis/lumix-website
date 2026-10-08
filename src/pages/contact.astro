@@ -1,0 +1,126 @@
+---
+// Routing, not a form. The page's whole job is to get each kind of question
+// to the one place that can answer it, so it's a ledger of "what you need"
+// against "where it goes", same idiom as /partners.
+//
+// No hours and no response times, same as Included.astro and the FAQ: main's
+// contact page promised "<4 hours, 24/7/365" in a fake terminal and nobody
+// ever gave that number. When Evan has a real one it goes here too.
+//
+// support@ existed on main and is left off on purpose: tickets are the record
+// and a second inbox is a second queue. contact@ stays because the privacy
+// policy, CCPA notice and terms all name it.
+import Layout from "../layouts/Layout.astro";
+import { links } from "../config";
+
+const EMAIL = "contact@lumixsolutions.org";
+const PARTNERS_EMAIL = "partners@lumixsolutions.org";
+
+interface Route {
+  need: string;
+  note: string;
+  action: { label: string; href: string; external?: boolean };
+  also?: { label: string; href: string; external?: boolean };
+}
+
+const routes: Route[] = [
+  {
+    need: "My server is down or acting up",
+    note: "Open a ticket. Put the server's name from the panel, the last thing you changed, and the console output around the error in the first message and you skip a round trip.",
+    action: { label: "Open a ticket", href: links.ticket, external: true },
+    also: { label: "Check the docs first", href: links.docs, external: true },
+  },
+  {
+    need: "An invoice, a refund, or cancelling",
+    note: "Ticket from the client area, signed in, so we're looking at the right account. Refunds are case by case, per the terms.",
+    action: { label: "Open a ticket", href: links.ticket, external: true },
+  },
+  {
+    need: "Deciding whether to buy",
+    note: "Ask in Discord. Customers are in there too, which is the honest way to find out what it's like.",
+    action: { label: "Join the Discord", href: links.discord, external: true },
+  },
+  {
+    need: "Moving a server from another host",
+    note: "Do it yourself with the importer, or have us write the ticket for you.",
+    action: { label: "Migrate", href: "/migrate" },
+  },
+  {
+    need: "Making something for FiveM",
+    note: "Studios we'd put on our own servers get a listing and a code on the partners page.",
+    action: { label: PARTNERS_EMAIL, href: `mailto:${PARTNERS_EMAIL}` },
+    also: { label: "See the partners", href: "/partners" },
+  },
+  {
+    need: "A privacy or data request",
+    note: "Access, deletion, or a California request. Say which, and from the email on the account.",
+    action: { label: EMAIL, href: `mailto:${EMAIL}` },
+    also: { label: "Privacy policy", href: "/privacy" },
+  },
+  {
+    need: "Working here",
+    note: "We hire out of the community.",
+    action: { label: "Open roles", href: links.careers, external: true },
+    also: { label: "Who's here now", href: "/staff" },
+  },
+  {
+    need: "Anything else",
+    note: "Press, legal, the thing none of the above covers.",
+    action: { label: EMAIL, href: `mailto:${EMAIL}` },
+  },
+];
+---
+
+<Layout
+  title="Contact"
+  description="Where to take a broken server, a billing question, a partnership or anything else at Lumix Solutions."
+>
+  <section class="section border-b border-[var(--edge)]">
+    <div class="shell">
+      <p class="instrument text-fog">Contact · tickets, Discord, email</p>
+      <h1 class="display-xl mt-6 max-w-3xl">Where to take it<span class="text-red">.</span></h1>
+      <p class="lead text-fog mt-6 max-w-xl">
+        Find the line that matches and it lands with whoever can actually fix
+        it. Tickets are for anything about your account or your server.
+        Discord is for everything you'd ask out loud.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <ol class="m-0 list-none p-0 border-t border-[var(--edge)]" data-grid-anchor>
+        {routes.map((r, i) => (
+          <li class="grid gap-4 border-b border-[var(--edge)] py-[var(--grid-cell)] lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)_16rem] lg:gap-10">
+            <div class="min-w-0">
+              <p class="instrument text-slate">{String(i + 1).padStart(2, "0")}</p>
+              <h2 class="title mt-3">{r.need}</h2>
+            </div>
+            <p class="text-fog min-w-0 lg:pt-6">{r.note}</p>
+            <div class="flex flex-col gap-2 lg:items-end lg:pt-6 lg:text-right">
+              {[r.action, r.also].filter((a) => a !== undefined).map((a, j) => (
+                <a
+                  href={a.href}
+                  rel={a.external ? "noopener" : undefined}
+                  class:list={[
+                    "small inline-flex items-center gap-1.5 break-all hover:text-red",
+                    j === 0 ? "text-paper" : "text-fog",
+                  ]}
+                >
+                  {a.label}
+                  {a.external && <span aria-hidden="true">&nearr;</span>}
+                  {!a.external && !a.href.startsWith("mailto:") && <span aria-hidden="true">&rarr;</span>}
+                </a>
+              ))}
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <p class="small text-slate mt-8 max-w-2xl">
+        Lumix Solutions LLC, Louisiana. There's no live chat; Discord is the
+        closest thing to it.
+      </p>
+    </div>
+  </section>
+</Layout>
