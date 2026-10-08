@@ -58,6 +58,12 @@ export const demoPanel = {
 export const statusData =
   "https://raw.githubusercontent.com/LordOfTheCorgis/lumix-website/status-data/status.json";
 
+// Hand-written incident reports, read live by /status. HEAD is whatever the
+// default branch is, so this works the moment redesign lands on main. How to
+// write one: status/README.md.
+export const incidentsData =
+  "https://raw.githubusercontent.com/LordOfTheCorgis/lumix-website/HEAD/status/incidents.json";
+
 export const links = {
   billing: "https://billing.lumixsolutions.org",
   ticket: "https://billing.lumixsolutions.org/submitticket.php",

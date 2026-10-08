@@ -141,6 +141,113 @@ async function load() {
   }
 }
 
-load();
+// ── Incident reports ────────────────────────────────────────────────────
+// Hand-written, status/incidents.json on the default branch. Format and
+// how-to in status/README.md. Everything in there goes in as textContent:
+// it's a file people edit in a browser, so treat it as untrusted.
+
+interface Incident {
+  title: string;
+  region?: string;
+  status: "investigating" | "monitoring" | "resolved";
+  started: string;
+  resolved?: string | null;
+  updates?: { at: string; text: string }[];
+}
+
+const STATUS_LABEL: Record<Incident["status"], string> = {
+  investigating: "Investigating",
+  monitoring: "Fixed, watching it",
+  resolved: "Resolved",
+};
+
+const reportsEl = document.querySelector<HTMLElement>("[data-reports]");
+const activeEl = document.querySelector<HTMLElement>("[data-active]");
+const incidentsUrl = document.querySelector<HTMLElement>("[data-incidents-url]")?.dataset.incidentsUrl;
+
+// Skip anything malformed rather than letting one typo blank the list.
+function isIncident(x: unknown): x is Incident {
+  const i = x as Incident;
+  return (
+    !!i &&
+    typeof i.title === "string" &&
+    ["investigating", "monitoring", "resolved"].includes(i.status) &&
+    !Number.isNaN(Date.parse(i.started))
+  );
+}
+
+function el<K extends keyof HTMLElementTagNameMap>(tag: K, className: string, text?: string) {
+  const node = document.createElement(tag);
+  node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function incidentBlock(i: Incident, compact: boolean): HTMLElement {
+  const wrap = el("div", compact ? "border-l-2 border-[var(--color-gold)] pl-4" : "");
+  const head = el("p", "text-paper");
+  head.textContent = i.title;
+  const meta = el(
+    "p",
+    "small text-fog mt-1 tabular",
+    [
+      STATUS_LABEL[i.status],
+      i.region ? names[i.region] ?? i.region : null,
+      dateFmt.format(new Date(i.started)),
+      i.resolved ? `lasted ${duration(Date.parse(i.resolved) - Date.parse(i.started))}` : null,
+    ]
+      .filter(Boolean)
+      .join(" · ")
+  );
+  wrap.append(head, meta);
+  const updates = (i.updates ?? []).filter((u) => typeof u?.text === "string" && !Number.isNaN(Date.parse(u.at)));
+  for (const u of compact ? updates.slice(0, 1) : updates) {
+    const p = el("p", "small text-fog mt-3 max-w-prose");
+    const when = el("span", "text-slate tabular", `${dateFmt.format(new Date(u.at))} · `);
+    p.append(when, document.createTextNode(u.text));
+    wrap.append(p);
+  }
+  return wrap;
+}
+
+async function loadIncidents() {
+  if (!incidentsUrl || !reportsEl) return;
+  let list: Incident[];
+  try {
+    const res = await fetch(incidentsUrl, { cache: "no-store" });
+    if (!res.ok) throw new Error(String(res.status));
+    const raw = await res.json();
+    if (!Array.isArray(raw)) throw new Error("not a list");
+    list = raw.filter(isIncident).sort((a, b) => b.started.localeCompare(a.started));
+  } catch {
+    reportsEl.replaceChildren(el("li", "small text-fog", "Couldn't read the incident reports right now."));
+    return;
+  }
+
+  const active = list.filter((i) => i.status !== "resolved");
+  if (activeEl) {
+    activeEl.replaceChildren(...active.map((i) => incidentBlock(i, true)));
+    activeEl.hidden = active.length === 0;
+  }
+
+  if (!list.length) {
+    reportsEl.replaceChildren(el("li", "small text-fog", "Nothing to report."));
+    return;
+  }
+  reportsEl.replaceChildren(
+    ...list.slice(0, 20).map((i) => {
+      const li = el("li", "border-t border-[var(--edge)] py-6 first:border-t-0 first:pt-0");
+      li.append(incidentBlock(i, false));
+      return li;
+    })
+  );
+}
+
+function refresh() {
+  load();
+  loadIncidents();
+}
+
+refresh();
 // Keep it fresh for anyone who leaves the tab open during an outage.
-setInterval(load, 60_000);
+setInterval(refresh, 60_000);

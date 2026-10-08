@@ -9,7 +9,7 @@
 // 100% that's two days old should say it's two days old.
 import Layout from "../layouts/Layout.astro";
 import { HOSTING, AVAILABILITY_LABEL } from "../lib/locations";
-import { statusData, links } from "../config";
+import { statusData, incidentsData, links } from "../config";
 
 const rows = [
   ...HOSTING.map((h) => ({
@@ -37,6 +37,9 @@ const DAYS = 90;
       <p class="lead text-fog mt-6 max-w-xl" data-sub>
         Reading the latest results.
       </p>
+      <!-- Filled when incidents.json has anything not resolved. Accent edge,
+           not a red box: the headline already says whether it's down. -->
+      <div class="mt-10 max-w-2xl space-y-4" data-active hidden></div>
       <noscript>
         <p class="lead text-fog mt-6 max-w-xl">
           This page needs JavaScript to read the live results. The raw file is
@@ -86,6 +89,21 @@ const DAYS = 90;
         <span class="inline-flex items-center gap-2"><span class="key bad"></span>Down more than an hour</span>
         <span class="inline-flex items-center gap-2"><span class="key"></span>No data</span>
       </div>
+    </div>
+  </section>
+
+  <section class="section border-t border-[var(--edge)]" data-incidents-url={incidentsData}>
+    <div class="shell grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-16">
+      <div>
+        <h2 class="title">Incident reports</h2>
+        <p class="lead text-fog mt-6 max-w-sm">
+          What happened and what we did about it, written by us. The log
+          below is the machine's version.
+        </p>
+      </div>
+      <ol class="m-0 list-none p-0" data-reports>
+        <li class="small text-fog">Reading the reports.</li>
+      </ol>
     </div>
   </section>
 
