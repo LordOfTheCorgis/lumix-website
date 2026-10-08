@@ -62,8 +62,11 @@ the commit and point at this file.
       notes: `a=add` appends. Game pages now warn after the first click
       in a visit. Real fix is the `lxfresh` hook from main's HANDOFF.md
       section 3 (`git show main:HANDOFF.md`).
-- [ ] **`status.lumixsolutions.org` exists** (linked from the billing
-      footer). If that's a real status page, `/status` can just point there.
+- [ ] **Status page: Kuma is out (2026-10-08).** Proposed instead: a
+      GitHub Actions cron pings each node every few minutes from GitHub's
+      side and appends to a history file; `/status` reads it. Needs: one
+      address to check per node, whether this repo is public or private,
+      and a yes. The billing footer still links status.lumixsolutions.org.
 - [ ] **Read `/staff` and `/contact`** (2026-10-08). Both bios in
       `src/lib/staff.ts` are rewritten from main's and said in your and
       Keaghan's names. `/contact` leaves `support@` off on purpose (tickets
