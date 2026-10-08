@@ -52,6 +52,12 @@ export const demoPanel = {
   password: "",
 };
 
+// Where /status reads from. Written every five minutes by
+// .github/workflows/status.yml onto the status-data branch. If the repo moves
+// to the lumixsolutions org, change the owner here.
+export const statusData =
+  "https://raw.githubusercontent.com/LordOfTheCorgis/lumix-website/status-data/status.json";
+
 export const links = {
   billing: "https://billing.lumixsolutions.org",
   ticket: "https://billing.lumixsolutions.org/submitticket.php",
