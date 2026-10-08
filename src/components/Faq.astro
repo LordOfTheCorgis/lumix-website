@@ -1,5 +1,5 @@
 ---
-// Native <details>, no JS, and the same list rendered as FAQPage JSON-LD so
+// Native <details>, no JS (the open/close glide is CSS only), and the same list rendered as FAQPage JSON-LD so
 // Google can show the answers under the result. Every competitor crawled on
 // 2026-09-11 has one of these and two of them (RocketNode, Shockbyte) use it
 // to answer refunds and trials head-on, which is the honest place for that.
@@ -85,8 +85,43 @@ const schema = {
     outline-offset: 2px;
   }
 
+  /* Open and close glide instead of snapping, still with zero JS. Height to
+     `auto` only animates with interpolate-size, which is Chromium-only right
+     now; everyone else gets the old instant toggle, which is fine, so the
+     whole thing is gated rather than half-working in Safari (it knows
+     ::details-content but would snap the height and only fade).
+     content-visibility has to transition too or the close gets cut off: the
+     browser hides the content the moment [open] drops, before the height has
+     gone anywhere. */
+  @supports (interpolate-size: allow-keywords) {
+    .faq {
+      interpolate-size: allow-keywords;
+    }
+
+    details::details-content {
+      block-size: 0;
+      overflow: clip;
+      opacity: 0;
+      transition:
+        block-size 240ms cubic-bezier(0.2, 0, 0, 1),
+        opacity 180ms ease-out,
+        content-visibility 240ms allow-discrete;
+    }
+
+    details[open]::details-content {
+      block-size: auto;
+      opacity: 1;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .faq span {
+      transition: none;
+    }
+
+    /* The global reduce rule already squashes durations, this just makes it
+       not depend on that. */
+    details::details-content {
       transition: none;
     }
   }
