@@ -30,7 +30,7 @@ export const FAQ: Faq[] = [
   },
   {
     q: "Can I change my plan later?",
-    a: "Yes. Upgrade or downgrade from the client area at any time and the difference is prorated against your current term. Your files and world stay where they are.",
+    a: "Yes. Upgrade from the client area and you pay the price difference between the two plans, no proration. Your files and world stay where they are. Want to go down a size instead? Open a ticket.",
   },
   {
     q: "Do you support mods, plugins and frameworks?",
