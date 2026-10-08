@@ -43,10 +43,27 @@ the commit and point at this file.
       (UptimeRobot, BetterStack, Instatus), a page that only pings the four
       regions live off the same `pingUrl`s as `/regions`, or pull it from
       the nav until one exists. Not a fake uptime history like main had.
-- [ ] **Click one order button and check the 10% lands.** Game-server cart
-      links carry `&promocode=LUMIX10` since 2026-10-08. Nobody has seen
-      WHMCS apply it from the URL yet. Bot hosting (pid 6, Node.js) is left without
-      it; if LUMIX10 is valid for that product too, say so and it goes on.
+- [ ] **Only Dallas is orderable in WHMCS, the site says four regions.**
+      Checked 2026-10-08: the "Server Location" option (group 3) on every
+      FiveM, Minecraft, Palworld and Terraria product offers exactly one
+      value, Dallas (6). BeamMP has no location option at all. Meanwhile
+      the home page, /regions, the FAQ and the footer tagline all say
+      Salt Lake City, Dallas, Ashburn and Miami, and the billing footer says
+      "Miami and Dallas". The game page picker shows the other three greyed
+      as "Not taking orders yet". Either turn them on in WHMCS (then put each
+      value id in `REGION_VALUE_IDS`, `src/lib/orderOptions.ts`) or say
+      which regions are real and the copy gets cut back to match.
+- [ ] **LUMIX10 can't be pre-applied from a link.** The code works when typed
+      into the cart (10% off, tested). `promocode=` on the URL is ignored by
+      this install's cart template in every form tried. If you want it
+      automatic, it needs a small WHMCS hook; until then the site tells
+      people to type it in.
+- [ ] **WHMCS cart adds a duplicate on every Order click.** Same as main's
+      notes: `a=add` appends. Game pages now warn after the first click
+      in a visit. Real fix is the `lxfresh` hook from main's HANDOFF.md
+      section 3 (`git show main:HANDOFF.md`).
+- [ ] **`status.lumixsolutions.org` exists** (linked from the billing
+      footer). If that's a real status page, `/status` can just point there.
 - [ ] **Read `/staff` and `/contact`** (2026-10-08). Both bios in
       `src/lib/staff.ts` are rewritten from main's and said in your and
       Keaghan's names. `/contact` leaves `support@` off on purpose (tickets
