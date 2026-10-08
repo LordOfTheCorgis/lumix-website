@@ -1,7 +1,8 @@
 name: Deploy dev
 
 # Every push to redesign builds the site and uploads it to
-# dev.lumixsolutions.org on cPanel. Static files only, so cPanel's Node
+# dev.lumixsolutions.org on cPanel (FTP user deploy@, already jailed to that
+# folder). Static files only, so cPanel's Node
 # version doesn't matter. Built with PUBLIC_DEPLOY_ENV=dev, which makes every
 # page noindex and robots.txt disallow everything; see Layout.astro.
 #
@@ -55,10 +56,11 @@ jobs:
           # check cPanel has TLS on for FTP before dropping to plain "ftp".
           protocol: ftps
           local-dir: ./dist/
-          # Relative to the FTP account's root. For the main cPanel account
-          # that's the home folder, so this lands in public_html. An FTP
-          # account created for one directory has a different root; adjust.
-          server-dir: public_html/dev.lumixsolutions.org/
+          # Relative to the FTP account's root, not the server's. The deploy@
+          # account is locked to /home/lumixsolutions/public_html/dev.lumixsolutions.org
+          # (cPanel > FTP Accounts, checked 2026-10-08), so its root already
+          # IS the dev site. "./" here, or it builds a nested copy nobody sees.
+          server-dir: ./
           # Only touches files it uploaded itself (tracked in a state file it
           # leaves in that folder), so anything else in there survives.
 
