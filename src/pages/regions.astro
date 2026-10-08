@@ -5,31 +5,29 @@
 // ones. The ping rows grey out until a region has a pingUrl in
 // src/lib/locations.ts; that's the whole mechanism, no status flag.
 import Layout from "../layouts/Layout.astro";
-import { getCollection } from "astro:content";
 import PingTest from "../components/PingTest.astro";
 import Globe from "../components/Globe.astro";
-import { HOSTING, MITIGATION } from "../lib/locations";
+import { HOSTING, MITIGATION, AVAILABILITY_LABEL } from "../lib/locations";
+import { NODES } from "../lib/hardware";
 import { links } from "../config";
 
-const games = (await getCollection("games"))
-  .filter((g) => g.data.status === "live")
-  .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
-
 const live = HOSTING.filter((r) => r.pingUrl).length;
+const open = HOSTING.filter((r) => r.availability === "open");
+const nodeFor = (slug?: string) => NODES.find((n) => n.region === slug);
 ---
 
 <Layout
   title="Regions and ping"
-  description={`${HOSTING.map((r) => r.city).join(", ")}. Every plan can go in any of them; pick at checkout. Measure your ping to each from your browser.`}
+  description={`Where Lumix servers run: ${HOSTING.map((r) => `${r.city} (${AVAILABILITY_LABEL[r.availability ?? "soon"].toLowerCase()})`).join(", ")}. Measure your ping to each from your browser.`}
 >
   <section class="section border-b border-[var(--edge)]">
     <div class="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
         <p class="instrument text-fog">Regions · {HOSTING.length} US · {MITIGATION.length} scrubbing points</p>
-        <h1 class="display-xl mt-6 max-w-2xl">Four rooms, one country<span class="text-red">.</span></h1>
+        <h1 class="display-xl mt-6 max-w-2xl">Where the servers are<span class="text-red">.</span></h1>
         <p class="lead text-fog mt-6 max-w-lg">
-          Every plan can live in any of them, and you pick at checkout. The
-          only thing that should decide it is the number on the right.
+          We cap every region, so some fill up. Pick the open one closest to
+          most of your players; the ping test below says which that is.
         </p>
         <PingTest all class="mt-10" />
       </div>
@@ -40,39 +38,41 @@ const live = HOSTING.filter((r) => r.pingUrl).length;
   <section class="section">
     <div class="shell">
       <div class="flex flex-wrap items-end justify-between gap-4">
-        <h2 class="title">The four</h2>
-        <p class="instrument text-slate">{live} of {HOSTING.length} with a ping endpoint</p>
+        <h2 class="title">Each region</h2>
+        <p class="instrument text-slate">{open.length} of {HOSTING.length} taking orders · {live} with a ping endpoint</p>
       </div>
 
-      <div data-grid-anchor class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2">
-        {HOSTING.map((r) => (
-          <article
-            id={r.slug}
-            class:list={[
-              "scroll-mt-24 flex min-h-[calc(7*var(--grid-cell))] flex-col border border-[var(--edge)] p-6 transition-opacity",
-              !r.pingUrl && "opacity-50",
-            ]}
-          >
-            <div class="flex items-center justify-between">
-              <span class="instrument text-fog">{r.region}</span>
-              <span class="instrument text-slate">
-                {r.pingUrl ? "ping live" : "ping soon"}
-              </span>
-            </div>
-            <h3 class="title mt-4">{r.city}</h3>
-            <p class="small text-fog mt-3 flex-1 max-w-prose">{r.serves}</p>
-            <dl class="mt-6 grid grid-cols-2 gap-x-6 gap-y-3">
-              <div>
-                <dt class="instrument text-slate">Coordinates</dt>
-                <dd class="small tabular mt-1 text-fog">{r.lat.toFixed(2)}, {r.lng.toFixed(2)}</dd>
+      <!-- Small cards on purpose: there are four facts per region, and the
+           old seven-cell cards padded them out with coordinates and a games
+           count nobody needed. Evan cut both 2026-10-08. -->
+      <div data-grid-anchor class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {HOSTING.map((r) => {
+          const node = nodeFor(r.slug);
+          const av = r.availability ?? "soon";
+          return (
+            <article
+              id={r.slug}
+              class:list={[
+                "scroll-mt-24 flex flex-col border border-[var(--edge)] p-5",
+                av !== "open" && "opacity-60",
+              ]}
+            >
+              <div class="flex items-center justify-between gap-3">
+                <span class="instrument text-fog">{r.region}</span>
+                <span class:list={["instrument", av === "open" ? "text-paper" : "text-slate"]}>
+                  {AVAILABILITY_LABEL[av]}
+                </span>
               </div>
-              <div>
-                <dt class="instrument text-slate">Games</dt>
-                <dd class="small mt-1 text-fog">All {games.length}</dd>
-              </div>
-            </dl>
-          </article>
-        ))}
+              <h3 class="title mt-3">{r.city}</h3>
+              <p class="small text-fog mt-2 flex-1">{r.serves}</p>
+              {node && (
+                <a href={`/hardware#${r.slug}`} class="small mt-4 inline-flex items-center gap-1.5 text-paper hover:text-red">
+                  {node.cpu.replace("AMD ", "")} <span aria-hidden="true">&rarr;</span>
+                </a>
+              )}
+            </article>
+          );
+        })}
       </div>
 
       <p class="small text-fog mt-8 max-w-2xl">
@@ -90,7 +90,7 @@ const live = HOSTING.filter((r) => r.pingUrl).length;
         <h2 class="title">Which one?</h2>
         <p class="lead text-fog mt-6 max-w-lg">
           Lowest number wins. For a community spread across the country,
-          Dallas splits the difference. For Europe, Ashburn.
+          Dallas splits the difference. For Europe, Ashburn, once it has room again.
         </p>
         <a
           href="/games"
@@ -102,7 +102,7 @@ const live = HOSTING.filter((r) => r.pingUrl).length;
       </div>
       <dl class="m-0">
         {[
-          ["Does every game go in every region?", "Yes. Same plans, same prices, any of the four. The region is a dropdown at checkout."],
+          ["Does every game go in every region?", "Yes, same plans and same prices everywhere. You pick the region on the game page; a sold-out one is greyed out there until space opens."],
           ["Can I move regions later?", "Ask on a ticket. A move between two of our own nodes is a copy, not an import, so it's the quick kind."],
           ["What does the ping test actually measure?", "A handful of no-cors fetches from your browser to something in that datacentre, median of the last four. It isn't the game's netcode but it's the same path."],
         ].map(([q, a]) => (

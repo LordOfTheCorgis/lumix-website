@@ -13,7 +13,7 @@
 // BeamMP has no location group attached at all. main's notes from earlier had
 // Miami = 3 and Ashburn = 5 in the same group; neither is offered now, so
 // they're not wired. Turn them back on in WHMCS, confirm the ids, fill them in.
-import { HOSTING } from "./locations";
+import { HOSTING, AVAILABILITY_LABEL } from "./locations";
 
 export interface OptionChoice {
   id: string;
@@ -22,6 +22,8 @@ export interface OptionChoice {
   valueId: number | null;
   /** Regions only. The builder measures it the way PingTest does. */
   pingUrl?: string;
+  /** Shown in place of `detail` when valueId is null. */
+  offLabel?: string;
 }
 
 export interface OptionGroup {
@@ -54,6 +56,7 @@ export const OPTION_GROUPS: OptionGroup[] = [
       detail: h.region,
       valueId: REGION_VALUE_IDS[h.slug!] ?? null,
       pingUrl: h.pingUrl,
+      offLabel: AVAILABILITY_LABEL[h.availability ?? "soon"],
     })),
   },
 ];

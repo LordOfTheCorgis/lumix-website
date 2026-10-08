@@ -63,7 +63,7 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
       <!-- Every row here is a game in src/content/games. Add a yaml, get a row. -->
       <Terminal label="catalogue" class="lg:ml-auto">
         <TypingAnimation>$ lumix catalog --all</TypingAnimation>
-        <AnimatedSpan class="text-fog">Resolving node capacity across 4 regions...</AnimatedSpan>
+        <AnimatedSpan class="text-fog">Resolving node capacity across US regions...</AnimatedSpan>
         <AnimatedSpan>&nbsp;</AnimatedSpan>
         <AnimatedSpan class="text-slate">{pad("GAME")}{pad("STATUS", 10)}ORDER</AnimatedSpan>
         <!-- Twenty-one rows is a wall. Eight show at a time; the arrows below
@@ -123,7 +123,7 @@ const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
 
       <p class="small text-fog mt-8 max-w-2xl">
         Every plan includes DDoS protection, full file access, and your pick of
-        Salt Lake City, Dallas, Ashburn or Miami.
+        whichever region has room. <a href="/regions" class="text-paper underline underline-offset-4 hover:text-red">See which</a>.
       </p>
       <p class="small text-fog mt-3 max-w-2xl">
         Running a Discord bot or a Node.js app instead? Application hosting is{" "}

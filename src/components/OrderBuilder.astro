@@ -120,7 +120,7 @@ const stepOffset = 2; // 01 is the plan, then one per option group, then billing
                       <span class="closest instrument ml-2 align-middle" hidden data-closest>Closest to you</span>
                     </span>
                     <span class="small mt-1 block text-fog">
-                      {c.valueId === null ? "Not taking orders yet" : c.detail}
+                      {c.valueId === null ? (c.offLabel ?? "Not taking orders yet") : c.detail}
                     </span>
                   </span>
                   <!-- Filled by the script when the region has a pingUrl

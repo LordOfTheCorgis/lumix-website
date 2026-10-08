@@ -18,7 +18,7 @@ export const FAQ: Faq[] = [
   },
   {
     q: "Where can my server run?",
-    a: "Salt Lake City, Dallas, Ashburn or Miami. You pick the region at checkout, and you should pick the one closest to most of your players, not to you.",
+    a: "Dallas, Ashburn and Miami, with Salt Lake City coming. You pick on the game page before checkout, and a region that's sold out shows greyed there. Pick the one closest to most of your players, not to you.",
   },
   {
     q: "Is DDoS protection included?",

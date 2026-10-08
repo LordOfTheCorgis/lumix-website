@@ -9,7 +9,7 @@ import Included from "../components/Included.astro";
 import PingTest from "../components/PingTest.astro";
 import Globe from "../components/Globe.astro";
 import { orderUrl, price } from "../lib/order";
-import { HOSTING, MITIGATION } from "../lib/locations";
+import { HOSTING, MITIGATION, AVAILABILITY_LABEL } from "../lib/locations";
 import { botHosting, links, trust } from "../config";
 
 const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
@@ -119,7 +119,7 @@ const cheapest = Math.min(
       <div>
         <h2 class="title">Where your server actually runs<span class="text-red">.</span></h2>
         <p class="lead text-fog mt-6 max-w-md">
-          Four regions across the country, so your players connect to the one
+          Regions across the country, so your players connect to the one
           nearest them instead of the one that was convenient for us.
         </p>
 
@@ -130,6 +130,9 @@ const cheapest = Math.min(
             <li>
               <p class="instrument text-slate">{l.region}</p>
               <p class="mt-1 font-medium">{l.city}</p>
+              {l.availability && l.availability !== "open" && (
+                <p class="small text-slate">{AVAILABILITY_LABEL[l.availability]}</p>
+              )}
             </li>
           ))}
         </ul>

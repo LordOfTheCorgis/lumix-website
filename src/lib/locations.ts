@@ -14,7 +14,19 @@ export interface Location {
       no-cors fetch against it, so it needs no CORS headers and can 404 for
       all we care. Leave it off and the region is skipped. */
   pingUrl?: string;
+  /** Hosting regions only. "sold-out" means the box exists and is full;
+      "soon" means there's no box yet. Keep those two honest: /hardware lists
+      the real machines, and a "sold out" region with no machine on that
+      page is a contradiction anyone can spot. Evan, 2026-10-08: Miami and
+      Ashburn full, SLC not built yet. */
+  availability?: "open" | "sold-out" | "soon";
 }
+
+export const AVAILABILITY_LABEL = {
+  open: "Taking orders",
+  "sold-out": "Sold out",
+  soon: "Coming soon",
+} as const;
 
 // Where servers run. West to east.
 export const HOSTING: Location[] = [
@@ -22,6 +34,7 @@ export const HOSTING: Location[] = [
     city: "Salt Lake City",
     region: "Utah",
     slug: "salt-lake-city",
+    availability: "soon",
     lat: 40.7608,
     lng: -111.891,
     serves: "The Mountain West and the Pacific coast. Seattle to San Diego lands here.",
@@ -30,6 +43,7 @@ export const HOSTING: Location[] = [
     city: "Dallas",
     region: "Texas",
     slug: "dallas",
+    availability: "open",
     lat: 32.7767,
     lng: -96.797,
     serves: "Texas, the South, the Midwest, and most of Mexico. The middle of the country.",
@@ -38,6 +52,7 @@ export const HOSTING: Location[] = [
     city: "Ashburn",
     region: "Virginia",
     slug: "ashburn",
+    availability: "sold-out",
     lat: 39.0438,
     lng: -77.4874,
     serves: "The Northeast, the Mid-Atlantic, eastern Canada, and the shortest hop from Europe.",
@@ -46,6 +61,7 @@ export const HOSTING: Location[] = [
     city: "Miami",
     region: "Florida",
     slug: "miami",
+    availability: "sold-out",
     lat: 25.7617,
     lng: -80.1918,
     serves: "Florida, the Gulf, the Caribbean, and South America.",
