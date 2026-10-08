@@ -69,6 +69,20 @@ the commit and point at this file.
       Keaghan's names. `/contact` leaves `support@` off on purpose (tickets
       are the record); say if that inbox should be on the page.
 
+- [ ] **"Dedicated vCores, never oversold" vs the hardware page.** Dallas
+      has 16 threads, Ashburn and Miami 12. The top plans promise 6
+      dedicated vCores each. Now the CPUs are public, anyone can do that
+      division. If nodes carry more vCores than threads, the line in
+      `Included.astro`, `faq.ts` and the game yaml needs rewording.
+- [ ] **Confirm RAID 1.** Provider panel says "2 TB, 2 disks" on every
+      node. The site says NVMe on RAID 1. If the second disk isn't a mirror,
+      fix `src/lib/hardware.ts` and the other three places together.
+- [ ] **Salt Lake City has no node.** Your screenshots are Miami (MFL014),
+      Ashburn (ASH510) and Dallas (DTX56). /hardware lists those three; the
+      home page, /regions, FAQ and tagline still say SLC.
+- [ ] **Miami and Ashburn nodes exist but WHMCS only sells Dallas.** Add
+      them to the Server Location option, send me the value ids.
+
 ## Pricing (WHMCS, not the site)
 
 - [ ] **Fix the annual-cycle dips.** Discount is supposed to rise with
