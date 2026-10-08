@@ -206,30 +206,15 @@ const moreOpenish = moreNav.some((item) => isCurrent(item.href));
   const moreArrow = more?.querySelector<SVGElement>("[data-more-arrow]");
 
   if (more && moreToggle && morePanel) {
-    let hoverTimer: number | undefined;
-
     const setMore = (open: boolean) => {
       morePanel.hidden = !open;
       moreToggle.setAttribute("aria-expanded", String(open));
       moreArrow?.classList.toggle("rotate-180", open);
     };
 
+    // Click only. It used to open on hover too, and Evan said that felt
+    // weird (2026-10-08). Don't put hover back.
     moreToggle.addEventListener("click", () => setMore(morePanel.hidden));
-
-    // Hover only where there's a real pointer. On touch the hover event fires
-    // on tap and then the click immediately closes it again, which reads as
-    // the menu refusing to open.
-    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-      more.addEventListener("pointerenter", () => {
-        clearTimeout(hoverTimer);
-        setMore(true);
-      });
-      // Small grace period so a diagonal cursor path to the panel doesn't
-      // close it out from under you.
-      more.addEventListener("pointerleave", () => {
-        hoverTimer = window.setTimeout(() => setMore(false), 120);
-      });
-    }
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !morePanel.hidden) {

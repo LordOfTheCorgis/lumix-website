@@ -57,7 +57,7 @@ them. Contact is a ledger of need against destination, same idiom as
 `/partners`, and promises no hours or response times, same as Included and
 the FAQ.
 
-**Header has a "More" drawer** (2026-09-14). Desktop: hover or click, arrow
+**Header has a "More" drawer** (2026-09-14). Desktop: click only (hover was cut 2026-10-08), arrow
 flips, Escape closes, ArrowDown from the toggle lands on the first link,
 focus leaving the panel closes it. Mobile: rendered as a labelled group in the
 existing panel, no dropdown. Items come from `moreNav` in `src/config.ts`.
