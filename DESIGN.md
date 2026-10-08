@@ -244,7 +244,7 @@ Panels that sit on the grid take their height in cells too. Game tiles are seven
 
 Container maxes at 1328px so the capped content column is exactly 1280, which is 32 cells.
 Gutters are 24px, 20px on mobile, 8px spacing base.
-Section rhythm is 96px desktop and 56px mobile, living on a single `.section` class.
+Section rhythm is 80px desktop and 40px mobile (two cells and one, so section edges stay on the cursor grid; was 96/56 until 2026-10-08), living on a single `.section` class.
 Never also put block padding on the `section` element selector; when both exist they take
 turns winning depending on import order, and that collision is the most common way a
 Tailwind build goes subtly wrong.
