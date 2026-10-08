@@ -33,7 +33,7 @@ const cheapest = (g: (typeof live)[number]) =>
 const col = Math.max(...all.map((g) => g.data.slug.length)) + 2;
 const pad = (s: string, n = col) => s.padEnd(n);
 
-const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
+const botUrl = botHosting.pid ? orderUrl(botHosting.pid, { withPromo: false }) : links.billing;
 ---
 
 <Layout

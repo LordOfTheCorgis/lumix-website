@@ -47,7 +47,7 @@ const productSchema = {
       unitCode: "MON",
     },
     availability: "https://schema.org/InStock",
-    url: orderUrl(plan.pid),
+    url: orderUrl(plan.pid, { withPromo: false }),
   })),
 };
 ---
