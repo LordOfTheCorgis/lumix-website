@@ -26,10 +26,10 @@ plans:
     pricing:
       monthly: 5.99
       quarterly: 16.99
-      semiannually: 34.99
-      annually: 67.99
-      biennially: 131.99
-      triennially: 179.99
+      semiannually: 32.99
+      annually: 64.99
+      biennially: 121.99
+      triennially: 172.99
   - key: "budget"
     name: "BeamMP Budget Plan"
     pid: 41
@@ -44,10 +44,10 @@ plans:
     pricing:
       monthly: 8.99
       quarterly: 25.99
-      semiannually: 52.99
-      annually: 101.99
-      biennially: 203.99
-      triennially: 287.99
+      semiannually: 49.99
+      annually: 96.99
+      biennially: 182.99
+      triennially: 258.99
   - key: "standard"
     name: "BeamMP Standard Plan"
     pid: 42
@@ -62,10 +62,10 @@ plans:
     pricing:
       monthly: 12.99
       quarterly: 36.99
-      semiannually: 75.99
-      annually: 143.99
-      biennially: 311.99
-      triennially: 431.99
+      semiannually: 71.99
+      annually: 139.99
+      biennially: 264.99
+      triennially: 373.99
   - key: "advanced"
     name: "BeamMP Advanced Plan"
     pid: 43
@@ -80,10 +80,10 @@ plans:
     pricing:
       monthly: 17.99
       quarterly: 50.99
-      semiannually: 101.99
-      annually: 203.99
-      biennially: 395.99
-      triennially: 575.99
+      semiannually: 98.99
+      annually: 193.99
+      biennially: 366.99
+      triennially: 517.99
   - key: "premium"
     name: "BeamMP Premium Plan"
     pid: 44
@@ -97,11 +97,11 @@ plans:
       backups: "4"
     pricing:
       monthly: 23.99
-      quarterly: 68.99
-      semiannually: 137.99
-      annually: 275.99
-      biennially: 551.99
-      triennially: 791.99
+      quarterly: 67.99
+      semiannually: 131.99
+      annually: 258.99
+      biennially: 488.99
+      triennially: 690.99
   - key: "elite"
     name: "BeamMP Elite Plan"
     pid: 45
@@ -115,11 +115,11 @@ plans:
       backups: "5"
     pricing:
       monthly: 29.99
-      quarterly: 85.99
-      semiannually: 173.99
-      annually: 347.99
-      biennially: 671.99
-      triennially: 971.99
+      quarterly: 84.99
+      semiannually: 165.99
+      annually: 323.99
+      biennially: 611.99
+      triennially: 863.99
   - key: "ultimate"
     name: "BeamMP Ultimate Plan"
     pid: 46
@@ -134,7 +134,7 @@ plans:
     pricing:
       monthly: 37.99
       quarterly: 107.99
-      semiannually: 221.99
-      annually: 443.99
-      biennially: 863.99
-      triennially: 1295.99
+      semiannually: 209.99
+      annually: 409.99
+      biennially: 774.99
+      triennially: 1093.99

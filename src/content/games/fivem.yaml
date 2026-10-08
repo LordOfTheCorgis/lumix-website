@@ -46,10 +46,10 @@ plans:
     pricing:
       monthly: 12.99
       quarterly: 36.99
-      semiannually: 73.99
-      annually: 143.99
-      biennially: 275.99
-      triennially: 395.99
+      semiannually: 71.99
+      annually: 139.99
+      biennially: 264.99
+      triennially: 373.99
   - key: "standard"
     name: "Standard FiveM Server"
     pid: 18
@@ -64,10 +64,10 @@ plans:
     pricing:
       monthly: 18.99
       quarterly: 53.99
-      semiannually: 107.99
-      annually: 215.99
-      biennially: 407.99
-      triennially: 611.99
+      semiannually: 104.99
+      annually: 204.99
+      biennially: 386.99
+      triennially: 546.99
   - key: "advanced"
     name: "Advanced FiveM Server"
     pid: 22
@@ -82,10 +82,10 @@ plans:
     pricing:
       monthly: 26.99
       quarterly: 76.99
-      semiannually: 149.99
-      annually: 311.99
-      biennially: 599.99
-      triennially: 863.99
+      semiannually: 148.99
+      annually: 290.99
+      biennially: 550.99
+      triennially: 776.99
   - key: "premium"
     name: "Premium FiveM Server"
     pid: 21
@@ -100,10 +100,10 @@ plans:
     pricing:
       monthly: 31.99
       quarterly: 90.99
-      semiannually: 179.99
-      annually: 347.99
-      biennially: 671.99
-      triennially: 971.99
+      semiannually: 176.99
+      annually: 344.99
+      biennially: 652.99
+      triennially: 920.99
   - key: "elite"
     name: "Elite FiveM Server"
     pid: 20
@@ -118,10 +118,10 @@ plans:
     pricing:
       monthly: 42.99
       quarterly: 122.99
-      semiannually: 239.99
-      annually: 467.99
-      biennially: 887.99
-      triennially: 1295.99
+      semiannually: 236.99
+      annually: 463.99
+      biennially: 876.99
+      triennially: 1237.99
   - key: "ultimate"
     name: "Ultimate FiveM Server"
     pid: 19
@@ -136,7 +136,7 @@ plans:
     pricing:
       monthly: 52.99
       quarterly: 150.99
-      semiannually: 299.99
-      annually: 575.99
-      biennially: 1103.99
-      triennially: 1583.99
+      semiannually: 292.99
+      annually: 571.99
+      biennially: 1080.99
+      triennially: 1525.99

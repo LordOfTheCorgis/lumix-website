@@ -25,8 +25,8 @@ plans:
       backups: "3"
     pricing:
       monthly: 9.99
-      quarterly: 28.49
-      semiannually: 55.99
+      quarterly: 27.99
+      semiannually: 54.99
       annually: 107.99
       biennially: 203.99
       triennially: 287.99
@@ -44,10 +44,10 @@ plans:
     pricing:
       monthly: 14.99
       quarterly: 42.99
-      semiannually: 83.99
-      annually: 167.99
-      biennially: 323.99
-      triennially: 467.99
+      semiannually: 82.99
+      annually: 161.99
+      biennially: 305.99
+      triennially: 431.99
   - key: "standard"
     name: "Palworld Standard Plan"
     pid: 33
@@ -62,10 +62,10 @@ plans:
     pricing:
       monthly: 21.99
       quarterly: 62.99
-      semiannually: 125.99
-      annually: 251.99
-      biennially: 503.99
-      triennially: 755.99
+      semiannually: 120.99
+      annually: 236.99
+      biennially: 448.99
+      triennially: 632.99
   - key: "advanced"
     name: "Palworld Advanced Plan"
     pid: 34
@@ -79,11 +79,11 @@ plans:
       backups: "4"
     pricing:
       monthly: 29.99
-      quarterly: 85.99
-      semiannually: 167.99
-      annually: 335.99
-      biennially: 647.99
-      triennially: 935.99
+      quarterly: 84.99
+      semiannually: 165.99
+      annually: 323.99
+      biennially: 611.99
+      triennially: 863.99
   - key: "premium"
     name: "Palworld Premium Plan"
     pid: 36
@@ -98,10 +98,10 @@ plans:
     pricing:
       monthly: 38.99
       quarterly: 110.99
-      semiannually: 221.99
-      annually: 443.99
-      biennially: 863.99
-      triennially: 1295.99
+      semiannually: 214.99
+      annually: 420.99
+      biennially: 794.99
+      triennially: 1122.99
   - key: "elite"
     name: "Palworld Elite Plan"
     pid: 37
@@ -115,11 +115,11 @@ plans:
       backups: "5"
     pricing:
       monthly: 48.99
-      quarterly: 140.99
-      semiannually: 281.99
-      annually: 563.99
-      biennially: 1151.99
-      triennially: 1691.99
+      quarterly: 139.99
+      semiannually: 269.99
+      annually: 528.99
+      biennially: 998.99
+      triennially: 1410.99
   - key: "ultimate"
     name: "Palworld Ultimate Plan"
     pid: 38
@@ -134,7 +134,7 @@ plans:
     pricing:
       monthly: 59.99
       quarterly: 170.99
-      semiannually: 341.99
-      annually: 683.99
-      biennially: 1343.99
-      triennially: 1979.99
+      semiannually: 330.99
+      annually: 647.99
+      biennially: 1223.99
+      triennially: 1727.99
