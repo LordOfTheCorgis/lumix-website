@@ -1,0 +1,8 @@
+# cPanel is Apache. Astro builds every page as folder/index.html and a 404.html
+# at the root; Apache needs telling about the second one or a bad URL gets the
+# server's default page instead of ours.
+ErrorDocument 404 /404.html
+
+# /regions and /regions/ are the same page. Without this Apache 301s the bare
+# one to the slash, which is fine, but say so explicitly.
+DirectorySlash On

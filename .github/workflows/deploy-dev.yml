@@ -1,0 +1,67 @@
+name: Deploy dev
+
+# Every push to redesign builds the site and uploads it to
+# dev.lumixsolutions.org on cPanel. Static files only, so cPanel's Node
+# version doesn't matter. Built with PUBLIC_DEPLOY_ENV=dev, which makes every
+# page noindex and robots.txt disallow everything; see Layout.astro.
+#
+# Needs three repo secrets (Settings > Secrets and variables > Actions):
+#   CPANEL_FTP_SERVER    e.g. ftp.lumixsolutions.org, or the server hostname
+#                        cPanel shows under FTP Accounts > Configure FTP Client
+#   CPANEL_FTP_USERNAME  the cPanel FTP user
+#   CPANEL_FTP_PASSWORD
+# Until they're set the build still runs and the upload is skipped, so a push
+# never fails just because nobody's wired it up yet.
+
+on:
+  push:
+    branches: [redesign]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      HAS_FTP: ${{ secrets.CPANEL_FTP_SERVER != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          PUBLIC_DEPLOY_ENV: dev
+
+      - name: Upload to cPanel
+        if: env.HAS_FTP == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.CPANEL_FTP_SERVER }}
+          username: ${{ secrets.CPANEL_FTP_USERNAME }}
+          password: ${{ secrets.CPANEL_FTP_PASSWORD }}
+          # FTPS, so the password doesn't cross the internet in plain text.
+          # cPanel serves it on 21 by default. If the first run can't connect,
+          # check cPanel has TLS on for FTP before dropping to plain "ftp".
+          protocol: ftps
+          local-dir: ./dist/
+          # Relative to the FTP account's root. For the main cPanel account
+          # that's the home folder, so this lands in public_html. An FTP
+          # account created for one directory has a different root; adjust.
+          server-dir: public_html/dev.lumixsolutions.org/
+          # Only touches files it uploaded itself (tracked in a state file it
+          # leaves in that folder), so anything else in there survives.
+
+      - name: Say why nothing was uploaded
+        if: env.HAS_FTP != 'true'
+        run: echo "::notice::Built fine, skipped the upload. Add the CPANEL_FTP_* secrets to deploy."
