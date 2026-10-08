@@ -32,14 +32,21 @@ the commit and point at this file.
 - [ ] **cPanel Node version.** Astro 7 needs Node 22.12+. Nobody has checked
       whether the cPanel box offers it. If it doesn't, the admin panel plan
       in BUILD-PLAN.md is dead and static-only deploy is the fallback.
-- [ ] **Deploy path.** `.github/workflows/deploy.yml` is the old, dead
-      workflow. Decide: build in CI and rsync `dist/` to cPanel, or build on
-      the box. Depends on the Node answer above.
-- [ ] **Pages the nav links to that don't exist yet:** `/partners`,
-      `/status`, `/contact`, `/staff`, `/privacy`, `/terms`, `/ccpa`. Header
-      and footer currently point at 404s. Legal three have content in
-      `src/content/legal/` and just need routing checked. (`/games` is built,
-      readout generated from the collection.)
+- [ ] **Deploy path.** `.github/workflows/deploy.yml` is the old workflow,
+      switched to manual-only (`workflow_dispatch`) on 2026-10-08 so merging
+      redesign can't rsync `--delete` over `/srv/www/lumixsolutions.org/`.
+      Decide: build in CI and rsync `dist/` to cPanel, or build on the box.
+      Depends on the Node answer above. Then fix the target and put the
+      trigger back.
+- [ ] **`/status`, the last 404 in the nav.** Header and footer both link
+      it. Pick one: link out to a real status provider if you run one
+      (UptimeRobot, BetterStack, Instatus), a page that only pings the four
+      regions live off the same `pingUrl`s as `/regions`, or pull it from
+      the nav until one exists. Not a fake uptime history like main had.
+- [ ] **Read `/staff` and `/contact`** (2026-10-08). Both bios in
+      `src/lib/staff.ts` are rewritten from main's and said in your and
+      Keaghan's names. `/contact` leaves `support@` off on purpose (tickets
+      are the record); say if that inbox should be on the page.
 
 ## Pricing (WHMCS, not the site)
 

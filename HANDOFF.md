@@ -1,14 +1,16 @@
 # Handoff — Lumix Website Redesign
 
-Written 2026-09-10. Read this, then `DESIGN.md`, then `BUILD-PLAN.md`.
+Written 2026-09-10, last brought up to date 2026-10-08. Read this, then
+`DESIGN.md`, then `BUILD-PLAN.md`. `TODO.md` is Evan's list, not ours.
 
 ---
 
 ## Where things stand
 
-Branch **`redesign`**, pushed to `origin/redesign`, 26 commits ahead of `main`.
-`main` still holds the entire old site untouched, and `origin/main` has not moved.
-Nothing here has shipped.
+Branch **`redesign`**, about 120 commits ahead of `main`. `main` still holds the
+entire old site untouched, and `origin/main` has not moved. Nothing here has
+shipped. The deploy workflow is manual-only until the cPanel path is decided,
+so merging does not deploy.
 
 The old site was torn down to nothing and rebuilt on a fresh Astro scaffold. Do not
 try to reconcile this branch with `main`; it shares no components, no stylesheet,
@@ -23,8 +25,14 @@ No React, no framework runtime.
 
 ## What exists
 
-Ten routes build: `/`, `/404`, `/privacy`, `/terms`, `/ccpa`, and five game pages
-under `/games/<slug>`.
+Eighteen routes build: `/`, `/404`, `/games` plus five game pages under
+`/games/<slug>`, `/partners`, `/regions`, `/migrate`, `/tools`,
+`/tools/fivem-server-cfg`, `/staff`, `/contact`, and the legal three
+(`/privacy`, `/terms`, `/ccpa`, all from `src/pages/[slug].astro`). Sixteen
+more games sit in `src/content/games/` as `status: planned` with art and logos
+ready; flip one to `live` with plans and it gets a page and a tile.
+
+The only internal link that 404s is `/status`. See TODO.md for the options.
 
 **Landing page** is single-purpose: get someone into a cart. Headline, one red CTA,
 then a five-tile game picker. No positioning copy, no stat bar. This was a
@@ -39,7 +47,15 @@ content-collection Markdown. Governing law is Louisiana, venue New Orleans. All
 three dated 2026-09-10.
 
 **Components:** Header, Footer, GameTile, StickyCta, CookieBanner, Analytics,
-LightRays, GridPattern, and a three-part Terminal.
+LightRays, HeroArt, Globe, PingTest, PromoBar, Included, Faq, CursorTrail, and
+a three-part Terminal. GridPattern is gone; CursorTrail replaced it.
+
+**`/staff` and `/contact`** (2026-10-08). Staff is two portraits from main
+(`src/assets/staff/`, data in `src/lib/staff.ts`) and a careers band; main's
+"Teams" grid of 24/7 departments was not carried over because nobody can name
+them. Contact is a ledger of need against destination, same idiom as
+`/partners`, and promises no hours or response times, same as Included and
+the FAQ.
 
 **Header has a "More" drawer** (2026-09-14). Desktop: hover or click, arrow
 flips, Escape closes, ArrowDown from the toggle lands on the first link,
@@ -88,8 +104,11 @@ streamable HTTP at docs.lumixsolutions.org/mcp, Mintlify-hosted, no auth).
 Tools: `search_lumix_solutions`, `query_docs_filesystem_lumix_solutions`,
 `submit_feedback`. A new session picks it up automatically. The docs are
 also plain fetchable: `/llms.txt` indexes them, each page is at its path
-with `.md` appended. The page imports it in its client script and
-Vite bundles it. Focusing a field marks its lines in the file with a red edge
+with `.md` appended.
+
+**The cfg maker's client code is `src/scripts/fivem-cfg.ts`** (moved out of
+the page 2026-10-08, the page was 1,064 lines). It imports `src/lib/fivem.ts`
+and Vite bundles both. Focusing a field marks its lines in the file with a red edge
 (counted as focus feedback, not a third red). Secrets are never written to
 localStorage; everything else is. `Layout` grew a `stickyCta` prop because
 this page needs the bottom edge for its own "See the file" bar on mobile.
@@ -120,8 +139,8 @@ it. `line-clamp-2` caps the height, it does not reserve it.
 
 ## What does not exist yet
 
-`/games` index, `/status`, `/partners`, `/staff`, `/contact`. The header and footer
-already link to these, so those links 404 today. That is expected, not a bug.
+`/status`. Header and footer link to it, so that one link 404s. It waits on
+Evan's call (TODO.md); don't build a hardcoded uptime history like main had.
 
 The Capacity Board described in DESIGN.md section 8 has not been built. It is the
 signature element and the design leans on it heavily.
@@ -265,13 +284,21 @@ by a routine in the `lumix-routines` repo, and is not part of this project.
 1. **cPanel Node version.** Astro 7 needs Node 22.12+. Whether cPanel offers it
    gates the entire admin plan in BUILD-PLAN.md. Nobody has checked yet. **This is
    the blocker now.**
-2. **Deploy path on cPanel**, and what replaces the dead workflow.
-3. Whether Terms sections 7 and 9 get reviewed by Louisiana counsel. Louisiana is
+2. **Deploy path on cPanel.** The old workflow is manual-only now; it needs a
+   confirmed target before its push trigger goes back.
+3. **What `/status` is.** Third-party status page, live ping-only page, or out
+   of the nav.
+4. Whether Terms sections 7 and 9 get reviewed by Louisiana counsel. Louisiana is
    the only civil law state, and broad liability disclaimers behave differently
    there than in the other forty-nine.
 
 ## Suggested next steps
 
-Light mode is settled, so go straight at the pages: `/games` index, `/status`,
-`/contact`, `/partners`, `/staff`, pulling copy from `main`'s data files. Then the
-Capacity Board, then the admin panel.
+Every page but `/status` exists. Build that once Evan picks what it is, then the
+Capacity Board, then the admin panel (gated on the Node question).
+
+**Windows npm keeps deleting `@emnapi/core` and `@emnapi/runtime`** from
+`package-lock.json` on install. They're optional wasm deps other platforms
+use. Don't commit that deletion; `git checkout package-lock.json` after a plain
+install, or restore those two entries by hand if the lockfile changed for a
+real reason.
