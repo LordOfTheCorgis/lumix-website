@@ -5,6 +5,7 @@ import Layout from "../../layouts/Layout.astro";
 import LightRays from "../../components/LightRays.astro";
 import { orderUrl, price } from "../../lib/order";
 import { firstTen } from "../../lib/firstTen";
+import { groupsFor, defaultChoice, defaultOptions } from "../../lib/orderOptions";
 import { promo, demoPanel, links } from "../../config";
 
 export async function getStaticPaths() {
@@ -21,6 +22,16 @@ const steps = firstTen(g.slug);
 // Cheapest first. Seven rows of ascending specs is the shape people actually
 // scan; sorting any other way makes them hunt for the entry price.
 const plans = [...g.plans].sort((a, b) => a.pricing.monthly - b.pricing.monthly);
+
+// Pickers above the plans. The server-rendered links already carry the
+// defaults, so with no JS you still order a working config; the script only
+// swaps values when someone picks something else.
+const optionGroups = groupsFor(g.slug);
+const configOptions = defaultOptions(optionGroups);
+// Every group answered means WHMCS can skip its config screen. A group with no
+// orderable choice leaves it out, and WHMCS asks on its own screen instead.
+const skipConfig = optionGroups.every((grp) => grp.groupId in configOptions);
+const orderOpts = { configOptions, skipConfig };
 
 // Product + one Offer per plan, built off the same yaml the page renders, so
 // the structured data can't say a different price than the table. The
@@ -47,7 +58,7 @@ const productSchema = {
       unitCode: "MON",
     },
     availability: "https://schema.org/InStock",
-    url: orderUrl(plan.pid, { withPromo: false }),
+    url: orderUrl(plan.pid),
   })),
 };
 ---
@@ -97,18 +108,64 @@ const productSchema = {
     </div>
   </section>
 
-  <section class="section band">
+  <section class="section band" style={`--game-accent:${g.accent}`} data-order>
     <div class="shell">
+      {optionGroups.map((grp) => {
+        const picked = defaultChoice(grp);
+        return (
+          <fieldset class="mb-14 border-0 p-0" data-option-group={grp.groupId}>
+            <legend class="title p-0">{grp.label}</legend>
+            <!-- Greyed choices are listed on purpose: /regions promises them,
+                 and a missing option reads as "never" where greyed reads
+                 as "not yet". They come alive when they get a valueId. -->
+            <div class="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+              {grp.choices.map((c) => (
+                <label
+                  class:list={[
+                    "option chamfer relative block border bg-ink-soft p-5",
+                    c.valueId === null ? "is-off border-[var(--edge)]" : "cursor-pointer border-[var(--edge)]",
+                  ]}
+                >
+                  <input
+                    type="radio"
+                    name={`configoption-${grp.groupId}`}
+                    value={c.valueId ?? ""}
+                    checked={c === picked}
+                    disabled={c.valueId === null}
+                    class="sr-only"
+                  />
+                  <span class="mark" aria-hidden="true"></span>
+                  <span class="block font-medium text-paper">{c.label}</span>
+                  <span class="small mt-1 block text-fog">
+                    {c.valueId === null ? "Not taking orders yet" : c.detail}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        );
+      })}
+
       <h2 class="title">Choose a size</h2>
       <p class="small text-fog mt-3 max-w-lg">
-        You pick the region on the next screen: Salt Lake City, Dallas, Ashburn
-        or Miami. Billed monthly unless you choose a longer term at checkout.
+        Billed monthly unless you pick a longer term in the cart.
         {promo.live && (
           <>
             {" "}Code <span class="instrument text-paper">{promo.code}</span> takes{" "}
-            {promo.percent}% off.
+            {promo.percent}% off; type it in before checkout.
           </>
         )}
+      </p>
+
+      <!-- WHMCS adds to the cart on every visit to an add link, it never
+           replaces. Come back and click Order again and that's two servers.
+           The cart can't be emptied cross-origin (main's notes, tried), so
+           this is a warning, not a fix. The real fix is a WHMCS hook. -->
+      <p class="small mt-6 max-w-xl border-l-2 border-[var(--game-accent)] pl-4 text-fog" data-cart-note hidden>
+        You already sent a server to the cart this visit. Ordering again adds a
+        second one.{" "}
+        <a href={`${links.billing}/cart.php?a=view`} class="text-paper underline underline-offset-4 hover:text-red">Open the cart</a>
+        {" "}to check it or remove extras.
       </p>
 
       <ul class="mt-8 space-y-3">
@@ -153,7 +210,8 @@ const productSchema = {
                 <!-- Only the popular plan is filled red. Seven red buttons would
                      be seven equally loud choices, which is no choice at all. -->
                 <a
-                  href={orderUrl(plan.pid)}
+                  href={orderUrl(plan.pid, orderOpts)}
+                  data-order-link
                   class:list={[
                     "chamfer inline-flex items-center px-6 py-3 font-medium transition-colors duration-150",
                     plan.popular
@@ -240,3 +298,76 @@ const productSchema = {
     </div>
   </section>
 </Layout>
+
+<style>
+  /* Picked = paper edge plus the game's accent square in the corner, same
+     square as the eyebrow up top. Not red: red is the popular plan and its
+     button, and a third red here would blow the two-per-viewport rule. */
+  .option {
+    transition: border-color 150ms;
+  }
+  .option:not(.is-off):hover {
+    border-color: var(--color-slate);
+  }
+  .option:has(input:checked) {
+    border-color: var(--color-paper);
+  }
+  .option .mark {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--game-accent);
+    opacity: 0;
+    transition: opacity 150ms;
+  }
+  .option:has(input:checked) .mark {
+    opacity: 1;
+  }
+  /* The input is sr-only, so the ring has to go on the card. */
+  .option:has(input:focus-visible) {
+    outline: 2px solid var(--color-red);
+    outline-offset: 2px;
+  }
+  .option.is-off {
+    opacity: 0.45;
+  }
+</style>
+
+<script>
+  // Picker -> cart links. Every Order link was rendered with the defaults, so
+  // this only rewrites the one param that changed.
+  const root = document.querySelector<HTMLElement>("[data-order]");
+  const links = root ? Array.from(root.querySelectorAll<HTMLAnchorElement>("[data-order-link]")) : [];
+
+  root?.addEventListener("change", (event) => {
+    const input = event.target as HTMLInputElement;
+    const group = input.closest<HTMLElement>("[data-option-group]")?.dataset.optionGroup;
+    if (!group || !input.value) return;
+    for (const a of links) {
+      const url = new URL(a.href);
+      url.searchParams.set(`configoption[${group}]`, input.value);
+      a.href = url.toString();
+    }
+  });
+
+  // Duplicate-cart warning, see the comment on [data-cart-note]. Session
+  // storage so it lasts the visit and no longer. pageshow rather than load so
+  // it also fires when the back button restores the page from bfcache, which
+  // is exactly the case that double-orders.
+  const NOTE_KEY = "lumix:sent-to-cart";
+  const note = root?.querySelector<HTMLElement>("[data-cart-note]");
+
+  for (const a of links) {
+    a.addEventListener("click", () => {
+      try { sessionStorage.setItem(NOTE_KEY, "1"); } catch {}
+    });
+  }
+
+  window.addEventListener("pageshow", () => {
+    let sent = false;
+    try { sent = sessionStorage.getItem(NOTE_KEY) === "1"; } catch {}
+    if (note) note.hidden = !sent;
+  });
+</script>

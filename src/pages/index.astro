@@ -12,7 +12,7 @@ import { orderUrl, price } from "../lib/order";
 import { HOSTING, MITIGATION } from "../lib/locations";
 import { botHosting, links, trust } from "../config";
 
-const botUrl = botHosting.pid ? orderUrl(botHosting.pid, { withPromo: false }) : links.billing;
+const botUrl = botHosting.pid ? orderUrl(botHosting.pid) : links.billing;
 
 const games = (await getCollection("games"))
   .filter((g) => g.data.status === "live")
