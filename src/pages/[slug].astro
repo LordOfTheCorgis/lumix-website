@@ -13,13 +13,17 @@ const { Content } = await render(doc);
 
 <Layout title={doc.data.title} description={doc.data.description}>
   <article class="section">
-    <div class="shell max-w-3xl">
+    <!-- Full shell, narrow column inside it: a max-width on the shell itself
+         re-centred it and moved its left edge off the cursor grid. -->
+    <div class="shell">
+      <div class="max-w-[calc(19*var(--grid-cell))]">
       <p class="instrument text-fog">Last updated {doc.data.lastUpdated}</p>
       <h1 class="display-l mt-6">{doc.data.title}</h1>
 
       <div class="legal-prose mt-12">
         <Content />
       </div>
+    </div>
     </div>
   </article>
 </Layout>
@@ -33,8 +37,11 @@ const { Content } = await render(doc);
     font-size: 1.25rem;
     letter-spacing: -0.02em;
     line-height: 1.3;
-    margin-top: 3rem;
-    padding-top: 2rem;
+    /* grid.ts adds whatever margin it takes to put this rule on a 40px
+       line, so 2rem is just the least it gets. A cell of padding starts the
+       heading text on a line too. */
+    margin-top: 2rem;
+    padding-top: var(--grid-cell);
     border-top: 1px solid var(--edge);
   }
 

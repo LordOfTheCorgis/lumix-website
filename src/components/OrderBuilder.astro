@@ -65,7 +65,7 @@ const stepOffset = 2; // 01 is the plan, then one per option group, then billing
 
   <div class="shell cell-split" style="--left: calc(var(--n, 32) - 9)">
     <div class="min-w-0 space-y-20">
-      <fieldset class="m-0 border-0 p-0">
+      <fieldset class="border-0 p-0">
         <legend class="step p-0" data-snap><span class="step-n">01</span>Choose a plan</legend>
         <div class="cell-cols mt-10 [--cols:1] sm:[--cols:2] xl:[--cols:3]">
           {plans.map((p) => (
@@ -93,7 +93,7 @@ const stepOffset = 2; // 01 is the plan, then one per option group, then billing
       {groups.map((g, gi) => {
         const picked = defaultChoice(g);
         return (
-          <fieldset class="m-0 border-0 p-0" data-option-group={g.groupId}>
+          <fieldset class="border-0 p-0" data-option-group={g.groupId}>
             <legend class="step p-0" data-snap>
               <span class="step-n">{String(gi + stepOffset).padStart(2, "0")}</span>{g.label}
             </legend>
@@ -134,7 +134,7 @@ const stepOffset = 2; // 01 is the plan, then one per option group, then billing
         );
       })}
 
-      <fieldset class="m-0 border-0 p-0">
+      <fieldset class="border-0 p-0">
         <legend class="step p-0" data-snap>
           <span class="step-n">{String(groups.length + stepOffset).padStart(2, "0")}</span>How you pay
         </legend>

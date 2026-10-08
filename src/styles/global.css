@@ -114,6 +114,12 @@
 }
 
 @layer base {
+  /* Fieldsets default to min-inline-size: min-content, so a .cell-cols grid
+     inside one measured the fieldset, picked columns that filled it, and the
+     fieldset grew to fit those columns: a loop that pinned the order builder's
+     cards at full page width under the summary. */
+  fieldset { min-inline-size: 0; }
+
   html {
     /* Tells the UA to render form controls, scrollbars and the like dark, so we
        don't get a white select popping out of nowhere on a page that has none. */

@@ -14,6 +14,10 @@
 //   .cell-split > *     both halves, so whichever stacks second on a phone
 //                       starts on a line
 //   .cell-stack > *     same, for stacks spaced one cell apart
+//   [data-align-top]    starts on the next line down: gets just enough extra
+//                       top margin. For things in running prose (legal page
+//                       headings) where snapping every paragraph would wreck
+//                       the reading rhythm.
 //   .snap-kids > *      every child of a stack, so whatever follows lands on a
 //                       line no matter how the text above it wrapped
 //
@@ -21,6 +25,7 @@
 // .cell-split utility, which needs an integer CSS can't derive from a length.
 
 const SNAP = "[data-snap], .snap-kids > *, .cell-stack > *, .cell-split > *, .section";
+const ALIGN = "[data-align-top], .legal-prose > h2:not(:first-child)";
 
 function cell(): number {
   return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--grid-cell")) || 40;
@@ -41,6 +46,21 @@ function snapAll() {
   document.querySelectorAll<HTMLElement>(".cell-cols").forEach((g) => {
     g.style.setProperty("--c", String(Math.floor((g.clientWidth + 0.5) / size)));
   });
+
+  // Tops first, top to bottom, because each push moves everything below it.
+  // Measured from <main>, same origin as the cursor trail.
+  const main = document.querySelector<HTMLElement>("main");
+  const aligned = Array.from(document.querySelectorAll<HTMLElement>(ALIGN));
+  aligned.forEach((el) => (el.style.marginTop = ""));
+  if (main) {
+    for (const el of aligned) {
+      const originY = main.getBoundingClientRect().top;
+      const off = (((el.getBoundingClientRect().top - originY) % size) + size) % size;
+      if (off < 0.5 || size - off < 0.5) continue;
+      const base = parseFloat(getComputedStyle(el).marginTop) || 0;
+      el.style.marginTop = `${base + (size - off)}px`;
+    }
+  }
 
   // Deepest first: a section's natural height depends on the snapped heights
   // of what's inside it, so the inside has to settle before the outside.
