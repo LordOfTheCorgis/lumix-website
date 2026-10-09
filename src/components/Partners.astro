@@ -7,6 +7,7 @@
 // No red in here on purpose. The globe band above spends the viewport's
 // budget and the FAQ headline below takes its full stop, so codes are
 // paper in an instrument, same as on /partners.
+import { Image } from "astro:assets";
 import { partners, partnerSlug } from "../lib/partners";
 
 const withOffer = partners.filter((p) => p.offer).length;
@@ -47,7 +48,9 @@ const withOffer = partners.filter((p) => p.offer).length;
               aria-hidden="true"
               class="chamfer flex h-[calc(2*var(--grid-cell))] w-[calc(2*var(--grid-cell))] shrink-0 items-center justify-center border border-[var(--edge-strong)] bg-ink-soft font-display text-lg font-semibold tracking-tight text-paper transition-colors duration-150 group-hover:border-paper"
             >
-              {p.mark}
+              {p.logo ? (
+                <Image src={p.logo} alt="" height={64} densities={[1, 2]} loading="lazy" decoding="async" class="h-full w-full object-contain p-2" />
+              ) : p.mark}
             </span>
             <span class="min-w-0 pt-1">
               <span class="block font-medium text-paper group-hover:underline group-hover:underline-offset-4">{p.name}</span>

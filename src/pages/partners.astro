@@ -6,6 +6,7 @@
 // Codes are paper in an instrument, same treatment as LUMIX10 in the promo
 // bar: a code is a thing you read and type, not a button. Red on this page is
 // the headline stop and the one CTA at the bottom.
+import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import { partners, partnerSlug } from "../lib/partners";
 
@@ -45,7 +46,11 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
               aria-label={p.name}
               class="chamfer flex h-[calc(2*var(--grid-cell))] w-[calc(2*var(--grid-cell))] items-center justify-center border border-[var(--edge-strong)] bg-ink-soft font-display text-xl font-semibold tracking-tight text-paper transition-colors duration-150 group-hover:border-paper"
             >
-              {p.mark}
+              <!-- Logo where they've sent one, letters where they haven't.
+                   alt is empty: the link already carries the name. -->
+              {p.logo ? (
+                <Image src={p.logo} alt="" height={64} densities={[1, 2]} loading="lazy" decoding="async" class="h-full w-full object-contain p-2" />
+              ) : p.mark}
             </a>
 
             <div class="min-w-0">
