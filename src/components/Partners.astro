@@ -46,10 +46,16 @@ const withOffer = partners.filter((p) => p.offer).length;
           <a href={`/partners#${partnerSlug(p)}`} class="group flex items-start gap-5">
             <span
               aria-hidden="true"
-              class="chamfer flex h-[calc(2*var(--grid-cell))] w-[calc(2*var(--grid-cell))] shrink-0 items-center justify-center border border-[var(--edge-strong)] bg-ink-soft font-display text-lg font-semibold tracking-tight text-paper transition-colors duration-150 group-hover:border-paper"
+              class:list={[
+                "flex h-[calc(2*var(--grid-cell))] w-[calc(2*var(--grid-cell))] shrink-0 items-center justify-center",
+                // The box is only for the letters. Logos sat in it for an hour and
+                // Evan didn't like it: their marks have their own shapes and the
+                // frame just boxed them in.
+                !p.logo && "chamfer border border-[var(--edge-strong)] bg-ink-soft font-display text-lg font-semibold tracking-tight text-paper transition-colors duration-150 group-hover:border-paper",
+              ]}
             >
               {p.logo ? (
-                <Image src={p.logo} alt="" height={64} densities={[1, 2]} loading="lazy" decoding="async" class="h-full w-full object-contain p-2" />
+                <Image src={p.logo} alt="" height={80} densities={[1, 2]} loading="lazy" decoding="async" class="h-full w-full object-contain" />
               ) : p.mark}
             </span>
             <span class="min-w-0 pt-1">

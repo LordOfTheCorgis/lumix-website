@@ -44,12 +44,18 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
               rel="noopener"
               target="_blank"
               aria-label={p.name}
-              class="chamfer flex h-[calc(2*var(--grid-cell))] w-[calc(2*var(--grid-cell))] items-center justify-center border border-[var(--edge-strong)] bg-ink-soft font-display text-xl font-semibold tracking-tight text-paper transition-colors duration-150 group-hover:border-paper"
+              class:list={[
+                "flex h-[calc(2*var(--grid-cell))] w-[calc(2*var(--grid-cell))] items-center justify-center",
+                // The box is only for the letters. Logos sat in it for an hour and
+                // Evan didn't like it: their marks have their own shapes and the
+                // frame just boxed them in.
+                !p.logo && "chamfer border border-[var(--edge-strong)] bg-ink-soft font-display text-xl font-semibold tracking-tight text-paper transition-colors duration-150 group-hover:border-paper",
+              ]}
             >
               <!-- Logo where they've sent one, letters where they haven't.
                    alt is empty: the link already carries the name. -->
               {p.logo ? (
-                <Image src={p.logo} alt="" height={64} densities={[1, 2]} loading="lazy" decoding="async" class="h-full w-full object-contain p-2" />
+                <Image src={p.logo} alt="" height={80} densities={[1, 2]} loading="lazy" decoding="async" class="h-full w-full object-contain" />
               ) : p.mark}
             </a>
 
