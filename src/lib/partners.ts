@@ -159,3 +159,8 @@ export const partners: Partner[] = [
     discord: "https://discord.gg/SZhU2cFc4Q",
   },
 ];
+
+/** Anchor id for a partner's row on /partners. Built from the name so nobody
+ *  has to remember to add a field; "Marco's Presets" comes out marcos-presets. */
+export const partnerSlug = (p: Partner) =>
+  p.name.toLowerCase().replace(/'/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");

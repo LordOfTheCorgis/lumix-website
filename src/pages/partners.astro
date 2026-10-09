@@ -1,5 +1,5 @@
 ---
-// Seven FiveM asset shops and the codes they give Lumix customers. The page's
+// The FiveM asset shops and the codes they give Lumix customers. The page's
 // job is to send someone who just bought a server to the people who'll fill
 // it, so each card ends in their links, not ours.
 //
@@ -7,7 +7,7 @@
 // bar: a code is a thing you read and type, not a button. Red on this page is
 // the headline stop and the one CTA at the bottom.
 import Layout from "../layouts/Layout.astro";
-import { partners } from "../lib/partners";
+import { partners, partnerSlug } from "../lib/partners";
 
 const withOffer = partners.filter((p) => p.offer).length;
 const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
@@ -29,7 +29,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
     </div>
   </section>
 
-  <!-- A ledger, not a card grid. Seven studios with no logos turned into
+  <!-- A ledger, not a card grid. Seven studios (nine now) with no logos turned into
        seven grey boxes of text; this gives each one a line of its own, a
        monogram where a logo would sit, and room. Rows sit on the module:
        the monogram is two cells square and the row padding is one. -->
@@ -37,7 +37,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
     <div class="shell">
       <ol class="m-0 list-none p-0 border-t border-[var(--edge)]">
         {partners.map((p, i) => (
-          <li class="group grid gap-6 border-b border-[var(--edge)] py-[var(--grid-cell)] lg:grid-cols-[calc(2*var(--grid-cell))_minmax(0,5fr)_minmax(0,6fr)_12rem] lg:gap-10" data-snap>
+          <li id={partnerSlug(p)} class="group scroll-mt-24 grid gap-6 border-b border-[var(--edge)] py-[var(--grid-cell)] lg:grid-cols-[calc(2*var(--grid-cell))_minmax(0,5fr)_minmax(0,6fr)_12rem] lg:gap-10" data-snap>
             <a
               href={p.url ?? p.discord}
               rel="noopener"
