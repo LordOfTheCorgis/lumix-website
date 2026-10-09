@@ -71,6 +71,9 @@ export const partners: Partner[] = [
       "Optimized performance",
       "Constant updates & improvements",
     ],
+    // Ours, not theirs, unlike the blurb above. Evan 2026-10-08. The year's
+    // in there so it doesn't quietly turn into "a May" nobody can place.
+    note: "We built naturallightenhanced.com from scratch in early May 2026, and we still run it.",
     url: "https://naturallightenhanced.com/",
     discord: "https://discord.gg/F5rvPwNJc2",
   },
