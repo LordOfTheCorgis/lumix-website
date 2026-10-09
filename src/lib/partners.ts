@@ -14,6 +14,7 @@ import eliteLogo from "../assets/partners/elite-modification.webp";
 import fgLogo from "../assets/partners/fg-development-studio.webp";
 import cartoonLogo from "../assets/partners/cartoon.webp";
 import celestrativeLogo from "../assets/partners/celestrative-modifications.webp";
+import centrixLogo from "../assets/partners/centrix-development-hub.webp";
 
 export interface Partner {
   name: string;
@@ -136,6 +137,7 @@ export const partners: Partner[] = [
   {
     name: "Centrix Development Hub",
     mark: "CDH",
+    logo: centrixLogo,
     founder: "Mike",
     description:
       "Centrix Development Hub is a versatile FiveM development team offering a wide range of services, including custom vehicle modifications and graphics design. With a focus on quality and client satisfaction, they provide tailored solutions to enhance your server's experience.",
