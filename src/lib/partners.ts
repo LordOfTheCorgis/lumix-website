@@ -12,6 +12,8 @@ import marcoLogo from "../assets/partners/marcos-presets.webp";
 import kezLogo from "../assets/partners/kez-modifications.webp";
 import eliteLogo from "../assets/partners/elite-modification.webp";
 import fgLogo from "../assets/partners/fg-development-studio.webp";
+import cartoonLogo from "../assets/partners/cartoon.webp";
+import celestrativeLogo from "../assets/partners/celestrative-modifications.webp";
 
 export interface Partner {
   name: string;
@@ -85,6 +87,10 @@ export const partners: Partner[] = [
   {
     name: "Cartoon",
     mark: "CT",
+    // Courage the Cowardly Dog, cropped off their avatar. It's Cartoon
+    // Network's character, not theirs; Evan's call on 2026-10-08 to run it.
+    // Swap it the day they send a mark of their own.
+    logo: cartoonLogo,
     founder: "Cartoon",
     description:
       "Cartoon does custom animations for FiveM: law enforcement emotes, cuffing and searching sequences, the small movements that make a traffic stop look like one instead of two people standing still. Scripts too, when an animation needs one to run.",
@@ -116,11 +122,14 @@ export const partners: Partner[] = [
     discord: "https://discord.gg/AMSrHMZRhW",
   },
   {
-    name: "Valerisn Upfitting",
-    mark: "VU",
+    // Was Valerisn Upfitting until 2026-10-08. Same founder, same Discord
+    // as far as we know; Evan only passed on the new name and logo.
+    name: "Celestrative Modifications",
+    mark: "CM",
+    logo: celestrativeLogo,
     founder: "Valerisn",
     description:
-      "Focused on creating clean, high quality Non-ELS vehicles for FiveM with realistic designs, optimized builds, and attention to detail, Valerisn's mission is to provide communities with reliable, immersive vehicle assets that enhance gameplay and fit seamlessly into any server.",
+      "Focused on creating clean, high quality Non-ELS vehicles for FiveM with realistic designs, optimized builds, and attention to detail, Celestrative's mission is to provide communities with reliable, immersive vehicle assets that enhance gameplay and fit seamlessly into any server.",
     services: ["Non-ELS FiveM vehicles", "Optimized vehicles", "Custom commission work"],
     discord: "https://discord.gg/esfvwXEzG7",
   },
