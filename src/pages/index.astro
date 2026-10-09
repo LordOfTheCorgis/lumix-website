@@ -8,6 +8,7 @@ import Faq from "../components/Faq.astro";
 import Included from "../components/Included.astro";
 import PingTest from "../components/PingTest.astro";
 import Globe from "../components/Globe.astro";
+import Partners from "../components/Partners.astro";
 import { orderUrl, price } from "../lib/order";
 import { HOSTING, MITIGATION, AVAILABILITY_LABEL } from "../lib/locations";
 import { botHosting, links, trust } from "../config";
@@ -158,6 +159,8 @@ const cheapest = Math.min(
       <Globe class="lg:ml-auto" />
     </div>
   </section>
+
+  <Partners />
 
   <Faq />
 </Layout>

@@ -1,0 +1,62 @@
+---
+// The partner roster on the home page, short form. /partners has the whole
+// ledger; this is the nudge for someone who just picked FiveM and is about
+// to need cars and uniforms. Every entry jumps to its row over there, so the
+// home page never has to carry blurbs or a dozen outbound Discord links.
+//
+// No red in here on purpose. The globe band above spends the viewport's
+// budget and the FAQ headline below takes its full stop, so codes are
+// paper in an instrument, same as on /partners.
+import { partners, partnerSlug } from "../lib/partners";
+
+const withOffer = partners.filter((p) => p.offer).length;
+---
+
+<section class="section border-t border-[var(--edge)]">
+  <div class="shell cell-split" style="--left: calc(var(--n, 32) / 3)">
+    <div>
+      <p class="instrument text-fog">Partners · {partners.length} FiveM studios</p>
+      <h2 class="title mt-6">Fill it with their work</h2>
+      <p class="lead text-fog mt-6 max-w-sm">
+        Cars, uniforms, interiors, lighting. These are the studios our FiveM
+        customers buy from, and {withOffer} of them hand you a code at their
+        checkout.
+      </p>
+      <a
+        href="/partners"
+        class="small mt-8 inline-flex items-center gap-1.5 text-paper underline underline-offset-4 hover:text-red"
+      >
+        See every partner <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+
+    <!-- Same monogram as /partners so the two pages read as one list. The
+         square is two cells and the row snaps, so a two-line name doesn't
+         knock the next row off the grid. -->
+    <ul class="cell-cols m-0 list-none p-0 [--cols:1] sm:[--cols:2] xl:[--cols:3]">
+      {partners.map((p) => (
+        <li data-snap>
+          <a href={`/partners#${partnerSlug(p)}`} class="group flex items-start gap-5">
+            <span
+              aria-hidden="true"
+              class="chamfer flex h-[calc(2*var(--grid-cell))] w-[calc(2*var(--grid-cell))] shrink-0 items-center justify-center border border-[var(--edge-strong)] bg-ink-soft font-display text-lg font-semibold tracking-tight text-paper transition-colors duration-150 group-hover:border-paper"
+            >
+              {p.mark}
+            </span>
+            <span class="min-w-0 pt-1">
+              <span class="block font-medium text-paper group-hover:underline group-hover:underline-offset-4">{p.name}</span>
+              <span class="small block text-slate mt-1">{p.services[0]}</span>
+              {p.offer && (
+                <span class="small block text-fog mt-1">
+                  <!-- normal-case for the same reason as /partners: the
+                       code is typed exactly as the studio wrote it. -->
+                  <span class="instrument normal-case text-paper">{p.offer.code}</span> · {p.offer.text}
+                </span>
+              )}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
