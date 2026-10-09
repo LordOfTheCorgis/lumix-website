@@ -13,7 +13,11 @@ const withOffer = partners.filter((p) => p.offer).length;
 ---
 
 <section class="section border-t border-[var(--edge)]">
-  <div class="shell cell-split" style="--left: calc(var(--n, 32) / 3)">
+  <!-- max-lg track: below lg .cell-split has no template, so the list's
+       auto column sized itself off .cell-cols' default 32 cells and came out
+       1280px wide on a phone. grid.ts measures --c from that same width, so
+       it never corrected. An explicit 1fr track breaks the loop. -->
+  <div class="shell cell-split max-lg:grid-cols-[minmax(0,1fr)]" style="--left: calc(var(--n, 32) / 3)">
     <div>
       <p class="instrument text-fog">Partners · {partners.length} FiveM studios</p>
       <h2 class="title mt-6">Fill it with their work</h2>
@@ -30,12 +34,14 @@ const withOffer = partners.filter((p) => p.offer).length;
       </a>
     </div>
 
-    <!-- Same monogram as /partners so the two pages read as one list. The
-         square is two cells and the row snaps, so a two-line name doesn't
-         knock the next row off the grid. -->
+    <!-- Same monogram as /partners so the two pages read as one list. Rows
+         are a fixed three cells: letting each one snap on its own gave
+         160/120/160 because "Centrix Development Hub" wraps and Cartoon
+         doesn't. A services line used to sit under the name; it's what
+         pushed rows past three, and /partners already lists them all. -->
     <ul class="cell-cols m-0 list-none p-0 [--cols:1] sm:[--cols:2] xl:[--cols:3]">
       {partners.map((p) => (
-        <li data-snap>
+        <li class="min-h-[calc(3*var(--grid-cell))]" data-snap>
           <a href={`/partners#${partnerSlug(p)}`} class="group flex items-start gap-5">
             <span
               aria-hidden="true"
@@ -45,7 +51,6 @@ const withOffer = partners.filter((p) => p.offer).length;
             </span>
             <span class="min-w-0 pt-1">
               <span class="block font-medium text-paper group-hover:underline group-hover:underline-offset-4">{p.name}</span>
-              <span class="small block text-slate mt-1">{p.services[0]}</span>
               {p.offer && (
                 <span class="small block text-fog mt-1">
                   <!-- normal-case for the same reason as /partners: the
