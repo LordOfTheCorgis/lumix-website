@@ -1,0 +1,135 @@
+---
+// The community asked for exact specs. This is them, per region, in the
+// same ledger idiom as /partners and /contact.
+//
+// Boost clock is the headline of each row, not the chip name. "Ryzen 5" reads
+// as mid-range to anyone who's built a PC, and the thing that actually decides
+// a game server's tick is single-core speed, where these are strong. Every
+// number is still the real one; only the emphasis moved. Chip name stays on
+// every row so txAdmin and spark still match the page.
+//
+// Deliberately doesn't repeat "never oversold" or name DDoS providers: the
+// first is a claim about how many servers share a node, which a CPU list
+// doesn't prove, and the second is still Evan's call (locations.ts).
+//
+// Ported from the archived build (origin line) onto this branch's layout:
+// the old cell-grid helpers (cell-cols/cell-split/data-snap) don't exist here,
+// so those became plain Tailwind grids. Every number and line of copy is
+// unchanged.
+import Layout from "../layouts/Layout.astro";
+import { NODES, HARDWARE_CHECKED } from "../lib/hardware";
+import { HOSTING } from "../lib/locations";
+
+// Fastest first, so Ashburn's 7600 opens the list instead of whichever region
+// happened to be typed in first. Ties go to more cores.
+const rows = NODES.map((n) => ({ ...n, place: HOSTING.find((h) => h.slug === n.region)! }))
+  .sort((a, b) => b.boostGhz - a.boostGhz || b.cores - a.cores);
+const ghz = (n: number) => `${n.toFixed(1)} GHz`;
+const peak = Math.max(...NODES.map((n) => n.boostGhz));
+const minRam = Math.min(...NODES.map((n) => n.ramGb));
+
+// The comparison in the lead. Both are the vendors' own max boost figures:
+// AMD lists the EPYC 7763 at 3.5 GHz, Intel's ARK lists the Xeon E5-2690 v4
+// at 3.5 GHz turbo. Picked because they're what a lot of cheap game hosting
+// still runs on, not because any one competitor is known to. Don't name a
+// competitor here unless we've actually seen their CPU.
+const DATACENTRE_BOOST = 3.5;
+---
+
+<Layout
+  title="Hardware"
+  description={`The exact CPU, memory and storage behind each Lumix region: ${rows.map((r) => `${r.cpu.replace("AMD ", "")} in ${r.place.city}`).join(", ")}.`}
+>
+  <section class="section border-b border-[var(--edge)]">
+    <div class="shell">
+      <p class="instrument text-fog">Hardware · checked {HARDWARE_CHECKED}</p>
+      <h1 class="display-xl mt-6 max-w-3xl">Clocked for game servers<span class="text-red">.</span></h1>
+      <p class="lead text-fog mt-6 max-w-xl">
+        FiveM and Minecraft run their main loop on one core, so how fast that
+        one core goes decides your tick. Every region runs desktop AMD Ryzen
+        boosting up to {ghz(peak)}. Data-centre chips like the EPYC 7763 and
+        Xeon E5-2690 v4 top out at {ghz(DATACENTRE_BOOST)}.
+      </p>
+
+      <!-- Three facts that are true of every region, so none of them needs an
+           asterisk. -->
+      <dl class="m-0 mt-10 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-3">
+        {[
+          [`Up to ${ghz(peak)}`, "Single-core boost, the number your tick rate rides on"],
+          [`${minRam} GB`, "Memory in every machine, DDR5 in Ashburn"],
+          ["NVMe, mirrored", "Two drives in RAID 1, so one can die and your world doesn't"],
+        ].map(([v, k]) => (
+          <div class="border-t border-[var(--edge)] pt-5">
+            <dt class="display-l tabular">{v}</dt>
+            <dd class="small text-fog m-0 mt-2 max-w-xs">{k}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <ol class="m-0 list-none border-t border-[var(--edge)] p-0">
+        {rows.map((r) => (
+          <li
+            id={r.region}
+            class="grid gap-6 border-b border-[var(--edge)] py-[var(--grid-cell)] lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-10"
+          >
+            <div class="min-w-0">
+              <p class="instrument text-slate">{r.place.city} · {r.place.region}</p>
+              <h2 class="display-l mt-3 tabular">{ghz(r.boostGhz)} <span class="text-fog">boost</span></h2>
+              <p class="small text-fog mt-3">{ghz(r.baseGhz)} base</p>
+            </div>
+
+            <dl class="m-0 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-4 lg:pt-8">
+              <div>
+                <dt class="instrument text-slate">Processor</dt>
+                <dd class="mt-2 text-paper">
+                  {r.cpu}
+                  <span class="small block text-fog">{r.arch}</span>
+                </dd>
+              </div>
+              <div>
+                <dt class="instrument text-slate">Cores</dt>
+                <dd class="mt-2 text-paper tabular">{r.cores} cores, {r.threads} threads</dd>
+              </div>
+              <div>
+                <dt class="instrument text-slate">Memory</dt>
+                <dd class="mt-2 text-paper tabular">{r.ramGb} GB {r.ramType}</dd>
+              </div>
+              <div>
+                <dt class="instrument text-slate">Storage</dt>
+                <dd class="mt-2 text-paper">{r.storage}</dd>
+              </div>
+            </dl>
+          </li>
+        ))}
+      </ol>
+
+      <p class="small text-slate mt-8 max-w-2xl">
+        Cores, base clock, memory and storage come straight off the
+        provider's panel for each machine; threads and boost are AMD's
+        published figures for the chip. Your plan's vCores and RAM are your
+        share of the machine in that region, listed on every plan card.
+      </p>
+    </div>
+  </section>
+
+  <section class="section band border-t border-[var(--edge)]">
+    <div class="shell grid gap-10 lg:grid-cols-2">
+      <div>
+        <h2 class="title">Want to check for yourself?</h2>
+        <p class="lead text-fog mt-6 max-w-lg">
+          You can. On FiveM, txAdmin's diagnostics page names the CPU. On
+          Minecraft, a spark profile does. If it ever doesn't match this page,
+          tell us and we'll fix whichever one is wrong.
+        </p>
+      </div>
+      <div class="flex flex-col justify-end gap-3">
+        <a href="/regions" class="small inline-flex items-center gap-1.5 text-paper hover:text-red">Where the regions are, and your ping <span aria-hidden="true">&rarr;</span></a>
+        <a href="/games" class="small inline-flex items-center gap-1.5 text-paper hover:text-red">Plans for every game <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+</Layout>
