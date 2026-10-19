@@ -1,40 +1,57 @@
 # Onboarding — Lumix Website (redesign)
 
-Welcome. This is the Lumix Solutions marketing and storefront site on the `redesign` branch. Read this top to bottom, then read the project docs in order: **`HANDOFF.md` → `DESIGN.md` → `BUILD-PLAN.md`**. `TODO.md` is Evan's personal list. `DESIGN.md` is effectively law for anything visual — read section 5 before you add a color.
+*The Lumix Solutions marketing site and storefront, in rebuild. Read this top to bottom, then the project docs in order: [`HANDOFF.md`](../HANDOFF.md) → [`DESIGN.md`](../DESIGN.md) → [`BUILD-PLAN.md`](../BUILD-PLAN.md). `TODO.md` is Evan's list.*
 
-> **Nothing here deploys.** The deploy workflow is disabled on purpose (`workflow_dispatch` + `if: false`). Pushing `redesign` does nothing to the live site. See [Build & deploy](#build--deploy).
+<p>
+  <a href="#what-this-is">What it is</a> ·
+  <a href="#tech-stack">Stack</a> ·
+  <a href="#run-it-locally">Run it</a> ·
+  <a href="#project-structure">Structure</a> ·
+  <a href="#common-tasks">Common tasks</a> ·
+  <a href="#build--deploy">Deploy</a> ·
+  <a href="#gotchas--things-that-bit-people-before">Gotchas</a>
+</p>
+
+> [!IMPORTANT]
+> **Nothing here deploys.** The workflow is disabled on purpose (`workflow_dispatch` + `if: false`). Pushing `redesign` does nothing to any live site. See [Build & deploy](#build--deploy).
+
+> [!NOTE]
+> `DESIGN.md` is effectively law for anything visual — read section 5 before you add a color.
 
 ## What this is
 
-Lumix Solutions LLC (lumixsolutions.org) sells game server hosting to people who run game communities. The positioning is *"A finite number of servers, run properly."* Capped stock on purpose, honest live data, plain language, three US regions.
+Lumix Solutions LLC (lumixsolutions.org) sells game server hosting to people who run game communities. The positioning is *"a finite number of servers, run properly"* — capped stock on purpose, honest live data, plain language, three US regions.
 
 The site does browsing and the order hand-off only. It never takes payment. Order links drop the customer into WHMCS (`billing.lumixsolutions.org`) with the product preselected; WHMCS owns the cart, pricing, checkout, and provisioning.
 
 ## Tech stack
 
-- **Astro 7.3** — static site generator, builds to plain HTML. **Needs Node 22.12+** (enforced via `engines` in `package.json`).
-- **Tailwind 4.3** — via `@tailwindcss/vite`. Design tokens live in `src/styles/global.css` under `@theme` (tokens only, no component classes; see `DESIGN.md`).
-- **`cobe`** — the WebGL globe on the homepage / regions. It's a dynamic import, so `astro.config.mjs` pre-bundles it in `optimizeDeps`; without that the globe "vanishes" with a 504 Outdated-Optimize-Dep on first scroll.
-- **`animejs`** — the FAQ accordion's open/close height tween. That's its only job.
-- **Astro content collections** — games and legal pages are typed content (`src/content/`), validated by a Zod schema at build time.
-- **PostHog** — analytics + cookie banner, consent-gated.
-- No React. No framework runtime. Site-wide JS is tiny and mostly inline per component.
+| Piece | Why it's here |
+| ----- | ------------- |
+| **Astro 7.3** | Static site generator, builds to plain HTML. **Needs Node 22.12+** (enforced in `package.json`). |
+| **Tailwind 4.3** | Via `@tailwindcss/vite`. Tokens live in `src/styles/global.css` under `@theme` (tokens only; see `DESIGN.md`). |
+| **`cobe`** | The WebGL globe. It's a dynamic import, so `astro.config.mjs` pre-bundles it in `optimizeDeps` — or it 504s on first scroll. |
+| **`animejs`** | The FAQ accordion's height tween. That's its only job. |
+| **Content collections** | Games and legal pages are typed content, validated by a Zod schema at build time. |
+| **PostHog** | Analytics + cookie banner, consent-gated. No React, no framework runtime. |
 
-Why it matters: the **content model** is the thing to internalize. Games are schema-validated YAML, not a TypeScript array, so a wrong `pid` or a `live` game with no plans *fails the build* instead of silently selling the wrong thing. Images are imported through `astro:assets` (resized webp + srcset), so key art lives in `src/assets/`, not `public/`.
+**The content model is the thing to internalize.** Games are schema-validated YAML, not a TypeScript array, so a wrong `pid` or a `live` game with no plans *fails the build* instead of silently selling the wrong thing. Images are imported through `astro:assets` (resized webp + srcset), so key art lives in `src/assets/`, not `public/`.
 
 ## Run it locally
 
+Node 22.12+, npm 10+.
+
 ```bash
 npm install
-npm run dev
+npm run dev        # http://localhost:4321
 ```
-
-Astro prints a local URL (usually `http://localhost:4321`). Analytics and the cookie banner render nothing without `PUBLIC_POSTHOG_*` set — which is what you want in dev.
 
 ```bash
-npm run build     # -> dist/
+npm run build      # -> dist/
 npm run preview
 ```
+
+Copy `.env.example` to `.env` for analytics. Blank in dev is correct — PostHog and the cookie banner render nothing without a key.
 
 ## Project structure
 
@@ -75,9 +92,8 @@ src/
 scripts/make-icons.mjs   # regenerates favicons from the logo
 .mcp.json          # lumix-docs MCP server -> docs.lumixsolutions.org/mcp
 .env.example       # PostHog var names (no values)
-HANDOFF.md, DESIGN.md, BUILD-PLAN.md, TODO.md   # read in that order; TODO is Evan's list
-docs/ONBOARDING.md # this file
-CLAUDE.md          # fast orientation for Claude Code (lives at root so it auto-loads)
+HANDOFF.md · DESIGN.md · BUILD-PLAN.md · TODO.md (read in that order; TODO is Evan's)
+docs/ONBOARDING.md (this file) · CLAUDE.md
 brag-output/       # a rendered launch video from the brag skill (not part of the site build)
 ```
 
@@ -86,7 +102,7 @@ brag-output/       # a rendered launch video from the brag skill (not part of th
 File-based routing under `src/pages/`. Two dynamic routes:
 
 - `games/[slug].astro` — `getStaticPaths()` pulls the `games` collection, filters to `status === "live"`, and builds a page per game. It also emits `Product` + per-plan `Offer` JSON-LD off the same YAML, so the schema and the on-page price table can't disagree.
-- `[slug].astro` (top level) — `getStaticPaths()` over the `legal` collection, renders each markdown doc. This is how `/terms`, `/privacy`, `/ccpa` exist with no hand-written pages.
+- `[slug].astro` (top level) — `getStaticPaths()` over the `legal` collection, renders each markdown doc. That's how `/terms`, `/privacy`, `/ccpa` exist with no hand-written pages.
 
 Everything wraps in `Layout.astro`.
 
@@ -96,39 +112,49 @@ Everything wraps in `Layout.astro`.
 
 ### How /status works
 
-`status.astro` pings each region (and its VMs, plus billing/panel) from the visitor's browser via `src/lib/ping.ts`. The node IPs don't serve HTTP — the ports refuse the connection — but a refused connect still completes in one round trip, so the time-to-failure *is* the ping. There's no uptime history and no backend; read the comment block in `ping.ts` before touching it.
+`status.astro` pings each region (and its VMs, plus billing/panel) from the visitor's browser via `src/lib/ping.ts`. The node IPs don't serve HTTP — the ports refuse the connection — but a refused connect still completes in one round trip, so the time-to-failure *is* the ping. No uptime history, no backend; read the comment block in `ping.ts` before touching it.
 
 ## Common tasks
 
-**Add a new game.** Create `src/content/games/<slug>.yaml`, key art at `src/assets/games/<slug>.jpg`, and a logo at `src/assets/logos/<slug>.{webp,svg}` (both imported, so YAML paths are relative `../../assets/...`). Required fields and types are in `src/content.config.ts` — `accent` is a 6-digit hex, `mark` is 2–4 chars, `status` is `live | beta | planned`. A `live` game with zero plans fails the build with a message naming the game; use `planned` for teasers (dimmed on `/games`, no detail page). Terraria currently has no yaml (hidden by design); re-add one to bring it back.
-
-**Change a plan's price.** Edit the plan's `pricing` block in its game YAML. `monthly` is required and positive; other cycles are optional. Display copy only — **change it in WHMCS too** or the cart quotes a different number. A wrong `pid` fails the build.
-
-**Edit a legal page.** `src/content/legal/{terms,privacy,ccpa}.md`. Markdown with `title` / `description` / `lastUpdated` frontmatter; `##` headings get the bordered-section styling. Bump `lastUpdated`. (Louisiana law, New Orleans venue — Terms §7/§9 and counsel review are tracked in `TODO.md`.)
-
-**Change the promo / footer / nav.** All in `src/config.ts`: `promo` (`LUMIX10`, must exist in WHMCS with the same string), `nav` / `moreNav` / `footerNav` / `social`, `links`, `site`. `PromoBar.astro` reads `promo`. `trust` holds the hand-entered Trustpilot score/count (both set = the line renders). `botHosting` holds the three bot-hosting WHMCS pids (Node 7 / Python 8 / Go 9), rendered by `BotLine.astro`.
-
-**Change regions / the globe.** `src/lib/locations.ts` feeds the globe, `/regions`, and the ping. Set `soldOut: true` to cap a region (stays listed, existing servers keep running). Dallas is live; Ashburn and Miami are sold out. **Salt Lake City was removed and must not be re-added until there's a real node.** Leave VM `ip` fields blank — a browser ping puts the IP in the page source and this repo is public; Evan does not want VM IPs public.
+| Task | How |
+| ---- | --- |
+| **Add a game** | A new `src/content/games/<slug>.yaml`, art at `src/assets/games/<slug>.jpg`, logo at `src/assets/logos/<slug>.{webp,svg}` (paths relative `../../assets/...`). Fields/types in `content.config.ts`: `accent` 6-digit hex, `mark` 2–4 chars, `status` `live\|beta\|planned`. `live` with no plans fails the build. Terraria has no yaml by design — re-add one to bring it back. |
+| **Change a plan's price** | The plan's `pricing` block in its game YAML. `monthly` required and positive, others optional. Display copy only — **change it in WHMCS too**. A wrong `pid` fails the build. |
+| **Edit a legal page** | `src/content/legal/{terms,privacy,ccpa}.md`; `##` headings get the bordered-section styling. Bump `lastUpdated`. (Louisiana law; Terms §7/§9 tracked in `TODO.md`.) |
+| **Change the promo / nav / footer** | `src/config.ts`: `promo` (`LUMIX10`, must match WHMCS), `nav`/`moreNav`/`footerNav`/`social`, `links`, `site`. `trust` is the hand-entered Trustpilot line; `botHosting` is the three pids (Node 7 / Python 8 / Go 9) rendered by `BotLine.astro`. |
+| **Open or close a region** | `soldOut` in `src/lib/locations.ts` (stays listed, existing servers keep running). Dallas live; Ashburn and Miami sold out. **Don't re-add Salt Lake City** until there's a node. Leave VM `ip` fields blank — public repo. |
 
 ## Build & deploy
 
-**Nothing deploys automatically.** `.github/workflows/deploy.yml` is `workflow_dispatch`-only *and* its job is guarded with `if: false`, so it does nothing even when run by hand. The rsync target it carries points at the wrong box, and the redesign isn't going to production yet. Don't restore a push trigger until the deploy target is confirmed and Evan says ship it (`BUILD-PLAN.md` and `TODO.md` track the cPanel decision). When it does build, it uses `npm ci` and passes `PUBLIC_POSTHOG_*` through as GitHub repo variables (not secrets — they're `PUBLIC_` and end up in page source anyway).
+> [!WARNING]
+> `deploy.yml` is `workflow_dispatch`-only **and** its job is guarded with `if: false`, so it does nothing even when run by hand. The rsync target it carries is the wrong box, and the rebuild isn't going to production yet.
+
+Don't restore a push trigger until the deploy target is confirmed and Evan says ship it (the cPanel decision is tracked in [`BUILD-PLAN.md`](../BUILD-PLAN.md) and [`TODO.md`](../TODO.md)). When it does build, it uses `npm ci` and passes `PUBLIC_POSTHOG_*` through as GitHub repo variables (not secrets — they're `PUBLIC_` and land in page source anyway).
 
 ## Environment variables
 
 Copy `.env.example` to `.env`. Names only, never commit values:
 
-- `PUBLIC_POSTHOG_KEY` — PostHog project API key. Blank in dev is correct (analytics + cookie banner render nothing without it).
-- `PUBLIC_POSTHOG_HOST` — `https://us.i.posthog.com` or the EU equivalent.
+| Variable | Purpose |
+| -------- | ------- |
+| `PUBLIC_POSTHOG_KEY` | PostHog project API key. Blank in dev renders analytics + cookie banner as nothing (intended). |
+| `PUBLIC_POSTHOG_HOST` | `https://us.i.posthog.com` or the EU equivalent. |
 
 `.env` is gitignored.
 
 ## Gotchas & things that bit people before
 
-- **`cobe` must stay in `optimizeDeps.include`** in `astro.config.mjs`, or the globe 504s and appears to vanish on first scroll.
+> [!CAUTION]
+> **`cobe` must stay in `optimizeDeps.include`** (`astro.config.mjs`), or the globe 504s and appears to vanish on first scroll. **`astro dev` is a background daemon in Astro 7** — Ctrl+C doesn't stop it; restart with `astro dev stop && npm run dev`.
+
 - **Images are `src/assets`, not `public/`.** Reference them so `astro:assets` resizes them; a raw 472KB Palworld JPG out of `public/` is what this replaced.
 - **The content schema fails the build on purpose** — bad pid, live-with-no-plans, bad hex accent. Read the error, it names the game.
 - **`order.ts` sends no region param by design** — the customer picks the region in WHMCS. Don't "fix" it by adding `configoption`.
-- **`/status` is a timing trick, not a health endpoint.** The region ping times a refused connection (`lib/ping.ts`); there's no uptime history. VM `ip` fields stay blank (public repo).
-- **`astro dev` is a background daemon in Astro 7** — Ctrl+C doesn't stop it. Restart with `astro dev stop && npm run dev`. Several dev-only traps (stale content store, Tailwind not seeing a new file, cobe 504) are catalogued in `HANDOFF.md` → "Traps that already cost time".
-- **`DESIGN.md` governs anything visual** — near-black warm `ink`, a single Lumix red (two reds per viewport max), Space Grotesk / Inter, hairlines (`--edge`) over fills, the chamfer/shear "diagonal" as the one signature move. Read section 5 before adding a color.
+- **`/status` is a timing trick, not a health endpoint.** The region ping times a refused connection (`lib/ping.ts`); no uptime history. VM `ip` fields stay blank (public repo).
+- **`DESIGN.md` governs anything visual** — near-black warm `ink`, a single Lumix red (two reds per viewport max), Space Grotesk / Inter, hairlines (`--edge`) over fills, the chamfer/shear "diagonal" as the one signature move.
+
+The full catalogue of dev-server traps (stale content store, Tailwind not seeing a new file, cobe 504, unresolved images) lives in [`HANDOFF.md`](../HANDOFF.md#traps-that-already-cost-time).
+
+---
+
+<sub>**More docs:** [README](../README.md) · [HANDOFF](../HANDOFF.md) · [DESIGN](../DESIGN.md) · [BUILD-PLAN](../BUILD-PLAN.md)</sub>
