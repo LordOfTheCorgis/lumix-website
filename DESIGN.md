@@ -1,7 +1,9 @@
 # Lumix Solutions — Design System
 
-Working spec for the `redesign` branch. Built from the Lumix brand brief.
-Nothing ships that this file cannot justify.
+*Working spec for the `redesign` branch, built from the Lumix brand brief. Nothing ships that this file cannot justify.*
+
+> [!IMPORTANT]
+> The non-negotiables, if you read nothing else: **dark only** (no light mode, legal pages included); **at most two reds per viewport**, logo excluded; **ink text on red buttons**, never white; a panel is **its hairline, not its fill**; and colour comes from the **games**, not the palette. The reasoning is in §5.
 
 ---
 

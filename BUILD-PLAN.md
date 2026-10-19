@@ -1,8 +1,9 @@
 # Lumix Website — Admin & Content Build Plan
 
-Goal: `lumixsolutions.org/admin`, password protected, where games, plans, locations,
-staff, legal copy and sold-out flags get edited without touching source or waiting on a
-build. Companion to DESIGN.md.
+*A forward plan, not built yet: a password-protected `lumixsolutions.org/admin` where games, plans, locations, staff, legal copy and sold-out flags get edited without touching source or waiting on a build. Companion to [`DESIGN.md`](DESIGN.md).*
+
+> [!NOTE]
+> Everything here is gated on one unanswered question — whether cPanel offers Node 22.12+ (see §2). Until that's checked, none of this is actionable.
 
 Scope note: this is the marketing site only. WHMCS is a separate product on a separate
 host. The site never calls it, never reads stock from it, and never processes payment.
@@ -66,6 +67,7 @@ Files on disk. YAML for structured records, Markdown for long prose.
   users.json      admin accounts, hashed passwords
 ```
 
+> [!WARNING]
 > **The content directory must live outside whatever the deploy writes to.** Every deploy
 > mechanism worth using replaces the app directory, and a deploy that overwrites content
 > silently reverts every edit made since the last commit. Put content in a sibling

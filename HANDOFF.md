@@ -1,6 +1,11 @@
 # Handoff — Lumix Website Redesign
 
-Written 2026-09-10. Read this, then `DESIGN.md`, then `BUILD-PLAN.md`.
+*The deep context for this branch: what exists, the settled decisions, and the traps that already cost time. For the quick tour, start with [`docs/ONBOARDING.md`](docs/ONBOARDING.md).*
+
+Written 2026-09-10. Read this, then [`DESIGN.md`](DESIGN.md), then [`BUILD-PLAN.md`](BUILD-PLAN.md).
+
+> [!TIP]
+> If something breaks in dev — the globe vanishes, a new file's Tailwind classes don't apply, images stop resolving — it's almost certainly a dev-server state issue, not a bug. Jump to [Traps that already cost time](#traps-that-already-cost-time) before you go debugging.
 
 ---
 
