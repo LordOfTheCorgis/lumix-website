@@ -1,5 +1,10 @@
 # Lumix Solutions — Build-Your-Server Handoff
 
+*The WHMCS integration contract: cart URL format, product IDs, locations, and the open cart double-add issue. For the general tour of the codebase, start with [`docs/ONBOARDING.md`](docs/ONBOARDING.md).*
+
+> [!NOTE]
+> `src/data/catalog.ts` is the source of truth for pids, prices, and locations. Where this document and the catalog disagree, the catalog wins — and tell someone this doc drifted.
+
 Context for the combined repo that will hold three things side by side:
 
 1. **This Astro marketing site** (`lumixsolutions.org`) — product presentation, the
@@ -97,13 +102,14 @@ https://billing.lumixsolutions.org/cart.php
 | Miami, FL | value id `3` | `soldOut` in `catalog.ts` — still listed, not selectable. |
 | Ashburn, VA | value id `5` | `soldOut` in `catalog.ts` — still listed, not selectable. |
 
-**The Dallas id is `6`, and WHMCS admin never shows you that number.** It shows three
-different ones for Dallas: the Pterodactyl node id `5` (never in a cart URL), the option
-*name* `5|Dallas, TX` (the provisioning `location_id`, also wrong for the cart), and the
-sub-option row id `6` — the only value `cart.php` accepts. Read it off the live order form:
-`cart.php?a=add&pid=16`, then the `data-val` on the location card (or the `<option value>`
-if the template reverts to a select). `catalog.ts` is the source of truth; this table and
-`locationOptions` there must agree.
+> [!CAUTION]
+> **The Dallas id is `6`, and WHMCS admin never shows you that number.** It shows three
+> different ones for Dallas: the Pterodactyl node id `5` (never in a cart URL), the option
+> *name* `5|Dallas, TX` (the provisioning `location_id`, also wrong for the cart), and the
+> sub-option row id `6` — the only value `cart.php` accepts. Read it off the live order form:
+> `cart.php?a=add&pid=16`, then the `data-val` on the location card (or the `<option value>`
+> if the template reverts to a select). `catalog.ts` is the source of truth; this table and
+> `locationOptions` there must agree.
 
 Miami and Ashburn are sold out (capacity), so Dallas is currently the only sellable region.
 The `soldOut` flag is display-only — WHMCS still accepts those valueIds from a hand-built
@@ -178,6 +184,11 @@ Palworld is now live on the site (pids above, read from the storefront). More ga
 ---
 
 ## 3. Open issue: cart double-add (the "link doesn't work properly" report)
+
+> [!WARNING]
+> `cart.php?a=add` **appends** to the cart, so clicking Deploy twice puts two servers in it.
+> The real fix is a WHMCS-side `lxfresh` clear-on-arrival flag (below); the Astro side only
+> ships a warning banner as a bandage.
 
 ### What happens
 
