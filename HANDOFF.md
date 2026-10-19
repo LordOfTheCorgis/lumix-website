@@ -7,10 +7,12 @@ Written 2026-09-10, last brought up to date 2026-10-08. Read this, then
 
 ## Where things stand
 
-Branch **`redesign`**, about 120 commits ahead of `main`. `main` still holds the
-entire old site untouched, and `origin/main` has not moved. Nothing here has
-shipped. The deploy workflow is manual-only until the cPanel path is decided,
-so merging does not deploy.
+Branch **`redesign`**, well ahead of `main`. `main` still holds the old site; this
+branch shares no components, stylesheet, or layout with it. Nothing here has shipped
+to production. **Every push to `redesign` now deploys to dev.lumixsolutions.org**
+(`deploy-dev.yml`, FTP to cPanel, built `PUBLIC_DEPLOY_ENV=dev` so it's fully noindex).
+The production workflow (`deploy.yml`) stays manual (`workflow_dispatch`) until the
+cPanel path is decided.
 
 The old site was torn down to nothing and rebuilt on a fresh Astro scaffold. Do not
 try to reconcile this branch with `main`; it shares no components, no stylesheet,
@@ -25,14 +27,13 @@ No React, no framework runtime.
 
 ## What exists
 
-Eighteen routes build: `/`, `/404`, `/games` plus five game pages under
-`/games/<slug>`, `/partners`, `/regions`, `/migrate`, `/tools`,
-`/tools/fivem-server-cfg`, `/staff`, `/contact`, and the legal three
-(`/privacy`, `/terms`, `/ccpa`, all from `src/pages/[slug].astro`). Sixteen
-more games sit in `src/content/games/` as `status: planned` with art and logos
-ready; flip one to `live` with plans and it gets a page and a tile.
-
-The only internal link that 404s is `/status`. See TODO.md for the options.
+Every route builds: `/`, `/404`, `/games` plus five live game pages under
+`/games/<slug>` (FiveM, Minecraft, Palworld, BeamMP, Terraria), `/partners`,
+`/regions`, `/hardware`, `/migrate`, `/tools`, `/tools/fivem-server-cfg`,
+`/staff`, `/contact`, `/status`, a dynamic `/robots.txt`, and the legal three
+(`/privacy`, `/terms`, `/ccpa`, all from `src/pages/[slug].astro`). The rest of
+`src/content/games/` sits as `status: planned` with art and logos ready; flip one
+to `live` with plans and it gets a page and a tile. No internal link 404s.
 
 **Landing page** is single-purpose: get someone into a cart. Headline, one red CTA,
 then a five-tile game picker. No positioning copy, no stat bar. This was a
@@ -46,9 +47,10 @@ at `billing.lumixsolutions.org/cart.php?a=add&pid=…`. The site never takes pay
 content-collection Markdown. Governing law is Louisiana, venue New Orleans. All
 three dated 2026-09-10.
 
-**Components:** Header, Footer, GameTile, StickyCta, CookieBanner, Analytics,
-LightRays, HeroArt, Globe, PingTest, PromoBar, Included, Faq, CursorTrail, and
-a three-part Terminal. GridPattern is gone; CursorTrail replaced it.
+**Components:** Header, Footer, GameTile, OrderBuilder, Partners, StickyCta,
+CookieBanner, Analytics, LightRays, HeroArt, Globe, PingTest, PromoBar, Included,
+Faq, CursorTrail, and a three-part Terminal. GridPattern is gone; CursorTrail
+replaced it.
 
 **Game pages order through `OrderBuilder.astro`** (2026-10-08), modelled on
 Sparked's order screen: numbered steps (plan, one per WHMCS option group,
@@ -172,10 +174,26 @@ above the price shoves the title up or down. The tagline reserves two lines with
 game's is two, and without it Terraria's title sat 22px below Palworld's beside
 it. `line-clamp-2` caps the height, it does not reserve it.
 
-## What does not exist yet
+**`/status` is built** (resolved since this doc's "open questions"). It's a live
+ping page, not a fake uptime history. The client (`src/scripts/status-page.ts`)
+fetches `status.json` off the orphan `status-data` branch, which `.github/workflows/status.yml`
+rewrites every ~5 minutes by running `scripts/status-check.mjs` against the nodes
+and the panel/billing hosts (targets come from the `STATUS_TARGETS` secret, never
+committed — the repo is public). The config URLs are `statusData` and `incidentsData`
+in `src/config.ts`. Hand-written incident reports live in `status/incidents.json`,
+read live from GitHub's raw endpoint and editable on github.com with no deploy; see
+`status/README.md`.
 
-`/status`. Header and footer link to it, so that one link 404s. It waits on
-Evan's call (TODO.md); don't build a hardcoded uptime history like main had.
+**`/hardware`** lists the actual machine per region (CPU, clock, cores, RAM, storage)
+from `src/lib/hardware.ts`, read off the provider panel for nodes MFL014 / ASH510 /
+DTX56. Keep it honest against `locations.ts`: a "sold out" region with no machine on
+this page is a contradiction anyone can spot.
+
+**`/partners`** and the home-page partners strip render nine partners from
+`src/lib/partners.ts` with logos in `src/assets/partners/` (`Partners.astro`). Each
+row has an anchor so other pages can link straight to it.
+
+## What does not exist yet
 
 The Capacity Board described in DESIGN.md section 8 has not been built. It is the
 signature element and the design leans on it heavily.
@@ -319,18 +337,20 @@ by a routine in the `lumix-routines` repo, and is not part of this project.
 1. **cPanel Node version.** Astro 7 needs Node 22.12+. Whether cPanel offers it
    gates the entire admin plan in BUILD-PLAN.md. Nobody has checked yet. **This is
    the blocker now.**
-2. **Deploy path on cPanel.** The old workflow is manual-only now; it needs a
-   confirmed target before its push trigger goes back.
-3. **What `/status` is.** Third-party status page, live ping-only page, or out
-   of the nav.
-4. Whether Terms sections 7 and 9 get reviewed by Louisiana counsel. Louisiana is
+2. **Production deploy path.** Dev already deploys to dev.lumixsolutions.org on every
+   push (`deploy-dev.yml`, FTP). Production (`deploy.yml`) is still manual and needs a
+   confirmed cPanel target before a push trigger goes back on it.
+3. Whether Terms sections 7 and 9 get reviewed by Louisiana counsel. Louisiana is
    the only civil law state, and broad liability disclaimers behave differently
    there than in the other forty-nine.
 
+(Resolved since this was written: `/status` is a live ping page, now built — see above.)
+
 ## Suggested next steps
 
-Every page but `/status` exists. Build that once Evan picks what it is, then the
-Capacity Board, then the admin panel (gated on the Node question).
+Every page exists. The remaining big builds are the Capacity Board (DESIGN.md
+section 8, the signature element) and the admin panel (gated on the cPanel Node
+question). Production deploy is the other open thread — see the open questions.
 
 **Windows npm keeps deleting `@emnapi/core` and `@emnapi/runtime`** from
 `package-lock.json` on install. They're optional wasm deps other platforms
