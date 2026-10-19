@@ -145,9 +145,11 @@ Whether `npm ci && npm run build` runs on the server or in Actions depends on wh
 host gives you enough memory to build there. Building in Actions and deploying the output
 is the safer default on shared hosting.
 
-**`.github/workflows/deploy.yml` is dead.** It rsyncs over SSH to `/srv/www/` on a server
-that is no longer where this site lives, and it will fail on every push to `main`. It
-should be deleted or rewritten once the deploy path is settled.
+**`.github/workflows/deploy.yml` is disabled, not wired.** It's `workflow_dispatch`-only
+and its job is guarded with `if: false`, so it can't fire even by hand. It still rsyncs
+over SSH to `/srv/www/` on a box that is no longer where this site lives, so it needs a
+confirmed target and a rewrite before any trigger goes back on it. When the SSR admin
+lands, the cPanel Git flow above supersedes it.
 
 ## 6. What this removes from the old plan
 

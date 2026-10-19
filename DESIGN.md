@@ -7,8 +7,9 @@ Nothing ships that this file cannot justify.
 
 ## 1. Subject, audience, job
 
-Lumix Solutions sells low-latency game server hosting out of Miami, FL and Ashburn, VA.
-The customer is a community owner, not an enterprise IT buyer. They run a 60-member FiveM
+Lumix Solutions sells low-latency game server hosting across three US regions (Dallas
+takes orders now; Miami and Ashburn are built but sold out). The customer is a
+community owner, not an enterprise IT buyer. They run a 60-member FiveM
 roleplay department, a Minecraft SMP for friends, a Rust group that plays Thursdays. They
 are semi-technical, they know what tick rate means, and they have been burned by a host
 that oversold a node and dropped everyone mid-session.
