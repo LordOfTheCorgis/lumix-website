@@ -1,6 +1,6 @@
 # CLAUDE.md — Lumix Website (redesign branch)
 
-Full rebuild of the Lumix Solutions site. Shares almost nothing with `main` (different components, styles, content model) — don't diff them file-by-file. See `docs/ONBOARDING.md` for the walkthrough, and read the in-repo docs in order: **`HANDOFF.md` → `DESIGN.md` → `BUILD-PLAN.md`**. `TODO.md` is Evan's list. `DESIGN.md` governs anything visual.
+Lumix Solutions marketing and storefront site. See `docs/ONBOARDING.md` for the walkthrough, and read the in-repo docs in order: **`HANDOFF.md` → `DESIGN.md` → `BUILD-PLAN.md`**. `TODO.md` is Evan's list. `DESIGN.md` governs anything visual.
 
 ## What it is
 

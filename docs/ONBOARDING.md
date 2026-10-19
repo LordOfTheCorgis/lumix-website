@@ -1,14 +1,12 @@
 # Onboarding — Lumix Website (redesign)
 
-Welcome. This is the **full rebuild** of the Lumix Solutions site on the `redesign` branch. It shares almost nothing with `main` — different components, styles, layout, and content model. Don't try to merge or reconcile the two file-by-file; `main` is a content reference, not a base to diff against.
-
-Read this top to bottom, then read the in-repo docs in order: **`HANDOFF.md` → `DESIGN.md` → `BUILD-PLAN.md`**. `TODO.md` is Evan's personal list. `DESIGN.md` is effectively law for anything visual — read section 5 before you add a color.
+Welcome. This is the Lumix Solutions marketing and storefront site on the `redesign` branch. Read this top to bottom, then read the in-repo docs in order: **`HANDOFF.md` → `DESIGN.md` → `BUILD-PLAN.md`**. `TODO.md` is Evan's personal list. `DESIGN.md` is effectively law for anything visual — read section 5 before you add a color.
 
 > **Every push to `redesign` deploys to the dev site.** `deploy-dev.yml` builds and FTP-uploads to **dev.lumixsolutions.org** on each push (built noindex, so Google never ranks it). Production deploy is separate and manual. See [Build & deploy](#build--deploy).
 
 ## What this is
 
-Lumix Solutions LLC (lumixsolutions.org) sells game server hosting to people who run game communities. The positioning here is sharper than main: *"A finite number of servers, run properly."* Capped stock on purpose, honest live data, plain language.
+Lumix Solutions LLC (lumixsolutions.org) sells game server hosting to people who run game communities. The positioning is *"A finite number of servers, run properly."* Capped stock on purpose, honest live data, plain language.
 
 Like main, the site does browsing and the order hand-off only. It never takes payment. Order links drop the customer into WHMCS (`billing.lumixsolutions.org`) with the product and its options preselected; WHMCS owns the cart, pricing, checkout, and provisioning.
 
@@ -21,7 +19,7 @@ Like main, the site does browsing and the order hand-off only. It never takes pa
 - **PostHog** — analytics + cookie banner, gated on `PUBLIC_POSTHOG_*`.
 - Client-side behaviour lives in **`src/scripts/`** (plain TS modules), one per interactive surface, imported by the matching component/page. No framework, no React.
 
-Why it matters: the big shifts from main are the **content model** (games are schema-validated YAML, not a TypeScript array, so a wrong `pid` or a `live` game with no plans *fails the build*), the **image pipeline** (`astro:assets` ships resized webp + srcset instead of raw JPGs from `public/`), and **two deploy environments** (dev on every push, prod by hand).
+Three things to internalize early: the **content model** (games are schema-validated YAML, so a wrong `pid` or a `live` game with no plans *fails the build*), the **image pipeline** (`astro:assets` ships resized webp + srcset, so key art goes in `src/assets/`, not `public/`), and **two deploy environments** (dev on every push, prod by hand).
 
 ## Run it locally
 
@@ -42,7 +40,7 @@ npm run preview
 ```
 src/
   config.ts        # EVERYTHING non-game: site info, promo code, trust, bot hosting, demo panel,
-                   #   statusData/incidentsData URLs, links, nav/moreNav/footerNav, social. Replaces main's site.ts.
+                   #   statusData/incidentsData URLs, links, nav/moreNav/footerNav, social.
   content.config.ts  # Zod schemas for the `games` and `legal` collections (build-time validation)
   content/
     games/*.yaml   # one file per game: slug, status, plans, pids, prices, specs, art, logo, accent, mark
@@ -160,26 +158,3 @@ Copy `.env.example` to `.env`. Names only, never commit values:
 - **`status-page.ts` and `status-check.mjs` share the `status.json` shape** — change one, change the other.
 - **No `promocode` URL param works** on this cart; see `order.ts`. Don't add one.
 - **`DESIGN.md` governs anything visual** — near-black warm `ink`, a single Lumix red (two reds per viewport max), Space Grotesk / Inter, hairlines (`--edge`) over fills, the chamfer/shear "diagonal" as the one signature move. Read section 5 before adding a color.
-
-## Differences from main
-
-| | `main` | `redesign` (this branch) |
-|---|---|---|
-| Astro / Tailwind | 5 / 4.1 | 7.3 / 4.3 |
-| Node | 20+ | **22.12+ required** |
-| Globe dep | — | `cobe` |
-| Game data | `src/data/catalog.ts` (TS array) | `src/content/games/*.yaml` (collection + Zod schema) |
-| Site config | `src/data/site.ts` | `src/config.ts` (promo, trust, botHosting, demoPanel, status URLs) |
-| Legal pages | hand-written `.astro` | markdown in `src/content/legal/`, via `[slug].astro` |
-| Cart builder | `orderUrl.ts` + `whmcs.ts` | `order.ts` + `orderOptions.ts` + `OrderBuilder.astro` |
-| Region preselect | `configoption[3]` + skipconfig | same mechanism, driven by `orderOptions.ts` |
-| Client JS | inline / in components | extracted to `src/scripts/*.ts` |
-| Images | `public/images/` (raw) | `src/assets/` (imported, webp/srcset) |
-| Analytics | none | PostHog + cookie banner |
-| Deploy | prod, **manual** | **dev on every push** (FTP) + prod manual |
-| robots.txt | static `public/robots.txt` | dynamic `robots.txt.ts` (disallow-all on dev) |
-| Pages added | — | `/regions`, `/hardware`, `/migrate`, `/partners`, `/tools` (+ FiveM cfg), `404` |
-| Extra tooling | — | `.mcp.json` (lumix-docs), `scripts/make-icons.mjs` |
-| Status system | shared: `/status` + `status.yml` + `status-data` branch + `status/incidents.json` | same |
-
-> Heads-up for whoever syncs this: `origin/redesign` and some local checkouts have diverged (a parallel line of work on terraria pricing, the browser-ping status page, and the terms rewrite never reached origin). This guide describes `origin/redesign`, the branch as it actually is on GitHub.
