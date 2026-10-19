@@ -23,8 +23,13 @@ No React, no framework runtime.
 
 ## What exists
 
-Ten routes build: `/`, `/404`, `/privacy`, `/terms`, `/ccpa`, and five game pages
-under `/games/<slug>`.
+Every route builds: `/`, `/404`, `/games` plus four live game pages under
+`/games/<slug>` (FiveM, Minecraft, Palworld, BeamMP — Terraria is intentionally
+hidden), `/partners`, `/regions`, `/migrate`, `/tools`, `/tools/fivem-server-cfg`,
+`/staff`, `/contact`, `/status`, and the legal three (`/privacy`, `/terms`, `/ccpa`,
+all from `src/pages/[slug].astro`). The rest of `src/content/games/` sits as
+`status: planned` with art and logos ready; flip one to `live` with plans and it
+gets a page and a tile. No internal link 404s.
 
 **Landing page** is single-purpose: get someone into a cart. Headline, one red CTA,
 then a five-tile game picker. No positioning copy, no stat bar. This was a
@@ -38,8 +43,9 @@ at `billing.lumixsolutions.org/cart.php?a=add&pid=…`. The site never takes pay
 content-collection Markdown. Governing law is Louisiana, venue New Orleans. All
 three dated 2026-09-10.
 
-**Components:** Header, Footer, GameTile, StickyCta, CookieBanner, Analytics,
-LightRays, GridPattern, and a three-part Terminal.
+**Components:** Header, Footer, GameTile, PromoBar, BotLine, Globe, PingTest,
+HeroArt, StickyCta, Included, Faq, CookieBanner, Analytics, LightRays, CursorTrail,
+and a three-part Terminal. GridPattern is gone; CursorTrail replaced it.
 
 **Header has a "More" drawer** (2026-09-14). Desktop: hover or click, arrow
 flips, Escape closes, ArrowDown from the toggle lands on the first link,
@@ -131,13 +137,16 @@ above the price shoves the title up or down. The tagline reserves two lines with
 game's is two, and without it Terraria's title sat 22px below Palworld's beside
 it. `line-clamp-2` caps the height, it does not reserve it.
 
+**`/status`** pings each region and its VMs (plus billing and panel) from the
+visitor's browser via `src/lib/ping.ts`. The node IPs refuse the connection, but a
+refused connect still completes in one round trip, so the time-to-failure is the
+ping. No fake uptime history. VM `ip` fields in `locations.ts` stay blank on purpose
+— a browser ping would put the IP in the public page source.
+
 ## What does not exist yet
 
-`/games` index, `/status`, `/partners`, `/staff`, `/contact`. The header and footer
-already link to these, so those links 404 today. That is expected, not a bug.
-
-The Capacity Board described in DESIGN.md section 8 has not been built. It is the
-signature element and the design leans on it heavily.
+Every page in the nav is built. The Capacity Board described in DESIGN.md section 8
+has not been — it is the signature element and the design leans on it heavily.
 
 The admin panel in BUILD-PLAN.md has not been started.
 
@@ -278,13 +287,16 @@ by a routine in the `lumix-routines` repo, and is not part of this project.
 1. **cPanel Node version.** Astro 7 needs Node 22.12+. Whether cPanel offers it
    gates the entire admin plan in BUILD-PLAN.md. Nobody has checked yet. **This is
    the blocker now.**
-2. **Deploy path on cPanel**, and what replaces the dead workflow.
+2. **Deploy path on cPanel.** `deploy.yml` is disabled (`workflow_dispatch` + `if: false`)
+   and its rsync target is the wrong box. It needs a confirmed target and a rewrite
+   before any trigger goes back on it.
 3. Whether Terms sections 7 and 9 get reviewed by Louisiana counsel. Louisiana is
    the only civil law state, and broad liability disclaimers behave differently
    there than in the other forty-nine.
 
 ## Suggested next steps
 
-Light mode is settled, so go straight at the pages: `/games` index, `/status`,
-`/contact`, `/partners`, `/staff`, pulling copy from `main`'s data files. Then the
-Capacity Board, then the admin panel.
+Every page in the nav is built. The remaining big builds are the Capacity Board
+(DESIGN.md section 8, the signature element) and the admin panel (gated on the cPanel
+Node question). Settling the production deploy target is the other open thread — see
+the open questions.
