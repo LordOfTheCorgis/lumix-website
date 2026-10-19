@@ -90,13 +90,27 @@ https://billing.lumixsolutions.org/cart.php
 
 ### Location configurable option (shared across all game products)
 
-| Field | Value |
-|-------|-------|
-| Group ID | `3` (the `N` in `configoption[N]`) |
-| Miami, FL | value id `3` |
-| Ashburn, VA | value id `5` |
+| Field | Value | Notes |
+|-------|-------|-------|
+| Group ID | `3` (the `N` in `configoption[N]`) | |
+| **Dallas, TX** | value id **`6`** | The only region taking orders. Builder default. |
+| Miami, FL | value id `3` | `soldOut` in `catalog.ts` — still listed, not selectable. |
+| Ashburn, VA | value id `5` | `soldOut` in `catalog.ts` — still listed, not selectable. |
 
-Application Hosting has **no** location option attached, so its links omit `configoption[]`.
+**The Dallas id is `6`, and WHMCS admin never shows you that number.** It shows three
+different ones for Dallas: the Pterodactyl node id `5` (never in a cart URL), the option
+*name* `5|Dallas, TX` (the provisioning `location_id`, also wrong for the cart), and the
+sub-option row id `6` — the only value `cart.php` accepts. Read it off the live order form:
+`cart.php?a=add&pid=16`, then the `data-val` on the location card (or the `<option value>`
+if the template reverts to a select). `catalog.ts` is the source of truth; this table and
+`locationOptions` there must agree.
+
+Miami and Ashburn are sold out (capacity), so Dallas is currently the only sellable region.
+The `soldOut` flag is display-only — WHMCS still accepts those valueIds from a hand-built
+URL, so stop-sell them in WHMCS admin too if you need a hard block.
+
+Application Hosting and BeamMP have **no** location option attached, so their links omit
+`configoption[]`.
 
 ### Live product IDs (read from storefront `lxTiersData` JSON)
 
