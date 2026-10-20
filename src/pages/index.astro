@@ -36,17 +36,21 @@ const cheapest = Math.min(
 
     <div class="shell relative">
       <p class="instrument text-fog">Game servers · Three US regions</p>
-      <!-- proof line. every competitor has the score above the fold -->
-      {trust.score !== null && trust.reviews !== null && (
-        <a
-          href={trust.url}
-          rel="noopener"
-          class="small mt-4 inline-flex items-center gap-2 text-fog hover:text-paper"
-        >
-          <span class="text-paper" aria-hidden="true">★</span>
-          <span><span class="text-paper font-medium">{trust.score.toFixed(1)}</span> · {trust.reviews} reviews on Trustpilot</span>
-        </a>
-      )}
+      <!-- proof line. the score goes above the fold like every competitor, but
+           the stronger signal is a named community that runs on us, so it sits
+           right beside it -->
+      <div class="small mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-fog">
+        {trust.score !== null && (
+          <Fragment>
+            <a href={trust.url} rel="noopener" class="inline-flex items-center gap-2 hover:text-paper">
+              <span class="text-paper" aria-hidden="true">★</span>
+              <span><span class="text-paper font-medium">{trust.score.toFixed(1)}</span> on Trustpilot</span>
+            </a>
+            <span class="text-slate" aria-hidden="true">·</span>
+          </Fragment>
+        )}
+        <a href="/partners" class="hover:text-paper">We run <span class="text-paper font-medium">Natural Light Enhanced</span></a>
+      </div>
 
       <h1 class="display-xl mt-6 max-w-3xl">Order your game server<span class="text-red">.</span></h1>
 

@@ -18,12 +18,15 @@ export const promo = {
   live: true,
 };
 
-// trustpilot by hand, their widgets are paid tier. both null = line doesn't
-// render. bump `updated` when you change the numbers or this goes stale quietly
+// trustpilot by hand, their widgets are paid tier. score null = no rating shown.
+// reviews is deliberately null: the count is tiny right now and a small number
+// above the fold reads as "nobody's bought this" louder than the 4.6 reassures,
+// so we show the rating and not the count. put a number back when it's one worth
+// showing. bump `updated` when you change the score or this goes stale quietly.
 export const trust = {
-  score: 4.1 as number | null,
-  reviews: 5 as number | null,
-  updated: "2026-09-23",
+  score: 4.6 as number | null,
+  reviews: null as number | null,
+  updated: "2026-10-19",
   url: "https://www.trustpilot.com/review/lumixsolutions.org",
 };
 
