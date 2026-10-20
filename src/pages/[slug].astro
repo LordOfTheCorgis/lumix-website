@@ -42,12 +42,8 @@ const { Content } = await render(doc);
     min-width: 32rem;
     border-collapse: collapse;
     table-layout: fixed;
-    font-size: 0.9375rem;
+    font-size: 1rem;
     line-height: 1.65;
-  }
-
-  .legal-prose :global(.legal-table-wide table) {
-    min-width: 42rem;
   }
 
   .legal-prose :global(th),
@@ -86,6 +82,34 @@ const { Content } = await render(doc);
     border-left: 1px solid var(--edge);
   }
 
+  /* Long disclosures read as full-width sections, not cramped columns. */
+  .legal-prose :global(.legal-disclosures) {
+    margin-block: 1.5rem 2rem;
+    border: 1px solid var(--edge-strong);
+    background: var(--color-ink);
+  }
+
+  .legal-prose :global(.legal-disclosures > section) {
+    padding: clamp(1rem, 3vw, 1.5rem);
+  }
+
+  .legal-prose :global(.legal-disclosures > section + section) {
+    border-top: 1px solid var(--edge-strong);
+  }
+
+  .legal-prose :global(.legal-disclosures h4) {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--color-paper);
+  }
+
+  .legal-prose :global(.legal-disclosures strong) {
+    color: var(--color-paper);
+    font-weight: 600;
+  }
+
   .legal-prose :global(h2) {
     font-family: var(--font-display);
     font-weight: 600;
@@ -114,6 +138,7 @@ const { Content } = await render(doc);
   .legal-prose :global(p),
   .legal-prose :global(li) {
     color: var(--color-fog);
+    line-height: 1.8;
     margin-top: 1rem;
     max-width: 65ch;
   }

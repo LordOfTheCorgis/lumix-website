@@ -94,15 +94,52 @@ The scope of a business-purpose disclosure depends on the service being performe
 
 The following describes the information that may be included in these disclosures and the purposes for which recipients may receive it:
 
-<div class="legal-table legal-table-wide" role="region" aria-label="Business-purpose disclosures" tabindex="0">
+<div class="legal-disclosures">
+<section>
 
-| Recipient category | Relevant personal information | Purpose and limits |
-| --- | --- | --- |
-| Hosting and infrastructure service providers | Identifiers, customer records, commercial information, network activity, and other information stored or processed as part of the services they provide to us. | Operating the systems used to deliver our services. Access and processing are limited to the contracted service and uses permitted by applicable law. |
-| Payment processing providers | Identifiers, billing and payment-related customer records, commercial information, and sensitive payment information where applicable. | Processing transactions, administering payments, and addressing payment-related issues. |
-| Customer support tool providers | Identifiers, contact information, service and subscription details, and information included in support communications, which may include technical logs or professional information you provide. | Receiving, organizing, investigating, and responding to support requests. |
-| Security and fraud prevention providers | Identifiers, relevant account and transaction information, network activity, approximate IP-based location, and authentication information where necessary. | Detecting, preventing, and investigating fraud, unauthorized access, security incidents, and abuse. Sensitive personal information is subject to the additional limits described in Section 3. |
-| Government bodies, courts, or other legal authorities | Information within the categories described in Section 2 that is covered by an applicable legal requirement. | Complying with applicable law or binding legal process, limited to the information required. |
+#### Hosting and infrastructure service providers
+
+**Relevant personal information:** Identifiers, customer records, commercial information, network activity, and other information stored or processed as part of the services they provide to us.
+
+**Purpose and limits:** Operating the systems used to deliver our services. Access and processing are limited to the contracted service and uses permitted by applicable law.
+
+</section>
+<section>
+
+#### Payment processing providers
+
+**Relevant personal information:** Identifiers, billing and payment-related customer records, commercial information, and sensitive payment information where applicable.
+
+**Purpose and limits:** Processing transactions, administering payments, and addressing payment-related issues.
+
+</section>
+<section>
+
+#### Customer support tool providers
+
+**Relevant personal information:** Identifiers, contact information, service and subscription details, and information included in support communications, which may include technical logs or professional information you provide.
+
+**Purpose and limits:** Receiving, organizing, investigating, and responding to support requests.
+
+</section>
+<section>
+
+#### Security and fraud prevention providers
+
+**Relevant personal information:** Identifiers, relevant account and transaction information, network activity, approximate IP-based location, and authentication information where necessary.
+
+**Purpose and limits:** Detecting, preventing, and investigating fraud, unauthorized access, security incidents, and abuse. Sensitive personal information is subject to the additional limits described in Section 3.
+
+</section>
+<section>
+
+#### Government bodies, courts, or other legal authorities
+
+**Relevant personal information:** Information within the categories described in Section 2 that is covered by an applicable legal requirement.
+
+**Purpose and limits:** Complying with applicable law or binding legal process, limited to the information required.
+
+</section>
 
 </div>
 
