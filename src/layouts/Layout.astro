@@ -8,6 +8,7 @@ import CookieBanner from "../components/CookieBanner.astro";
 import CursorTrail from "../components/CursorTrail.astro";
 import PromoBar from "../components/PromoBar.astro";
 import Analytics from "../components/Analytics.astro";
+import { links } from "../config";
 
 interface Props {
   title: string;
@@ -15,6 +16,8 @@ interface Props {
   noindex?: boolean;
   /** absolute or root-relative. defaults to the brand card */
   image?: string;
+  /** what the og image shows, for screen readers and scrapers */
+  imageAlt?: string;
   /** mobile order bar. off for pages that need the bottom edge (tools) */
   stickyCta?: boolean;
 }
@@ -27,6 +30,7 @@ const {
   description = DEFAULT_DESCRIPTION,
   noindex = false,
   image = "/images/og-image.png",
+  imageAlt = "Lumix Solutions",
   stickyCta = true,
 } = Astro.props;
 
@@ -46,7 +50,10 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: brandName,
-  url: siteUrl
+  url: siteUrl,
+  logo: `${siteUrl}/icon-512.png`,
+  // entity signal: ties the domain to the accounts Google already knows
+  sameAs: [links.discord, links.x, links.instagram, links.tiktok, links.github],
 };
 ---
 
@@ -69,7 +76,7 @@ const organizationSchema = {
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Lumix Solutions" />
+    <meta property="og:image:alt" content={imageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />

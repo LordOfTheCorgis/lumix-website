@@ -49,7 +49,7 @@ const productSchema = {
 };
 ---
 
-<Layout title={g.label} description={g.description}>
+<Layout title={g.label} description={g.description} image={g.image.src} imageAlt={`${g.label} on Lumix Solutions`}>
   <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
 
   <!-- same light as the home hero but always this game's accent. accent is
