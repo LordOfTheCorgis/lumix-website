@@ -5,6 +5,7 @@ import Layout from "../../layouts/Layout.astro";
 import LightRays from "../../components/LightRays.astro";
 import { orderUrl, price } from "../../lib/order";
 import { firstTen } from "../../lib/firstTen";
+import AfterPurchase from "../../components/AfterPurchase.astro";
 import { promo, demoPanel, links } from "../../config";
 
 export async function getStaticPaths() {
@@ -170,7 +171,10 @@ const productSchema = {
     </div>
   </section>
 
-  <!-- what happens after you pay. steps from the docs, src/lib/firstTen.ts -->
+  <!-- the three beats a buyer wants confirmed, right under the plans -->
+  <AfterPurchase />
+
+  <!-- the detailed panel walkthrough. steps from the docs, src/lib/firstTen.ts -->
   <section class="section border-t border-[var(--edge)]">
     <div class="shell grid gap-12 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-16">
       <div>
