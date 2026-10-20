@@ -4,8 +4,6 @@ description: Information for California residents about how Lumix Solutions coll
 lastUpdated: October 20, 2026
 ---
 
-# California Privacy Rights
-
 This California Privacy Notice (“Notice”) supplements the Lumix Solutions Privacy Policy and provides additional information for California residents about our collection, use, disclosure, and retention of personal information. It also explains the rights available under the California Consumer Privacy Act of 2018, as amended by the California Privacy Rights Act of 2020, and its implementing regulations (collectively, the “CCPA”).
 
 In this Notice, “Lumix Solutions,” “we,” “us,” and “our” refer to Lumix Solutions. “You” and “your” refer to California residents whose personal information is covered by this Notice.
@@ -26,6 +24,8 @@ If your information is stored in a website, application, or server operated by o
 
 During the preceding 12 months, we have collected the categories described below. The information collected in a particular interaction depends on the services you use, the information you provide, and your relationship with us. Inclusion of a category does not mean that we collect every type of information within that category from every person.
 
+<div class="legal-table" role="region" aria-label="Categories of personal information collected" tabindex="0">
+
 | Category | Examples of information covered by this Notice |
 | --- | --- |
 | Identifiers | Name, email address, Internet Protocol (IP) address, account identifier, and device identifiers. |
@@ -36,6 +36,8 @@ During the preceding 12 months, we have collected the categories described below
 | Professional or employment-related information | Company name or professional role, when provided. |
 | Inferences | Service preferences inferred from usage patterns. |
 | Sensitive personal information | Authentication information and certain financial account or payment information, to the extent they meet the CCPA’s definition of sensitive personal information, as explained below. |
+
+</div>
 
 ## 3. Sensitive Personal Information
 
@@ -92,6 +94,8 @@ The scope of a business-purpose disclosure depends on the service being performe
 
 The following describes the information that may be included in these disclosures and the purposes for which recipients may receive it:
 
+<div class="legal-table legal-table-wide" role="region" aria-label="Business-purpose disclosures" tabindex="0">
+
 | Recipient category | Relevant personal information | Purpose and limits |
 | --- | --- | --- |
 | Hosting and infrastructure service providers | Identifiers, customer records, commercial information, network activity, and other information stored or processed as part of the services they provide to us. | Operating the systems used to deliver our services. Access and processing are limited to the contracted service and uses permitted by applicable law. |
@@ -99,6 +103,8 @@ The following describes the information that may be included in these disclosure
 | Customer support tool providers | Identifiers, contact information, service and subscription details, and information included in support communications, which may include technical logs or professional information you provide. | Receiving, organizing, investigating, and responding to support requests. |
 | Security and fraud prevention providers | Identifiers, relevant account and transaction information, network activity, approximate IP-based location, and authentication information where necessary. | Detecting, preventing, and investigating fraud, unauthorized access, security incidents, and abuse. Sensitive personal information is subject to the additional limits described in Section 3. |
 | Government bodies, courts, or other legal authorities | Information within the categories described in Section 2 that is covered by an applicable legal requirement. | Complying with applicable law or binding legal process, limited to the information required. |
+
+</div>
 
 These descriptions explain the scope of disclosures for the stated purposes; they do not mean that every listed recipient receives all of the listed information about every consumer. You may request information about the categories of personal information disclosed about you and the categories of recipients through the request process described below.
 
@@ -204,12 +210,16 @@ We retain personal information only for as long as reasonably necessary for the 
 
 Our standard retention periods are:
 
+<div class="legal-table" role="region" aria-label="Personal information retention periods" tabindex="0">
+
 | Record type | Standard retention period |
 | --- | --- |
 | Account records | While the account is active, plus 30 days after closure. |
 | Billing records | 7 years. |
 | Logs | 90 days. |
 | Support records | 2 years. |
+
+</div>
 
 A record may contain more than one category of personal information. For example, an invoice may contain identifiers and commercial information. Its retention period is determined by the record’s purpose and applicable requirements, rather than solely by the information category.
 

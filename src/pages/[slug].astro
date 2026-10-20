@@ -26,6 +26,66 @@ const { Content } = await render(doc);
 
 <style>
   /* scoped. legal is the only long prose on the site, not worth a prose plugin */
+  .legal-prose {
+    overflow-wrap: anywhere;
+  }
+
+  .legal-prose :global(.legal-table) {
+    margin-block: 1.5rem 2rem;
+    overflow-x: auto;
+    border: 1px solid var(--edge-strong);
+    background: var(--color-ink);
+  }
+
+  .legal-prose :global(table) {
+    width: 100%;
+    min-width: 32rem;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+  }
+
+  .legal-prose :global(.legal-table-wide table) {
+    min-width: 42rem;
+  }
+
+  .legal-prose :global(th),
+  .legal-prose :global(td) {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .legal-prose :global(th) {
+    background: var(--color-ink-soft);
+    color: var(--color-paper);
+    font-weight: 600;
+    border-bottom: 1px solid var(--edge-strong);
+  }
+
+  .legal-prose :global(th:first-child) {
+    width: 30%;
+  }
+
+  .legal-prose :global(td) {
+    color: var(--color-fog);
+  }
+
+  .legal-prose :global(td:first-child) {
+    color: var(--color-paper);
+    font-weight: 500;
+  }
+
+  .legal-prose :global(tbody tr + tr) {
+    border-top: 1px solid var(--edge);
+  }
+
+  .legal-prose :global(th + th),
+  .legal-prose :global(td + td) {
+    border-left: 1px solid var(--edge);
+  }
+
   .legal-prose :global(h2) {
     font-family: var(--font-display);
     font-weight: 600;
