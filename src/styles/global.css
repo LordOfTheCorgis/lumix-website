@@ -123,6 +123,26 @@
     outline-offset: 2px;
   }
 
+  /* off-screen until a keyboard focuses it, then it drops in at the top-left.
+     ink on paper so it reads against whatever's behind it */
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 100;
+    padding: 0.5rem 0.9rem;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transform: translateY(-150%);
+    transition: transform 150ms ease;
+  }
+  .skip-link:focus { transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .skip-link { transition: none; }
+  }
+
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: var(--color-ink); }
   ::-webkit-scrollbar-thumb { background: #2c2c31; }

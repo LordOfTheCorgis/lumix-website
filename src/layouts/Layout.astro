@@ -103,6 +103,9 @@ const organizationSchema = {
     <Analytics />
   </head>
   <body class="min-h-screen flex flex-col text-paper">
+    <!-- first thing a keyboard or screen reader hits, so it can jump the promo
+         bar and the whole header straight to the content -->
+    <a href="#main" class="skip-link">Skip to content</a>
     <!-- trail plane is positioned against this wrapper so it stops at the
          footer. off body it runs behind the footer, off nothing it clips at
          100vh. z -1 works because the ground is on html and body is
@@ -111,7 +114,7 @@ const organizationSchema = {
       <CursorTrail />
       <PromoBar />
       <Header />
-      <main class="flex-1">
+      <main id="main" tabindex="-1" class="flex-1">
         <slot />
       </main>
     </div>
