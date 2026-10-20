@@ -3,6 +3,7 @@
 // their links, not ours. codes are paper instrument like LUMIX10, red is the
 // headline stop and the mailto at the bottom
 import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
 import { partners } from "../lib/partners";
 
 const withOffer = partners.filter((p) => p.offer).length;
@@ -37,9 +38,16 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
               rel="noopener"
               target="_blank"
               aria-label={p.name}
-              class="chamfer flex h-[calc(2*var(--grid-cell))] w-[calc(2*var(--grid-cell))] items-center justify-center border border-[var(--edge-strong)] bg-ink-soft font-display text-xl font-semibold tracking-tight text-paper transition-colors duration-150 group-hover:border-paper"
+              class:list={[
+                "chamfer flex h-[calc(2*var(--grid-cell))] w-[calc(2*var(--grid-cell))] items-center justify-center overflow-hidden transition-colors duration-150",
+                // a real logo has its own shape, so it sits on transparent with
+                // no box; only the monogram fallback gets the bordered tile
+                !p.logo && "border border-[var(--edge-strong)] bg-ink-soft font-display text-xl font-semibold tracking-tight text-paper group-hover:border-paper",
+              ]}
             >
-              {p.mark}
+              {p.logo ? (
+                <Image src={p.logo} alt="" height={80} densities={[1, 2]} loading="lazy" decoding="async" class="h-full w-full object-contain" />
+              ) : p.mark}
             </a>
 
             <div class="min-w-0">

@@ -1,10 +1,26 @@
 // partner roster as evan gave it. copy is theirs, tighten it with them not
 // here. order is evan's. cartoon's blurb is ours, he had nothing for them
+//
+// logos are trimmed, on transparent. the monogram `mark` is the fallback for
+// any studio that hasn't sent one. valerisn upfitting reuses the celestrative
+// logo file: same shop, it was renamed on another branch, name TBD with evan.
+import type { ImageMetadata } from "astro";
+import elevioLogo from "../assets/partners/elevio-modifications.webp";
+import nleLogo from "../assets/partners/natural-light-enhanced.webp";
+import marcoLogo from "../assets/partners/marcos-presets.webp";
+import cartoonLogo from "../assets/partners/cartoon.webp";
+import kezLogo from "../assets/partners/kez-modifications.webp";
+import celestrativeLogo from "../assets/partners/celestrative-modifications.webp";
+import centrixLogo from "../assets/partners/centrix-development-hub.webp";
+import eliteLogo from "../assets/partners/elite-modification.webp";
+import fgLogo from "../assets/partners/fg-development-studio.webp";
 
 export interface Partner {
   name: string;
   /** stands in for a logo */
   mark: string;
+  /** their logo, on transparent. takes the monogram's place when present */
+  logo?: ImageMetadata;
   founder: string;
   description: string;
   services: string[];
@@ -22,6 +38,7 @@ export const partners: Partner[] = [
   {
     name: "Elevio Modifications",
     mark: "EV",
+    logo: elevioLogo,
     founder: "Elevio",
     description:
       "Elevio Modifications makes liveries, EUP and paint work for FiveM at prices small communities can actually pay, and will film your server a showcase video to go with it. More on the way.",
@@ -41,6 +58,7 @@ export const partners: Partner[] = [
   {
     name: "Natural Light Enhanced",
     mark: "NLE",
+    logo: nleLogo,
     founder: "NLE",
     description:
       "NLE specializes in creating realistic, performance-friendly graphics mods for FiveM focused on natural lighting. Their mission is to continually improve and refine visuals for everyone to enjoy.",
@@ -57,6 +75,7 @@ export const partners: Partner[] = [
   {
     name: "Marco's Presets",
     mark: "MP",
+    logo: marcoLogo,
     founder: "Marco",
     description:
       "Marco's Presets offers high-quality ENB and Reshade products for FiveM, enhancing visual fidelity and performance while preserving the freedom of custom media configurations. With a focus on reliability and customer satisfaction, they provide tailored solutions to elevate your server's aesthetics.",
@@ -67,6 +86,7 @@ export const partners: Partner[] = [
   {
     name: "Cartoon",
     mark: "CT",
+    logo: cartoonLogo,
     founder: "Cartoon",
     description:
       "Cartoon does custom animations for FiveM: law enforcement emotes, cuffing and searching sequences, the small movements that make a traffic stop look like one instead of two people standing still. Scripts too, when an animation needs one to run.",
@@ -82,6 +102,7 @@ export const partners: Partner[] = [
   {
     name: "Kez Modifications",
     mark: "KEZ",
+    logo: kezLogo,
     founder: "Kez",
     description:
       "Kez Modifications is focused on delivering high-quality assets for the FiveM community, with a strong emphasis on reliability, professionalism, and long-term trust.",
@@ -99,6 +120,7 @@ export const partners: Partner[] = [
   {
     name: "Valerisn Upfitting",
     mark: "VU",
+    logo: celestrativeLogo,
     founder: "Valerisn",
     description:
       "Focused on creating clean, high quality Non-ELS vehicles for FiveM with realistic designs, optimized builds, and attention to detail, Valerisn's mission is to provide communities with reliable, immersive vehicle assets that enhance gameplay and fit seamlessly into any server.",
@@ -108,6 +130,7 @@ export const partners: Partner[] = [
   {
     name: "Centrix Development Hub",
     mark: "CDH",
+    logo: centrixLogo,
     founder: "Mike",
     description:
       "Centrix Development Hub is a versatile FiveM development team offering a wide range of services, including custom vehicle modifications and graphics design. With a focus on quality and client satisfaction, they provide tailored solutions to enhance your server's experience.",
@@ -117,6 +140,7 @@ export const partners: Partner[] = [
   {
     name: "Elite Modification",
     mark: "EM",
+    logo: eliteLogo,
     founder: "EM Team",
     description:
       "Elite Modification is back and focused on helping communities level up with premium, practical server assets. Their work is built for immersive gameplay, clean branding, and dependable performance.",
@@ -138,6 +162,7 @@ export const partners: Partner[] = [
   {
     name: "FG Development Studio",
     mark: "FG",
+    logo: fgLogo,
     founder: "Freedom_Gaming23",
     description:
       "FG Development Studios is a veteran-run FiveM development studio focused on quality assets at prices server owners can actually afford. Every release is actively maintained and supported after purchase. No abandonware, no upsells.",
