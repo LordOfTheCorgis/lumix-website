@@ -245,7 +245,17 @@ We will review this Notice at least once every 12 months and update it as necess
 
 Where a change requires additional notice or consent under applicable law, we will provide that notice or obtain that consent before implementing the affected processing.
 
-## 15. Contact and Accessibility
+## 15. Confirmation of California Residency
+
+The California-specific rights described in this Notice apply to California residents as defined by applicable law. When you submit a request to know, access, delete, or correct personal information under the CCPA, **we will generally ask you to confirm that you are a California resident** as part of determining whether those rights apply to your request.
+
+We will first consider your confirmation and relevant information already available to us. If additional information is reasonably necessary to establish your eligibility, we may request limited supporting information and explain what is needed. Any request for supporting information will be proportionate to that purpose, and you may redact information that is not necessary for the residency check. Please do not send identification documents or other sensitive records unless we specifically request them through an appropriate submission method.
+
+California residency does not necessarily depend on your physical location when you submit a request. We will not treat an IP address or a temporary absence from California as conclusive evidence that you are ineligible.
+
+We will use information collected for this check only to assess eligibility, protect against fraud, and document compliance as permitted by law. Residency checks do not extend the response deadlines in Section 10 and will not be used to impose identity-verification requirements on requests to opt out of sale or sharing or to limit sensitive-information use. This section does not affect any privacy rights you may have under other applicable laws.
+
+## 16. Contact and Accessibility
 
 For questions about this Notice, assistance exercising your privacy rights, or a request to receive this Notice in an alternative accessible format, contact:
 
