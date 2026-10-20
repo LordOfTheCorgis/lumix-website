@@ -44,7 +44,7 @@ export const FAQ: Faq[] = [
   },
   {
     q: "Is there a free trial or a refund?",
-    a: "No free trial. Refunds are handled case by case rather than on a fixed window; if something is genuinely wrong on our side, we'll make it right.",
+    a: "No free trial, and no money-back if the server runs fine and you change your mind. What we do refund is our fault: if something's genuinely broken on our side and we can't put it right, you don't pay for it. You can cancel anytime and keep the service through the term you've already paid for.",
   },
   {
     q: "Is there a discount code?",
