@@ -1,7 +1,7 @@
 ---
 title: Terms of Service
 description: The agreement covering game servers, hosting, and related infrastructure from Lumix Solutions.
-lastUpdated: October 5, 2026
+lastUpdated: October 20, 2026
 ---
 
 ## 1. Agreement to Terms
@@ -97,6 +97,22 @@ Billing in advance means a service is paid for before the term it covers, and re
 You are responsible for keeping payment details current. Prices may change, and where they do, the change applies from your next renewal rather than mid-term.
 
 Refunds are not guaranteed and are issued at our sole discretion unless required by law.
+
+### 5.1 Right of Withdrawal (EU, EEA and UK Consumers) and Consent to Immediate Performance
+
+This section applies only to consumers resident in the European Union, the European Economic Area, or the United Kingdom. It grants no rights to customers elsewhere; the United States and most other jurisdictions provide no equivalent statutory cooling-off period for digital services ordered online.
+
+Under Article 16(m) of EU Directive 2011/83/EU, and regulation 37 of the UK Consumer Contracts Regulations 2013, a consumer ordering digital content or services ordinarily has a 14-day right of withdrawal. That right does not apply once performance has begun with the consumer's prior express consent and their acknowledgment that the right is thereby lost.
+
+Our services are provisioned immediately and automatically when payment is received. By placing an order and confirming at checkout, you:
+
+- expressly request that we begin performance and provision your service immediately, before the 14-day withdrawal period expires;
+
+- acknowledge and agree that, once provisioning has begun, you permanently lose your right of withdrawal for that service; and
+
+- confirm that you are the authorized holder of the payment method used.
+
+If you do not give this consent, we cannot provision your service immediately, and you may instead exercise your 14-day right of withdrawal in accordance with the applicable law. Once a service has been provisioned, it is not refundable on withdrawal grounds, and any refund remains governed by this section: discretionary, and otherwise available only where required by law or for a fault attributable to us.
 
 ## 6. Service Availability
 
