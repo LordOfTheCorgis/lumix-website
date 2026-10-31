@@ -1,38 +1,78 @@
-name: Deploy to server
+name: Deploy to production
 
-# Manual only until the cPanel deploy path is decided (TODO.md). This used to
-# fire on every push to main and rsync --delete over /srv/www, which means the
-# day redesign merges it would've wiped whatever lives there. Run it by hand
-# from the Actions tab once someone confirms the target and the secrets.
+# Every push to main builds the site and uploads it to lumixsolutions.org on
+# cPanel over FTPS, exactly like deploy-dev.yml does for dev. — same box, same
+# action, just the live docroot instead of the dev. subfolder. Static files
+# only, so cPanel's Node version is irrelevant. No build env: on main, noindex
+# is a per-page prop in Layout.astro, not driven by PUBLIC_DEPLOY_ENV, so prod
+# builds and indexes normally with a plain `npm run build`.
+#
+# Needs three repo secrets (Settings > Secrets and variables > Actions):
+#   CPANEL_FTP_SERVER        same box as dev (dev.lumixsolutions.org points
+#                            straight at the cPanel host; ftp.lumixsolutions.org
+#                            was never made). Shared with deploy-dev.yml.
+#   CPANEL_FTP_USERNAME_PROD a cPanel FTP user whose root IS the live docroot,
+#                            i.e. jailed to /home/lumixsolutions/public_html.
+#                            NOT the dev deploy@ user — that one's jailed to the
+#                            dev. subfolder and can't reach the main site.
+#   CPANEL_FTP_PASSWORD_PROD
+# Until CPANEL_FTP_USERNAME_PROD is set the build still runs and the upload is
+# skipped, so a push never fails just because the prod creds aren't wired yet.
+
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
+# two pushes close together shouldn't upload over each other
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: true
+
 jobs:
-  build-deploy:
+  deploy:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
+    env:
+      HAS_FTP: ${{ secrets.CPANEL_FTP_USERNAME_PROD != '' }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
-      - name: Install dependencies
-        run: npm install
+      - run: npm ci
 
-      - name: Build project
+      - name: Build
         run: npm run build
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+      - name: Upload to cPanel
+        if: env.HAS_FTP == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.CPANEL_FTP_SERVER }}
+          username: ${{ secrets.CPANEL_FTP_USERNAME_PROD }}
+          password: ${{ secrets.CPANEL_FTP_PASSWORD_PROD }}
+          # FTPS so the password doesn't cross the internet in the clear. If the
+          # first run can't connect, confirm cPanel has TLS on for FTP before
+          # dropping to plain "ftp".
+          protocol: ftps
+          # web-srv-02's FTP cert is self-signed (checked 2026-10-08 per the dev
+          # workflow), so strict verification fails. "loose" keeps it encrypted
+          # and skips the cert check. Still beats plain ftp.
+          security: loose
+          local-dir: ./dist/
+          # "./" assumes CPANEL_FTP_USERNAME_PROD is jailed to public_html (the
+          # live docroot), same shape as dev. If you instead use a home-rooted
+          # account, set this to ./public_html/ so it doesn't dump the site in
+          # the home dir.
+          server-dir: ./
+          # Only touches files it uploaded itself (state file in that folder),
+          # so anything else already in public_html survives. No --delete wipe
+          # like the old rsync did.
 
-      - name: Deploy via rsync
-        run: |
-          rsync -avz --delete dist/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/srv/www/lumixsolutions.org/
+      - name: Say why nothing was uploaded
+        if: env.HAS_FTP != 'true'
+        run: echo "::notice::Built fine, skipped the upload. Set CPANEL_FTP_USERNAME_PROD / CPANEL_FTP_PASSWORD_PROD (and CPANEL_FTP_SERVER) to deploy."
