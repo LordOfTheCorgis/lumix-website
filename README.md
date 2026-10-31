@@ -23,7 +23,7 @@
 Lumix Solutions (lumixsolutions.org) sells game server hosting to the people who run game communities — FiveM, Minecraft, Palworld, BeamMP, Terraria, with more on the way. This site owns product browsing and the "build your server" flow; it hands the finished configuration to WHMCS and never touches payment itself.
 
 > [!NOTE]
-> **This is the production branch, but deploy is now manual.** It no longer ships on push — run the workflow from the Actions tab. See [Deploy](#deploy).
+> **This is the production branch — a push to `main` ships to the live site** over FTPS to cPanel. See [Deploy](#deploy).
 
 ## What the site does
 
@@ -90,7 +90,7 @@ Each of these is walked through in [the onboarding guide](docs/ONBOARDING.md#com
 
 ## Deploy
 
-**Deploy is manual.** `.github/workflows/deploy.yml` is `workflow_dispatch`-only — run it from the Actions tab once the deploy target is confirmed. It builds and `rsync --delete`s `dist/` to `/srv/www/lumixsolutions.org/`. Pushing to `main` does **not** ship the site.
+**Push to `main` deploys.** `.github/workflows/deploy.yml` builds and uploads `dist/` to `lumixsolutions.org` on cPanel over FTPS (same host and action as the dev workflow). It only touches files it uploaded, so the rest of `public_html` is left alone, no `rsync --delete`. `workflow_dispatch` runs it on demand too. Until the prod FTP secrets are set the upload is skipped and the build still passes.
 
 `.github/workflows/status.yml` runs every ~5 minutes, probes the nodes and panel/billing via `scripts/status-check.mjs`, and writes results to an orphan `status-data` branch that `/status` reads live.
 
@@ -101,9 +101,9 @@ Set in GitHub, never committed.
 
 | Secret | Purpose |
 | ------ | ------- |
-| `SSH_KEY` | Private key for the deploy user |
-| `SERVER_IP` | Deploy target host |
-| `SERVER_USER` | Deploy user |
+| `CPANEL_FTP_SERVER` | cPanel FTP host (the box `dev.` points at; shared with the dev workflow) |
+| `CPANEL_FTP_USERNAME_PROD` | FTP user jailed to the live `public_html` docroot |
+| `CPANEL_FTP_PASSWORD_PROD` | Password for that user |
 | `STATUS_TARGETS` | What the status checker probes (format in `scripts/status-check.mjs`) |
 
 </details>

@@ -8,7 +8,7 @@ Astro 5 + Tailwind 4, fully static, no server runtime. The site does product bro
 
 ## Deploy
 
-**Deploy is manual.** `.github/workflows/deploy.yml` is `workflow_dispatch` only (run from the Actions tab); it used to rsync on every push to `main` but that trigger was removed until the deploy target is confirmed. Pushing to `main` no longer touches the live site. A separate scheduled workflow, `.github/workflows/status.yml`, runs `scripts/status-check.mjs` every ~5 min and force-pushes results to an orphan `status-data` branch that feeds `/status`.
+**Push to `main` deploys.** `.github/workflows/deploy.yml` builds and uploads `dist/` to `lumixsolutions.org` on cPanel over FTPS, same box and same `SamKirkland/FTP-Deploy-Action` as the dev workflow — it only manages files it uploaded, so nothing else in `public_html` gets wiped (no more `rsync --delete`). Needs `CPANEL_FTP_SERVER` / `CPANEL_FTP_USERNAME_PROD` / `CPANEL_FTP_PASSWORD_PROD`; until the prod user secret is set the build runs and the upload is skipped, so a push never fails. A separate scheduled workflow, `.github/workflows/status.yml`, runs `scripts/status-check.mjs` every ~5 min and force-pushes results to an orphan `status-data` branch that feeds `/status`.
 
 ## Commands
 
@@ -43,5 +43,5 @@ Node 20+, npm 10+.
 
 ## Conventions
 
-- This is the production branch, but deploy is manual — a push won't ship. Still treat `main` as live content.
-- No secrets in the repo. Workflow secrets: `SSH_KEY` / `SERVER_IP` / `SERVER_USER` (deploy), `STATUS_TARGETS` (status checker).
+- This is the production branch and a push to `main` ships to the live site. Treat `main` as live.
+- No secrets in the repo. Workflow secrets: `CPANEL_FTP_SERVER` / `CPANEL_FTP_USERNAME_PROD` / `CPANEL_FTP_PASSWORD_PROD` (deploy), `STATUS_TARGETS` (status checker). The old `SSH_KEY` / `SERVER_IP` / `SERVER_USER` are no longer used.

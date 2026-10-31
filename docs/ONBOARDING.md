@@ -13,7 +13,7 @@
 </p>
 
 > [!IMPORTANT]
-> **This branch is production, but deploy is now manual.** `main` used to rsync to lumixsolutions.org on every push; it no longer does. The deploy workflow is `workflow_dispatch` only until the deploy target is confirmed. See [Build & deploy](#build--deploy).
+> **This branch is production and a push to `main` deploys to lumixsolutions.org** over FTPS to cPanel. See [Build & deploy](#build--deploy).
 
 ## What this is
 
@@ -81,7 +81,7 @@ status/
   incidents.json   # the "Incident reports" list; /status reads it LIVE from GitHub (no deploy)
   README.md        # how to add/edit an incident on github.com
 .github/workflows/
-  deploy.yml       # build + rsync to the server — MANUAL (workflow_dispatch) now
+  deploy.yml       # build + FTPS upload to cPanel on push to main
   status.yml       # scheduled (every 5 min) status checker -> status-data branch
 HANDOFF.md         # deep WHMCS integration contract, pid tables, cart gotchas
 README.md · docs/ONBOARDING.md (this file) · CLAUDE.md
@@ -116,10 +116,10 @@ Every page wraps its content in `Layout.astro` (a `title`, optional `description
 
 ## Build & deploy
 
-> [!WARNING]
-> Pushing to `main` does **not** deploy. The workflow is `workflow_dispatch`-only — run it by hand from the Actions tab once the deploy target and secrets are confirmed.
+> [!NOTE]
+> Pushing to `main` deploys to the live site. `workflow_dispatch` runs it on demand too.
 
-`.github/workflows/deploy.yml` builds and `rsync --delete`s `dist/` to `/srv/www/lumixsolutions.org/`. It used to fire on every push to `main`, which would have wiped the server the day `redesign` merged; that trigger was removed on purpose (the cPanel path decision is tracked in the repo).
+`.github/workflows/deploy.yml` builds and uploads `dist/` to `lumixsolutions.org` on cPanel over FTPS, the same host and `SamKirkland/FTP-Deploy-Action` the dev workflow uses, just the live docroot instead of the `dev.` subfolder. The action only manages files it uploaded (state file in the folder), so the rest of `public_html` survives; the old `rsync --delete` that would have wiped the box on a redesign merge is gone. Until the prod FTP user secret is set the build runs and the upload is skipped, so a push never fails for lack of creds.
 
 `.github/workflows/status.yml` runs on a schedule (~5 min) and on demand: it runs `scripts/status-check.mjs` against the nodes and panel/billing and force-pushes `status.json` to an orphan **`status-data`** branch (one commit, replaced each run). Scheduled workflows only run from the default branch, which is why it lives on `main`.
 
@@ -127,9 +127,9 @@ Workflow secrets (names only, set in GitHub, never committed):
 
 | Secret | Purpose |
 | ------ | ------- |
-| `SSH_KEY` | Private key for the deploy user |
-| `SERVER_IP` | Deploy target host |
-| `SERVER_USER` | Deploy user |
+| `CPANEL_FTP_SERVER` | cPanel FTP host (the box `dev.` resolves to; shared with the dev workflow) |
+| `CPANEL_FTP_USERNAME_PROD` | FTP user jailed to the live `public_html` docroot (not the dev `deploy@` user) |
+| `CPANEL_FTP_PASSWORD_PROD` | Password for that user |
 | `STATUS_TARGETS` | What the status checker probes (format in `scripts/status-check.mjs`) |
 
 ## Environment variables
