@@ -90,7 +90,7 @@ Each of these is walked through in [the onboarding guide](docs/ONBOARDING.md#com
 
 ## Deploy
 
-**Push to `main` deploys.** `.github/workflows/deploy.yml` builds and uploads `dist/` to `lumixsolutions.org` on cPanel over FTPS (same host and action as the dev workflow). It only touches files it uploaded, so the rest of `public_html` is left alone, no `rsync --delete`. `workflow_dispatch` runs it on demand too. Until the prod FTP secrets are set the upload is skipped and the build still passes.
+**Push to `main` deploys.** `.github/workflows/deploy.yml` builds and uploads `dist/` to `lumixsolutions.org` on cPanel over FTPS (same host and action as the dev workflow). It only touches files it uploaded, so the rest of `public_html` is left alone, no `rsync --delete`. It uses the same `CPANEL_FTP_*` secrets as the dev workflow, landing a level up in `public_html` via `server-dir: ../`. `workflow_dispatch` runs it on demand too. Until the secrets are set the upload is skipped and the build still passes.
 
 `.github/workflows/status.yml` runs every ~5 minutes, probes the nodes and panel/billing via `scripts/status-check.mjs`, and writes results to an orphan `status-data` branch that `/status` reads live.
 
@@ -101,9 +101,9 @@ Set in GitHub, never committed.
 
 | Secret | Purpose |
 | ------ | ------- |
-| `CPANEL_FTP_SERVER` | cPanel FTP host (the box `dev.` points at; shared with the dev workflow) |
-| `CPANEL_FTP_USERNAME_PROD` | FTP user jailed to the live `public_html` docroot |
-| `CPANEL_FTP_PASSWORD_PROD` | Password for that user |
+| `CPANEL_FTP_SERVER` | cPanel FTP host (the box `dev.` points at) |
+| `CPANEL_FTP_USERNAME` | FTP user (shared by prod + dev; prod lands a level up in `public_html`) |
+| `CPANEL_FTP_PASSWORD` | Password for that user |
 | `STATUS_TARGETS` | What the status checker probes (format in `scripts/status-check.mjs`) |
 
 </details>

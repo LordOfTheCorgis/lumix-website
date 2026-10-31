@@ -119,7 +119,7 @@ Every page wraps its content in `Layout.astro` (a `title`, optional `description
 > [!NOTE]
 > Pushing to `main` deploys to the live site. `workflow_dispatch` runs it on demand too.
 
-`.github/workflows/deploy.yml` builds and uploads `dist/` to `lumixsolutions.org` on cPanel over FTPS, the same host and `SamKirkland/FTP-Deploy-Action` the dev workflow uses, just the live docroot instead of the `dev.` subfolder. The action only manages files it uploaded (state file in the folder), so the rest of `public_html` survives; the old `rsync --delete` that would have wiped the box on a redesign merge is gone. Until the prod FTP user secret is set the build runs and the upload is skipped, so a push never fails for lack of creds.
+`.github/workflows/deploy.yml` builds and uploads `dist/` to `lumixsolutions.org` on cPanel over FTPS, the same host and `SamKirkland/FTP-Deploy-Action` the dev workflow uses, just the live docroot instead of the `dev.` subfolder. It reuses the dev workflow's `CPANEL_FTP_*` account and just lands a level up, in `public_html`, via `server-dir: ../` (the account logs into the `dev.` subfolder, whose parent is the live docroot). The action only manages files it uploaded (state file in the folder), so the dev. subfolder sitting next to it survives; the old `rsync --delete` that would have wiped the box on a redesign merge is gone. Until the secrets are set the build runs and the upload is skipped, so a push never fails for lack of creds.
 
 `.github/workflows/status.yml` runs on a schedule (~5 min) and on demand: it runs `scripts/status-check.mjs` against the nodes and panel/billing and force-pushes `status.json` to an orphan **`status-data`** branch (one commit, replaced each run). Scheduled workflows only run from the default branch, which is why it lives on `main`.
 
@@ -127,9 +127,9 @@ Workflow secrets (names only, set in GitHub, never committed):
 
 | Secret | Purpose |
 | ------ | ------- |
-| `CPANEL_FTP_SERVER` | cPanel FTP host (the box `dev.` resolves to; shared with the dev workflow) |
-| `CPANEL_FTP_USERNAME_PROD` | FTP user jailed to the live `public_html` docroot (not the dev `deploy@` user) |
-| `CPANEL_FTP_PASSWORD_PROD` | Password for that user |
+| `CPANEL_FTP_SERVER` | cPanel FTP host (the box `dev.` resolves to) |
+| `CPANEL_FTP_USERNAME` | FTP user, shared by both workflows (prod lands a level up in `public_html` via `server-dir: ../`) |
+| `CPANEL_FTP_PASSWORD` | Password for that user |
 | `STATUS_TARGETS` | What the status checker probes (format in `scripts/status-check.mjs`) |
 
 ## Environment variables

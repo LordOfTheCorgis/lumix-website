@@ -8,7 +8,7 @@ Astro 5 + Tailwind 4, fully static, no server runtime. The site does product bro
 
 ## Deploy
 
-**Push to `main` deploys.** `.github/workflows/deploy.yml` builds and uploads `dist/` to `lumixsolutions.org` on cPanel over FTPS, same box and same `SamKirkland/FTP-Deploy-Action` as the dev workflow — it only manages files it uploaded, so nothing else in `public_html` gets wiped (no more `rsync --delete`). Needs `CPANEL_FTP_SERVER` / `CPANEL_FTP_USERNAME_PROD` / `CPANEL_FTP_PASSWORD_PROD`; until the prod user secret is set the build runs and the upload is skipped, so a push never fails. A separate scheduled workflow, `.github/workflows/status.yml`, runs `scripts/status-check.mjs` every ~5 min and force-pushes results to an orphan `status-data` branch that feeds `/status`.
+**Push to `main` deploys.** `.github/workflows/deploy.yml` builds and uploads `dist/` to `lumixsolutions.org` on cPanel over FTPS, same box and same `SamKirkland/FTP-Deploy-Action` as the dev workflow — it only manages files it uploaded, so nothing else in `public_html` gets wiped (no more `rsync --delete`). Uses the same `CPANEL_FTP_SERVER` / `CPANEL_FTP_USERNAME` / `CPANEL_FTP_PASSWORD` secrets as the dev workflow — the one difference is `server-dir: ../`, which lands in `public_html` (the live docroot) instead of the `dev.lumixsolutions.org` subfolder the account logs into. Until the secrets are set the build runs and the upload is skipped, so a push never fails. A separate scheduled workflow, `.github/workflows/status.yml`, runs `scripts/status-check.mjs` every ~5 min and force-pushes results to an orphan `status-data` branch that feeds `/status`.
 
 ## Commands
 
@@ -44,4 +44,4 @@ Node 20+, npm 10+.
 ## Conventions
 
 - This is the production branch and a push to `main` ships to the live site. Treat `main` as live.
-- No secrets in the repo. Workflow secrets: `CPANEL_FTP_SERVER` / `CPANEL_FTP_USERNAME_PROD` / `CPANEL_FTP_PASSWORD_PROD` (deploy), `STATUS_TARGETS` (status checker). The old `SSH_KEY` / `SERVER_IP` / `SERVER_USER` are no longer used.
+- No secrets in the repo. Workflow secrets: `CPANEL_FTP_SERVER` / `CPANEL_FTP_USERNAME` / `CPANEL_FTP_PASSWORD` (deploy — shared by prod and dev, prod just lands a level up in `public_html`), `STATUS_TARGETS` (status checker). The old `SSH_KEY` / `SERVER_IP` / `SERVER_USER` are no longer used.
