@@ -40,10 +40,11 @@
   --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 
-  /* the home h1 and nothing else. petch is cut with the same chamfer as the
-     monogram, so it's the one face that can sit next to the logo without
-     arguing with it. 700 only, don't load more weights for it */
-  --font-hero: 'Chakra Petch', 'Space Grotesk', system-ui, sans-serif;
+  /* the home h1 and nothing else. chakra petch was tried first, evan said it
+     wasn't good. plex sans is plain enough to sit next to the logo and it's
+     not inter, which would just read as body copy at this size. 700 only,
+     don't load more weights for it */
+  --font-hero: 'IBM Plex Sans', 'Inter', system-ui, sans-serif;
 
   /* the monogram's cut. only diagonal in the system, nothing else tilts */
   --shear: -16deg;
