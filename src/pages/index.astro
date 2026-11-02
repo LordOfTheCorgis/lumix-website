@@ -35,11 +35,10 @@ const cheapest = Math.min(
     <LightRays />
 
     <div class="shell relative">
-      <p class="instrument text-fog">Game servers · Three US regions</p>
       <!-- proof line. the score goes above the fold like every competitor, but
            the stronger signal is a named community that runs on us, so it sits
            right beside it -->
-      <div class="small mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-fog">
+      <div class="small flex flex-wrap items-center gap-x-3 gap-y-1 text-fog">
         {trust.score !== null && (
           <Fragment>
             <a href={trust.url} rel="noopener" class="inline-flex items-center gap-2 hover:text-paper">
@@ -118,8 +117,7 @@ const cheapest = Math.min(
         <ul class="mt-10 grid grid-cols-2 gap-x-6 gap-y-5 max-w-sm">
           {HOSTING.map((l) => (
             <li>
-              <p class="instrument text-slate">{l.region}</p>
-              <p class="mt-1 font-medium">
+              <p class="font-medium">
                 {l.city}
                 {l.soldOut && <span class="instrument text-red ml-2">sold out</span>}
               </p>

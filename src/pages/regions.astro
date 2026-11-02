@@ -25,8 +25,7 @@ const open = HOSTING.filter((r) => !r.soldOut);
   <section class="section border-b border-[var(--edge)]">
     <div class="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
-        <p class="instrument text-fog">Regions · {HOSTING.length} US · {MITIGATION.length} scrubbing points</p>
-        <h1 class="display-xl mt-6 max-w-2xl">Three rooms, one country<span class="text-red">.</span></h1>
+        <h1 class="display-xl max-w-2xl">Three rooms, one country<span class="text-red">.</span></h1>
         <p class="lead text-fog mt-6 max-w-lg">
           Every plan can live in any of them, and you pick at checkout. The
           only thing that should decide it is the number on the right.
@@ -41,7 +40,6 @@ const open = HOSTING.filter((r) => !r.soldOut);
     <div class="shell">
       <div class="flex flex-wrap items-end justify-between gap-4">
         <h2 class="title">The three</h2>
-        <p class="instrument text-slate">{live} of {HOSTING.length} with a ping endpoint</p>
       </div>
 
       <div data-grid-anchor class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3">

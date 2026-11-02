@@ -46,8 +46,7 @@ const planned = tools.filter((t) => t.status !== "live");
 >
   <section class="section border-b border-[var(--edge)]">
     <div class="shell">
-      <p class="instrument text-fog">Tools · {live.length} live · {planned.length} planned</p>
-      <h1 class="display-xl mt-6 max-w-2xl">Config files, done right<span class="text-red">.</span></h1>
+      <h1 class="display-xl max-w-2xl">Config files, done right<span class="text-red">.</span></h1>
       <p class="lead text-fog mt-6 max-w-lg">
         The files everyone copies off a forum post and breaks. Fill in the
         form, read what each line does, copy the result. No account, and
@@ -60,7 +59,6 @@ const planned = tools.filter((t) => t.status !== "live");
     <div class="shell">
       <div class="flex flex-wrap items-end justify-between gap-4">
         <h2 class="title">Pick a tool</h2>
-        <p class="instrument text-slate">{live.length} live / {tools.length} total</p>
       </div>
 
       <div data-grid-anchor class="mt-8 grid gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3">
