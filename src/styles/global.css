@@ -216,6 +216,19 @@
     padding-inline: var(--shell-pad);
   }
 
+  /* two columns that stay on the 40px module. the shell is sized for three
+     columns (120k+80), and two equal ones off that come out at 620px, 20 off.
+     left rounds down to a cell, right takes the rest, gutter is one cell, so
+     both land on lines at any width. only the lg template, below that the
+     shell is in the 80k+40 family and plain 1fr 1fr is already exact */
+  @media (min-width: 1024px) {
+    .lg\:grid-cols-halves {
+      grid-template-columns:
+        round(down, calc((100% - var(--grid-cell)) / 2), var(--grid-cell))
+        minmax(0, 1fr);
+    }
+  }
+
   /* cut top-left and bottom-right like the monogram. chamfer, not radius */
   .chamfer {
     clip-path: polygon(
