@@ -245,6 +245,15 @@ the viewport.
 
 Panels that sit on the grid take their height in cells too. Game tiles are seven.
 
+Vertical origin is per block, not per page. Every `[data-grid-anchor]` is its own lattice and
+the trail uses the nearest one above the pointer, because section heights are text and
+text is never a multiple of 40. The trail also rounds each anchored child's height to whole
+cells at runtime (`snap()` in `CursorTrail.astro`), so a ledger row that measures 83px
+becomes 120 and the next row's top stays on the lattice. Rules that follow from that:
+anything that is a panel gets `data-grid-anchor` on its parent, gaps between panels are a
+cell, and two-column splits at `lg` use `lg:grid-cols-halves` (equal columns come out 20px
+off the module at some widths). A `sticky` panel can't align, it moves with scroll.
+
 Container maxes at 1792px so the capped content column is exactly 1640, which is 41 cells.
 Gutters are 24px, 20px on mobile, 8px spacing base.
 Section rhythm is 96px desktop and 56px mobile, living on a single `.section` class.

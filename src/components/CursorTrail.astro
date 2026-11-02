@@ -8,6 +8,13 @@
 // sized, not viewport: viewport height clips everything below the fold and a
 // fixed origin can't register vertically once you scroll.
 //
+// vertical origin is per block, not per page: every [data-grid-anchor] is its
+// own lattice and the pointer uses the nearest one above it. a page can't have
+// one phase, section heights are text and text isn't a multiple of 40. same
+// reason the children of an anchor get their height rounded up to whole cells
+// (snap below), otherwise a ledger row is 83px and the second row's top is
+// 3px off the lattice forever.
+//
 // plane stops at the footer, that's Layout.astro's call not ours.
 
 interface Props {
@@ -75,12 +82,13 @@ const {
 
       // where the module lines fall, document coords. measured not assumed
       let originX = 0;
-      let originY = 0;
       // plane doesn't start at 0,0 of the document. assumed it did once, every
       // cell ended up pinned to the top
       let planeX = 0;
       let planeY = 0;
       let planeBottom = Infinity;
+      // document-space tops of every anchor, sorted. never empty, see measure()
+      let anchorTops: number[] = [0];
 
       function measure() {
         const pb = plane.getBoundingClientRect();
@@ -95,26 +103,78 @@ const {
           originX = box.left + (parseFloat(getComputedStyle(shell).paddingLeft) || 0);
         }
         // vertical has to be measured, there's no css for "where did this land".
-        // page picks the anchor
-        const anchor = document.querySelector<HTMLElement>("[data-grid-anchor]");
-        if (anchor) {
-          const top = anchor.getBoundingClientRect().top + window.scrollY;
-          originY = ((top % size) + size) % size;
+        // page picks the anchors. a page with none (legal, 404) has no panel
+        // edges to land on so main's top is as good a phase as any
+        const marked = [...document.querySelectorAll<HTMLElement>("[data-grid-anchor]")];
+        if (!marked.length) {
+          const main = document.querySelector<HTMLElement>("main");
+          if (main) marked.push(main);
         }
+        // first child, not the anchor: a ledger's border-t sits on the list and
+        // would shove every row 1px off the lattice
+        anchorTops = marked
+          .map((el) => ((el.firstElementChild as HTMLElement) ?? el).getBoundingClientRect().top + window.scrollY)
+          .sort((a, b) => a - b);
+        if (!anchorTops.length) anchorTops = [0];
       }
 
-      measure();
+      // nearest anchor at or above y, else the first one below it. half a pixel
+      // of slack so a pointer exactly on the top edge counts as inside
+      function originYFor(y: number) {
+        let top = anchorTops[0];
+        for (const t of anchorTops) if (t <= y + 0.5) top = t;
+        return ((top % size) + size) % size;
+      }
+
+      // round every anchored panel to whole cells. clear first or a panel we
+      // padded last time reads as its natural height. under a pixel over a
+      // multiple (text line-height is 26.4px, so 280.5 happens) it's pinned
+      // down to the multiple, the spill sits inside the padding and min-height
+      // alone can't pull a box back under its content. anything bigger rounds up
+      function snap() {
+        document.querySelectorAll<HTMLElement>("[data-grid-anchor]").forEach((anchor) => {
+          const kids = [...anchor.children] as HTMLElement[];
+          kids.forEach((k) => {
+            k.style.minHeight = "";
+            k.style.height = "";
+          });
+          const heights = kids.map((k) => k.getBoundingClientRect().height);
+          kids.forEach((k, i) => {
+            const h = heights[i];
+            if (h <= 0) return;
+            const below = Math.floor(h / size) * size;
+            if (below > 0 && h - below <= 1) k.style.height = `${below}px`;
+            else k.style.minHeight = `${Math.ceil(h / size) * size}px`;
+          });
+        });
+      }
+
+      function relayout() {
+        snap();
+        measure();
+      }
+
+      relayout();
       // fonts and images shift the anchor and neither fires resize
       new ResizeObserver(measure).observe(document.body);
+      // webfonts change line wraps, which changes every natural height
+      document.fonts.ready.then(relayout);
+      window.addEventListener("load", relayout);
+      let resizeFrame = 0;
+      window.addEventListener("resize", () => {
+        cancelAnimationFrame(resizeFrame);
+        resizeFrame = requestAnimationFrame(relayout);
+      });
 
       const running = new WeakMap<HTMLElement, Animation>();
       let next = 0;
       let lastCol = NaN;
       let lastRow = NaN;
+      let lastOy = NaN;
       let pending: { x: number; y: number } | null = null;
       let frame = 0;
 
-      function light(col: number, row: number) {
+      function light(col: number, row: number, oy: number) {
         const el = slots[next];
         next = (next + 1) % slots.length;
 
@@ -122,7 +182,7 @@ const {
         running.get(el)?.cancel();
 
         el.style.transform = `translate3d(${col * size + originX - planeX}px, ${
-          row * size + originY - planeY
+          row * size + oy - planeY
         }px, 0)`;
 
         // snap on, drift off. WAAPI not a class toggle, restarting a css
@@ -148,11 +208,13 @@ const {
           return;
         }
         const col = Math.floor((x - originX) / size);
-        const row = Math.floor((y - originY) / size);
-        if (col === lastCol && row === lastRow) return;
+        const oy = originYFor(y);
+        const row = Math.floor((y - oy) / size);
+        if (col === lastCol && row === lastRow && oy === lastOy) return;
         lastCol = col;
         lastRow = row;
-        light(col, row);
+        lastOy = oy;
+        light(col, row, oy);
       }
 
       window.addEventListener(
