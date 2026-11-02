@@ -245,14 +245,21 @@ the viewport.
 
 Panels that sit on the grid take their height in cells too. Game tiles are seven.
 
-Vertical origin is per block, not per page. Every `[data-grid-anchor]` is its own lattice and
-the trail uses the nearest one above the pointer, because section heights are text and
-text is never a multiple of 40. The trail also rounds each anchored child's height to whole
-cells at runtime (`snap()` in `CursorTrail.astro`), so a ledger row that measures 83px
-becomes 120 and the next row's top stays on the lattice. Rules that follow from that:
-anything that is a panel gets `data-grid-anchor` on its parent, gaps between panels are a
-cell, and two-column splits at `lg` use `lg:grid-cols-halves` (equal columns come out 20px
-off the module at some widths). A `sticky` panel can't align, it moves with scroll.
+The whole page sits on one vertical lattice, and `snap()` in `CursorTrail.astro` is what
+puts it there. Section heights are text and text is never a multiple of 40, so left alone
+the rule between two sections ends up wherever the copy above it stopped and no cell can
+sit on it. On a mouse device, after load and on every height change, it rounds each
+`main > section` to whole cells, rounds each child of a `[data-grid-anchor]` the same way,
+and pushes each anchored group down (section top padding for the first, margin for any
+others) until its first panel is a whole number of cells below the section's top edge.
+The cost is up to 39px of extra air at a block's top and bottom. The trail then looks up
+the nearest section edge or anchor above the pointer for its row origin.
+
+Rules that follow: anything that is a panel, a ruled list or an accordion gets
+`data-grid-anchor` on its parent. Gaps between panels are one cell. Two-column splits at
+`lg` use `lg:grid-cols-halves`, because equal columns come out 20px off the module at some
+widths. A `sticky` panel can't align, it moves with scroll. Touch devices skip all of it
+and keep natural heights.
 
 Container maxes at 1792px so the capped content column is exactly 1640, which is 41 cells.
 Gutters are 24px, 20px on mobile, 8px spacing base.

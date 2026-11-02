@@ -8,12 +8,12 @@
 // sized, not viewport: viewport height clips everything below the fold and a
 // fixed origin can't register vertically once you scroll.
 //
-// vertical origin is per block, not per page: every [data-grid-anchor] is its
-// own lattice and the pointer uses the nearest one above it. a page can't have
-// one phase, section heights are text and text isn't a multiple of 40. same
-// reason the children of an anchor get their height rounded up to whole cells
-// (snap below), otherwise a ledger row is 83px and the second row's top is
-// 3px off the lattice forever.
+// vertical origin is looked up per pointer: the nearest section edge or
+// [data-grid-anchor] panel group above it. snap() below then makes all of
+// those share one phase by rounding sections and panels to whole cells,
+// because left alone section heights are text and text isn't a multiple of
+// 40: the rule between two sections ends up wherever the copy above it
+// stopped and no cell can sit on it.
 //
 // plane stops at the footer, that's Layout.astro's call not ours.
 
@@ -87,8 +87,18 @@ const {
       let planeX = 0;
       let planeY = 0;
       let planeBottom = Infinity;
-      // document-space tops of every anchor, sorted. never empty, see measure()
-      let anchorTops: number[] = [0];
+      // document-space tops of every section and anchored panel group, sorted.
+      // never empty, see measure()
+      let lineTops: number[] = [0];
+
+      // top-level sections only. a section inside a section is the outer one's
+      // business
+      const sections = () =>
+        [...document.querySelectorAll<HTMLElement>("main section")].filter(
+          (s) => !s.parentElement?.closest("section")
+        );
+      const anchors = () => [...document.querySelectorAll<HTMLElement>("[data-grid-anchor]")];
+      const px = (v: string) => parseFloat(v) || 0;
 
       function measure() {
         const pb = plane.getBoundingClientRect();
@@ -103,60 +113,122 @@ const {
           originX = box.left + (parseFloat(getComputedStyle(shell).paddingLeft) || 0);
         }
         // vertical has to be measured, there's no css for "where did this land".
-        // page picks the anchors. a page with none (legal, 404) has no panel
-        // edges to land on so main's top is as good a phase as any
-        const marked = [...document.querySelectorAll<HTMLElement>("[data-grid-anchor]")];
-        if (!marked.length) {
+        // the lines a cell has to sit on are section edges (border-t, the band
+        // fill) and the first panel of every anchored group. after snap() they
+        // all share one phase, this is just where the pointer looks it up.
+        // first child not the anchor: a ledger's border-t sits on the list and
+        // would shove every row 1px off
+        const tops = [
+          ...sections().map((el) => el.getBoundingClientRect().top),
+          ...anchors().map((el) => ((el.firstElementChild as HTMLElement) ?? el).getBoundingClientRect().top),
+        ].map((t) => t + window.scrollY);
+        if (!tops.length) {
           const main = document.querySelector<HTMLElement>("main");
-          if (main) marked.push(main);
+          if (main) tops.push(main.getBoundingClientRect().top + window.scrollY);
         }
-        // first child, not the anchor: a ledger's border-t sits on the list and
-        // would shove every row 1px off the lattice
-        anchorTops = marked
-          .map((el) => ((el.firstElementChild as HTMLElement) ?? el).getBoundingClientRect().top + window.scrollY)
-          .sort((a, b) => a - b);
-        if (!anchorTops.length) anchorTops = [0];
+        lineTops = tops.length ? tops.sort((a, b) => a - b) : [0];
       }
 
-      // nearest anchor at or above y, else the first one below it. half a pixel
+      // nearest line at or above y, else the first one below it. half a pixel
       // of slack so a pointer exactly on the top edge counts as inside
       function originYFor(y: number) {
-        let top = anchorTops[0];
-        for (const t of anchorTops) if (t <= y + 0.5) top = t;
+        let top = lineTops[0];
+        for (const t of lineTops) if (t <= y + 0.5) top = t;
         return ((top % size) + size) % size;
       }
 
-      // round every anchored panel to whole cells. clear first or a panel we
-      // padded last time reads as its natural height. under a pixel over a
-      // multiple (text line-height is 26.4px, so 280.5 happens) it's pinned
-      // down to the multiple, the spill sits inside the padding and min-height
-      // alone can't pull a box back under its content. anything bigger rounds up
-      function snap() {
-        document.querySelectorAll<HTMLElement>("[data-grid-anchor]").forEach((anchor) => {
-          const kids = [...anchor.children] as HTMLElement[];
-          kids.forEach((k) => {
-            k.style.minHeight = "";
-            k.style.height = "";
-          });
-          const heights = kids.map((k) => k.getBoundingClientRect().height);
-          kids.forEach((k, i) => {
-            const h = heights[i];
-            if (h <= 0) return;
-            const below = Math.floor(h / size) * size;
-            if (below > 0 && h - below <= 1) k.style.height = `${below}px`;
-            else k.style.minHeight = `${Math.ceil(h / size) * size}px`;
-          });
-        });
+      // pin a box to whole cells. under a pixel over a multiple (text
+      // line-height is 26.4px, so 280.5 happens) it's pinned down to the
+      // multiple, the spill sits inside the padding and min-height alone can't
+      // pull a box back under its content. anything bigger rounds up
+      function toCells(el: HTMLElement, h: number) {
+        if (h <= 0) return;
+        const below = Math.floor(h / size) * size;
+        if (below > 0 && h - below <= 1) el.style.height = `${below}px`;
+        else el.style.minHeight = `${Math.ceil(h / size) * size}px`;
       }
 
+      // put the whole page on one lattice. a rule or fill edge that isn't a
+      // multiple of 40 from the line above it can never be hit by a cell, and
+      // section heights are text. so, in order:
+      //   1. clear everything we set last time or it reads as natural size
+      //   2. round every anchored panel to whole cells
+      //   3. push each anchored group down (section padding for the first one,
+      //      margin for any others) until its first panel is a whole number of
+      //      cells below the section's top edge
+      //   4. round every section to whole cells, so the next section's top
+      //      edge is on the lattice too
+      // the cost is up to 39px of extra air at a block's top and bottom. that's
+      // the trade, same as the shell snapping
+      function snap() {
+        const secs = sections();
+        const groups = anchors();
+
+        secs.forEach((el) => {
+          el.style.minHeight = "";
+          el.style.height = "";
+          el.style.paddingTop = "";
+        });
+        groups.forEach((g) => {
+          g.style.marginTop = "";
+          [...g.children].forEach((k) => {
+            (k as HTMLElement).style.minHeight = "";
+            (k as HTMLElement).style.height = "";
+          });
+        });
+
+        groups.forEach((g) => {
+          const kids = [...g.children] as HTMLElement[];
+          const heights = kids.map((k) => k.getBoundingClientRect().height);
+          kids.forEach((k, i) => toCells(k, heights[i]));
+        });
+
+        secs.forEach((sec) => {
+          groups
+            .filter((g) => sec.contains(g))
+            .forEach((g, i) => {
+              const first = (g.firstElementChild as HTMLElement) ?? g;
+              const d = first.getBoundingClientRect().top - sec.getBoundingClientRect().top;
+              const extra = (size - (d % size)) % size;
+              // already on a line, or off by sub-pixel noise
+              if (extra < 0.5 || extra > size - 0.5) return;
+              if (i === 0) sec.style.paddingTop = `${px(getComputedStyle(sec).paddingTop) + extra}px`;
+              else g.style.marginTop = `${px(getComputedStyle(g).marginTop) + extra}px`;
+            });
+        });
+
+        secs.forEach((sec) => toCells(sec, sec.getBoundingClientRect().height));
+      }
+
+      let busy = false;
       function relayout() {
+        if (busy) return;
+        busy = true;
         snap();
         measure();
+        busy = false;
       }
 
       relayout();
-      // fonts and images shift the anchor and neither fires resize
-      new ResizeObserver(measure).observe(document.body);
+      // fonts, images and the FAQ opening all change heights and none of them
+      // fire resize. debounced: the accordion animates, one pass at the end is
+      // enough. snapping is idempotent so its own size changes settle in one
+      // extra callback and stop
+      let settle = 0;
+      new ResizeObserver(() => {
+        clearTimeout(settle);
+        settle = window.setTimeout(relayout, 90);
+      }).observe(document.body);
+      // the FAQ animates open in 260ms, so one pass after it lands. the observer
+      // above should catch it already, this is the belt to its braces
+      document.addEventListener(
+        "toggle",
+        () => {
+          clearTimeout(settle);
+          settle = window.setTimeout(relayout, 320);
+        },
+        true
+      );
       // webfonts change line wraps, which changes every natural height
       document.fonts.ready.then(relayout);
       window.addEventListener("load", relayout);
