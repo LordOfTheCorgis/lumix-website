@@ -52,7 +52,7 @@ const DATACENTRE_BOOST = 3.5;
 
       <!-- Three facts that are true of every region, so none of them needs an
            asterisk. -->
-      <dl class="m-0 mt-10 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-3">
+      <dl data-grid-anchor class="m-0 mt-10 grid grid-cols-1 gap-[var(--grid-cell)] sm:grid-cols-2 lg:grid-cols-3">
         {[
           [`Up to ${ghz(peak)}`, "Single-core boost, the number your tick rate rides on"],
           [`${minRam} GB`, "Memory in every machine, DDR5 in Ashburn"],

@@ -146,7 +146,7 @@ const notCopied = ["Subusers", "Schedules", "Port allocations", "Databases"];
           they had is still there.
         </p>
       </div>
-      <dl class="m-0">
+      <dl data-grid-anchor class="m-0">
         {[
           ["How long does it take?", "The copy runs at whatever the old host's SFTP will give. Running the importer a second time only moves what changed."],
           ["Does the old host need to stay up?", "Only until the copy finishes. Keep it a day past that if you want a safety net; cancel it once the new one has taken a restart cleanly."],

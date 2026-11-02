@@ -98,7 +98,7 @@ const open = HOSTING.filter((r) => !r.soldOut);
           <span aria-hidden="true">&rarr;</span>
         </a>
       </div>
-      <dl class="m-0">
+      <dl data-grid-anchor class="m-0">
         {[
           ["Does every game go in every region?", `Yes. Same plans, same prices in all three. ${soldOut.length ? `${soldOut.map((r) => r.city).join(" and ")} ${soldOut.length > 1 ? "are" : "is"} full right now, so new servers go in ${open.map((r) => r.city).join(" or ")} until space opens up.` : "The region is a dropdown at checkout."}`],
           ["Can I move regions later?", "Ask on a ticket. A move between two of our own nodes is a copy, not an import, so it's the quick kind."],
