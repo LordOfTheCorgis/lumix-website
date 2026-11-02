@@ -19,7 +19,7 @@ const { games, class: className = "" } = Astro.props;
 // a real image in
 const HERO_MIN_WIDTH = 1200;
 
-// 1600 is plenty, hero caps at 1328 and it's behind a veil anyway
+// 1600 is plenty, it's behind a veil anyway
 const art = await Promise.all(
   games.filter((g) => g.image.width >= HERO_MIN_WIDTH).map(async (g) => {
     const img = await getImage({ src: g.image, width: 1600, format: "webp", quality: 68 });

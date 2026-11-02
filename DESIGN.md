@@ -245,7 +245,7 @@ the viewport.
 
 Panels that sit on the grid take their height in cells too. Game tiles are seven.
 
-Container maxes at 1328px so the capped content column is exactly 1280, which is 32 cells.
+Container maxes at 1792px so the capped content column is exactly 1640, which is 41 cells.
 Gutters are 24px, 20px on mobile, 8px spacing base.
 Section rhythm is 96px desktop and 56px mobile, living on a single `.section` class.
 Never also put block padding on the `section` element selector; when both exist they take

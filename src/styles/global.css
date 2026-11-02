@@ -64,7 +64,7 @@
    have more air */
 :root {
   --shell-pad: 1.25rem;
-  --shell-max: 83rem;  /* 1328, so the capped column is 1280 = 32 cells */
+  --shell-max: 112rem;  /* 1792, so the capped column is 1640 = 41 cells. was 1328, left ~300px of nothing each side at 1920 */
   --shell-base: 0px;
   --shell-step: var(--grid-cell);
 
