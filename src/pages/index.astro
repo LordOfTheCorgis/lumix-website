@@ -9,7 +9,7 @@ import Included from "../components/Included.astro";
 import PingTest from "../components/PingTest.astro";
 import Globe from "../components/Globe.astro";
 import { price } from "../lib/order";
-import { HOSTING, MITIGATION } from "../lib/locations";
+import { HOSTING } from "../lib/locations";
 import { trust } from "../config";
 import BotLine from "../components/BotLine.astro";
 
@@ -114,7 +114,7 @@ const cheapest = Math.min(
           nearest them instead of the one that was convenient for us.
         </p>
 
-        <!-- both lists as text so no-webgl still gets them -->
+        <!-- cities as text so no-webgl still gets them -->
         <ul class="mt-10 grid grid-cols-2 gap-x-6 gap-y-5 max-w-sm">
           {HOSTING.map((l) => (
             <li>
@@ -124,17 +124,6 @@ const cheapest = Math.min(
                 {l.soldOut && <span class="instrument text-red ml-2">sold out</span>}
               </p>
             </li>
-          ))}
-        </ul>
-
-        <p class="instrument text-slate mt-12">Scrubbed before it reaches you</p>
-        <p class="small text-fog mt-3 max-w-md">
-          Attack traffic gets pulled off to one of these points and dropped
-          there, not at your server. The white points are where that happens.
-        </p>
-        <ul class="small mt-4 flex flex-wrap gap-x-4 gap-y-1.5 max-w-md">
-          {MITIGATION.map((l) => (
-            <li class="text-paper">{l.city}</li>
           ))}
         </ul>
 
