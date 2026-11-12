@@ -121,7 +121,7 @@ export const locationOptions: ConfigOptionGroup = {
         // Admin never shows that last one. Pull it from the live order form
         // instead: cart.php?a=add&pid=16, then read data-val off the location
         // card (or the option value if the template ever goes back to a select).
-        { key: "dallas", label: "Dallas, TX", valueId: 6, note: "Best for the Central US, Texas, and Mexico"},
+        { key: "dallas", label: "Dallas, TX", valueId: 6, note: "Best for the Central US, Texas, and Mexico", soldOut: true},
         { key: "miami", label: "Miami, FL", valueId: 3, note: "Best for the Southeast US, Caribbean, and Latin America"},
         { key: "ashburn", label: "Ashburn, VA", valueId: 5, note: "Best for the Northeast US, Midwest, Canada, and Europe"},
     ],
