@@ -2,28 +2,26 @@ name: Deploy to production
 
 # Every push to main builds the site and uploads it to lumixsolutions.org on
 # cPanel over FTPS. Same shape as deploy-dev.yml on redesign (FTPS, the same
-# FTP-Deploy action, upload skipped until the secrets exist), but with its OWN
-# FTP account, because the dev one can't do this job:
+# FTP-Deploy action, upload skipped until the secrets exist) and the SAME
+# CPANEL_FTP_* secrets and account as dev.
 #
-#   The dev account (CPANEL_FTP_USERNAME) is jailed to
-#   public_html/dev.lumixsolutions.org. "../" can't escape a jail, so pointing
-#   it at the live docroot would either fail or, worse, drop the prod build
-#   into the dev site. Don't reuse it here.
-#
-# One-time setup in cPanel > FTP Accounts: make a second account whose
-# Directory is exactly `public_html` (the live docroot), then add two repo
-# secrets (Settings > Secrets and variables > Actions):
-#   CPANEL_FTP_PROD_USERNAME   the new account
-#   CPANEL_FTP_PROD_PASSWORD
-# CPANEL_FTP_SERVER is the same host dev uses (dev.lumixsolutions.org, not ftp.).
-# Until the PROD secrets exist the build still runs and the upload is skipped,
-# so merging this never breaks anything by itself.
+# That only works if the account's home is public_html. Today the account is
+# jailed to public_html/dev.lumixsolutions.org (per deploy-dev.yml, checked
+# 2026-10-08), and "../" can't escape a jail: the prod build would land in the
+# dev site instead. So:
+#   1. cPanel > FTP Accounts > change the account's Directory to public_html.
+#   2. In the SAME breath, deploy-dev.yml on redesign must change its
+#      server-dir from ./ to ./dev.lumixsolutions.org/ . Skip that and the next
+#      redesign push uploads the noindex dev build over the LIVE site.
+# The guard step below refuses to upload while the account is still jailed
+# (its root wouldn't list a dev.lumixsolutions.org folder), so running this
+# early fails loudly instead of overwriting the dev site.
 #
 # Why the dev. folder next to the site survives:
 #   - nothing is ever cleaned: the action only deletes files it uploaded
-#     itself on an earlier run (tracked in its own state file), and
-#     dangerous-clean-slate is pinned to false below.
-#   - the build can't produce a dev.lumixsolutions.org folder, and the check
+#     itself on an earlier run (tracked in its own state file, named
+#     differently from dev's), and dangerous-clean-slate is pinned to false.
+#   - the build can't produce a dev.lumixsolutions.org folder, and a check
 #     step fails the run if one ever shows up in dist/.
 # Manual runs default to a DRY RUN that only logs what would change. Untick
 # dry_run to upload for real.
@@ -49,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      HAS_FTP: ${{ secrets.CPANEL_FTP_SERVER != '' && secrets.CPANEL_FTP_PROD_USERNAME != '' && secrets.CPANEL_FTP_PROD_PASSWORD != '' }}
+      HAS_FTP: ${{ secrets.CPANEL_FTP_SERVER != '' && secrets.CPANEL_FTP_USERNAME != '' && secrets.CPANEL_FTP_PASSWORD != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -72,21 +70,35 @@ jobs:
             exit 1
           fi
 
+      - name: Check the FTP account lands in public_html, not the dev folder
+        if: env.HAS_FTP == 'true'
+        env:
+          FTP_SERVER: ${{ secrets.CPANEL_FTP_SERVER }}
+          FTP_USER: ${{ secrets.CPANEL_FTP_USERNAME }}
+          FTP_PASS: ${{ secrets.CPANEL_FTP_PASSWORD }}
+        run: |
+          listing=$(curl -sS --ftp-ssl-reqd --insecure --list-only --user "$FTP_USER:$FTP_PASS" "ftp://$FTP_SERVER/")
+          if ! printf '%s\n' "$listing" | grep -qx 'dev.lumixsolutions.org'; then
+            echo "::error::FTP root has no dev.lumixsolutions.org folder, so this account is still jailed to the dev site. Uploading now would overwrite the dev site with the prod build. Change the account's directory to public_html in cPanel first (and update deploy-dev.yml, see the comment at the top)."
+            exit 1
+          fi
+
       - name: Upload to cPanel
         if: env.HAS_FTP == 'true'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.CPANEL_FTP_SERVER }}
-          username: ${{ secrets.CPANEL_FTP_PROD_USERNAME }}
-          password: ${{ secrets.CPANEL_FTP_PROD_PASSWORD }}
+          username: ${{ secrets.CPANEL_FTP_USERNAME }}
+          password: ${{ secrets.CPANEL_FTP_PASSWORD }}
           # FTPS so the password doesn't cross the internet in the clear.
           protocol: ftps
           # web-srv-02's FTP cert is self-signed (CN=web-srv-02), so strict
           # verification fails on any hostname. "loose" keeps it encrypted.
           security: loose
           local-dir: ./dist/
-          # Relative to the FTP account's own root. The prod account's
-          # directory is public_html, so its root already IS the live docroot.
+          # Relative to the FTP account's own root. Once the account's
+          # directory is public_html that root IS the live docroot (the guard
+          # step above checks exactly that).
           server-dir: ./
           # Its own state file so it can never be confused with dev's.
           state-name: .ftp-deploy-sync-state-prod.json
@@ -97,4 +109,4 @@ jobs:
 
       - name: Say why nothing was uploaded
         if: env.HAS_FTP != 'true'
-        run: echo "::notice::Built fine, skipped the upload. Add CPANEL_FTP_SERVER plus CPANEL_FTP_PROD_USERNAME and CPANEL_FTP_PROD_PASSWORD (a cPanel FTP account whose directory is public_html) to deploy."
+        run: echo "::notice::Built fine, skipped the upload. Add the CPANEL_FTP_* secrets to deploy."
