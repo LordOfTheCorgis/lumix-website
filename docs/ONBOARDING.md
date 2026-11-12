@@ -119,7 +119,7 @@ Every page wraps its content in `Layout.astro` (a `title`, optional `description
 > [!NOTE]
 > Pushing to `main` deploys to the live site. `workflow_dispatch` runs it on demand too.
 
-`.github/workflows/deploy.yml` builds and uploads `dist/` to `lumixsolutions.org` on cPanel over FTPS, the same host and `SamKirkland/FTP-Deploy-Action` the dev workflow uses, just the live docroot instead of the `dev.` subfolder. It reuses the dev workflow's `CPANEL_FTP_*` account and just lands a level up, in `public_html`, via `server-dir: ../` (the account logs into the `dev.` subfolder, whose parent is the live docroot). The action only manages files it uploaded (state file in the folder), so the dev. subfolder sitting next to it survives; the old `rsync --delete` that would have wiped the box on a redesign merge is gone. Until the secrets are set the build runs and the upload is skipped, so a push never fails for lack of creds.
+`.github/workflows/deploy.yml` builds and uploads `dist/` to `lumixsolutions.org` on cPanel over FTPS, the same host and `SamKirkland/FTP-Deploy-Action` the dev workflow uses, just the live docroot instead of the `dev.` subfolder. It needs its own cPanel FTP account whose directory is `public_html`, because the dev workflow's account is jailed to the `dev.` subfolder and can't reach the live docroot (`../` can't escape a jail, so reusing it would drop the prod build into the dev site). The action only manages files it uploaded (its own state file, `dangerous-clean-slate` pinned off), so the `dev.` subfolder next to the site survives, and a check step fails the run if `dist/` ever contains it. `workflow_dispatch` runs default to a dry run. Until the prod secrets are set the build runs and the upload is skipped, so a push never fails for lack of creds.
 
 `.github/workflows/status.yml` runs on a schedule (~5 min) and on demand: it runs `scripts/status-check.mjs` against the nodes and panel/billing and force-pushes `status.json` to an orphan **`status-data`** branch (one commit, replaced each run). Scheduled workflows only run from the default branch, which is why it lives on `main`.
 
@@ -127,9 +127,9 @@ Workflow secrets (names only, set in GitHub, never committed):
 
 | Secret | Purpose |
 | ------ | ------- |
-| `CPANEL_FTP_SERVER` | cPanel FTP host (the box `dev.` resolves to) |
-| `CPANEL_FTP_USERNAME` | FTP user, shared by both workflows (prod lands a level up in `public_html` via `server-dir: ../`) |
-| `CPANEL_FTP_PASSWORD` | Password for that user |
+| `CPANEL_FTP_SERVER` | cPanel FTP host (the box `dev.` resolves to), used by both workflows |
+| `CPANEL_FTP_USERNAME` / `CPANEL_FTP_PASSWORD` | Dev FTP account, jailed to the `dev.` folder (dev workflow only) |
+| `CPANEL_FTP_PROD_USERNAME` / `CPANEL_FTP_PROD_PASSWORD` | Prod FTP account, directory = `public_html` (prod workflow only) |
 | `STATUS_TARGETS` | What the status checker probes (format in `scripts/status-check.mjs`) |
 
 ## Environment variables
