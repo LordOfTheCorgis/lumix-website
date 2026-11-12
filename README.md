@@ -90,7 +90,7 @@ Each of these is walked through in [the onboarding guide](docs/ONBOARDING.md#com
 
 ## Deploy
 
-**Push to `main` deploys.** `.github/workflows/deploy.yml` builds and uploads `dist/` to `lumixsolutions.org` on cPanel over FTPS (same host and action as the dev workflow). It only touches files it uploaded, so the rest of `public_html` is left alone, no `rsync --delete`. It uses the same `CPANEL_FTP_*` account as the dev workflow, which only works once that account's directory is `public_html` (today it is jailed to the `dev.` folder, so `../` can't reach the live docroot). A guard step refuses to upload while the account is still jailed. The `dev.` folder next to the site is never touched: nothing is cleaned and the action only manages files it uploaded. `workflow_dispatch` runs it on demand and defaults to a dry run. Until the secrets are set the upload is skipped and the build still passes.
+**Push to `main` deploys.** `.github/workflows/deploy.yml` builds and uploads `dist/` to `lumixsolutions.org` on cPanel over FTPS (same host and action as the dev workflow). It only touches files it uploaded, so the rest of `public_html` is left alone, no `rsync --delete`. It uses its own cPanel FTP account (`CPANEL_FTP_PROD_*` secrets) whose directory is `public_html`, because the dev account is jailed to the `dev.` folder and can't reach the live docroot. A guard step refuses to upload unless the account's root contains the `dev.` folder./` can't reach the live docroot). A guard step refuses to upload while the account is still jailed. The `dev.` folder next to the site is never touched: nothing is cleaned and the action only manages files it uploaded. `workflow_dispatch` runs it on demand and defaults to a dry run. Until the prod secrets are set the upload is skipped and the build still passes.
 
 `.github/workflows/status.yml` runs every ~5 minutes, probes the nodes and panel/billing via `scripts/status-check.mjs`, and writes results to an orphan `status-data` branch that `/status` reads live.
 
@@ -102,7 +102,8 @@ Set in GitHub, never committed.
 | Secret | Purpose |
 | ------ | ------- |
 | `CPANEL_FTP_SERVER` | cPanel FTP host (the box `dev.` points at) |
-| `CPANEL_FTP_USERNAME` / `CPANEL_FTP_PASSWORD` | The one FTP account both workflows use. Its directory must be `public_html`; dev then targets `./dev.lumixsolutions.org/` |
+| `CPANEL_FTP_USERNAME` / `CPANEL_FTP_PASSWORD` | Dev FTP account, jailed to the `dev.` folder (dev workflow only) |
+| `CPANEL_FTP_PROD_USERNAME` / `CPANEL_FTP_PROD_PASSWORD` | Prod FTP account (full name, e.g. `deploy-main@lumixsolutions.org`), directory = `public_html` (prod workflow only). Never put it in the dev secrets |
 | `STATUS_TARGETS` | What the status checker probes (format in `scripts/status-check.mjs`) |
 
 </details>
