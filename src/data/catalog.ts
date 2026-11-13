@@ -106,9 +106,9 @@ export const locationOptions: ConfigOptionGroup = {
         // Both notes previously read "US East · DDoS protected", which gave a
         // customer nothing to choose on. Each now says who it is actually for.
         //
-        // Dallas is the only region with capacity right now, so it sits first
-        // and the builder picks it by default. Miami and Ashburn stay listed
-        // (sold out) rather than deleted — existing services still live there
+        // Ashburn is the only region taking new customers right now (Dallas and
+        // Miami are sold out), so the builder lands on it by default. Dallas and
+        // Miami stay listed (sold out) rather than deleted — existing services still live there
         // and the region list reads better with the full footprint visible.
         //
         // Three different numbers describe Dallas and it is very easy to grab
@@ -122,7 +122,7 @@ export const locationOptions: ConfigOptionGroup = {
         // instead: cart.php?a=add&pid=16, then read data-val off the location
         // card (or the option value if the template ever goes back to a select).
         { key: "dallas", label: "Dallas, TX", valueId: 6, note: "Best for the Central US, Texas, and Mexico", soldOut: true},
-        { key: "miami", label: "Miami, FL", valueId: 3, note: "Best for the Southeast US, Caribbean, and Latin America"},
+        { key: "miami", label: "Miami, FL", valueId: 3, note: "Best for the Southeast US, Caribbean, and Latin America", soldOut: true},
         { key: "ashburn", label: "Ashburn, VA", valueId: 5, note: "Best for the Northeast US, Midwest, Canada, and Europe"},
     ],
 };
