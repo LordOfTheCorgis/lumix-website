@@ -116,6 +116,16 @@
 
   table, .tabular { font-variant-numeric: tabular-nums; }
 
+  /* last lines were landing on one or two words ("reaches you.", "on deploy.").
+     `pretty` only stops a lone final word, a two-word tail slips through, so
+     everything short gets `balance`. browsers cap balance at a few lines
+     (6 in chromium), which is nearly all copy here. past the cap it falls
+     back to plain wrapping, so the long legal pages are untouched. plain css,
+     unsupported browsers just wrap the old way */
+  h1, h2, h3, h4, p, dd, li, blockquote, .display-xl, .display-l, .title, .lead {
+    text-wrap: balance;
+  }
+
   ::selection {
     background-color: var(--color-red);
     color: var(--color-ink);  /* not white, paper on red is 3.02:1 */
