@@ -56,6 +56,7 @@ const productSchema = {
   <!-- same light as the home hero but always this game's accent. accent is
        the beam and the eyebrow mark, red stays on the CTA -->
   <section
+    data-hero
     class="relative overflow-hidden border-b border-[var(--edge)]"
     style={`--game-accent:${g.accent}`}
   >
@@ -70,9 +71,11 @@ const productSchema = {
     <!-- ink shelf under the copy, art on the right -->
     <div class="absolute inset-0 bg-gradient-to-r from-ink via-ink/70 to-ink/15" aria-hidden="true"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-ink to-transparent" aria-hidden="true"></div>
+    <!-- the header sits on this now, keep the nav readable over bright art -->
+    <div class="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-ink/75 to-transparent" aria-hidden="true"></div>
     <LightRays seed={11} count={7} />
 
-    <div class="shell relative py-16 lg:py-24">
+    <div class="shell relative pb-16 pt-36 lg:pb-24 lg:pt-44">
       <p class="instrument flex items-center gap-3 text-fog">
         <span class="inline-block h-2 w-2" style={`background:${g.accent}`} aria-hidden="true"></span>
         <a href="/games" class="hover:text-paper">All games</a>

@@ -229,6 +229,14 @@
     }
   }
 
+  /* pages with a hero image let it run up behind the header: the header is
+     80px tall (h-20 on the row) so the page slides up exactly that much, and
+     the hero adds it back to its top padding so the copy doesn't move. header
+     is transparent at rest, the pill only appears once you scroll */
+  body:has([data-hero]) [data-header] {
+    margin-bottom: -5rem;
+  }
+
   /* cut top-left and bottom-right like the monogram. chamfer, not radius */
   .chamfer {
     clip-path: polygon(

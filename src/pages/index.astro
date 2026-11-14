@@ -27,7 +27,7 @@ const cheapest = Math.min(
   description={`FiveM, Minecraft, Palworld and BeamMP servers from ${price(cheapest)} a month. Three US regions, DDoS protected, online in minutes.`}
 >
   <!-- one job: get someone into a cart. no positioning copy up here -->
-  <section class="section relative overflow-hidden">
+  <section data-hero class="section relative overflow-hidden pt-[calc(var(--spacing-section-mobile)+5rem)] lg:pt-[calc(var(--spacing-section)+5rem)]">
     <!-- order matters: art, light, copy. DOM order is the stack -->
     <HeroArt
       games={games.map((g) => ({ slug: g.data.slug, image: g.data.image, accent: g.data.accent }))}
