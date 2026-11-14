@@ -158,19 +158,39 @@ const moreOpenish = moreNav.some((item) => isCurrent(item.href));
 
 <style>
   .pill {
+    /* one duration and curve for the whole morph or the parts drift apart.
+       slow start, long settle, so it reads as one move not a snap */
+    --morph: 520ms cubic-bezier(0.32, 0.72, 0, 1);
+    position: relative;
+    isolation: isolate;
     max-width: 100%;
     margin-block: 0;
     padding-inline: 0;
-    border: 1px solid transparent;
     border-radius: 9999px;
     transition:
-      max-width 300ms cubic-bezier(0.22, 1, 0.36, 1),
-      height 300ms cubic-bezier(0.22, 1, 0.36, 1),
-      margin 300ms cubic-bezier(0.22, 1, 0.36, 1),
-      padding 300ms cubic-bezier(0.22, 1, 0.36, 1),
-      background-color 300ms ease,
-      border-color 300ms ease,
-      backdrop-filter 300ms ease;
+      max-width var(--morph),
+      height var(--morph),
+      margin var(--morph),
+      padding var(--morph);
+  }
+
+  /* the glass is its own layer and only its opacity animates. it used to
+     transition background, border and backdrop-filter on the row itself, and
+     filter transitions are what made it stutter. blur sits at full strength
+     the whole time, the fade hides it */
+  .pill::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    border: 1px solid var(--edge-strong);
+    background-color: color-mix(in srgb, var(--color-ink) 82%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--morph);
   }
 
   /* height and margin trade 1:1 so the header stays 80px */
@@ -179,10 +199,10 @@ const moreOpenish = moreNav.some((item) => isCurrent(item.href));
     margin-block: 0.75rem;
     max-width: 64rem;
     padding-inline: 1.25rem;
-    background-color: color-mix(in srgb, var(--color-ink) 86%, transparent);
-    border-color: var(--edge-strong);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+  }
+
+  [data-header][data-scrolled] .pill::before {
+    opacity: 1;
   }
 </style>
 
@@ -192,10 +212,11 @@ const moreOpenish = moreNav.some((item) => isCurrent(item.href));
   const panel = document.querySelector<HTMLElement>("[data-menu-panel]");
 
   if (header) {
-    // attribute swap so the css transition still applies. 8px not 0 so
-    // rubber-band scroll doesn't flicker it
+    // attribute swap so the css transition still applies. 12px not 0 so
+    // rubber-band scroll doesn't flicker it, and the hero has to be fully bare
+    // at rest because the art runs up behind the header now
     const onScroll = () => {
-      header.toggleAttribute("data-scrolled", window.scrollY > 8);
+      header.toggleAttribute("data-scrolled", window.scrollY > 12);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
