@@ -30,14 +30,16 @@ export const trust = {
   url: "https://www.trustpilot.com/review/lumixsolutions.org",
 };
 
-// not a game, no tile. one WHMCS product per runtime, same price on all three
+// not a game, no tile. ONE WHMCS product (pid 6, "Application Hosting"), the
+// runtime is a dropdown on the panel's Startup tab. this used to be three
+// products with the pids written down as 7/8/9, which were wrong anyway: in
+// WHMCS Node is 6, Python 7, Go 8 and 9 doesn't exist, so two of the three
+// links ordered the wrong thing and one ordered nothing. `runtimes` is only
+// the names the copy shows, the panel's picker has the full list.
 export const botHosting = {
   monthly: 4,
-  runtimes: [
-    { label: "Node.js", pid: 7 },
-    { label: "Python", pid: 8 },
-    { label: "Go", pid: 9 },
-  ],
+  pid: 6,
+  runtimes: ["Node.js", "Python", "Go", "Elixir"],
 };
 
 // read-only demo server on the panel. nothing renders until url is set.

@@ -54,6 +54,6 @@ export const FAQ: Faq[] = [
   },
   {
     q: "Can I host a Discord bot or an app?",
-    a: `Yes. Application hosting is $${botHosting.monthly.toFixed(2)} a month for ${botHosting.runtimes.map((r) => r.label).join(", ").replace(/, ([^,]*)$/, " or $1")}, on the same network and with the same DDoS protection as the game servers.`,
+    a: `Yes. Application hosting is $${botHosting.monthly.toFixed(2)} a month, one plan for ${botHosting.runtimes.join(", ").replace(/, ([^,]*)$/, ", or $1")} and more. You pick the language from the Startup tab in the panel and can change it later while the server is stopped; your files stay where they are. Same network and the same DDoS protection as the game servers.`,
   },
 ];
