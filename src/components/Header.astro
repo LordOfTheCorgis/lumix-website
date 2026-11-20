@@ -117,27 +117,17 @@ const moreOpenish = moreNav.some((item) => isCurrent(item.href));
     hidden
     class="shell md:hidden"
   >
-   <div class="border border-[var(--edge-strong)] bg-ink/95 backdrop-blur-md rounded-3xl px-5">
-    <nav aria-label="Primary" class="flex flex-col py-4">
+   <!-- scrolls inside itself. 7 + 6 rows at 50px apiece was taller than a phone,
+        so the Client area button fell off the bottom with no way to reach it.
+        the button is pinned under the scroll area instead -->
+   <div class="flex max-h-[calc(100dvh-6rem)] flex-col rounded-3xl border border-[var(--edge-strong)] bg-ink/95 backdrop-blur-md">
+    <nav aria-label="Primary" class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-2">
       {nav.map((item) => (
         <a
           href={item.href}
           aria-current={isCurrent(item.href) ? "page" : undefined}
           class:list={[
-            "border-b border-[var(--edge)] py-4 text-sm last:border-b-0",
-            isCurrent(item.href) ? "text-paper" : "text-fog",
-          ]}
-        >
-          {item.label}
-        </a>
-      ))}
-      <p class="instrument text-slate mt-6">More</p>
-      {moreNav.map((item) => (
-        <a
-          href={item.href}
-          aria-current={isCurrent(item.href) ? "page" : undefined}
-          class:list={[
-            "border-b border-[var(--edge)] py-4 text-sm last:border-b-0",
+            "block border-b border-[var(--edge)] py-3.5 text-base last:border-b-0",
             isCurrent(item.href) ? "text-paper" : "text-fog",
           ]}
         >
@@ -145,13 +135,31 @@ const moreOpenish = moreNav.some((item) => isCurrent(item.href));
         </a>
       ))}
 
+      <p class="instrument mb-1 mt-5 text-slate">More</p>
+      <div class="grid grid-cols-2 gap-x-4 pb-3">
+        {moreNav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isCurrent(item.href) ? "page" : undefined}
+            class:list={[
+              "block py-2.5 text-sm",
+              isCurrent(item.href) ? "text-paper" : "text-fog",
+            ]}
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </nav>
+
+    <div class="border-t border-[var(--edge)] p-4">
       <a
         href={links.billing}
-        class="chamfer mt-6 bg-red px-4 py-3 text-center text-sm font-medium text-ink"
+        class="chamfer block bg-red px-4 py-3 text-center text-sm font-medium text-ink"
       >
         Client area
       </a>
-    </nav>
+    </div>
    </div>
   </div>
 </header>
@@ -203,6 +211,15 @@ const moreOpenish = moreNav.some((item) => isCurrent(item.href));
 
   [data-header][data-scrolled] .pill::before {
     opacity: 1;
+  }
+
+  /* two bars become an X while the menu is open. the bar centres sit 11px
+     apart (12px box, 1px bars), so each bar travels 5.5px to meet */
+  [data-menu-toggle][aria-expanded="true"] [data-menu-icon] span:first-child {
+    transform: translateY(5.5px) rotate(45deg);
+  }
+  [data-menu-toggle][aria-expanded="true"] [data-menu-icon] span:last-child {
+    transform: translateY(-5.5px) rotate(-45deg);
   }
 </style>
 
