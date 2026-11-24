@@ -23,7 +23,7 @@
 Lumix Solutions (lumixsolutions.org) sells game server hosting to the people who run game communities. The site presents the games, lists real plans at real prices, and hands the customer to WHMCS with the product preselected. It never takes payment itself, and it never claims a number it can't show.
 
 > [!NOTE]
-> **This branch is the in-progress rebuild and does not deploy.** The workflow is disabled on purpose (`workflow_dispatch` + `if: false`). Pushing `redesign` does nothing to any live site. See [Deploy](#deploy).
+> **Two branches deploy.** Push to `main` and it goes live on lumixsolutions.org. Push to `dev` and it goes to dev.lumixsolutions.org (noindex). Both upload over FTPS to cPanel, see `.github/workflows/`. Work on `dev`, merge to `main` to ship.
 
 ## What the site does
 

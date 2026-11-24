@@ -1,4 +1,4 @@
-# CLAUDE.md — Lumix Website (redesign branch)
+# CLAUDE.md — Lumix Website
 
 Lumix Solutions marketing and storefront site. See `docs/ONBOARDING.md` for the walkthrough, and read the project docs in order: **`HANDOFF.md` → `DESIGN.md` → `BUILD-PLAN.md`**. `TODO.md` is Evan's list. `DESIGN.md` governs anything visual.
 
@@ -8,7 +8,7 @@ Astro 7.3 + Tailwind 4.3, static, **Node 22.12+**. `cobe` drives the globe, `ani
 
 ## Deploy
 
-**Nothing deploys.** `.github/workflows/deploy.yml` is `workflow_dispatch` + `if: false` — it can't fire. The target is wrong and the redesign isn't going live yet; don't restore a push trigger until Evan says so. A push here does nothing to any live site.
+**Two branches deploy.** `main` -> lumixsolutions.org (`deploy.yml`, FTPS, PROD account secrets), `dev` -> dev.lumixsolutions.org (`deploy-dev.yml`, noindex build). A push to `main` is a live release. Never put the prod FTP account into the dev secrets (the dev workflow uploads to its account root).
 
 ## Commands
 

@@ -13,7 +13,7 @@
 </p>
 
 > [!IMPORTANT]
-> **Nothing here deploys.** The workflow is disabled on purpose (`workflow_dispatch` + `if: false`). Pushing `redesign` does nothing to any live site. See [Build & deploy](#build--deploy).
+> **`main` deploys to production, `dev` deploys to dev.lumixsolutions.org.** Both are FTPS uploads to cPanel on push. See [Build & deploy](#build--deploy).
 
 > [!NOTE]
 > `DESIGN.md` is effectively law for anything visual — read section 5 before you add a color.

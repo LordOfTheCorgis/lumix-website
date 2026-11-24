@@ -1,52 +1,117 @@
-name: Deploy to server
+name: Deploy to production
 
-# manual only. the secrets this uses point at the wrong box (per evan,
-# 2026-09-23) and the redesign isn't going live yet. don't put a push trigger
-# back until the target is fixed and evan says ship it
+# Every push to main (and only main, dev has its own workflow) builds the site and uploads it to lumixsolutions.org on
+# cPanel over FTPS. Same shape as deploy-dev.yml on the dev branch (FTPS, the same
+# FTP-Deploy action, upload skipped until the secrets exist), but with its OWN
+# FTP account, so nothing about dev's account or workflow has to change:
+#
+#   cPanel > FTP Accounts: an account whose Directory is `public_html` (the
+#   live docroot). Repo secrets (Settings > Secrets and variables > Actions):
+#     CPANEL_FTP_PROD_USERNAME   the FULL name, e.g. deploy-main@lumixsolutions.org
+#     CPANEL_FTP_PROD_PASSWORD
+#   CPANEL_FTP_SERVER is the same host dev uses (dev.lumixsolutions.org, not ftp.).
+#   Do NOT put the prod account into the dev secrets (CPANEL_FTP_USERNAME/
+#   CPANEL_FTP_PASSWORD): dev uploads to its account root, so the next dev push would
+#   drop the noindex dev build over the live site.
+#
+# Guard: before uploading, the run lists the account's root and refuses to go on
+# unless a dev.lumixsolutions.org folder is in it. That proves the account lands
+# in public_html and not inside the dev site.
+#
+# Why the dev. folder next to the site survives:
+#   - nothing is ever cleaned: the action only deletes files it uploaded
+#     itself on an earlier run (tracked in its own state file, named
+#     differently from dev's), and dangerous-clean-slate is pinned to false.
+#   - the build can't produce a dev.lumixsolutions.org folder, and a check
+#     step fails the run if one ever shows up in dist/.
+# Manual runs default to a DRY RUN that only logs what would change. Untick
+# dry_run to upload for real.
+
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: log what would be uploaded, change nothing"
+        type: boolean
+        default: true
 
-# two pushes close together shouldn't rsync over each other
+# two pushes close together shouldn't upload over each other, and cancelling
+# a half-finished FTP upload is worse than just waiting
 concurrency:
-  group: deploy
+  group: deploy-prod
   cancel-in-progress: false
 
 jobs:
-  build-deploy:
-    # belt and braces: even a manual run does nothing until this goes true
-    if: false
+  deploy:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
+    env:
+      HAS_FTP: ${{ secrets.CPANEL_FTP_SERVER != '' && secrets.CPANEL_FTP_PROD_USERNAME != '' && secrets.CPANEL_FTP_PROD_PASSWORD != '' }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
-      # ci not install, so the build uses the lockfile and not whatever npm feels like today
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
 
-      # .env never reaches CI. without these the build ships with analytics
-      # and the cookie banner silently off. they're PUBLIC_ keys, they end up
-      # in the page source anyway, so repo variables not secrets
-      - name: Build project
+      # no PUBLIC_DEPLOY_ENV, so prod indexes normally (dev sets it to noindex).
+      # the posthog keys are PUBLIC_ build-time values, repo variables not
+      # secrets. leave them out and the site ships with analytics silently off
+      - name: Build
         run: npm run build
         env:
           PUBLIC_POSTHOG_KEY: ${{ vars.PUBLIC_POSTHOG_KEY }}
           PUBLIC_POSTHOG_HOST: ${{ vars.PUBLIC_POSTHOG_HOST }}
 
-      - name: Setup SSH
+      - name: Make sure dist/ can't touch the dev site
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+          if [ -e "dist/dev.lumixsolutions.org" ]; then
+            echo "::error::dist/ contains dev.lumixsolutions.org, refusing to upload"
+            exit 1
+          fi
 
-      - name: Deploy via rsync
+      - name: Check the FTP account lands in public_html, not the dev folder
+        if: env.HAS_FTP == 'true'
+        env:
+          FTP_SERVER: ${{ secrets.CPANEL_FTP_SERVER }}
+          FTP_USER: ${{ secrets.CPANEL_FTP_PROD_USERNAME }}
+          FTP_PASS: ${{ secrets.CPANEL_FTP_PROD_PASSWORD }}
         run: |
-          rsync -avz --delete dist/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/srv/www/lumixsolutions.org/
+          listing=$(curl -sS --ftp-ssl-reqd --insecure --list-only --user "$FTP_USER:$FTP_PASS" "ftp://$FTP_SERVER/")
+          if ! printf '%s\n' "$listing" | grep -qx 'dev.lumixsolutions.org'; then
+            echo "::error::FTP root has no dev.lumixsolutions.org folder, so this account is jailed to the dev site (or the secrets are the dev account's). Uploading now would overwrite the dev site with the prod build. Check the prod FTP account's Directory is public_html in cPanel, and that these are the PROD secrets, not the dev ones."
+            exit 1
+          fi
+
+      - name: Upload to cPanel
+        if: env.HAS_FTP == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.CPANEL_FTP_SERVER }}
+          username: ${{ secrets.CPANEL_FTP_PROD_USERNAME }}
+          password: ${{ secrets.CPANEL_FTP_PROD_PASSWORD }}
+          # FTPS so the password doesn't cross the internet in the clear.
+          protocol: ftps
+          # web-srv-02's FTP cert is self-signed (CN=web-srv-02), so strict
+          # verification fails on any hostname. "loose" keeps it encrypted.
+          security: loose
+          local-dir: ./dist/
+          # Relative to the FTP account's own root. The prod account's
+          # directory is public_html, so its root IS the live docroot (the
+          # guard step above checks exactly that).
+          server-dir: ./
+          # Its own state file so it can never be confused with dev's.
+          state-name: .ftp-deploy-sync-state-prod.json
+          # Belt and braces: never wipe the target before uploading.
+          dangerous-clean-slate: false
+          # Manual runs are dry by default; pushes upload for real.
+          dry-run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+
+      - name: Say why nothing was uploaded
+        if: env.HAS_FTP != 'true'
+        run: echo "::notice::Built fine, skipped the upload. Add CPANEL_FTP_SERVER plus CPANEL_FTP_PROD_USERNAME and CPANEL_FTP_PROD_PASSWORD (a cPanel FTP account whose directory is public_html) to deploy."

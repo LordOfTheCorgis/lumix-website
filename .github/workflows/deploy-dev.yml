@@ -1,6 +1,6 @@
 name: Deploy dev
 
-# Every push to redesign builds the site and uploads it to
+# Every push to the dev branch builds the site and uploads it to
 # dev.lumixsolutions.org on cPanel (FTP user deploy@, already jailed to that
 # folder). Static files only, so cPanel's Node
 # version doesn't matter. Built with PUBLIC_DEPLOY_ENV=dev, which makes every
@@ -18,7 +18,7 @@ name: Deploy dev
 
 on:
   push:
-    branches: [redesign]
+    branches: [dev]
   workflow_dispatch:
 
 concurrency:
