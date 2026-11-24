@@ -20,6 +20,10 @@ export interface Location {
   vms?: { name: string; ip: string }[];
   /** node's at its cap, not taking new servers. existing ones keep running */
   soldOut?: boolean;
+  /** WHMCS "Server Location" option value id (config option 3). NOT the
+      pterodactyl node id and not the "5|Dallas" sort prefix in the admin
+      name. read it off GetProducts configoptions. hosting only */
+  whmcsId?: number;
 }
 
 // where servers run, west to east. salt lake city was on here once, dallas
@@ -27,6 +31,8 @@ export interface Location {
 export const HOSTING: Location[] = [
   {
     city: "Dallas",
+    soldOut: true,
+    whmcsId: 6,
     region: "Texas",
     slug: "dallas",
     lat: 32.7767,
@@ -39,7 +45,7 @@ export const HOSTING: Location[] = [
   },
   {
     city: "Ashburn",
-    soldOut: true,
+    whmcsId: 5,
     region: "Virginia",
     slug: "ashburn",
     lat: 39.0438,
@@ -54,6 +60,7 @@ export const HOSTING: Location[] = [
   {
     city: "Miami",
     soldOut: true,
+    whmcsId: 3,
     region: "Florida",
     slug: "miami",
     lat: 25.7617,

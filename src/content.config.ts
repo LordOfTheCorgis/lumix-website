@@ -48,6 +48,9 @@ const games = defineCollection({
     logo: image(),
     accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
     mark: z.string().min(2).max(4),
+    // false = no "Server Location" option in WHMCS for this game (beammp), so
+    // the page skips the region step
+    locations: z.boolean().default(true),
     highlights: z.array(z.string()).optional(),
     // live needs plans. planned has none and that's the point, /games shows
     // it dimmed so people can ask. superRefine so the error names the game
