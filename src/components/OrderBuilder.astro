@@ -1,0 +1,257 @@
+---
+// term -> region -> plan, in that order. every price comes off the game yaml
+// and every link goes through orderUrl, so what's shown is what the cart gets.
+// server render is the monthly + first-open-region state so the links work
+// with js off, the script only swaps text and hrefs
+import { HOSTING } from "../lib/locations";
+import { orderUrl, price } from "../lib/order";
+import { promo } from "../config";
+
+interface Plan {
+  key: string;
+  name: string;
+  pid: number;
+  popular: boolean;
+  specs: { vcores: string; ramGb: number; storageGb: number; slots: string };
+  pricing: Record<string, number>;
+}
+
+interface Props {
+  plans: Plan[];
+  hasLocations: boolean;
+}
+
+const { plans, hasLocations } = Astro.props;
+
+// whmcs billingcycle keys. months drives the per-month math
+const CYCLES = [
+  { key: "monthly", label: "Monthly", months: 1, unit: "/mo" },
+  { key: "quarterly", label: "3 months", months: 3, unit: "/3 mo" },
+  { key: "semiannually", label: "6 months", months: 6, unit: "/6 mo" },
+  { key: "annually", label: "1 year", months: 12, unit: "/yr" },
+  { key: "biennially", label: "2 years", months: 24, unit: "/2 yr" },
+  { key: "triennially", label: "3 years", months: 36, unit: "/3 yr" },
+];
+
+// only offer a term every plan prices, a half-empty column is worse than none
+const cycles = CYCLES.filter((c) => plans.every((p) => typeof p.pricing[c.key] === "number"));
+
+// % off vs paying monthly for the same stretch, off the cheapest plan
+const base = plans[0];
+const saving = (c: (typeof CYCLES)[number]) =>
+  Math.round((1 - base.pricing[c.key] / (base.pricing.monthly * c.months)) * 100);
+
+const regions = HOSTING.filter((r) => r.whmcsId);
+const defaultRegion = regions.find((r) => !r.soldOut);
+const nothingOpen = hasLocations && !defaultRegion;
+
+let step = 0;
+const n = () => String(++step).padStart(2, "0");
+
+const payload = {
+  cycles: cycles.map(({ key, months, unit }) => ({ key, months, unit })),
+  plans: plans.map((p) => ({ pid: p.pid, pricing: p.pricing })),
+  base: "https://billing.lumixsolutions.org/cart.php",
+};
+---
+
+<div
+  data-order-builder
+  data-config={JSON.stringify(payload)}
+  class="mt-10"
+>
+  <!-- 1. term -->
+  <fieldset class="m-0 min-w-0 border-0 p-0">
+    <legend class="instrument mb-4 text-slate"><span class="text-paper">{n()}</span> &nbsp;How long do you want to pay for?</legend>
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      {cycles.map((c, i) => (
+        <label class="relative block cursor-pointer">
+          <input
+            type="radio"
+            name="term"
+            value={c.key}
+            checked={i === 0}
+            class="peer sr-only"
+          />
+          <span class="chamfer flex h-full flex-col gap-1 border border-[var(--edge)] bg-ink-soft px-4 py-3 transition-colors duration-150 hover:border-[var(--edge-strong)] peer-checked:border-red peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-red">
+            <span class="text-paper font-medium">{c.label}</span>
+            <span class="small text-slate">
+              {c.key === "monthly" ? "Cancel any time" : `Save ${saving(c)}%`}
+            </span>
+          </span>
+        </label>
+      ))}
+    </div>
+  </fieldset>
+
+  <!-- 2. region. skipped for games with no location option in whmcs -->
+  {hasLocations && (
+    <fieldset class="m-0 mt-10 min-w-0 border-0 p-0">
+      <legend class="instrument mb-4 text-slate"><span class="text-paper">{n()}</span> &nbsp;Where should it run?</legend>
+      <div class="grid gap-3 sm:grid-cols-3">
+        {regions.map((r) => (
+          <label class:list={["relative block", r.soldOut ? "cursor-not-allowed" : "cursor-pointer"]}>
+            <input
+              type="radio"
+              name="region"
+              value={r.whmcsId}
+              checked={r === defaultRegion}
+              disabled={r.soldOut}
+              class="peer sr-only"
+            />
+            <span
+              class:list={[
+                "chamfer flex h-full flex-col gap-1 border border-[var(--edge)] bg-ink-soft px-4 py-3 transition-colors duration-150",
+                r.soldOut
+                  ? "opacity-50"
+                  : "hover:border-[var(--edge-strong)] peer-checked:border-red peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-red",
+              ]}
+            >
+              <span class="flex items-baseline justify-between gap-3">
+                <span class="text-paper font-medium">{r.city}, {r.region}</span>
+                {r.soldOut && <span class="instrument text-red">Sold out</span>}
+              </span>
+              <span class="small text-slate">
+                {r.soldOut ? "Full right now. Existing servers keep running." : r.serves}
+              </span>
+            </span>
+          </label>
+        ))}
+      </div>
+      {nothingOpen && (
+        <p class="small text-fog mt-4">
+          Every region is full right now. Open a ticket from the contact page and we'll tell you when space opens.
+        </p>
+      )}
+    </fieldset>
+  )}
+
+  <!-- 3. plan -->
+  <div class="mt-10">
+    <p class="instrument mb-4 text-slate"><span class="text-paper">{n()}</span> &nbsp;Pick a plan</p>
+    <p class="small text-fog mb-6 max-w-lg" data-summary aria-live="polite"></p>
+
+    <ul data-grid-anchor class="grid gap-[var(--grid-cell)]">
+      {plans.map((plan) => (
+        <li
+          data-plan={plan.pid}
+          class:list={[
+            "chamfer flex flex-col justify-center border bg-ink-soft p-6",
+            plan.popular ? "border-red" : "border-[var(--edge)]",
+          ]}
+        >
+          <div class="flex flex-col gap-6 lg:flex-row lg:items-center">
+            <div class="lg:w-56 lg:shrink-0">
+              {plan.popular && <p class="instrument text-red">Most popular</p>}
+              <h3 class:list={["title", plan.popular && "mt-2"]}>{plan.name}</h3>
+            </div>
+
+            <dl class="grid flex-1 grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
+              <div>
+                <dt class="instrument text-slate">vCores</dt>
+                <dd class="small tabular mt-1">{plan.specs.vcores}</dd>
+              </div>
+              <div>
+                <dt class="instrument text-slate">Memory</dt>
+                <dd class="small tabular mt-1">{plan.specs.ramGb} GB</dd>
+              </div>
+              <div>
+                <dt class="instrument text-slate">NVMe</dt>
+                <dd class="small tabular mt-1">{plan.specs.storageGb} GB</dd>
+              </div>
+              <div>
+                <dt class="instrument text-slate">Slots</dt>
+                <dd class="small mt-1">{plan.specs.slots}</dd>
+              </div>
+            </dl>
+
+            <div class="flex items-center gap-6 lg:shrink-0">
+              <p class="tabular lg:w-40">
+                <span class="title price" data-total>{price(plan.pricing.monthly)}</span>
+                <span class="small text-fog" data-unit>/mo</span>
+                <span class="small text-slate block" data-permonth hidden></span>
+              </p>
+
+              <!-- only the popular one is red, seven red buttons is no choice -->
+              <a
+                data-order
+                href={orderUrl(plan.pid, "monthly", defaultRegion?.whmcsId)}
+                aria-disabled={nothingOpen ? "true" : undefined}
+                class:list={[
+                  "chamfer inline-flex items-center px-6 py-3 font-medium transition-colors duration-150",
+                  plan.popular
+                    ? "bg-red text-ink hover:bg-red-pressed"
+                    : "border border-[var(--edge-strong)] text-paper hover:border-red hover:text-red",
+                ]}
+              >
+                Order
+              </a>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    {promo.live && (
+      <p class="small text-fog mt-6">
+        Code <span class="instrument text-paper">{promo.code}</span> takes {promo.percent}% off at checkout.
+      </p>
+    )}
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-order-builder]");
+
+  if (root) {
+    const cfg = JSON.parse(root.dataset.config ?? "{}") as {
+      cycles: { key: string; months: number; unit: string }[];
+      plans: { pid: number; pricing: Record<string, number> }[];
+      base: string;
+    };
+    const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+    const summary = root.querySelector<HTMLElement>("[data-summary]");
+
+    const checked = (name: string) =>
+      root.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`);
+
+    const update = () => {
+      const term = checked("term")?.value ?? "monthly";
+      const region = checked("region"); // null for games with no region step
+      const cycle = cfg.cycles.find((c) => c.key === term) ?? cfg.cycles[0];
+
+      for (const plan of cfg.plans) {
+        const row = root.querySelector<HTMLElement>(`[data-plan="${plan.pid}"]`);
+        if (!row) continue;
+        const total = plan.pricing[cycle.key];
+
+        row.querySelector("[data-total]")!.textContent = usd.format(total);
+        row.querySelector("[data-unit]")!.textContent = cycle.unit;
+
+        const per = row.querySelector<HTMLElement>("[data-permonth]")!;
+        per.hidden = cycle.months === 1;
+        per.textContent = `${usd.format(total / cycle.months)}/mo`;
+
+        // same param names as lib/order.ts. keep them in sync by hand, this
+        // script can't import it without dragging astro into the bundle
+        const url = new URL(cfg.base);
+        url.searchParams.set("a", "add");
+        url.searchParams.set("pid", String(plan.pid));
+        url.searchParams.set("billingcycle", cycle.key);
+        if (region) url.searchParams.set("configoption[3]", region.value);
+        row.querySelector<HTMLAnchorElement>("[data-order]")!.href = url.toString();
+      }
+
+      if (summary) {
+        const city = region?.closest("label")?.querySelector("span span")?.textContent?.trim();
+        const label = root.querySelector<HTMLInputElement>(`input[name="term"]:checked`)
+          ?.closest("label")?.querySelector("span span")?.textContent?.trim();
+        const billed = cycle.months === 1 ? "Billed monthly" : `Paid up front for ${label?.toLowerCase()}`;
+        summary.textContent = city ? `${billed}, running in ${city}.` : `${billed}.`;
+      }
+    };
+
+    root.addEventListener("change", update);
+    update();
+  }
+</script>

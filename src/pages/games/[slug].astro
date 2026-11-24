@@ -6,7 +6,9 @@ import LightRays from "../../components/LightRays.astro";
 import { orderUrl, price } from "../../lib/order";
 import { firstTen } from "../../lib/firstTen";
 import AfterPurchase from "../../components/AfterPurchase.astro";
-import { promo, demoPanel, links } from "../../config";
+import OrderBuilder from "../../components/OrderBuilder.astro";
+import { demoPanel, links } from "../../config";
+import { HOSTING } from "../../lib/locations";
 
 export async function getStaticPaths() {
   const games = await getCollection("games");
@@ -18,6 +20,7 @@ export async function getStaticPaths() {
 const { game } = Astro.props;
 const g = game.data;
 const steps = firstTen(g.slug);
+const defaultRegion = g.locations ? HOSTING.find((r) => !r.soldOut) : undefined;
 
 // cheapest first, people scan for the entry price
 const plans = [...g.plans].sort((a, b) => a.pricing.monthly - b.pricing.monthly);
@@ -45,7 +48,7 @@ const productSchema = {
       unitCode: "MON",
     },
     availability: "https://schema.org/InStock",
-    url: orderUrl(plan.pid),
+    url: orderUrl(plan.pid, "monthly", defaultRegion?.whmcsId),
   })),
 };
 ---
@@ -97,74 +100,13 @@ const productSchema = {
 
   <section class="section band">
     <div class="shell">
-      <h2 class="title">Choose a size</h2>
+      <h2 class="title">Build your order</h2>
       <p class="small text-fog mt-3 max-w-lg">
-        You pick the region on the next screen: Dallas, Ashburn or
-        Miami. Billed monthly unless you choose a longer term at checkout.
-        {promo.live && (
-          <>
-            {" "}Code <span class="instrument text-paper">{promo.code}</span> takes{" "}
-            {promo.percent}% off.
-          </>
-        )}
+        Longer terms cost less per month and you pay for the whole term up
+        front at checkout.
       </p>
 
-      <ul data-grid-anchor class="mt-8 grid gap-[var(--grid-cell)]">
-        {plans.map((plan) => (
-          <li
-            class:list={[
-              "chamfer flex flex-col justify-center border bg-ink-soft p-6",
-              plan.popular ? "border-red" : "border-[var(--edge)]",
-            ]}
-          >
-            <div class="flex flex-col gap-6 lg:flex-row lg:items-center">
-              <div class="lg:w-56 lg:shrink-0">
-                {plan.popular && <p class="instrument text-red">Most popular</p>}
-                <h3 class:list={["title", plan.popular && "mt-2"]}>{plan.name}</h3>
-              </div>
-
-              <dl class="grid flex-1 grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
-                <div>
-                  <dt class="instrument text-slate">vCores</dt>
-                  <dd class="small tabular mt-1">{plan.specs.vcores}</dd>
-                </div>
-                <div>
-                  <dt class="instrument text-slate">Memory</dt>
-                  <dd class="small tabular mt-1">{plan.specs.ramGb} GB</dd>
-                </div>
-                <div>
-                  <dt class="instrument text-slate">NVMe</dt>
-                  <dd class="small tabular mt-1">{plan.specs.storageGb} GB</dd>
-                </div>
-                <div>
-                  <dt class="instrument text-slate">Slots</dt>
-                  <dd class="small mt-1">{plan.specs.slots}</dd>
-                </div>
-              </dl>
-
-              <div class="flex items-center gap-6 lg:shrink-0">
-                <p class="tabular">
-                  <span class="title price">{price(plan.pricing.monthly)}</span>
-                  <span class="small text-fog">/mo</span>
-                </p>
-
-                <!-- only the popular one is red, seven red buttons is no choice -->
-                <a
-                  href={orderUrl(plan.pid)}
-                  class:list={[
-                    "chamfer inline-flex items-center px-6 py-3 font-medium transition-colors duration-150",
-                    plan.popular
-                      ? "bg-red text-ink hover:bg-red-pressed"
-                      : "border border-[var(--edge-strong)] text-paper hover:border-red hover:text-red",
-                  ]}
-                >
-                  Order
-                </a>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <OrderBuilder plans={plans} hasLocations={g.locations} />
 
       <p class="small text-fog mt-10 max-w-xl">{g.description}</p>
       <!-- no trial, refunds case by case, matches terms.md -->
