@@ -4,6 +4,19 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 import sitemap from '@astrojs/sitemap';
+import { copyFileSync } from 'node:fs';
+
+// the live 404 is Apache's grey page that says an ErrorDocument failed, so
+// cPanel already points 404s at a file we never shipped. cPanel's default is
+// /404.shtml, so ship our 404 page under that name. a guess, check the live
+// response after a deploy and delete this if it still comes back grey
+const copy404 = {
+  name: 'copy-404-shtml',
+  hooks: {
+    'astro:build:done': ({ dir }) =>
+      copyFileSync(new URL('404.html', dir), new URL('404.shtml', dir)),
+  },
+};
 
 // https://astro.build/config
 export default defineConfig({
@@ -21,5 +34,5 @@ export default defineConfig({
     optimizeDeps: { include: ["cobe"] },
   },
 
-  integrations: [sitemap()]
+  integrations: [sitemap(), copy404]
 });
