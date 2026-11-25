@@ -51,7 +51,6 @@ const n = () => String(++step).padStart(2, "0");
 const payload = {
   cycles: cycles.map(({ key, months, unit }) => ({ key, months, unit })),
   plans: plans.map((p) => ({ pid: p.pid, pricing: p.pricing })),
-  base: "https://billing.lumixsolutions.org/cart.php",
 };
 ---
 
@@ -175,10 +174,11 @@ const payload = {
               <!-- only the popular one is red, seven red buttons is no choice -->
               <a
                 data-order
-                href={orderUrl(plan.pid, "monthly", defaultRegion?.whmcsId)}
+                href={nothingOpen ? undefined : orderUrl(plan.pid, "monthly", defaultRegion?.whmcsId)}
                 aria-disabled={nothingOpen ? "true" : undefined}
                 class:list={[
                   "chamfer inline-flex items-center px-6 py-3 font-medium transition-colors duration-150",
+                  nothingOpen && "pointer-events-none opacity-40",
                   plan.popular
                     ? "bg-red text-ink hover:bg-red-pressed"
                     : "border border-[var(--edge-strong)] text-paper hover:border-red hover:text-red",
@@ -201,15 +201,15 @@ const payload = {
 </div>
 
 <script>
+  import { orderUrl, price } from "../lib/order";
+
   const root = document.querySelector<HTMLElement>("[data-order-builder]");
 
   if (root) {
     const cfg = JSON.parse(root.dataset.config ?? "{}") as {
       cycles: { key: string; months: number; unit: string }[];
       plans: { pid: number; pricing: Record<string, number> }[];
-      base: string;
     };
-    const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
     const summary = root.querySelector<HTMLElement>("[data-summary]");
 
     const checked = (name: string) =>
@@ -225,21 +225,19 @@ const payload = {
         if (!row) continue;
         const total = plan.pricing[cycle.key];
 
-        row.querySelector("[data-total]")!.textContent = usd.format(total);
+        row.querySelector("[data-total]")!.textContent = price(total);
         row.querySelector("[data-unit]")!.textContent = cycle.unit;
 
         const per = row.querySelector<HTMLElement>("[data-permonth]")!;
         per.hidden = cycle.months === 1;
-        per.textContent = `${usd.format(total / cycle.months)}/mo`;
+        per.textContent = `${price(total / cycle.months)}/mo`;
 
-        // same param names as lib/order.ts. keep them in sync by hand, this
-        // script can't import it without dragging astro into the bundle
-        const url = new URL(cfg.base);
-        url.searchParams.set("a", "add");
-        url.searchParams.set("pid", String(plan.pid));
-        url.searchParams.set("billingcycle", cycle.key);
-        if (region) url.searchParams.set("configoption[3]", region.value);
-        row.querySelector<HTMLAnchorElement>("[data-order]")!.href = url.toString();
+        // same builder the server render uses, so the links can't drift. no
+        // href on the button = every region is full, leave it dead
+        const order = row.querySelector<HTMLAnchorElement>("[data-order]")!;
+        if (order.hasAttribute("href")) {
+          order.href = orderUrl(plan.pid, cycle.key, region ? Number(region.value) : undefined);
+        }
       }
 
       if (summary) {
