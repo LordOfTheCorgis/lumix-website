@@ -22,6 +22,8 @@ const { game } = Astro.props;
 const g = game.data;
 const steps = firstTen(g.slug);
 const defaultRegion = g.locations ? HOSTING.find((r) => !r.soldOut) : undefined;
+// every region flagged soldOut: the order buttons go dead, so the schema says so too
+const closed = g.locations && !defaultRegion;
 
 // cheapest first, people scan for the entry price
 const plans = [...g.plans].sort((a, b) => a.pricing.monthly - b.pricing.monthly);
@@ -64,7 +66,7 @@ const productSchema = {
       billingIncrement: 1,
       unitCode: "MON",
     },
-    availability: "https://schema.org/InStock",
+    availability: closed ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
     url: orderUrl(plan.pid, "monthly", defaultRegion?.whmcsId),
   })),
 };
