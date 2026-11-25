@@ -292,9 +292,8 @@ by a routine in the `lumix-routines` repo, and is not part of this project.
 1. **cPanel Node version.** Astro 7 needs Node 22.12+. Whether cPanel offers it
    gates the entire admin plan in BUILD-PLAN.md. Nobody has checked yet. **This is
    the blocker now.**
-2. **Deploy path on cPanel.** `deploy.yml` is disabled (`workflow_dispatch` + `if: false`)
-   and its rsync target is the wrong box. It needs a confirmed target and a rewrite
-   before any trigger goes back on it.
+2. **Deploy path on cPanel.** Settled: `main` -> prod and `dev` -> dev, both FTPS.
+   See docs/ONBOARDING.md, Build & deploy.
 3. Whether Terms sections 7 and 9 get reviewed by Louisiana counsel. Louisiana is
    the only civil law state, and broad liability disclaimers behave differently
    there than in the other forty-nine.
@@ -303,5 +302,4 @@ by a routine in the `lumix-routines` repo, and is not part of this project.
 
 Every page in the nav is built. The remaining big builds are the Capacity Board
 (DESIGN.md section 8, the signature element) and the admin panel (gated on the cPanel
-Node question). Settling the production deploy target is the other open thread — see
-the open questions.
+Node question).

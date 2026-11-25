@@ -21,13 +21,15 @@ npm run preview
 
 Copy `.env.example` → `.env`: `PUBLIC_POSTHOG_KEY` / `PUBLIC_POSTHOG_HOST` (blank in dev is fine — analytics + cookie banner render nothing). Never commit values.
 
+`npm test` runs the cfg generator tests, `npm run check` type-checks. Pull requests run both plus a build (`.github/workflows/ci.yml`).
+
 ## Where things live
 
 - `src/content/games/*.yaml` — **game data**: plans, WHMCS pids, prices, specs, art/logo. Validated by `src/content.config.ts` — a bad pid or a `live` game with no plans **fails the build**. Prices are display copy; keep WHMCS in sync by hand. Terraria is hidden (no yaml), art kept.
 - `src/content/legal/*.md` — terms/privacy/ccpa markdown, rendered via `src/pages/[slug].astro`.
-- `src/config.ts` — everything non-game: `site`, `promo` (LUMIX10, live), `trust` (Trustpilot 4.1/5, hand-entered), `botHosting` (3 pids: Node 7 / Python 8 / Go 9), `demoPanel`, `links`, `nav`/`moreNav`/`footerNav`, `social`.
-- `src/lib/order.ts` — cart-URL builder: `orderUrl(pid, billingcycle)`, **no `skipconfig`, no `configoption`** (customer picks region in WHMCS).
-- `src/lib/locations.ts` — globe + `/regions` + ping. `soldOut` flag per region. Dallas live, Ashburn/Miami sold out. Don't re-add Salt Lake City. Keep VM `ip` fields blank (public repo, browser ping leaks IPs).
+- `src/config.ts` — everything non-game: `site`, `promo` (LUMIX10, live), `trust` (Trustpilot score, hand-entered, check it against the real page), `botHosting` (one product, pid 6, runtime is a panel dropdown), `demoPanel`, `links`, `nav`/`moreNav`/`footerNav`, `social`.
+- `src/lib/order.ts` — cart-URL builder: `orderUrl(pid, billingcycle, locationId?)`. Adds `configoption[3]` (the WHMCS Server Location id, `whmcsId` in `locations.ts`) so the region picked on the game page is preselected. No `skipconfig`, so the customer still sees WHMCS's config page.
+- `src/lib/locations.ts` — globe + `/regions` + ping. `soldOut` flag per region. Ashburn is the only open region; Dallas and Miami are sold out. WHMCS hides the same options (`hidden` flag), so flip both when a region opens or closes. Don't re-add Salt Lake City. Keep VM `ip` fields blank (public repo, browser ping leaks IPs).
 - `src/lib/ping.ts` — one timed browser fetch; a refused connection still times right. `/status` and `PingTest` share it.
 - `src/assets/` — images imported through `astro:assets` (webp/srcset), not `public/`.
 - `src/styles/global.css` — `@theme` tokens only (`ink`, `red`, `paper`, `go`, `--chamfer`, `--shear`, `--grid-cell`). No `tailwind.config.js`.
@@ -37,7 +39,7 @@ Copy `.env.example` → `.env`: `PUBLIC_POSTHOG_KEY` / `PUBLIC_POSTHOG_HOST` (bl
 
 - `cobe` must stay in `astro.config.mjs` `optimizeDeps.include` or the globe 504s and vanishes on first scroll.
 - The content schema failing the build is intentional; read the error, it names the game.
-- `order.ts` sends no region param by design — don't "fix" it.
+- `order.ts` sends the region as `configoption[3]` on purpose. The browser script in `OrderBuilder.astro` imports `orderUrl` so the two can't drift; keep it that way.
 - `/status` is a refused-connection timing trick via `lib/ping.ts`, not a health endpoint; no fake uptime number.
 - `astro dev` is a background daemon in Astro 7 (Ctrl+C won't stop it): `astro dev stop && npm run dev`. More dev traps in `HANDOFF.md`.
 - Two reds per viewport max; read `DESIGN.md` §5 before adding a color.
