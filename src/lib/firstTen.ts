@@ -57,7 +57,7 @@ const fivemSteps: Step[] = [
   {
     title: "server.cfg: endpoints, name, slots",
     body: "The endpoint lines must use your game port. Set the hostname, tags, slots and OneSync. Or build the whole file with the generator and paste it in.",
-    href: "/tools/fivem-server-cfg",
+    href: "/tools/fivem-server-cfg/",
   },
   {
     title: "Database from the Databases tab, never localhost",
