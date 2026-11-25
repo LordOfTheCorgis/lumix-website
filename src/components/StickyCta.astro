@@ -13,7 +13,8 @@ const { href = "/#pick", label = "Order a server" } = Astro.props;
 <div
   data-sticky-cta
   hidden
-  class="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--edge)] bg-ink/95 backdrop-blur-md md:hidden"
+  style="bottom: var(--cookie-h, 0px)"
+  class="fixed inset-x-0 z-40 border-t border-[var(--edge)] bg-ink/95 backdrop-blur-md md:hidden"
 >
   <div class="shell py-3">
     <a
@@ -38,8 +39,8 @@ const { href = "/#pick", label = "Order a server" } = Astro.props;
       const show = window.scrollY > threshold();
       if (show === bar.hidden) {
         bar.hidden = !show;
-        // keep it off the footer
-        document.body.style.paddingBottom = show ? `${bar.offsetHeight}px` : "";
+        // keep it off the footer, the sum with the cookie banner lives in global.css
+        document.documentElement.style.setProperty("--sticky-h", show ? `${bar.offsetHeight}px` : "0px");
       }
     };
 

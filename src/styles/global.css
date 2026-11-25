@@ -112,6 +112,10 @@
     font-family: var(--font-sans);
     color: var(--color-paper);
     line-height: 1.65;
+    /* the cookie banner and the mobile order bar are both fixed to the bottom.
+       each one reports its own height in a variable, so neither wipes the
+       other's room when it opens or closes */
+    padding-bottom: calc(var(--cookie-h, 0px) + var(--sticky-h, 0px));
   }
 
   table, .tabular { font-variant-numeric: tabular-nums; }
