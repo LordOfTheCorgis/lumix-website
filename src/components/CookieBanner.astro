@@ -68,7 +68,7 @@ const analyticsEnabled = Boolean(import.meta.env.PUBLIC_POSTHOG_KEY);
     const decide = (value: "granted" | "denied") => {
       write(value);
       banner.hidden = true;
-      document.body.style.paddingBottom = "";
+      document.documentElement.style.removeProperty("--cookie-h");
       if (value === "granted") {
         window.dispatchEvent(new Event("lumix:consent-granted"));
       }
@@ -85,7 +85,7 @@ const analyticsEnabled = Boolean(import.meta.env.PUBLIC_POSTHOG_KEY);
       write("denied");
     } else if (!existing) {
       banner.hidden = false;
-      document.body.style.paddingBottom = `${banner.offsetHeight}px`;
+      document.documentElement.style.setProperty("--cookie-h", `${banner.offsetHeight}px`);
     }
 
     banner.querySelectorAll<HTMLButtonElement>("[data-consent]").forEach((button) => {
