@@ -1,0 +1,156 @@
+---
+// one real answer to a question people type into google. rules of thumb,
+// labelled as such. plan sizes come off the yaml so the table can't drift.
+import { getEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { price } from "../../lib/order";
+
+const fivem = await getEntry("games", "fivem");
+const plans = [...fivem!.data.plans].sort((a, b) => a.pricing.monthly - b.pricing.monthly);
+
+const siteUrl = "https://lumixsolutions.org";
+const published = "2026-11-25";
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "How Much RAM and CPU Does a FiveM Server Need?",
+  description:
+    "What a FiveM server really needs in CPU, RAM and storage, by player count and framework, and how to avoid the asset mistakes that make players stall on the loading screen.",
+  datePublished: published,
+  dateModified: published,
+  author: { "@type": "Organization", name: "Lumix Solutions" },
+  publisher: { "@type": "Organization", name: "Lumix Solutions", logo: { "@type": "ImageObject", url: `${siteUrl}/icon-512.png` } },
+  mainEntityOfPage: `${siteUrl}/guides/fivem-server-requirements/`,
+};
+---
+
+<Layout
+  title="How Much RAM and CPU Does a FiveM Server Need?"
+  description="FiveM server requirements in plain numbers: CPU, RAM and storage by player count and framework, plus the asset mistakes that leave players stuck loading."
+  ogType="article"
+  breadcrumbs={[{ name: "FiveM Server Requirements", path: "/guides/fivem-server-requirements/" }]}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+
+  <section class="section border-b border-[var(--edge)]">
+    <div class="shell">
+      <p class="instrument text-fog">Guide · FiveM</p>
+      <h1 class="display-xl mt-4 max-w-3xl">How Much RAM and CPU Does a FiveM Server Need?</h1>
+      <p class="lead text-fog mt-6 max-w-xl">
+        Short answer: CPU speed matters more than core count, 6 to 8 GB of RAM
+        carries most roleplay servers, and your assets decide how long players
+        wait on the loading screen. The details are below. These are rules of
+        thumb from running these servers, not hard limits.
+      </p>
+    </div>
+  </section>
+
+  <article class="section">
+    <div class="shell max-w-3xl space-y-12">
+      <div>
+        <h2 class="title">CPU: One Fast Core Beats Many Slow Ones</h2>
+        <p class="small text-fog mt-4 max-w-prose">
+          The FiveM server runs most of its scripting on one main thread. A
+          resource that does heavy work on that thread slows everything else,
+          which shows up as the "server thread hitch warning" lines in your
+          console. Extra cores help with networking and background work, but a
+          fast single core is what keeps hitches away. When you compare hosts,
+          ask what CPU model your cores come from and whether they are
+          dedicated or shared. Shared cores are where a quiet night turns into
+          a laggy one.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="title">RAM by Server Type</h2>
+        <p class="small text-fog mt-4 max-w-prose">
+          Use these as a starting point, then watch real usage in txAdmin for a
+          week and adjust.
+        </p>
+        <ul class="small text-fog mt-4 max-w-prose list-disc space-y-2 pl-5">
+          <li><span class="text-paper">2 to 4 GB:</span> A small friends server, a test server, or a light freeroam setup with few resources.</li>
+          <li><span class="text-paper">6 to 8 GB:</span> A full QBCore or ESX roleplay server with a normal resource list and a regular player base.</li>
+          <li><span class="text-paper">10 GB and up:</span> A very heavy resource list, many custom scripts, or a busy server that runs a lot of players at peak.</li>
+        </ul>
+        <p class="small text-fog mt-4 max-w-prose">
+          Your database is separate from this. Run MySQL or MariaDB with
+          oxmysql for your framework, and keep the connection string in
+          your server.cfg out of anything public.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="title">Storage and Assets: Where Loading Screens Get Stuck</h2>
+        <p class="small text-fog mt-4 max-w-prose">
+          Disk space matters less than what sits in it. Every vehicle pack,
+          clothing pack and map you add is something each player downloads and
+          streams before they can spawn. A server with a few gigabytes of
+          assets can leave new players on "Awaiting scripts" for minutes,
+          and some quit before it finishes. The usual causes are single texture
+          files of 32 to 64 MB, which FiveM warns about in the console as
+          oversized assets. Compress or replace those files, and drop packs
+          you do not use. Fast NVMe storage speeds up restarts and loading on
+          the server side, but it cannot shrink what players have to download.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="title">Slots Are a License Limit, Not a Hardware One</h2>
+        <p class="small text-fog mt-4 max-w-prose">
+          The maximum number of players your server can accept comes from your
+          Cfx license. Your CPU and RAM decide how many of those players the
+          server carries without hitching. Lumix does not meter slots on FiveM
+          plans, so size the plan to the load, not to a slot count.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="title">Which Lumix FiveM Plan Fits</h2>
+        <div class="mt-6 overflow-x-auto">
+          <table class="small w-full min-w-[32rem] text-left text-fog">
+            <thead class="text-paper">
+              <tr class="border-b border-[var(--edge)]">
+                <th class="py-3 pr-4 font-medium">Plan</th>
+                <th class="py-3 pr-4 font-medium">vCores</th>
+                <th class="py-3 pr-4 font-medium">RAM</th>
+                <th class="py-3 pr-4 font-medium">NVMe</th>
+                <th class="py-3 font-medium">From</th>
+              </tr>
+            </thead>
+            <tbody>
+              {plans.map((p) => (
+                <tr class="border-b border-[var(--edge)]">
+                  <td class="py-3 pr-4 text-paper">{p.name}</td>
+                  <td class="py-3 pr-4 tabular">{p.specs.vcores}</td>
+                  <td class="py-3 pr-4 tabular">{p.specs.ramGb} GB</td>
+                  <td class="py-3 pr-4 tabular">{p.specs.storageGb} GB</td>
+                  <td class="py-3 tabular">{price(p.pricing.monthly)}/mo</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="small text-fog mt-6 max-w-prose">
+          Start with the plan that matches your server type above. You can
+          upgrade from the client area at any time and pay the difference.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a
+            href="/games/fivem/"
+            class="chamfer inline-flex items-center gap-2 bg-red px-7 py-4 font-medium text-ink transition-colors duration-150 hover:bg-red-pressed"
+          >
+            See FiveM Server Hosting Plans
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+          <a
+            href="/tools/fivem-server-cfg/"
+            class="chamfer inline-flex items-center gap-2 border border-[var(--edge-strong)] px-7 py-4 font-medium text-paper transition-colors duration-150 hover:border-red hover:text-red"
+          >
+            Build Your server.cfg
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </article>
+</Layout>
