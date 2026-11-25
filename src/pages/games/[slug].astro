@@ -9,6 +9,7 @@ import AfterPurchase from "../../components/AfterPurchase.astro";
 import OrderBuilder from "../../components/OrderBuilder.astro";
 import { demoPanel, links } from "../../config";
 import { HOSTING } from "../../lib/locations";
+import { GAME_SEO, FIVEM_FAQ } from "../../lib/seo";
 
 export async function getStaticPaths() {
   const games = await getCollection("games");
@@ -24,6 +25,22 @@ const defaultRegion = g.locations ? HOSTING.find((r) => !r.soldOut) : undefined;
 
 // cheapest first, people scan for the entry price
 const plans = [...g.plans].sort((a, b) => a.pricing.monthly - b.pricing.monthly);
+
+// search title and description off the same cheapest plan the page shows, falls
+// back to the yaml copy for games without a hand-written entry
+const seo = GAME_SEO[g.slug];
+const seoTitle = seo?.title ?? g.label;
+const seoDescription = seo ? seo.description(price(plans[0].pricing.monthly)) : g.description;
+const faq = g.slug === "fivem" ? FIVEM_FAQ : [];
+const faqSchema = faq.length && {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
 
 // Product + an Offer per plan off the same yaml so schema and table can't
 // disagree. old site shipped Organization only on a page with a price table
@@ -53,8 +70,15 @@ const productSchema = {
 };
 ---
 
-<Layout title={g.label} description={g.description} image={g.image.src} imageAlt={`${g.label} on Lumix Solutions`}>
+<Layout
+  title={seoTitle}
+  description={seoDescription}
+  image={g.image.src}
+  imageAlt={`${g.label} on Lumix Solutions`}
+  breadcrumbs={[{ name: "Game Hosting", path: "/games/" }, { name: g.label, path: `/games/${g.slug}/` }]}
+>
   <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+  {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
 
   <!-- same light as the home hero but always this game's accent. accent is
        the beam and the eyebrow mark, red stays on the CTA -->
@@ -177,4 +201,34 @@ const productSchema = {
       </ol>
     </div>
   </section>
+
+  {faq.length > 0 && (
+    <section class="section border-t border-[var(--edge)]">
+      <div class="shell grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
+        <div>
+          <h2 class="title">{g.shortLabel} Hosting Questions<span class="text-red">.</span></h2>
+          <p class="lead text-fog mt-6 max-w-sm">
+            What people ask before they pick a plan.
+          </p>
+          <p class="small text-fog mt-6 max-w-sm">
+            Sizing a server?{" "}
+            <a href="/guides/fivem-server-requirements/" class="text-paper underline underline-offset-4">How much RAM and CPU a FiveM server needs</a>.
+            Building a config?{" "}
+            <a href="/tools/fivem-server-cfg/" class="text-paper underline underline-offset-4">Free server.cfg generator</a>.
+          </p>
+        </div>
+        <div class="border-t border-[var(--edge)]">
+          {faq.map((f) => (
+            <details class="group border-b border-[var(--edge)] py-5">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-paper font-medium">
+                {f.q}
+                <span aria-hidden="true" class="text-slate transition-transform duration-150 group-open:rotate-45">+</span>
+              </summary>
+              <p class="small text-fog mt-3 max-w-prose">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 </Layout>
