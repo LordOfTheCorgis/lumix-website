@@ -2,7 +2,7 @@ name: Deploy to production
 
 # Every push to main (and only main, dev has its own workflow) builds the site and uploads it to lumixsolutions.org on
 # cPanel over FTPS. Same shape as deploy-dev.yml on the dev branch (FTPS, the same
-# FTP-Deploy action, upload skipped until the secrets exist), but with its OWN
+# FTP-Deploy action, but the run FAILS if the secrets are missing), with its OWN
 # FTP account, so nothing about dev's account or workflow has to change:
 #
 #   cPanel > FTP Accounts: an account whose Directory is `public_html` (the
@@ -39,6 +39,9 @@ on:
 
 # two pushes close together shouldn't upload over each other, and cancelling
 # a half-finished FTP upload is worse than just waiting
+permissions:
+  contents: read
+
 concurrency:
   group: deploy-prod
   cancel-in-progress: false
@@ -58,6 +61,9 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      # cheap, and a push straight to main skips the pull request check
+      - run: npm test
 
       # no PUBLIC_DEPLOY_ENV, so prod indexes normally (dev sets it to noindex).
       # the posthog keys are PUBLIC_ build-time values, repo variables not
@@ -90,7 +96,8 @@ jobs:
 
       - name: Upload to cPanel
         if: env.HAS_FTP == 'true'
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        # pinned to the commit, not the tag: this step holds the FTP password
+        uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65 # v4.3.5
         with:
           server: ${{ secrets.CPANEL_FTP_SERVER }}
           username: ${{ secrets.CPANEL_FTP_PROD_USERNAME }}
@@ -112,6 +119,10 @@ jobs:
           # Manual runs are dry by default; pushes upload for real.
           dry-run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
 
-      - name: Say why nothing was uploaded
+      # a green run that uploaded nothing is how a rotated secret goes unnoticed
+      # for a week, so this fails loudly instead of printing a notice
+      - name: Fail if nothing was uploaded
         if: env.HAS_FTP != 'true'
-        run: echo "::notice::Built fine, skipped the upload. Add CPANEL_FTP_SERVER plus CPANEL_FTP_PROD_USERNAME and CPANEL_FTP_PROD_PASSWORD (a cPanel FTP account whose directory is public_html) to deploy."
+        run: |
+          echo "::error::Built fine but did NOT upload: CPANEL_FTP_SERVER, CPANEL_FTP_PROD_USERNAME or CPANEL_FTP_PROD_PASSWORD is missing. Add them (a cPanel FTP account whose directory is public_html)."
+          exit 1
