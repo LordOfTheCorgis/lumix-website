@@ -1,4 +1,5 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 
 const legal = defineCollection({
@@ -58,7 +59,7 @@ const games = defineCollection({
   }).superRefine((g, ctx) => {
     if (g.status === "live" && g.plans.length === 0) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         message: `${g.slug} is live with no plans. Add one or set status: planned.`,
         path: ["plans"],
       });
