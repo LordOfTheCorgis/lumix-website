@@ -4,9 +4,9 @@
 <p align="center"><strong>Game servers, capped on purpose.</strong><br>The marketing site and storefront for Lumix Solutions — a finite number of servers, run properly.</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Astro-7.3-FF4C4C?style=flat&labelColor=161114" alt="Astro 7.3">
+  <img src="https://img.shields.io/badge/Astro-7.3-FF4C4C?style=flat&labelColor=161114" alt="Astro 7.4">
   <img src="https://img.shields.io/badge/Tailwind-4.3-FF4C4C?style=flat&labelColor=161114" alt="Tailwind 4.3">
-  <img src="https://img.shields.io/badge/Node-22.12%2B-FF4C4C?style=flat&labelColor=161114" alt="Node 22.12+">
+  <img src="https://img.shields.io/badge/Node-22.22%2B-FF4C4C?style=flat&labelColor=161114" alt="Node 22.22+">
   <img src="https://img.shields.io/badge/status-live-FF4C4C?style=flat&labelColor=161114" alt="Live">
 </p>
 
@@ -39,7 +39,7 @@ New here? [**Read the onboarding guide →**](docs/ONBOARDING.md)
 
 ## Run it locally
 
-Requirements: **Node.js 22.12+** (Astro 7), npm, and Git.
+Requirements: **Node.js 22.22+** (Astro 7), npm, and Git.
 
 ```sh
 git clone https://github.com/LordOfTheCorgis/lumix-website.git
@@ -58,7 +58,7 @@ npm run preview
 
 ## Stack
 
-- **Astro 7.3**, static output. **Node 22.12+.** No React, no framework runtime.
+- **Astro 7.4**, static output. **Node 22.22+.** No React, no framework runtime.
 - **Tailwind 4.3** via `@tailwindcss/vite`; design tokens live in `src/styles/global.css` under `@theme` (no `tailwind.config.js`).
 - **`cobe`** for the homepage/regions globe, **`animejs`** for the FAQ accordion.
 - **Astro content collections** — games and legal pages are schema-validated; a bad `pid` or a `live` game with no plans fails the build.

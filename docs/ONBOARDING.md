@@ -28,7 +28,7 @@ The site does browsing and the order hand-off only. It never takes payment. Orde
 
 | Piece | Why it's here |
 | ----- | ------------- |
-| **Astro 7.3** | Static site generator, builds to plain HTML. **Needs Node 22.12+** (enforced in `package.json`). |
+| **Astro 7.4** | Static site generator, builds to plain HTML. **Needs Node 22.22+** (enforced in `package.json`). |
 | **Tailwind 4.3** | Via `@tailwindcss/vite`. Tokens live in `src/styles/global.css` under `@theme` (tokens only; see `DESIGN.md`). |
 | **`cobe`** | The WebGL globe. It's a dynamic import, so `astro.config.mjs` pre-bundles it in `optimizeDeps` — or it 504s on first scroll. |
 | **`animejs`** | The FAQ accordion's height tween. That's its only job. |
@@ -39,7 +39,7 @@ The site does browsing and the order hand-off only. It never takes payment. Orde
 
 ## Run it locally
 
-Node 22.12+, npm 10+.
+Node 22.22+, npm 10+.
 
 ```bash
 npm install

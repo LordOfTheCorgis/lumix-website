@@ -4,7 +4,7 @@ Lumix Solutions marketing and storefront site. See `docs/ONBOARDING.md` for the 
 
 ## What it is
 
-Astro 7.3 + Tailwind 4.3, static, **Node 22.12+**. `cobe` drives the globe, `animejs` the FAQ accordion. Game server hosting, "finite servers run properly," three US regions. Browsing + order hand-off only; WHMCS (`billing.lumixsolutions.org`) owns the cart, pricing, and checkout.
+Astro 7.4 + Tailwind 4.3, static, **Node 22.22+**. `cobe` drives the globe, the FAQ accordion is native `details` plus the Web Animations API. Game server hosting, "finite servers run properly," three US regions. Browsing + order hand-off only; WHMCS (`billing.lumixsolutions.org`) owns the cart, pricing, and checkout.
 
 ## Deploy
 
