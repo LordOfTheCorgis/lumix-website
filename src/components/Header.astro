@@ -6,8 +6,12 @@ import logo from "../assets/logo.png";
 import { nav, moreNav, links, site } from "../config";
 
 const path = Astro.url.pathname;
-const isCurrent = (href: string) =>
-  href !== "/" && (path === href || path.startsWith(href + "/"));
+// hrefs end in a slash now, so compare without it or /games/fivem/ never
+// matches "/games//"
+const isCurrent = (href: string) => {
+  const base = href.replace(/\/$/, "");
+  return base !== "" && (path === base || path.startsWith(base + "/"));
+};
 
 // More lights up when you're on a page inside it
 const moreOpenish = moreNav.some((item) => isCurrent(item.href));

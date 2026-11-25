@@ -69,19 +69,19 @@ export const links = {
 // four items, the old header had six. contact went to the footer, discord is
 // the answer to "where's live chat" so it gets the slot
 export const nav = [
-  { label: "Game Hosting", href: "/games" },
-  { label: "Partners", href: "/partners" },
-  { label: "Status", href: "/status" },
+  { label: "Game Hosting", href: "/games/" },
+  { label: "Partners", href: "/partners/" },
+  { label: "Status", href: "/status/" },
   { label: "Discord", href: links.discord },
 ];
 
 // the More drawer. still four destinations plus a drawer, not five items
 export const moreNav = [
-  { label: "Tools", href: "/tools", note: "Free config generators" },
-  { label: "Regions", href: "/regions", note: "Where the nodes are, and your ping" },
-  { label: "Migrate", href: "/migrate", note: "Move a server from another host" },
-  { label: "Staff", href: "/staff", note: "Who runs the nodes" },
-  { label: "Contact", href: "/contact", note: "Tickets, Discord, email" },
+  { label: "Tools", href: "/tools/", note: "Free config generators" },
+  { label: "Regions", href: "/regions/", note: "Where the nodes are, and your ping" },
+  { label: "Migrate", href: "/migrate/", note: "Move a server from another host" },
+  { label: "Staff", href: "/staff/", note: "Who runs the nodes" },
+  { label: "Contact", href: "/contact/", note: "Tickets, Discord, email" },
   { label: "Careers", href: links.careers, note: "We hire out of the community" },
 ];
 
@@ -89,10 +89,10 @@ export const footerNav = [
   {
     heading: "Hosting",
     items: [
-      { label: "Game Hosting", href: "/games" },
-      { label: "Regions", href: "/regions" },
-      { label: "Migrate", href: "/migrate" },
-      { label: "Status", href: "/status" },
+      { label: "Game Hosting", href: "/games/" },
+      { label: "Regions", href: "/regions/" },
+      { label: "Migrate", href: "/migrate/" },
+      { label: "Status", href: "/status/" },
       { label: "Control Panel", href: links.panel },
       { label: "Client Area", href: links.billing },
     ],
@@ -100,19 +100,19 @@ export const footerNav = [
   {
     heading: "Company",
     items: [
-      { label: "Partners", href: "/partners" },
-      { label: "Tools", href: "/tools" },
-      { label: "Staff", href: "/staff" },
+      { label: "Partners", href: "/partners/" },
+      { label: "Tools", href: "/tools/" },
+      { label: "Staff", href: "/staff/" },
       { label: "Careers", href: links.careers },
-      { label: "Contact", href: "/contact" },
+      { label: "Contact", href: "/contact/" },
     ],
   },
   {
     heading: "Legal",
     items: [
-      { label: "Privacy Policy", href: "/privacy" },
-      { label: "Terms of Service", href: "/terms" },
-      { label: "California Privacy Rights", href: "/ccpa" },
+      { label: "Privacy Policy", href: "/privacy/" },
+      { label: "Terms of Service", href: "/terms/" },
+      { label: "California Privacy Rights", href: "/ccpa/" },
     ],
   },
 ];

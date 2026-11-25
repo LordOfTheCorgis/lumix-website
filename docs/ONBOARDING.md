@@ -93,7 +93,6 @@ scripts/make-icons.mjs   # regenerates favicons from the logo
 .env.example       # PostHog var names (no values)
 HANDOFF.md · DESIGN.md · BUILD-PLAN.md · TODO.md (read in that order; TODO is Evan's)
 docs/ONBOARDING.md (this file) · CLAUDE.md
-brag-output/       # a rendered launch video from the brag skill (not part of the site build)
 ```
 
 ### How pages are built

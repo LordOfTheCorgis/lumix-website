@@ -11,7 +11,7 @@ export default defineConfig({
 
   // /hardware was pulled (2026-11-24). people have it bookmarked and it's in
   // old search results, so send them somewhere useful instead of a 404
-  redirects: { '/hardware': '/regions' },
+  redirects: { '/hardware': '/regions/' },
 
   vite: {
     plugins: [tailwindcss()],
