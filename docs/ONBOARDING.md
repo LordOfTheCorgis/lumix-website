@@ -31,7 +31,6 @@ The site does browsing and the order hand-off only. It never takes payment. Orde
 | **Astro 7.4** | Static site generator, builds to plain HTML. **Needs Node 22.22+** (enforced in `package.json`). |
 | **Tailwind 4.3** | Via `@tailwindcss/vite`. Tokens live in `src/styles/global.css` under `@theme` (tokens only; see `DESIGN.md`). |
 | **`cobe`** | The WebGL globe. It's a dynamic import, so `astro.config.mjs` pre-bundles it in `optimizeDeps` — or it 504s on first scroll. |
-| **`animejs`** | The FAQ accordion's height tween. That's its only job. |
 | **Content collections** | Games and legal pages are typed content, validated by a Zod schema at build time. |
 | **PostHog** | Analytics + cookie banner, consent-gated. No React, no framework runtime. |
 

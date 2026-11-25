@@ -91,14 +91,13 @@ const schema = {
 </style>
 
 <script>
-  import { animate } from "animejs";
-
   const still = window.matchMedia("(prefers-reduced-motion: reduce)");
   const box = document.querySelector<HTMLElement>("[data-faq]");
 
   // no js / reduced motion = the native <details> snap, which is fine. this only
   // layers a height tween on top for everyone else. semantics + json-ld are
-  // untouched either way
+  // untouched either way. Web Animations, same thing CursorTrail uses, so there's
+  // no animation library for a 260ms height change
   if (box && !still.matches) {
     box.querySelectorAll<HTMLDetailsElement>("details").forEach((d) => {
       const summary = d.querySelector<HTMLElement>("summary")!;
@@ -113,38 +112,32 @@ const schema = {
         if (busy) return;
         busy = true;
         panel.style.overflow = "hidden";
+        const opening = !d.open;
+        if (opening) d.open = true;
 
-        if (!d.open) {
-          d.open = true;
-          animate(panel, {
-            height: [0, panel.scrollHeight],
-            opacity: [0, 1],
-            translateY: [-6, 0],
-            duration: 260,
-            ease: "out(3)",
-            onComplete: () => {
-              // hand height back to the layout so it reflows on resize
-              panel.style.height = "";
-              panel.style.overflow = "";
-              busy = false;
-            },
-          });
-        } else {
-          animate(panel, {
-            height: [panel.scrollHeight, 0],
-            opacity: [1, 0],
-            duration: 200,
-            ease: "out(2)",
-            onComplete: () => {
-              d.open = false;
-              panel.style.height = "";
-              panel.style.opacity = "";
-              panel.style.transform = "";
-              panel.style.overflow = "";
-              busy = false;
-            },
-          });
-        }
+        const h = `${panel.scrollHeight}px`;
+        const run = panel.animate(
+          opening
+            ? [
+                { height: "0px", opacity: 0, transform: "translateY(-6px)" },
+                { height: h, opacity: 1, transform: "none" },
+              ]
+            : [
+                { height: h, opacity: 1 },
+                { height: "0px", opacity: 0 },
+              ],
+          {
+            duration: opening ? 260 : 200,
+            easing: opening ? "cubic-bezier(0.215, 0.61, 0.355, 1)" : "cubic-bezier(0.5, 1, 0.89, 1)",
+          }
+        );
+
+        // finished rejects if something cancels it, either way hand the layout back
+        run.finished.catch(() => {}).finally(() => {
+          if (!opening) d.open = false;
+          panel.style.overflow = "";
+          busy = false;
+        });
       });
     });
   }
