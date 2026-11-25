@@ -1,0 +1,32 @@
+name: CI
+
+# Runs on pull requests so a broken build, a type error or a failing cfg test
+# shows up before the merge, not in the deploy run after it. Never uploads
+# anything. deploy.yml re-runs the tests on every push to main as well.
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run check
+      - run: npm run build

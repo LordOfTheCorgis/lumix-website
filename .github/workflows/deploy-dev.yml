@@ -21,6 +21,9 @@ on:
     branches: [dev]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: deploy-dev
   cancel-in-progress: true
@@ -48,7 +51,8 @@ jobs:
 
       - name: Upload to cPanel
         if: env.HAS_FTP == 'true'
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        # pinned to the commit, not the tag: this step holds the FTP password
+        uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65 # v4.3.5
         with:
           server: ${{ secrets.CPANEL_FTP_SERVER }}
           username: ${{ secrets.CPANEL_FTP_USERNAME }}
