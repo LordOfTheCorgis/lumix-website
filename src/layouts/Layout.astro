@@ -20,6 +20,10 @@ interface Props {
   imageAlt?: string;
   /** mobile order bar. off for pages that need the bottom edge (tools) */
   stickyCta?: boolean;
+  /** crumb trail for google, home is added for you. last item is this page */
+  breadcrumbs?: { name: string; path: string }[];
+  /** article pages say so, everything else stays "website" */
+  ogType?: "website" | "article";
 }
 
 const DEFAULT_DESCRIPTION =
@@ -32,6 +36,8 @@ const {
   image = "/images/og-image.png",
   imageAlt = "Lumix Solutions",
   stickyCta = true,
+  breadcrumbs,
+  ogType = "website",
 } = Astro.props;
 
 // dev.lumixsolutions.org builds with PUBLIC_DEPLOY_ENV=dev (deploy-dev.yml).
@@ -55,6 +61,25 @@ const organizationSchema = {
   // entity signal: ties the domain to the accounts Google already knows
   sameAs: [links.discord, links.x, links.instagram, links.tiktok, links.github],
 };
+
+// one WebSite node so the brand name and domain read as a single entity
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: brandName,
+  url: siteUrl,
+};
+
+const breadcrumbSchema = breadcrumbs && {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [{ name: "Home", path: "/" }, ...breadcrumbs].map((c, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: c.name,
+    item: new URL(c.path, siteUrl).href,
+  })),
+};
 ---
 
 <!doctype html>
@@ -71,7 +96,7 @@ const organizationSchema = {
     <meta property="og:site_name" content={brandName} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
@@ -97,6 +122,8 @@ const organizationSchema = {
     <link rel="manifest" href="/site.webmanifest" />
 
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    {breadcrumbSchema && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />}
 
     <title>{pageTitle}</title>
 
