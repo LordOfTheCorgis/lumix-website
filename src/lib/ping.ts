@@ -7,7 +7,8 @@
 //
 // what we can't tell apart from js: refused vs dns fail vs offline. they're all
 // the same TypeError. so anything under 3ms is treated as "didn't leave the
-// machine" and anything that hangs to the timeout is "nothing answered"
+// machine" and anything that hangs to the timeout, or errors out after 2s, is
+// "nothing answered"
 
 export interface Probe {
   ms: number;
@@ -32,7 +33,11 @@ export async function probe(url: string, timeoutMs = 4000): Promise<Probe | null
     return { ms: performance.now() - t, answered: true };
   } catch {
     const ms = performance.now() - t;
-    if (ctrl.signal.aborted || ms < 3) return null;
+    // a real RST from the node comes back in one round trip. an error that
+    // takes 2s+ is something upstream giving up (host unreachable after the
+    // router's ARP timeout, roughly 3s), and that is a dead node, not a live one.
+    // 2s clears a lost SYN being retried at 1s
+    if (ctrl.signal.aborted || ms < 3 || ms > 2000) return null;
     return { ms, answered: false };
   } finally {
     clearTimeout(timer);
