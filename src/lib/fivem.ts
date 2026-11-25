@@ -428,6 +428,14 @@ export function warnings(s: CfgState): Warning[] {
   if (s.locale === "root-AQ")
     warn("locale", "root-AQ is the docs' placeholder locale. Pick a real one.");
 
+  // q() has to swap " for ' to keep the file parseable, so the password in the
+  // file would no longer be the one typed here. say so instead of doing it quietly
+  if (s.rconPassword.includes('"')) {
+    stop(
+      "rconPassword",
+      "A double quote can't go inside a cfg string, so the file would hold a different password. Pick one without a \".",
+    );
+  }
   if (s.rconPassword && s.rconPassword.length < 12) {
     warn(
       "rconPassword",
@@ -451,6 +459,19 @@ export function warnings(s: CfgState): Warning[] {
       stop(
         "db",
         "The password has a character the URI form can't carry. Switch to key=value.",
+      );
+    }
+    if (s.dbPass.includes('"')) {
+      stop(
+        "db",
+        "A double quote can't go inside a cfg string, so the file would hold a different password and the login fails. Reset the database password to one without a \".",
+      );
+    }
+    // mysql-async splits the string on ; so a password with one gets cut short
+    if (s.dbFormat === "kv" && s.dbPass.includes(";")) {
+      stop(
+        "db",
+        "A ; in the password ends the value early in the key=value form, and the URI form can't carry one either. Reset the database password without a ;.",
       );
     }
     if (!s.dbPass)
