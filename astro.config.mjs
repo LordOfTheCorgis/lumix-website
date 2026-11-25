@@ -10,6 +10,7 @@ import { copyFileSync } from 'node:fs';
 // cPanel already points 404s at a file we never shipped. cPanel's default is
 // /404.shtml, so ship our 404 page under that name. a guess, check the live
 // response after a deploy and delete this if it still comes back grey
+/** @type {import('astro').AstroIntegration} */
 const copy404 = {
   name: 'copy-404-shtml',
   hooks: {
