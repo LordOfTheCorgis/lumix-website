@@ -11,7 +11,9 @@ export const site = {
 };
 
 // has to exist in WHMCS with the same string or we're advertising a code the
-// cart rejects. make it there first, then flip live
+// cart rejects. make it there first, then flip live. checked against WHMCS
+// 2026-11-25: 10% percentage, new signups only, once per client, first payment
+// only, all 28 site pids. the copy says "first order" because of that
 export const promo = {
   code: "LUMIX10",
   percent: 10,

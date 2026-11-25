@@ -49,7 +49,7 @@ export const FAQ: Faq[] = [
   {
     q: "Is there a discount code?",
     a: promo.live
-      ? `${promo.code} takes ${promo.percent}% off any game server. Enter it at checkout.`
+      ? `${promo.code} takes ${promo.percent}% off the first order on a new account, on any game server. Enter it at checkout.`
       : "Not right now. Discord is where any code gets announced first.",
   },
   {
