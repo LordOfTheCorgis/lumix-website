@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "node --test \"tests/*.test.mjs\""
+    "test": "node --test \"tests/*.test.mjs\"",
+    "check": "astro check"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
@@ -26,6 +27,7 @@
     "esbuild": true
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.12",
     "typescript": "^5.9.3"
   }
 }

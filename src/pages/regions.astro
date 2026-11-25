@@ -12,7 +12,6 @@ const games = (await getCollection("games"))
   .filter((g) => g.data.status === "live")
   .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
 
-const live = HOSTING.filter((r) => r.pingUrl).length;
 // capped nodes stay on the page, they just stop taking orders
 const soldOut = HOSTING.filter((r) => r.soldOut);
 const open = HOSTING.filter((r) => !r.soldOut);

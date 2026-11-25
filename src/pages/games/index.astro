@@ -199,12 +199,12 @@ const pad = (s: string, n = col) => s.padEnd(n);
     // measured, the mono font stack differs per OS and so does the line box
     const step = () => (items[1]?.offsetTop ?? 0) - (items[0]?.offsetTop ?? 0) || 21;
 
-    function render() {
+    const render = () => {
       rows.scrollTop = first * step();
       up.disabled = first === 0;
       down.disabled = first + visible >= items.length;
       label.textContent = `${first + 1}–${Math.min(first + visible, items.length)} of ${items.length}`;
-    }
+    };
 
     up.addEventListener("click", () => { first = Math.max(0, first - 1); render(); });
     down.addEventListener("click", () => { first = Math.min(items.length - visible, first + 1); render(); });

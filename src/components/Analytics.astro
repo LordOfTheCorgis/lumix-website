@@ -10,11 +10,6 @@ const host = import.meta.env.PUBLIC_POSTHOG_HOST ?? "https://us.i.posthog.com";
     (function () {
       var STORAGE_KEY = "lumix.consent";
 
-      function assetHost(apiHost) {
-        // loader comes off a sibling assets domain
-        return apiHost.replace("//us.i.", "//us-assets.i.").replace("//eu.i.", "//eu-assets.i.");
-      }
-
       function boot() {
         if (window.__lumixPosthogLoaded) return;
         window.__lumixPosthogLoaded = true;
