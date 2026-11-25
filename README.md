@@ -104,7 +104,7 @@ Copy `.env.example` to `.env`. Names only, never commit values.
 | `PUBLIC_POSTHOG_KEY` | PostHog project API key. Blank in dev renders analytics and the cookie banner as nothing (intended). |
 | `PUBLIC_POSTHOG_HOST` | `https://us.i.posthog.com` or the EU equivalent. |
 
-`node scripts/make-icons.mjs` regenerates the favicon set from `public/images/logo.png`.
+`node scripts/make-icons.mjs` regenerates the favicon set from `src/assets/logo.png`.
 
 </details>
 
