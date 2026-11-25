@@ -60,7 +60,7 @@ npm run preview
 
 - **Astro 7.4**, static output. **Node 22.22+.** No React, no framework runtime.
 - **Tailwind 4.3** via `@tailwindcss/vite`; design tokens live in `src/styles/global.css` under `@theme` (no `tailwind.config.js`).
-- **`cobe`** for the homepage/regions globe, **`animejs`** for the FAQ accordion.
+- **`cobe`** for the homepage/regions globe. The FAQ accordion is native `<details>` with a Web Animations height tween.
 - **Astro content collections** — games and legal pages are schema-validated; a bad `pid` or a `live` game with no plans fails the build.
 - **PostHog** analytics + cookie banner, consent-gated.
 
