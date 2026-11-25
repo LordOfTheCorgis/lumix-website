@@ -37,13 +37,13 @@
 
   /* grotesk goes generic below ~24px, display and instrument only. inter
      for anything anyone reads. no mono token, that was the old site */
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk Variable', system-ui, sans-serif;
+  --font-sans: 'Inter Variable', system-ui, -apple-system, sans-serif;
 
   /* the home h1 and nothing else. chakra petch and plex sans both got tried
      and evan passed on them, inter's what he picked. already loaded for body
      so it costs no extra request */
-  --font-hero: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-hero: 'Inter Variable', system-ui, -apple-system, sans-serif;
 
   /* the monogram's cut. only diagonal in the system, nothing else tilts */
   --shear: -16deg;
