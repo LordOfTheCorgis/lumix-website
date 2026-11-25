@@ -282,7 +282,7 @@ Without the key, both the analytics script and the cookie banner render nothing.
 That is intended for dev.
 
 `node scripts/make-icons.mjs` regenerates the favicon set from
-`public/images/logo.png` if the mark ever changes.
+`src/assets/logo.png` if the mark ever changes.
 
 `marketing-log.md` may be present in the working tree. It is gitignored, generated
 by a routine in the `lumix-routines` repo, and is not part of this project.

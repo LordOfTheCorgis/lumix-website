@@ -1,10 +1,10 @@
-// regenerates the favicons from public/images/logo.png. run after the mark
+// regenerates the favicons from src/assets/logo.png. run after the mark
 // changes. the L is white on transparent so a bare favicon vanishes on a
 // light tab, everything gets composited onto ink first
 import sharp from "sharp";
 import { writeFileSync } from "node:fs";
 
-const SRC = "public/images/logo.png";
+const SRC = "src/assets/logo.png";
 const INK = { r: 0x12, g: 0x12, b: 0x14, alpha: 1 };
 
 async function icon(size, pad, out) {
