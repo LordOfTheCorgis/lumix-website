@@ -147,11 +147,7 @@ Whether `npm ci && npm run build` runs on the server or in Actions depends on wh
 host gives you enough memory to build there. Building in Actions and deploying the output
 is the safer default on shared hosting.
 
-**`.github/workflows/deploy.yml` is disabled, not wired.** It's `workflow_dispatch`-only
-and its job is guarded with `if: false`, so it can't fire even by hand. It still rsyncs
-over SSH to `/srv/www/` on a box that is no longer where this site lives, so it needs a
-confirmed target and a rewrite before any trigger goes back on it. When the SSR admin
-lands, the cPanel Git flow above supersedes it.
+**Deploys are wired.** `main` uploads the built `dist/` to lumixsolutions.org and `dev` to dev.lumixsolutions.org, both over FTPS (see `docs/ONBOARDING.md`). When the SSR admin lands, the cPanel Git flow above supersedes it.
 
 ## 6. What this removes from the old plan
 

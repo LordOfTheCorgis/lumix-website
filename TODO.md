@@ -52,7 +52,7 @@ the commit and point at this file.
 - Changelog: dropped from the redesign. Not maintained, so not shipped.
 - Free trial: none. Page says so.
 - Refunds: case by case. Page says so, matches terms.md.
-- Deploy: not wired. The workflow on this branch is manual-only with `if: false`. The existing secrets point at the wrong server, and the redesign is not going live yet.
+- Deploy: `main` -> prod and `dev` -> dev, both FTPS. Wired and verified 2026-11-24.
 - YouTube: left out for good.
 - Support: "within a few hours", plus support@lumixsolutions.org. On
   `/contact`, the FAQ and Included.

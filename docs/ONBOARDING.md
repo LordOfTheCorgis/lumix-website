@@ -108,7 +108,7 @@ Everything wraps in `Layout.astro`.
 
 ### How ordering works
 
-`order.ts` builds `cart.php?a=add&pid=…&billingcycle=…` and nothing else. **No `skipconfig=1`, no `configoption` on purpose** — WHMCS shows its own region picker, which costs one extra click but means the site never quotes a region that's out of stock.
+`order.ts` builds `cart.php?a=add&pid=…&billingcycle=…` plus `configoption[3]=<whmcsId>` when the customer picked a region, so WHMCS opens with it preselected. **No `skipconfig=1` on purpose**: the customer still lands on WHMCS's config page and sees what they're buying. `OrderBuilder.astro`'s script imports `orderUrl` itself, so the links after a radio click come from the same code as the first render.
 
 ### How /status works
 
@@ -121,15 +121,40 @@ Everything wraps in `Layout.astro`.
 | **Add a game** | A new `src/content/games/<slug>.yaml`, art at `src/assets/games/<slug>.jpg`, logo at `src/assets/logos/<slug>.{webp,svg}` (paths relative `../../assets/...`). Fields/types in `content.config.ts`: `accent` 6-digit hex, `mark` 2–4 chars, `status` `live\|beta\|planned`. `live` with no plans fails the build. Terraria has no yaml by design — re-add one to bring it back. |
 | **Change a plan's price** | The plan's `pricing` block in its game YAML. `monthly` required and positive, others optional. Display copy only — **change it in WHMCS too**. A wrong `pid` fails the build. |
 | **Edit a legal page** | `src/content/legal/{terms,privacy,ccpa}.md`; `##` headings get the bordered-section styling. Bump `lastUpdated`. (Louisiana law; Terms §7/§9 tracked in `TODO.md`.) |
-| **Change the promo / nav / footer** | `src/config.ts`: `promo` (`LUMIX10`, must match WHMCS), `nav`/`moreNav`/`footerNav`/`social`, `links`, `site`. `trust` is the hand-entered Trustpilot line; `botHosting` is the three pids (Node 7 / Python 8 / Go 9) rendered by `BotLine.astro`. |
-| **Open or close a region** | `soldOut` in `src/lib/locations.ts` (stays listed, existing servers keep running). Dallas live; Ashburn and Miami sold out. **Don't re-add Salt Lake City** until there's a node. Leave VM `ip` fields blank — public repo. |
+| **Change the promo / nav / footer** | `src/config.ts`: `promo` (`LUMIX10`, must match WHMCS), `nav`/`moreNav`/`footerNav`/`social`, `links`, `site`. `trust` is the hand-entered Trustpilot line; `botHosting` is one product (pid 6, runtime is a dropdown in the panel) rendered by `BotLine.astro`. |
+| **Open or close a region** | `soldOut` in `src/lib/locations.ts` (stays listed, existing servers keep running). Ashburn is the only open region; Dallas and Miami are sold out. WHMCS hides the same options (`hidden` flag on the Server Location sub-options), so flip both. **Don't re-add Salt Lake City** until there's a node. Leave VM `ip` fields blank — public repo. |
 
 ## Build & deploy
 
-> [!WARNING]
-> `deploy.yml` is `workflow_dispatch`-only **and** its job is guarded with `if: false`, so it does nothing even when run by hand. The rsync target it carries is the wrong box, and the rebuild isn't going to production yet.
+Two branches deploy, both over FTPS to cPanel (see `.github/workflows/`):
 
-Don't restore a push trigger until the deploy target is confirmed and Evan says ship it (the cPanel decision is tracked in [`BUILD-PLAN.md`](../BUILD-PLAN.md) and [`TODO.md`](../TODO.md)). When it does build, it uses `npm ci` and passes `PUBLIC_POSTHOG_*` through as GitHub repo variables (not secrets — they're `PUBLIC_` and land in page source anyway).
+| Push to | Goes to | Workflow |
+| ------- | ------- | -------- |
+| `main` | lumixsolutions.org (live) | `deploy.yml`, PROD FTP account (`CPANEL_FTP_PROD_*`). A guard step refuses to upload unless the account root holds a `dev.lumixsolutions.org` folder. |
+| `dev` | dev.lumixsolutions.org (noindex build) | `deploy-dev.yml`, dev FTP account jailed to the dev folder. |
+
+> [!WARNING]
+> A push to `main` is a live release. Never put the prod FTP account into the dev secrets: the dev workflow uploads to its account root.
+
+Pull requests run `ci.yml` (tests, type check, build) so a broken build shows up before the merge. Builds use `npm ci` and pass `PUBLIC_POSTHOG_*` through as GitHub repo variables (not secrets, they're `PUBLIC_` and land in page source anyway).
+
+### Server-side config (not in this repo)
+
+The site's `.htaccess` lives only on web-srv-02, and a deploy never touches a file it didn't upload. Two things worth adding there by hand, merged into whatever is already in it:
+
+```apache
+ErrorDocument 404 /404.html
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|woff2|webp|avif|png|jpg|svg)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+```
+
+Without the first line the live 404 is Apache's grey default instead of `dist/404.html`. Only the hashed `/_astro/` files are safe to cache for a year, so if you'd rather not touch images, narrow the `FilesMatch` to `.js|.css|.woff2`. Cloudflare's cache rules can do the same job.
 
 ## Environment variables
 
@@ -149,7 +174,7 @@ Copy `.env.example` to `.env`. Names only, never commit values:
 
 - **Images are `src/assets`, not `public/`.** Reference them so `astro:assets` resizes them; a raw 472KB Palworld JPG out of `public/` is what this replaced.
 - **The content schema fails the build on purpose** — bad pid, live-with-no-plans, bad hex accent. Read the error, it names the game.
-- **`order.ts` sends no region param by design** — the customer picks the region in WHMCS. Don't "fix" it by adding `configoption`.
+- **`order.ts` sends the region (`configoption[3]`) on purpose**, and the order builder's script reuses it. Don't copy the URL logic back into a component.
 - **`/status` is a timing trick, not a health endpoint.** The region ping times a refused connection (`lib/ping.ts`); no uptime history. VM `ip` fields stay blank (public repo).
 - **`DESIGN.md` governs anything visual** — near-black warm `ink`, a single Lumix red (two reds per viewport max), Space Grotesk / Inter, hairlines (`--edge`) over fills, the chamfer/shear "diagonal" as the one signature move.
 

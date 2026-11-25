@@ -7,7 +7,7 @@
   <img src="https://img.shields.io/badge/Astro-7.3-FF4C4C?style=flat&labelColor=161114" alt="Astro 7.3">
   <img src="https://img.shields.io/badge/Tailwind-4.3-FF4C4C?style=flat&labelColor=161114" alt="Tailwind 4.3">
   <img src="https://img.shields.io/badge/Node-22.12%2B-FF4C4C?style=flat&labelColor=161114" alt="Node 22.12+">
-  <img src="https://img.shields.io/badge/status-in%20development-FFB347?style=flat&labelColor=161114" alt="In development, not shipped">
+  <img src="https://img.shields.io/badge/status-live-FF4C4C?style=flat&labelColor=161114" alt="Live">
 </p>
 
 <p align="center">
@@ -29,7 +29,7 @@ Lumix Solutions (lumixsolutions.org) sells game server hosting to the people who
 
 |                                | On this site |
 | ------------------------------ | ------------ |
-| **Get someone into a cart**    | A one-job homepage, a per-game plan grid with real specs and prices, and a cart link that preselects the product. Region is chosen in WHMCS so a sold-out location is never quoted. |
+| **Get someone into a cart**    | A one-job homepage, a per-game plan grid with real specs and prices, and a cart link that preselects the product and the region. |
 | **Tell the truth about stock** | Capped inventory stated plainly, regions marked open or sold out, and a `/status` page that pings each node from the visitor's own browser — no invented uptime figure. |
 | **Stay on brand**              | Near-black warm ground, a single Lumix red, Space Grotesk over Inter, hairlines instead of fills, and one structural diagonal. Colour comes from the games, not the palette. |
 | **Earn trust without noise**   | A Trustpilot line only when there are real numbers, partners as a plain ledger, legal in Louisiana-governed Markdown, and consent-gated analytics that load zero bytes until accepted. |
@@ -92,7 +92,7 @@ Each of these is walked through in [the onboarding guide](docs/ONBOARDING.md#com
 
 ## Deploy
 
-**Nothing deploys automatically.** `.github/workflows/deploy.yml` is `workflow_dispatch`-only and guarded with `if: false`, so it can't fire even by hand — the old rsync target is wrong and the rebuild isn't going live yet. Don't restore a push trigger until the cPanel target is settled and Evan says ship it; the plan is in [`BUILD-PLAN.md`](BUILD-PLAN.md) and the open items in [`TODO.md`](TODO.md).
+Push to `main` deploys to lumixsolutions.org (`deploy.yml`) and push to `dev` deploys to dev.lumixsolutions.org (`deploy-dev.yml`). Pull requests run `ci.yml`. How the FTP accounts, the guard step and the server-side `.htaccess` fit together is in [`docs/ONBOARDING.md`](docs/ONBOARDING.md#build--deploy).
 
 <details>
 <summary><strong>Environment variables</strong></summary>
