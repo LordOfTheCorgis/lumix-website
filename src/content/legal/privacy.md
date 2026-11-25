@@ -1,7 +1,7 @@
 ---
 title: Privacy Policy
 description: How Lumix Solutions collects, uses, and protects your data.
-lastUpdated: September 10, 2026
+lastUpdated: November 25, 2026
 ---
 
 ## 1. Introduction
@@ -136,9 +136,9 @@ We use cookies for functionality, analytics, and preferences.
 
 - **Analytics tools.** Measure aggregate usage so we can understand which pages and features get used. We use PostHog for this, and it is the only analytics provider we operate on our website.
 
-- **Embedded content.** Our home page embeds a reviews widget served by Trustpilot. It is requested only if you scroll far enough to reach it, and once it loads Trustpilot sets its own cookies inside it, including ones it uses to measure how often the widget is seen. We cannot read those cookies and they are governed by Trustpilot's own cookie and privacy policies, not this one.
+- **Third-party content.** This website loads no embedded third-party content of its own. Fonts, images and scripts come from lumixsolutions.org, and the only outside code is PostHog, after you accept it. The home page shows a Trustpilot rating as plain text with a link. Following that link takes you to Trustpilot, whose own cookie and privacy policies apply there, not this one.
 
-Our own analytics cookies are not set unless you accept them. Until you do, no PostHog code is loaded at all, and declining means none is ever loaded. You can change your mind by clearing this site's data in your browser, which brings the choice back. The Trustpilot widget is separate from that choice: it is content rather than analytics, and it loads for everyone who scrolls to it.
+Our own analytics cookies are not set unless you accept them. Until you do, no PostHog code is loaded at all, and declining means none is ever loaded. You can change your mind by clearing this site's data in your browser, which brings the choice back.
 
 We honour Global Privacy Control. If your browser sends a GPC signal, we record an opt-out automatically and never ask you.
 
@@ -198,4 +198,4 @@ Residents of states with comprehensive privacy laws may have additional rights, 
 
 We use third-party providers bound by data protection agreements.
 
-Subprocessors are engaged for functions such as payment processing, infrastructure, support tooling, website analytics (PostHog), and customer reviews (Trustpilot). Each is required by contract to protect personal information to a standard consistent with this policy and to process it only on our instructions. To request the current list of subprocessors, contact us at the address in section 12.
+Subprocessors are engaged for functions such as payment processing, infrastructure, support tooling, and website analytics (PostHog). Each is required by contract to protect personal information to a standard consistent with this policy and to process it only on our instructions. To request the current list of subprocessors, contact us at the address in section 12.
