@@ -1,0 +1,147 @@
+{
+  "nav": [
+    {
+      "label": "Game Hosting",
+      "href": "/games/"
+    },
+    {
+      "label": "Partners",
+      "href": "/partners/"
+    },
+    {
+      "label": "Status",
+      "href": "/status/"
+    },
+    {
+      "label": "Discord",
+      "href": "@discord"
+    }
+  ],
+  "moreNav": [
+    {
+      "label": "Tools",
+      "href": "/tools/",
+      "note": "Free config generators"
+    },
+    {
+      "label": "Regions",
+      "href": "/regions/",
+      "note": "Where the nodes are, and your ping"
+    },
+    {
+      "label": "Migrate",
+      "href": "/migrate/",
+      "note": "Move a server from another host"
+    },
+    {
+      "label": "Staff",
+      "href": "/staff/",
+      "note": "Who runs the nodes"
+    },
+    {
+      "label": "Contact",
+      "href": "/contact/",
+      "note": "Tickets, Discord, email"
+    },
+    {
+      "label": "Careers",
+      "href": "@careers",
+      "note": "We hire out of the community"
+    }
+  ],
+  "footerNav": [
+    {
+      "heading": "Hosting",
+      "items": [
+        {
+          "label": "Game Hosting",
+          "href": "/games/"
+        },
+        {
+          "label": "Regions",
+          "href": "/regions/"
+        },
+        {
+          "label": "Migrate",
+          "href": "/migrate/"
+        },
+        {
+          "label": "Status",
+          "href": "/status/"
+        },
+        {
+          "label": "Control Panel",
+          "href": "@panel"
+        },
+        {
+          "label": "Client Area",
+          "href": "@billing"
+        }
+      ]
+    },
+    {
+      "heading": "Company",
+      "items": [
+        {
+          "label": "Partners",
+          "href": "/partners/"
+        },
+        {
+          "label": "Tools",
+          "href": "/tools/"
+        },
+        {
+          "label": "Staff",
+          "href": "/staff/"
+        },
+        {
+          "label": "Careers",
+          "href": "@careers"
+        },
+        {
+          "label": "Contact",
+          "href": "/contact/"
+        }
+      ]
+    },
+    {
+      "heading": "Legal",
+      "items": [
+        {
+          "label": "Privacy Policy",
+          "href": "/privacy/"
+        },
+        {
+          "label": "Terms of Service",
+          "href": "/terms/"
+        },
+        {
+          "label": "California Privacy Rights",
+          "href": "/ccpa/"
+        }
+      ]
+    }
+  ],
+  "social": [
+    {
+      "label": "Discord",
+      "href": "@discord"
+    },
+    {
+      "label": "X",
+      "href": "@x"
+    },
+    {
+      "label": "Instagram",
+      "href": "@instagram"
+    },
+    {
+      "label": "TikTok",
+      "href": "@tiktok"
+    },
+    {
+      "label": "GitHub",
+      "href": "@github"
+    }
+  ]
+}

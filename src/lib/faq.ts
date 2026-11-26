@@ -1,8 +1,11 @@
 // pre-sale questions, rendered as <details> and FAQPage json-ld from this one
-// list. every answer is a claim, keep to what the yaml, the terms, or evan
-// has said. support and backup lines drift the most
+// list. the text lives in src/data/faq.json (the admin edits it). every answer is
+// a claim, keep to what the game data, the terms, or evan has said. support and
+// backup lines drift the most
 import { promo, botHosting } from "../config";
 import { HOSTING } from "./locations";
+import { faqSchema } from "./schemas.mjs";
+import faqJson from "../data/faq.json";
 
 // so the answer can't drift from the flag in locations.ts
 const full = HOSTING.filter((r) => r.soldOut).map((r) => r.city);
@@ -13,47 +16,18 @@ export interface Faq {
   a: string;
 }
 
-export const FAQ: Faq[] = [
-  {
-    q: "How long until my server is online?",
-    a: "Minutes. Provisioning is automatic the moment the invoice is paid, and you get panel access and connection details straight away. There's no manual setup step on our side.",
-  },
-  {
-    q: "Where can my server run?",
-    a: `Dallas, Ashburn or Miami. You pick the region at checkout, and you should pick the one closest to most of your players, not to you.${full.length ? ` ${full.join(" and ")} ${full.length > 1 ? "are" : "is"} full right now, so new servers go in ${open.join(" or ")}.` : ""}`,
-  },
-  {
-    q: "Is DDoS protection included?",
-    a: "On every plan, at no extra cost. Attack traffic is scrubbed upstream at mitigation points around the world before it reaches your server, so a hit on you is dropped there and your players don't notice.",
-  },
-  {
-    q: "What comes with every plan?",
-    a: "Dedicated vCores that are never oversold, NVMe storage on RAID 1, backup slots you run on demand or on a schedule, MySQL databases, full file access over SFTP and the panel, and unmetered player slots on the games that support it. The exact backup and database counts are listed on each plan.",
-  },
-  {
-    q: "Can I change my plan later?",
-    a: "Yes. Upgrade or downgrade from the client area at any time and you pay the difference. Your files and world stay where they are.",
-  },
-  {
-    q: "Do you support mods, plugins and frameworks?",
-    a: "Yes. FiveM servers run QBCore, ESX, vRP or a custom framework with txAdmin provisioned on deploy. Minecraft modpacks, Paper, Forge and Fabric install from the panel. Palworld takes mod and map uploads.",
-  },
-  {
-    q: "How do I get support?",
-    a: "Open a ticket from the client area, ask in Discord, or email support@lumixsolutions.org. Replies usually land within a few hours, and either way you're talking to the people who run the hardware, not a first-line script.",
-  },
-  {
-    q: "Is there a free trial or a refund?",
-    a: "No free trial, and no money-back if the server runs fine and you change your mind. What we do refund is our fault: if something's genuinely broken on our side and we can't put it right, you don't pay for it. You can cancel anytime and keep the service through the term you've already paid for.",
-  },
-  {
-    q: "Is there a discount code?",
-    a: promo.live
-      ? `${promo.code} takes ${promo.percent}% off the first order on a new account, on any game server. Enter it at checkout.`
-      : "Not right now. Discord is where any code gets announced first.",
-  },
-  {
-    q: "Can I host a Discord bot or an app?",
-    a: `Yes. Application hosting is $${botHosting.monthly.toFixed(2)} a month, one plan for ${botHosting.runtimes.join(", ").replace(/, ([^,]*)$/, ", or $1")} and more. You pick the language from the Startup tab in the panel and can change it later while the server is stopped; your files stay where they are. Same network and the same DDoS protection as the game servers.`,
-  },
-];
+// answers can hold tokens so they can't drift from the data behind them
+const tokens: Record<string, string> = {
+  fullNote: full.length ? ` ${full.join(" and ")} ${full.length > 1 ? "are" : "is"} full right now, so new servers go in ${open.join(" or ")}.` : "",
+  promoCode: promo.code,
+  promoPercent: String(promo.percent),
+  botPrice: botHosting.monthly.toFixed(2),
+  botRuntimes: botHosting.runtimes.join(", ").replace(/, ([^,]*)$/, ", or $1"),
+};
+const fill = (t: string) => t.replace(/\{(\w+)\}/g, (m, k) => (k in tokens ? tokens[k] : m));
+
+// a promo answer with the promo off says its aOff line instead, or is dropped
+export const FAQ: Faq[] = faqSchema.parse(faqJson).flatMap((e) => {
+  if (e.a.includes("{promoCode}") && !promo.live) return e.aOff ? [{ q: e.q, a: fill(e.aOff) }] : [];
+  return [{ q: e.q, a: fill(e.a) }];
+});
