@@ -1,16 +1,18 @@
 <?php
-// copy this to /home/<cpanel user>/lumix-admin/config.php, i.e. a folder NEXT TO
-// public_html, never inside it (anything inside is on the internet). never commit
-// the real one. File Manager can make the folder and upload the file.
+// Fill in the three marked lines and upload this as config.php into a folder named
+// lumix-admin that sits NEXT TO public_html (not inside it, anything inside is on the
+// internet). Home folder > lumix-admin > config.php. Never commit the real one.
 return [
-    // make each hash with: node scripts/admin-hash.mjs <name>   (on your own machine)
+    // 1. who can log in: 'username' => 'password'. plain text is fine here, this file
+    //    isn't served. add a line per person
     'users' => [
-        // 'evan' => 'pbkdf2$600000$...$...',
+        'evan' => 'CHANGE-ME-to-a-long-password',
     ],
 
-    // fine-grained token, THIS repo only: Contents read+write, Actions read.
-    // it can push to main and a push to main deploys, so it lives only here
+    // 2. fine-grained GitHub token, THIS repo only: Contents read+write, Actions read.
+    //    GitHub > Settings > Developer settings > Fine-grained tokens
     'github_token' => '',
+
     'repo' => 'LordOfTheCorgis/lumix-website',
 
     // saves land on edit_branch, "Save and go live" also writes live_branch

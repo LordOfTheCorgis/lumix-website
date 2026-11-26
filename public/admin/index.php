@@ -69,9 +69,12 @@ function state_dir(): string {
 
 // ---------- passwords + lockout ----------
 
-// pbkdf2$<iterations>$<salt hex>$<hash hex>, made by scripts/admin-hash.mjs.
-// php's own password_hash() output also works
+// the config can hold the password as plain text (the file sits above public_html,
+// same trust level as the github token next to it), or a hash if you'd rather:
+// pbkdf2$<iterations>$<salt hex>$<hash hex> from scripts/admin-hash.mjs, or php's
+// password_hash() output
 function pw_ok(string $pw, string $stored): bool {
+    if (strpos($stored, '$') !== 0 && strpos($stored, 'pbkdf2$') !== 0) return hash_equals($stored, $pw);
     if (strpos($stored, 'pbkdf2$') === 0) {
         $p = explode('$', $stored);
         if (count($p) !== 4) return false;
