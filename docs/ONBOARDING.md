@@ -60,8 +60,8 @@ src/
                    #   demo panel, links, nav/moreNav/footerNav, social.
   content.config.ts  # Zod schemas for the `games` and `legal` collections (build-time validation)
   content/
-    games/*.yaml   # one file per game: slug, status, plans, pids, prices, specs, art, logo, accent, mark
-                   #   (Terraria is intentionally hidden — its yaml was removed, art kept)
+    games/*.json   # one file per game: slug, status, plans, pids, prices, specs, art, logo, accent, mark
+                   #   (Terraria is intentionally hidden — its json was removed, art kept)
     legal/*.md     # terms.md, privacy.md, ccpa.md — markdown with title/description/lastUpdated frontmatter
   lib/
     order.ts       # orderUrl(pid, billingcycle) -> WHMCS cart link. NO skipconfig, NO configoption.
@@ -116,7 +116,7 @@ Everything wraps in `Layout.astro`.
 
 | Task | How |
 | ---- | --- |
-| **Add a game** | A new `src/content/games/<slug>.yaml`, art at `src/assets/games/<slug>.jpg`, logo at `src/assets/logos/<slug>.{webp,svg}` (paths relative `../../assets/...`). Fields/types in `content.config.ts`: `accent` 6-digit hex, `mark` 2–4 chars, `status` `live\|beta\|planned`. `live` with no plans fails the build. Terraria has no yaml by design — re-add one to bring it back. |
+| **Add a game** | Easiest: Games tab at lumixsolutions.org/admin, New game (it can upload the art too). By hand: a new `src/content/games/<slug>.json`, art at `src/assets/games/<slug>.jpg`, logo at `src/assets/logos/<slug>.{webp,svg}` (paths relative `../../assets/...`). Fields/types in `content.config.ts`: `accent` 6-digit hex, `mark` 2–4 chars, `status` `live\|beta\|planned`. `live` with no plans fails the build. Terraria has no json by design — re-add one to bring it back. |
 | **Change a plan's price** | The plan's `pricing` block in its game YAML. `monthly` required and positive, others optional. Display copy only — **change it in WHMCS too**. A wrong `pid` fails the build. |
 | **Edit a legal page** | `src/content/legal/{terms,privacy,ccpa}.md`; `##` headings get the bordered-section styling. Bump `lastUpdated`. (Louisiana law; Terms §7/§9 tracked in `TODO.md`.) |
 | **Change the promo / nav / footer** | `src/config.ts`: `promo` (`LUMIX10`, must match WHMCS), `nav`/`moreNav`/`footerNav`/`social`, `links`, `site`. `trust` is the hand-entered Trustpilot line; `botHosting` is one product (pid 6, runtime is a dropdown in the panel) rendered by `BotLine.astro`. |
