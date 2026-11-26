@@ -1,0 +1,18 @@
+# /etc/systemd/system/lumix-admin.service
+[Unit]
+Description=Lumix site admin
+After=network.target
+
+[Service]
+User=lumix-admin
+WorkingDirectory=/opt/lumix-website
+ExecStart=/usr/bin/node admin/server.mjs
+Restart=on-failure
+# the admin only needs to read the checkout and its own users.json
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
