@@ -3,6 +3,9 @@
 *A forward plan, not built yet: a password-protected `lumixsolutions.org/admin` where games, plans, locations, staff, legal copy and sold-out flags get edited without touching source or waiting on a build. Companion to [`DESIGN.md`](DESIGN.md).*
 
 > [!NOTE]
+> **Superseded 2026-11-25.** The admin shipped as a separate small Node app in `admin/` that commits JSON through the GitHub API, so the static site and FTPS deploy stay as they are and cPanel never needs Node. See `admin/README.md`. Kept below for the games editor and uploads ideas that are not built.
+
+> [!NOTE]
 > Everything here is gated on one unanswered question — whether cPanel offers Node 22.12+ (see §2). Until that's checked, none of this is actionable.
 
 Scope note: this is the marketing site only. WHMCS is a separate product on a separate
