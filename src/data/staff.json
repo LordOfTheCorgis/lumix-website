@@ -1,0 +1,25 @@
+[
+  {
+    "name": "Evan V.",
+    "mark": "EV",
+    "title": "Chief Executive Officer",
+    "bio": "Runs the company. Decides what gets bought, where it goes, and how many servers a node is allowed to hold before it stops selling.",
+    "links": [],
+    "image": "evan-v.png"
+  },
+  {
+    "name": "Keaghan G.",
+    "mark": "KG",
+    "title": "Chief Operating Officer",
+    "bio": "Runs the day to day: provisioning, the panel, the ticket queue, and whether a region is ready to sell before it goes on the site.",
+    "links": [],
+    "image": "keaghan-g.png"
+  },
+  {
+    "name": "Caleb",
+    "mark": "C",
+    "title": "Community Manager",
+    "bio": "Runs the Discord. First reply on most questions, keeps the partner list honest, and is the reason the FAQ says what people actually ask.",
+    "links": []
+  }
+]

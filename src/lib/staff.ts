@@ -2,43 +2,18 @@
 // shipped a 1.5MB png. bios are mine, evan rewrites his. no image = monogram
 // tile, no name = title only. caleb has no last initial or photo yet
 import type { ImageMetadata } from "astro";
-import evan from "../assets/staff/evan-v.png";
-import keaghan from "../assets/staff/keaghan-g.png";
+import type { z } from "astro/zod";
+import { staffSchema, personSchema } from "./schemas.mjs";
+import data from "../data/staff.json";
 
-export interface Person {
-  name: string;
-  /** for when there's no photo */
-  mark: string;
-  title: string;
-  /** what the title actually means here */
-  bio: string;
-  image?: ImageMetadata;
-  /** public stuff only */
-  links: { label: string; href: string }[];
-}
+// the admin edits src/data/staff.json. image is a filename in src/assets/staff
+const photos = import.meta.glob<{ default: ImageMetadata }>("../assets/staff/*", { eager: true });
 
-export const staff: Person[] = [
-  {
-    name: "Evan V.",
-    mark: "EV",
-    title: "Chief Executive Officer",
-    bio: "Runs the company. Decides what gets bought, where it goes, and how many servers a node is allowed to hold before it stops selling.",
-    image: evan,
-    links: [],
-  },
-  {
-    name: "Keaghan G.",
-    mark: "KG",
-    title: "Chief Operating Officer",
-    bio: "Runs the day to day: provisioning, the panel, the ticket queue, and whether a region is ready to sell before it goes on the site.",
-    image: keaghan,
-    links: [],
-  },
-  {
-    name: "Caleb",
-    mark: "C",
-    title: "Community Manager",
-    bio: "Runs the Discord. First reply on most questions, keeps the partner list honest, and is the reason the FAQ says what people actually ask.",
-    links: [],
-  },
-];
+export type Person = Omit<z.infer<typeof personSchema>, "image"> & { image?: ImageMetadata };
+
+export const staff: Person[] = staffSchema.parse(data).map(({ image, ...p }) => {
+  if (!image) return p;
+  const img = photos[`../assets/staff/${image}`]?.default;
+  if (!img) throw new Error(`staff.json: ${p.name} points at image "${image}" and src/assets/staff has no such file`);
+  return { ...p, image: img };
+});

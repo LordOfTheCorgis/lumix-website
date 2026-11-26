@@ -1,80 +1,16 @@
-// the one copy of where things are. globe and the text list both read this
+// the one copy of where things are. globe and the text list both read this.
+// HOSTING lives in src/data/locations.json now, the admin edits it (admin/).
+// the old comments on each field moved to lib/schemas.mjs, read them there.
+// salt lake city was on the list once, dallas won the third slot instead.
+// don't add it back until there's a node
+import type { z } from "astro/zod";
+import { locationsSchema, locationSchema } from "./schemas.mjs";
+import hosting from "../data/locations.json";
 
-export interface Location {
-  city: string;
-  region: string;
-  lat: number;
-  lng: number;
-  /** for /regions#dallas. hosting only */
-  slug?: string;
-  /** one line on who it serves. hosting only */
-  serves?: string;
-  /** something in that dc. the node ips work even with nothing listening,
-      see lib/ping.ts for why a refused connection still times right.
-      missing = region skipped */
-  pingUrl?: string;
-  /** vms on that node, /status lists them under the region. empty ip = no
-      ping of its own, it shows "host up/down" off the node's check instead.
-      leave them empty: a browser ping puts the ip in the page source, and
-      evan doesn't want vm ips public (2026-09-23) */
-  vms?: { name: string; ip: string }[];
-  /** node's at its cap, not taking new servers. existing ones keep running */
-  soldOut?: boolean;
-  /** WHMCS "Server Location" option value id (config option 3). NOT the
-      pterodactyl node id and not the "5|Dallas" sort prefix in the admin
-      name. read it off GetProducts configoptions. hosting only */
-  whmcsId?: number;
-}
+export type Location = z.infer<typeof locationSchema>;
 
-// where servers run, west to east. salt lake city was on here once, dallas
-// won the third slot instead. don't add it back until there's a node
-export const HOSTING: Location[] = [
-  {
-    city: "Dallas",
-    soldOut: true,
-    whmcsId: 6,
-    region: "Texas",
-    slug: "dallas",
-    lat: 32.7767,
-    lng: -96.797,
-    serves: "Texas, the South, the Midwest, and most of Mexico. The middle of the country.",
-    pingUrl: "https://193.31.31.102/",
-    vms: [
-      { name: "gm-srv-03", ip: "" },
-    ],
-  },
-  {
-    city: "Ashburn",
-    whmcsId: 5,
-    region: "Virginia",
-    slug: "ashburn",
-    lat: 39.0438,
-    lng: -77.4874,
-    serves: "The Northeast, the Mid-Atlantic, eastern Canada, and the shortest hop from Europe.",
-    pingUrl: "https://206.168.173.77/",
-    vms: [
-      { name: "gm-srv-02", ip: "" },
-      { name: "staff-gm-srv-01", ip: "" },
-    ],
-  },
-  {
-    city: "Miami",
-    soldOut: true,
-    whmcsId: 3,
-    region: "Florida",
-    slug: "miami",
-    lat: 25.7617,
-    lng: -80.1918,
-    serves: "Florida, the Gulf, the Caribbean, and South America.",
-    pingUrl: "https://216.173.77.231/",
-    vms: [
-      { name: "gm-srv-01", ip: "" },
-      { name: "web-srv-01", ip: "" },
-      { name: "web-srv-02", ip: "" },
-      { name: "dev-srv-01", ip: "" },
-    ],
-  },
-];
+// west to east. a bad row fails the build, same as a bad game yaml
+export const HOSTING: Location[] = locationsSchema.parse(hosting);
 
 // scrubbing points. page never names providers (evan's call) so region is a
 // flat label. for whoever asks: cosmicguard has six PoPs (LA, dallas, ashburn,
