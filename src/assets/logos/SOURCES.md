@@ -38,3 +38,15 @@ build fails on the yaml `logo:` line, which is the point.
 | sons-of-the-forest.webp | Steam CDN app 1326470 logo.png |
 
 Tile art for all twelve is the Steam header (460×215) from the same CDN path.
+
+## Added 2026-11-26, new hosting lineup
+
+| file | source |
+|---|---|
+| factorio.webp | Steam CDN app 427520 logo.png |
+| ark-survival-evolved.webp | Steam CDN app 346110 logo.png |
+| team-fortress-2.webp | Steam CDN app 440 logo.png |
+| redm.webp | Steam CDN app 1174180 (Red Dead Redemption 2) logo.png, RedM is the RDR2 mod |
+| hytale.webp | hytale.com/images/logo.webp |
+
+Hero art (src/assets/games/*.jpg, 1920x620) is the Steam library_hero for the same app ids, cover-cropped and recompressed. Hytale's hero is the official blog cover from cdn.hytale.com, upscaled from 833px wide so it is soft. Swap it when a proper press-kit image turns up.
