@@ -1,8 +1,15 @@
 # Lumix admin
 
-`https://lumixsolutions.org/admin`: a login, then forms for the data the site
-reads from `src/data/*.json`. Regions (with the sold-out switch), partners,
-staff, the promo code and the Trustpilot score.
+`https://lumixsolutions.org/admin`: a login, then forms for everything on the site
+that is data:
+
+- **Regions** (the sold-out switch), **Partners**, **Staff**
+- **Games**: add or delete a game, edit text, art, plans, WHMCS product ids, prices
+- **Legal pages**: Terms, Privacy, CCPA (the date moves on its own when the text does)
+- **FAQ**, **Site** (links, support email, application hosting price, demo panel),
+  **Navigation** (header, More menu, footer, social)
+- **Promo and Trust** (the discount code, the Trustpilot score)
+- **Images**: upload logos, photos and game art from the file pickers
 
 It is one PHP file, `public/admin/index.php`, plus `app.js` and `app.css`. It ships
 inside the site through the normal deploy. Every save is a git commit made through
@@ -37,14 +44,20 @@ above the web root next to the token. If you want a hash there instead,
 
 - Flip the WHMCS `hidden` flag on a Server Location. After a sold-out change the
   page names the region to flip by hand (ONBOARDING.md, "Open or close a region").
-- Upload logos or photos. The Logo/Photo dropdowns list files already in
-  `src/assets/partners` and `src/assets/staff`. A new image still goes in through git.
-- Games and plans. Those stay in `src/content/games/*.yaml`.
+- Edit prose written straight into page templates (the homepage hero, "How it works",
+  the tools pages). That text isn't data yet; moving a section into the JSON files is
+  a small code change per section, then it shows up here.
+- Change the design, add pages, or touch the FiveM cfg generator. Those are code.
+- Images over 1 MB (GitHub's API limit for this). Shrink them first.
+
+Every change is a git commit, so GitHub's history is the undo: open the file, History,
+revert. Uploads wait on `dev` and are copied to `main` the first time a saved page
+that uses them goes live.
 
 ## Keeping it honest
 
-- The rules a save is checked against are in `index.php` (`datasets()`) and are a copy
-  of `src/lib/schemas.mjs`, which the site build parses the JSON with. Change a rule in
+- The rules a save is checked against are in `datasets.php` and are a copy of
+  `src/lib/schemas.mjs` and `src/content.config.ts`, which the site build parses with. Change a rule in
   one, change the other. If they ever disagree, the build is the backstop: a save PHP
   lets through that zod rejects fails the deploy before anything uploads, and the live
   site stays up. `npm test` runs the real PHP against a fake GitHub (needs `php`

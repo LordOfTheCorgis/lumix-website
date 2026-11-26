@@ -68,7 +68,7 @@ npm run preview
 
 | Path | What |
 | ---- | ---- |
-| `src/content/games/*.yaml` | Game data: plans, WHMCS pids, prices, specs, art, logo. Validated by `src/content.config.ts`. |
+| `src/content/games/*.json` | Game data: plans, WHMCS pids, prices, specs, art, logo. Validated by `src/content.config.ts`. |
 | `src/content/legal/*.md` | Terms / privacy / ccpa, rendered via `src/pages/[slug].astro`. |
 | `src/config.ts` | Everything non-game: site, promo, trust, bot hosting, demo panel, links, nav, social. |
 | `src/lib/order.ts` | Builds the WHMCS cart link; the customer picks their region in WHMCS. |
@@ -82,7 +82,7 @@ npm run preview
 
 | I want to… | Edit |
 | ---------- | ---- |
-| Add a game | A new `src/content/games/<slug>.yaml` + art in `src/assets/`. `status: planned` for a teaser, `live` needs plans. |
+| Add a game | The Games tab at `/admin`, or a new `src/content/games/<slug>.json` + art in `src/assets/`. `status: planned` for a teaser, `live` needs plans. |
 | Change a price | The plan's `pricing` block in its game YAML — and WHMCS, which is the real system of record. |
 | Edit a legal page | `src/content/legal/{terms,privacy,ccpa}.md`; bump `lastUpdated`. |
 | Change the promo, nav, or footer | `src/config.ts` (`promo`, `nav`/`moreNav`/`footerNav`, `links`). |
