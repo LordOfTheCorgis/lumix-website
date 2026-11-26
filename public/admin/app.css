@@ -102,3 +102,20 @@ label.check { display: flex; align-items: center; gap: 8px; color: var(--paper);
 .body.pt { padding-top: 14px; }
 .dep { margin-right: 16px; }
 .dotred { color: var(--red); }
+
+/* item picker, nested lists, uploads */
+.picker { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin: 0 0 16px; }
+.picker label.f { min-width: 220px; }
+.rep { margin-top: 4px; }
+.rep-title { font-size: 13px; color: var(--fog); margin-bottom: 8px; font-weight: 600; }
+.card.inner { background: var(--ink); margin-bottom: 8px; }
+.card.inner > .head { padding: 10px 12px; }
+.card.inner > .body { padding-top: 0; }
+.rep > button { margin-bottom: 8px; }
+.filerow { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+.filerow select { margin-top: 0 !important; flex: 1; }
+.hidden { display: none; }
+.tabnote { color: var(--fog); font-size: 13px; margin: 0 0 14px; max-width: 70ch; }
+.hint.inline { display: inline; margin-left: 8px; font-weight: 400; }
+label.check .hint.inline { margin-left: 4px; color: var(--fog); font-size: 12px; }
+label.f textarea.tall { min-height: 460px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; line-height: 1.5; }
