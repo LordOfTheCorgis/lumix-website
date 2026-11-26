@@ -1,16 +1,20 @@
 <?php
-// lumixsolutions.org/admin. the whole backend in one file: login, a few forms
-// over src/data/*.json, and every save is a git commit made through the GitHub
-// API, so the deploy that already exists builds and ships it. no database.
+// lumixsolutions.org/admin. the whole backend: login, forms over the site's data
+// files, image uploads. every save is a git commit made through the GitHub API, so
+// the deploy that already exists builds and ships it. no database.
+// what can be edited and how it's checked: datasets.php
 //
 // config (users, github token) lives OUTSIDE public_html, see
 // admin/config.example.php. kept to php 7.4 syntax because cpanel's default
 // php is whatever the host picked and nobody has checked
 declare(strict_types=1);
 
+require __DIR__ . '/datasets.php';
+
 const SESSION_TTL = 43200;     // 12h
 const LOCK_AFTER = 5;          // wrong passwords for one username
 const LOCK_SECONDS = 300;
+const MAX_UPLOAD = 1000000;    // github's contents api only hands back files up to 1MB
 
 // ---------- plumbing ----------
 
@@ -151,7 +155,7 @@ function gh(string $method, string $path, ?array $body = null): array {
     curl_setopt_array($ch, [
         CURLOPT_CUSTOMREQUEST => $method,
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 20,
+        CURLOPT_TIMEOUT => 25,
         CURLOPT_HTTPHEADER => [
             'Authorization: Bearer ' . $c['github_token'],
             'Accept: application/vnd.github+json',
@@ -168,19 +172,30 @@ function gh(string $method, string $path, ?array $body = null): array {
     return [$code, json_decode($res, true)];
 }
 function enc_path(string $p): string { return implode('/', array_map('rawurlencode', explode('/', $p))); }
+function gh_fail(int $code, $j, string $what): RuntimeException {
+    return new RuntimeException("github said $code $what" . (isset($j['message']) ? ": {$j['message']}" : ''));
+}
 
 function gh_read(string $branch, string $path): ?array {
     [$code, $j] = gh('GET', 'contents/' . enc_path($path) . '?ref=' . rawurlencode($branch));
     if ($code === 404) return null;
-    if ($code !== 200) throw new RuntimeException("github said $code reading $path on $branch" . (isset($j['message']) ? ": {$j['message']}" : ''));
+    if ($code !== 200) throw gh_fail($code, $j, "reading $path on $branch");
     if (!isset($j['content'])) return null;
     return ['content' => base64_decode(str_replace("\n", '', $j['content'])), 'sha' => $j['sha']];
 }
-function gh_write(string $branch, string $path, string $content, string $sha, string $msg): string {
-    [$code, $j] = gh('PUT', 'contents/' . enc_path($path), ['message' => $msg, 'branch' => $branch, 'content' => base64_encode($content), 'sha' => $sha]);
+// $sha null = create a new file
+function gh_write(string $branch, string $path, string $content, ?string $sha, string $msg): string {
+    $body = ['message' => $msg, 'branch' => $branch, 'content' => base64_encode($content)];
+    if ($sha !== null) $body['sha'] = $sha;
+    [$code, $j] = gh('PUT', 'contents/' . enc_path($path), $body);
     if ($code === 409 || $code === 422) throw new Conflict('the file changed on github while you were saving');
-    if ($code !== 200 && $code !== 201) throw new RuntimeException("github said $code writing $path on $branch" . (isset($j['message']) ? ": {$j['message']}" : ''));
+    if ($code !== 200 && $code !== 201) throw gh_fail($code, $j, "writing $path on $branch");
     return $j['content']['sha'];
+}
+function gh_delete(string $branch, string $path, string $sha, string $msg): void {
+    [$code, $j] = gh('DELETE', 'contents/' . enc_path($path), ['message' => $msg, 'branch' => $branch, 'sha' => $sha]);
+    if ($code === 409 || $code === 422) throw new Conflict('the file changed on github while you were deleting it');
+    if ($code !== 200) throw gh_fail($code, $j, "deleting $path on $branch");
 }
 function gh_list(string $branch, string $dir): array {
     [$code, $j] = gh('GET', 'contents/' . enc_path($dir) . '?ref=' . rawurlencode($branch));
@@ -197,117 +212,10 @@ function gh_run(string $branch): ?array {
     return $r ? ['status' => $r['status'], 'conclusion' => $r['conclusion'], 'url' => $r['html_url'], 'at' => $r['created_at']] : null;
 }
 
-// ---------- the data files ----------
+// ---------- helpers for saving ----------
 
-// same rules as src/lib/schemas.mjs (what the site build parses with). if you
-// change one, change the other. the build is the backstop: a save this lets
-// through that zod rejects fails the deploy BEFORE upload, the live site stays up
-function S_str(int $min = 0, ?int $max = null): array { return ['str', $min, $max]; }
-function S_obj(array $f): array { return ['obj', $f]; }
-function S_arr(array $n): array { return ['arr', $n]; }
-
-function check(array $n, $v, string $path, array &$errs): void {
-    switch ($n[0]) {
-        case 'str':
-            if (!is_string($v)) { $errs[] = [$path, 'Expected text']; return; }
-            $len = mb_strlen($v);
-            if ($len < $n[1]) $errs[] = [$path, $n[1] === 1 ? 'Required' : "At least {$n[1]} characters"];
-            if ($n[2] !== null && $len > $n[2]) $errs[] = [$path, "At most {$n[2]} characters"];
-            return;
-        case 'url':
-            $ok = is_string($v) && filter_var($v, FILTER_VALIDATE_URL) && in_array(parse_url($v, PHP_URL_SCHEME), ['http', 'https'], true);
-            if (!$ok) $errs[] = [$path, 'Invalid URL (needs http:// or https://)'];
-            return;
-        case 're':
-            if (!is_string($v) || !preg_match($n[1], $v)) $errs[] = [$path, $n[2]];
-            return;
-        case 'num':
-            if (!is_int($v) && !is_float($v)) { $errs[] = [$path, 'Expected a number']; return; }
-            if ($v < $n[1] || $v > $n[2]) $errs[] = [$path, "Must be between {$n[1]} and {$n[2]}"];
-            return;
-        case 'int':
-            if (!is_int($v)) { $errs[] = [$path, 'Expected a whole number']; return; }
-            if ($v < $n[1] || $v > $n[2]) $errs[] = [$path, "Must be between {$n[1]} and {$n[2]}"];
-            return;
-        case 'bool':
-            if (!is_bool($v)) $errs[] = [$path, 'Expected true or false'];
-            return;
-        case 'blank':
-            if ($v !== '') $errs[] = [$path, 'VM ips stay blank, the repo is public'];
-            return;
-        case 'nullable':
-            if ($v !== null) check($n[1], $v, $path, $errs);
-            return;
-        case 'arr':
-            if (!is_array($v) || ($v && array_keys($v) !== range(0, count($v) - 1))) { $errs[] = [$path, 'Expected a list']; return; }
-            foreach ($v as $i => $item) check($n[1], $item, $path === '' ? (string)$i : "$path.$i", $errs);
-            return;
-        case 'obj':
-            if (!is_array($v) || ($v && array_keys($v) === range(0, count($v) - 1))) { $errs[] = [$path, 'Expected an object']; return; }
-            foreach ($v as $k => $_) if (!isset($n[1][$k])) $errs[] = [$path === '' ? (string)$k : "$path.$k", 'Unrecognized field'];
-            foreach ($n[1] as $k => [$sub, $required]) {
-                $p = $path === '' ? $k : "$path.$k";
-                if (!array_key_exists($k, $v)) { if ($required) $errs[] = [$p, 'Required']; continue; }
-                check($sub, $v[$k], $p, $errs);
-            }
-            return;
-    }
-}
-
-function datasets(): array {
-    $url = ['url'];
-    return [
-        'locations' => [
-            'file' => 'src/data/locations.json',
-            'schema' => S_arr(S_obj([
-                'city' => [S_str(1), true], 'region' => [S_str(1), true],
-                'lat' => [['num', -90, 90], true], 'lng' => [['num', -180, 180], true],
-                'slug' => [['re', '/^[a-z0-9-]+$/', 'Lowercase letters, numbers and dashes only'], false],
-                'serves' => [S_str(), false], 'pingUrl' => [$url, false],
-                'vms' => [S_arr(S_obj(['name' => [S_str(1), true], 'ip' => [['blank'], true]])), false],
-                'soldOut' => [['bool'], false], 'whmcsId' => [['int', 1, PHP_INT_MAX], false],
-            ])),
-        ],
-        'partners' => [
-            'file' => 'src/data/partners.json', 'assets' => 'src/assets/partners', 'assetKey' => 'logo',
-            'schema' => S_arr(S_obj([
-                'name' => [S_str(1), true], 'mark' => [S_str(1, 4), true], 'logo' => [S_str(1), false],
-                'founder' => [S_str(1), true], 'description' => [S_str(1), true],
-                'services' => [S_arr(S_str(1)), true], 'note' => [S_str(), false],
-                'offer' => [S_obj(['code' => [S_str(1), true], 'text' => [S_str(1), true]]), false],
-                'url' => [$url, false], 'gallery' => [$url, false], 'discord' => [$url, true],
-            ])),
-        ],
-        'staff' => [
-            'file' => 'src/data/staff.json', 'assets' => 'src/assets/staff', 'assetKey' => 'image',
-            'schema' => S_arr(S_obj([
-                'name' => [S_str(1), true], 'mark' => [S_str(1, 4), true], 'title' => [S_str(1), true],
-                'bio' => [S_str(1), true], 'image' => [S_str(1), false],
-                'links' => [S_arr(S_obj(['label' => [S_str(1), true], 'href' => [$url, true]])), true],
-            ])),
-        ],
-        'settings' => [
-            'file' => 'src/data/settings.json',
-            'schema' => S_obj([
-                'promo' => [S_obj(['code' => [S_str(1), true], 'percent' => [['int', 1, 100], true], 'live' => [['bool'], true]]), true],
-                'trust' => [S_obj([
-                    'score' => [['nullable', ['num', 0, 5]], true], 'reviews' => [['nullable', ['int', 0, PHP_INT_MAX]], true],
-                    'updated' => [['re', '/^\d{4}-\d{2}-\d{2}$/', 'Use YYYY-MM-DD'], true], 'url' => [$url, true],
-                ]), true],
-            ]),
-        ],
-    ];
-}
-
-// 2-space json like node writes it, or the first save rewrites every line of the file
-function pretty($data): string {
-    $j = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION);
-    $j = preg_replace_callback('/^( {4})+/m', function ($m) { return str_repeat('  ', intdiv(strlen($m[0]), 4)); }, $j);
-    return $j . "\n";
-}
-
-function summarize(string $name, $before, $after): string {
-    if ($name === 'locations') {
+function summarize(string $name, string $item, $before, $after): string {
+    if ($name === 'locations' && is_array($before)) {
         $was = [];
         foreach ($before as $r) $was[$r['city']] = !empty($r['soldOut']);
         $bits = [];
@@ -317,23 +225,56 @@ function summarize(string $name, $before, $after): string {
         }
         if ($bits) return implode(', ', $bits);
     }
-    return "edited $name";
+    if ($before === null) return "added $name $item";
+    return $item !== '' ? "edited $name $item" : "edited $name";
+}
+
+function chicago(string $fmt): string { return (new DateTime('now', new DateTimeZone('America/Chicago')))->format($fmt); }
+
+function asset_listing(string $branch, string $dirKey): array {
+    static $cache = [];
+    $k = "$branch/$dirKey";
+    if (!isset($cache[$k])) $cache[$k] = gh_list($branch, ASSET_DIRS[$dirKey]);
+    return $cache[$k];
+}
+function assets_for(array $ds, string $branch): array {
+    $out = [];
+    foreach ($ds['assetDirs'] ?? [] as $k) $out[$k] = asset_listing($branch, $k);
+    return $out;
+}
+
+// going live with a new logo: main needs the file too, or the build there throws
+function copy_missing_assets(array $refs, string $edit, string $live, string $msg): void {
+    foreach ($refs as [, $dirKey, $file]) {
+        if (in_array($file, gh_list($live, ASSET_DIRS[$dirKey]), true)) continue;
+        $src = gh_read($edit, ASSET_DIRS[$dirKey] . '/' . $file);
+        if ($src) gh_write($live, ASSET_DIRS[$dirKey] . '/' . $file, $src['content'], null, $msg);
+    }
+}
+
+function image_type(string $bytes, string $dirKey): ?string {
+    if (strncmp($bytes, "\x89PNG\r\n\x1a\n", 8) === 0) return 'png';
+    if (strncmp($bytes, "\xFF\xD8\xFF", 3) === 0) return 'jpg';
+    if (strncmp($bytes, 'RIFF', 4) === 0 && substr($bytes, 8, 4) === 'WEBP') return 'webp';
+    // svg only for game logos (that's the only place there are any), and nothing that can run script
+    if ($dirKey === 'logos' && preg_match('/<svg[\s>]/i', substr($bytes, 0, 2000)) && !preg_match('/<script|\son\w+\s*=|javascript:/i', $bytes)) return 'svg';
+    return null;
 }
 
 // ---------- pages ----------
 
 function v(string $f): string { return (string)@filemtime(__DIR__ . "/$f"); }
-function shell(string $title, string $body, string $extraHead = ''): string {
+function shell(string $title, string $body): string {
     $b = base();
     return "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">"
         . "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
         . "<meta name=\"robots\" content=\"noindex, nofollow\"><title>" . h($title) . "</title>"
-        . "<link rel=\"stylesheet\" href=\"$b/app.css?v=" . v('app.css') . "\">$extraHead</head><body>$body</body></html>";
+        . "<link rel=\"stylesheet\" href=\"$b/app.css?v=" . v('app.css') . "\"></head><body>$body</body></html>";
 }
 function login_page(string $msg): string {
     $b = base();
     return shell('Lumix admin', '<main class="login"><h1>Lumix<span class="dotred">.</span> admin</h1>'
-        . '<p>Sign in to edit regions, partners and staff.</p>'
+        . '<p>Sign in to edit the site.</p>'
         . "<form method=\"post\" action=\"$b/index.php?x=login\">"
         . '<label class="f">Username<input type="text" name="user" autocomplete="username" autofocus required></label>'
         . '<label class="f">Password<input type="password" name="password" autocomplete="current-password" required></label>'
@@ -345,7 +286,7 @@ function app_page(): string {
         . '<span class="who" id="who"></span>'
         . "<form method=\"post\" action=\"$b/index.php?x=logout\"><button class=\"small ghost\" type=\"submit\">Log out</button></form></div></header>"
         . '<main class="shell"><nav class="tabs" id="tabs" role="tablist"></nav><div class="status" id="status" aria-live="polite"></div>'
-        . '<div id="banner" aria-live="polite"></div><div id="list"></div><div class="bar" id="bar"></div></main>'
+        . '<div id="banner" aria-live="polite"></div><div id="picker"></div><div id="list"></div><div class="bar" id="bar"></div></main>'
         . "<script src=\"$b/app.js?v=" . v('app.js') . "\" data-api=\"$b/index.php\"></script>");
 }
 
@@ -400,79 +341,140 @@ $live = $c['live_branch'] ?? 'main';
 try {
     if ($x === 'me') out_json(200, ['user' => $user, 'editBranch' => $edit, 'liveBranch' => $live]);
     if ($x === 'deploys') out_json(200, [$edit => gh_run($edit), $live => gh_run($live)]);
-    if ($x !== 'data') out_json(404, ['error' => 'not found']);
+
+    // ---- images: straight into the edit branch, copied to main only when a saved page needs them
+    if ($x === 'upload') {
+        if ($method !== 'POST') out_json(405, ['error' => 'method not allowed']);
+        $dirKey = (string)($_GET['dir'] ?? '');
+        if (!isset(ASSET_DIRS[$dirKey])) out_json(404, ['error' => 'not found']);
+        $f = $_FILES['file'] ?? null;
+        if (!$f || $f['error'] !== UPLOAD_ERR_OK || !is_uploaded_file($f['tmp_name'])) out_json(400, ['error' => 'no file came through (is it over the host\'s upload limit?)']);
+        if ($f['size'] > MAX_UPLOAD) out_json(413, ['error' => 'Keep images under 1 MB. Shrink it first.']);
+        $bytes = (string)file_get_contents($f['tmp_name']);
+        $type = image_type($bytes, $dirKey);
+        if (!$type) out_json(415, ['error' => $dirKey === 'logos' ? 'Use a webp, png, jpg or svg.' : 'Use a webp, png or jpg.']);
+        $stem = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower(pathinfo((string)$f['name'], PATHINFO_FILENAME))), '-');
+        if ($stem === '') out_json(400, ['error' => 'Give the file a name with letters or numbers in it.']);
+        $name = "$stem.$type";
+        $path = ASSET_DIRS[$dirKey] . '/' . $name;
+        $existing = gh_read($edit, $path);
+        if ($existing && empty($_POST['overwrite'])) out_json(409, ['error' => "$name already exists", 'exists' => true, 'name' => $name]);
+        gh_write($edit, $path, $bytes, $existing ? $existing['sha'] : null, ($existing ? 'replaced' : 'added') . " $dirKey image $name (admin, $user)");
+        out_json(200, ['ok' => true, 'name' => $name]);
+    }
+
+    if ($x !== 'data' && $x !== 'delete') out_json(404, ['error' => 'not found']);
 
     $all = datasets();
     $name = (string)($_GET['name'] ?? '');
     if (!isset($all[$name])) out_json(404, ['error' => 'not found']);
     $ds = $all[$name];
+    $isDir = isset($ds['dir']);
+    $item = (string)($_GET['item'] ?? '');
 
-    if ($method === 'GET') {
-        $dev = gh_read($edit, $ds['file']);
-        if (!$dev) out_json(404, ['error' => "{$ds['file']} is not on $edit"]);
-        $main = gh_read($live, $ds['file']);
+    // the list of files in a folder dataset (games, legal pages)
+    if ($x === 'data' && $method === 'GET' && $isDir && $item === '') {
+        $items = [];
+        $ext = '.' . $ds['ext'];
+        foreach (gh_list($edit, $ds['dir']) as $fn) {
+            if (substr($fn, -strlen($ext)) === $ext) $items[] = substr($fn, 0, -strlen($ext));
+        }
+        sort($items);
+        out_json(200, ['items' => $items, 'create' => !empty($ds['create']), 'delete' => !empty($ds['delete']), 'assets' => assets_for($ds, $edit)]);
+    }
+
+    $path = ds_path($ds, $item);
+    if ($path === null) out_json(404, ['error' => 'not found']);
+
+    if ($x === 'data' && $method === 'GET') {
+        $dev = gh_read($edit, $path);
+        if (!$dev) out_json(404, ['error' => "$path is not on $edit"]);
+        $main = gh_read($live, $path);
+        $data = ds_decode($ds, $dev['content']);
+        if ($data === null) out_json(500, ['error' => "couldn't read $path, it isn't shaped the way the admin expects"]);
         out_json(200, [
-            'data' => json_decode($dev['content'], true),
+            'data' => $data,
             'sha' => $dev['sha'],
             'live' => !$main ? 'missing' : ($main['content'] === $dev['content'] ? 'same' : 'behind'),
-            'assets' => isset($ds['assets']) ? gh_list($edit, $ds['assets']) : null,
+            'assets' => assets_for($ds, $edit),
         ]);
     }
 
     if ($method !== 'POST') out_json(405, ['error' => 'method not allowed']);
     if (strpos($_SERVER['CONTENT_TYPE'] ?? '', 'application/json') !== 0) out_json(415, ['error' => 'json only']);
     $body = json_decode((string)file_get_contents('php://input'), true);
-    if (!is_array($body) || !array_key_exists('data', $body)) out_json(400, ['error' => 'bad json']);
+    if (!is_array($body)) out_json(400, ['error' => 'bad json']);
+    $goLive = !empty($body['live']);
+
+    // ---- delete a file (games)
+    if ($x === 'delete') {
+        if (empty($ds['delete'])) out_json(405, ['error' => 'this can not be deleted']);
+        $dev = gh_read($edit, $path);
+        if (!$dev) out_json(404, ['error' => "$path is not on $edit"]);
+        if (($body['sha'] ?? null) !== $dev['sha']) out_json(409, ['error' => 'someone saved this since you opened it. reload first']);
+        $msg = "removed $name $item (admin, $user)";
+        try {
+            gh_delete($edit, $path, $dev['sha'], $msg);
+            if ($goLive && ($mainFile = gh_read($live, $path))) gh_delete($live, $path, $mainFile['sha'], $msg);
+        } catch (Exception $e) {
+            out_json($e instanceof Conflict ? 409 : 502, ['error' => $e->getMessage()]);
+        }
+        out_json(200, ['ok' => true]);
+    }
+
+    // ---- save
+    if (!array_key_exists('data', $body)) out_json(400, ['error' => 'bad json']);
     $data = $body['data'];
+    $create = !empty($body['create']);
 
     $errs = [];
     check($ds['schema'], $data, '', $errs);
-    if ($name === 'locations' && !$errs) {
-        $seen = [];
-        foreach ($data as $i => $r) {
-            if (!isset($r['whmcsId'])) continue;
-            if (isset($seen[$r['whmcsId']])) $errs[] = ["$i.whmcsId", "whmcsId {$r['whmcsId']} is on two regions"];
-            $seen[$r['whmcsId']] = true;
-        }
-    }
+    if (!$errs && isset($ds['post'])) $ds['post']($data, $errs);
+    if (!$errs && isset($ds['item'])) $ds['item']($data, $item, $errs);
     // a filename with no file behind it fails the site build
-    if (isset($ds['assets']) && !$errs) {
-        $files = gh_list($edit, $ds['assets']);
-        foreach ($data as $i => $r) {
-            if (isset($r[$ds['assetKey']]) && !in_array($r[$ds['assetKey']], $files, true)) $errs[] = ["$i.{$ds['assetKey']}", "No such file in {$ds['assets']}"];
-        }
+    $refs = !$errs && isset($ds['refs']) ? $ds['refs']($data) : [];
+    foreach ($refs as [$p, $dirKey, $file]) {
+        if (!in_array($file, asset_listing($edit, $dirKey), true)) $errs[] = [$p, 'No such file in ' . ASSET_DIRS[$dirKey]];
     }
     if ($errs) out_json(422, ['errors' => array_map(function ($e) { return ['path' => $e[0], 'message' => $e[1]]; }, $errs)]);
 
-    $dev = gh_read($edit, $ds['file']);
-    if (!$dev) out_json(404, ['error' => "{$ds['file']} is not on $edit"]);
-    if (($body['sha'] ?? null) !== $dev['sha']) out_json(409, ['error' => 'someone saved this since you opened it. reload, then redo your edit']);
-
-    $before = json_decode($dev['content'], true);
-    if ($name === 'settings' && ($before['trust']['score'] !== $data['trust']['score'] || $before['trust']['reviews'] !== $data['trust']['reviews'])) {
-        $data['trust']['updated'] = (new DateTime('now', new DateTimeZone('America/Chicago')))->format('Y-m-d'); // the file's own comment says to, nobody remembers
-    }
-    $content = pretty($data);
-    $msg = summarize($name, $before, $data) . " (admin, $user)";
-
-    $goLive = !empty($body['live']);
-    $liveFile = null;
-    if ($goLive) {
-        $liveFile = gh_read($live, $ds['file']);
-        // main without the json refactor reads nothing from this file, writing it there is litter
-        if (!$liveFile) out_json(409, ['error' => "$live has no {$ds['file']} yet. ship the data refactor there first"]);
+    $dev = gh_read($edit, $path);
+    if ($create) {
+        if ($dev) out_json(409, ['error' => "$item already exists"]);
+        $before = null;
+    } else {
+        if (!$dev) out_json(404, ['error' => "$path is not on $edit"]);
+        if (($body['sha'] ?? null) !== $dev['sha']) out_json(409, ['error' => 'someone saved this since you opened it. reload, then redo your edit']);
+        $before = ds_decode($ds, $dev['content']);
     }
 
-    $sha = $dev['sha'];
+    if ($name === 'settings' && $before && ($before['trust']['score'] !== $data['trust']['score'] || $before['trust']['reviews'] !== $data['trust']['reviews'])) {
+        $data['trust']['updated'] = chicago('Y-m-d'); // the file's own comment says to, nobody remembers
+    }
+    if ($name === 'legal' && $before && $before['body'] !== $data['body'] && $before['lastUpdated'] === $data['lastUpdated']) {
+        $data['lastUpdated'] = chicago('F j, Y'); // changed the text but not the date: the date is a legal claim
+    }
+    $content = ds_encode($ds, $data);
+    $msg = summarize($name, $item, $before, $data) . " (admin, $user)";
+
+    $liveFile = $goLive ? gh_read($live, $path) : null;
+    // main without the data files can't read them, writing there is litter. a brand new item is the exception
+    if ($goLive && !$liveFile && !$create) out_json(409, ['error' => "$live has no $path yet. ship the data refactor there first"]);
+
+    $sha = $dev ? $dev['sha'] : '';
+    $devSaved = false;
     try {
-        if ($content !== $dev['content']) $sha = gh_write($edit, $ds['file'], $content, $dev['sha'], $msg);
-        if ($liveFile && $content !== $liveFile['content']) gh_write($live, $ds['file'], $content, $liveFile['sha'], $msg);
+        if (!$dev || $content !== $dev['content']) { $sha = gh_write($edit, $path, $content, $dev ? $dev['sha'] : null, $msg); $devSaved = true; }
+        if ($goLive) {
+            copy_missing_assets($refs, $edit, $live, $msg);
+            if (!$liveFile || $content !== $liveFile['content']) gh_write($live, $path, $content, $liveFile ? $liveFile['sha'] : null, $msg);
+        }
     } catch (Conflict $e) {
-        out_json(409, ['error' => $e->getMessage(), 'devSaved' => $sha !== $dev['sha'], 'sha' => $sha]);
+        out_json(409, ['error' => $e->getMessage(), 'devSaved' => $devSaved, 'sha' => $sha]);
     } catch (Exception $e) {
-        out_json(502, ['error' => $e->getMessage(), 'devSaved' => $sha !== $dev['sha'], 'sha' => $sha]);
+        out_json(502, ['error' => $e->getMessage(), 'devSaved' => $devSaved, 'sha' => $sha]);
     }
-    out_json(200, ['ok' => true, 'sha' => $sha, 'live' => $goLive, 'data' => $data, 'unchanged' => $content === $dev['content']]);
+    out_json(200, ['ok' => true, 'sha' => $sha, 'live' => $goLive, 'data' => $data, 'unchanged' => $dev && $content === $dev['content']]);
 } catch (Exception $e) {
     out_json(502, ['error' => $e->getMessage()]);
 }
