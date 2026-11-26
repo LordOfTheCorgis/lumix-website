@@ -96,6 +96,40 @@ export const settingsSchema = z.object({
   }),
 });
 
+// a link target: a site path, a full url, or @name = the link called name in site.json
+const href = z.string().regex(/^(\/|https?:\/\/|mailto:|@[a-z]+$)/, "Use a path like /games/, a full https:// link, or @name of a link in Site");
+const label = z.string().min(1);
+
+export const siteSchema = z.object({
+  site: z.object({
+    name: label, legalName: label, domain: label, description: label, tagline: label,
+  }),
+  links: z.object({
+    billing: url, ticket: url, email: label, panel: url, docs: url, careers: url,
+    discord: url, x: url, instagram: url, tiktok: url, github: url,
+  }),
+  // not a game, ONE whmcs product. runtimes is only the names the copy shows
+  botHosting: z.object({
+    monthly: z.number().positive(),
+    pid: z.number().int().positive(),
+    runtimes: z.array(label),
+  }),
+  // read-only demo server on the panel. url null = the "look around" buttons stay hidden
+  demoPanel: z.object({ url: url.nullable(), user: z.string(), password: z.string() }),
+});
+
+const navItem = z.object({ label, href });
+export const navigationSchema = z.object({
+  nav: z.array(navItem),
+  moreNav: z.array(navItem.extend({ note: label })),
+  footerNav: z.array(z.object({ heading: label, items: z.array(navItem) })),
+  social: z.array(navItem),
+});
+
+// answers can hold {fullNote} {promoCode} {promoPercent} {botPrice} {botRuntimes},
+// see lib/faq.ts. aOff = what to say when the promo isn't live
+export const faqSchema = z.array(z.object({ q: label, a: label, aOff: z.string().min(1).optional() }));
+
 // name in the url / file on disk / schema, the admin's whole table of contents.
 // assets = the folder its filename fields point into
 export const DATASETS = {
@@ -103,4 +137,7 @@ export const DATASETS = {
   partners: { file: "src/data/partners.json", schema: partnersSchema, assets: "src/assets/partners" },
   staff: { file: "src/data/staff.json", schema: staffSchema, assets: "src/assets/staff" },
   settings: { file: "src/data/settings.json", schema: settingsSchema },
+  site: { file: "src/data/site.json", schema: siteSchema },
+  navigation: { file: "src/data/navigation.json", schema: navigationSchema },
+  faq: { file: "src/data/faq.json", schema: faqSchema },
 };
