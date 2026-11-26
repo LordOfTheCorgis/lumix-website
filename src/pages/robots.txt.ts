@@ -4,6 +4,7 @@ import type { APIRoute } from "astro";
 
 const PROD = `User-agent: *
 Allow: /
+Disallow: /admin/
 
 Sitemap: https://lumixsolutions.org/sitemap-index.xml
 `;

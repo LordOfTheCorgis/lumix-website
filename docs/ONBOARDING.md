@@ -70,7 +70,7 @@ src/
     faq.ts         # pre-sale FAQ list -> <details> + FAQPage JSON-LD
     firstTen.ts    # per-game "your first ten minutes" post-checkout steps (sourced from the docs)
     fivem.ts       # data behind the /tools FiveM server.cfg generator
-    partners.ts, staff.ts   # roster data, read from src/data/*.json (edited by admin/)
+    partners.ts, staff.ts   # roster data, read from src/data/*.json (edited by the PHP admin in public/admin/)
   layouts/Layout.astro   # HTML shell, SEO/meta, JSON-LD, header/footer, analytics, cookie banner, CursorTrail
   components/      # Header, Footer, GameTile, PromoBar, BotLine, Globe, PingTest, HeroArt, LightRays,
                    #   CursorTrail, Faq, StickyCta, Included, CookieBanner, Analytics, terminal/*
@@ -120,7 +120,7 @@ Everything wraps in `Layout.astro`.
 | **Change a plan's price** | The plan's `pricing` block in its game YAML. `monthly` required and positive, others optional. Display copy only — **change it in WHMCS too**. A wrong `pid` fails the build. |
 | **Edit a legal page** | `src/content/legal/{terms,privacy,ccpa}.md`; `##` headings get the bordered-section styling. Bump `lastUpdated`. (Louisiana law; Terms §7/§9 tracked in `TODO.md`.) |
 | **Change the promo / nav / footer** | `src/config.ts`: `promo` (`LUMIX10`, must match WHMCS), `nav`/`moreNav`/`footerNav`/`social`, `links`, `site`. `trust` is the hand-entered Trustpilot line; `botHosting` is one product (pid 6, runtime is a dropdown in the panel) rendered by `BotLine.astro`. |
-| **Open or close a region** | The sold-out switch in the admin (`admin/README.md`), or `soldOut` in `src/data/locations.json` by hand (stays listed, existing servers keep running). Ashburn is the only open region; Dallas and Miami are sold out. WHMCS hides the same options (`hidden` flag on the Server Location sub-options), so flip both. **Don't re-add Salt Lake City** until there's a node. Leave VM `ip` fields blank — public repo. |
+| **Open or close a region** | The sold-out switch at lumixsolutions.org/admin (`admin/README.md`), or `soldOut` in `src/data/locations.json` by hand (stays listed, existing servers keep running). Ashburn is the only open region; Dallas and Miami are sold out. WHMCS hides the same options (`hidden` flag on the Server Location sub-options), so flip both. **Don't re-add Salt Lake City** until there's a node. Leave VM `ip` fields blank — public repo. |
 
 ## Build & deploy
 
