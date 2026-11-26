@@ -21,8 +21,17 @@
       "name": "Application Hosting Plan",
       "pid": 6,
       "popular": true,
-      "specs": { "vcores": "1", "ramGb": "1", "storageGb": "10", "slots": "Unmetered", "databases": "0", "backups": "0" },
-      "pricing": { "monthly": 4 }
+      "specs": {
+        "vcores": "1",
+        "ramGb": "1",
+        "storageGb": "10",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "0"
+      },
+      "pricing": {
+        "monthly": 4
+      }
     }
   ]
 }
