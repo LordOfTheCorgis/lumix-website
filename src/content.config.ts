@@ -12,7 +12,7 @@ const legal = defineCollection({
   }),
 });
 
-// yaml quotes these because some vcore counts are "2.5", hence coerce
+// these are quoted strings in the json because some vcore counts are "2.5", hence coerce
 const specs = z.object({
   vcores: z.string(),
   ramGb: z.coerce.number(),
@@ -33,7 +33,7 @@ const plan = z.object({
 });
 
 const games = defineCollection({
-  loader: glob({ pattern: "*.yaml", base: "./src/content/games" }),
+  loader: glob({ pattern: "*.json", base: "./src/content/games" }),
   // image() so <Image> can do webp + srcset. art in public/ meant shipping a
   // 472KB palworld jpg to everyone
   schema: ({ image }) => z.object({

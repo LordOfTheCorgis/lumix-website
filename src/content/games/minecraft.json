@@ -1,0 +1,173 @@
+{
+  "slug": "minecraft",
+  "label": "Minecraft Server Hosting",
+  "shortLabel": "Minecraft",
+  "status": "live",
+  "tagline": "Vanilla, modded, or a 200-plugin network. Same hardware either way.",
+  "description": "Java and Bedrock ready. Every tier ships with unmetered slots and enough allocated heap for modpacks that actually chew memory, not the theoretical minimum.",
+  "logo": "../../assets/logos/minecraft.svg",
+  "image": "../../assets/games/minecraft.jpg",
+  "accent": "#4ade80",
+  "mark": "MC",
+  "highlights": [
+    "Unmetered slots, no per-player upcharge",
+    "Modpacks, Paper, Forge and Fabric installed from the panel",
+    "Backup slots per tier, on demand or on your own schedule"
+  ],
+  "plans": [
+    {
+      "key": "starter",
+      "name": "Starter Minecraft Server",
+      "pid": 24,
+      "popular": false,
+      "specs": {
+        "vcores": "2",
+        "ramGb": "5",
+        "storageGb": "65",
+        "slots": "Unmetered",
+        "databases": "1",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 14.99,
+        "quarterly": 42.99,
+        "semiannually": 82.99,
+        "annually": 161.99,
+        "biennially": 305.99,
+        "triennially": 431.99
+      }
+    },
+    {
+      "key": "budget",
+      "name": "Budget Minecraft Plan",
+      "pid": 25,
+      "popular": false,
+      "specs": {
+        "vcores": "2.5",
+        "ramGb": "8",
+        "storageGb": "95",
+        "slots": "Unmetered",
+        "databases": "2",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 19.99,
+        "quarterly": 56.99,
+        "semiannually": 109.99,
+        "annually": 215.99,
+        "biennially": 407.99,
+        "triennially": 575.99
+      }
+    },
+    {
+      "key": "standard",
+      "name": "Standard Minecraft Plan",
+      "pid": 26,
+      "popular": true,
+      "specs": {
+        "vcores": "4",
+        "ramGb": "10",
+        "storageGb": "115",
+        "slots": "Unmetered",
+        "databases": "4",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 27.99,
+        "quarterly": 79.99,
+        "semiannually": 154.99,
+        "annually": 301.99,
+        "biennially": 570.99,
+        "triennially": 805.99
+      }
+    },
+    {
+      "key": "advanced",
+      "name": "Advanced Minecraft Plan",
+      "pid": 27,
+      "popular": false,
+      "specs": {
+        "vcores": "5",
+        "ramGb": "12",
+        "storageGb": "150",
+        "slots": "Unmetered",
+        "databases": "5",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 34.99,
+        "quarterly": 99.99,
+        "semiannually": 192.99,
+        "annually": 377.99,
+        "biennially": 713.99,
+        "triennially": 1007.99
+      }
+    },
+    {
+      "key": "premium",
+      "name": "Premium Minecraft Plan",
+      "pid": 28,
+      "popular": false,
+      "specs": {
+        "vcores": "6",
+        "ramGb": "14",
+        "storageGb": "200",
+        "slots": "Unmetered",
+        "databases": "5",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 42.99,
+        "quarterly": 122.99,
+        "semiannually": 236.99,
+        "annually": 463.99,
+        "biennially": 876.99,
+        "triennially": 1237.99
+      }
+    },
+    {
+      "key": "elite",
+      "name": "Elite Minecraft Plan",
+      "pid": 29,
+      "popular": false,
+      "specs": {
+        "vcores": "6",
+        "ramGb": "16",
+        "storageGb": "300",
+        "slots": "Unmetered",
+        "databases": "5",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 58.99,
+        "quarterly": 167.99,
+        "semiannually": 325.99,
+        "annually": 636.99,
+        "biennially": 1202.99,
+        "triennially": 1698.99
+      }
+    },
+    {
+      "key": "ultimate",
+      "name": "Ultimate Minecraft Plan",
+      "pid": 30,
+      "popular": false,
+      "specs": {
+        "vcores": "6",
+        "ramGb": "18",
+        "storageGb": "400",
+        "slots": "Unmetered",
+        "databases": "5",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 67.99,
+        "quarterly": 191.99,
+        "semiannually": 374.99,
+        "annually": 733.99,
+        "biennially": 1386.99,
+        "triennially": 1957.99
+      }
+    }
+  ]
+}
