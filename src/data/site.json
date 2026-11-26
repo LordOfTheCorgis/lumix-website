@@ -1,0 +1,37 @@
+{
+  "site": {
+    "name": "Lumix Solutions",
+    "legalName": "Lumix Solutions LLC",
+    "domain": "lumixsolutions.org",
+    "description": "Game server hosting for communities. A finite number of servers, run properly.",
+    "tagline": "Low-latency game servers in three US regions, capped on purpose."
+  },
+  "links": {
+    "billing": "https://billing.lumixsolutions.org",
+    "ticket": "https://billing.lumixsolutions.org/submitticket.php",
+    "email": "support@lumixsolutions.org",
+    "panel": "https://panel.lumixsolutions.org",
+    "docs": "https://docs.lumixsolutions.org",
+    "careers": "https://careers.lumixsolutions.org/",
+    "discord": "https://discord.com/invite/uaNYBJQtvn",
+    "x": "https://x.com/LumixSolutions",
+    "instagram": "https://www.instagram.com/lumixsolutionsllc/",
+    "tiktok": "https://tiktok.com/@lumix.solutions",
+    "github": "https://github.com/lumixsolutions"
+  },
+  "botHosting": {
+    "monthly": 4,
+    "pid": 6,
+    "runtimes": [
+      "Node.js",
+      "Python",
+      "Go",
+      "Elixir"
+    ]
+  },
+  "demoPanel": {
+    "url": null,
+    "user": "",
+    "password": ""
+  }
+}

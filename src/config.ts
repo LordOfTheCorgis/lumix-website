@@ -1,16 +1,15 @@
-// one file so header and footer don't each grow a copy of the nav. promo and
-// trust come from src/data/settings.json, the admin edits that one
-import { settingsSchema } from "./lib/schemas.mjs";
+// one file so header and footer don't each grow a copy of the nav. everything in it
+// except the comments now comes from src/data/*.json (settings, site, navigation),
+// which the admin at /admin edits. a bad value fails the build
+import { settingsSchema, siteSchema, navigationSchema } from "./lib/schemas.mjs";
 import settingsJson from "./data/settings.json";
+import siteJson from "./data/site.json";
+import navJson from "./data/navigation.json";
 
-export const site = {
-  name: "Lumix Solutions",
-  legalName: "Lumix Solutions LLC",
-  domain: "lumixsolutions.org",
-  description:
-    "Game server hosting for communities. A finite number of servers, run properly.",
-  tagline: "Low-latency game servers in three US regions, capped on purpose.",
-};
+const siteData = siteSchema.parse(siteJson);
+const navData = navigationSchema.parse(navJson);
+
+export const site = siteData.site;
 
 // has to exist in WHMCS with the same string or we're advertising a code the
 // cart rejects. make it there first, then flip live. checked against WHMCS
@@ -32,91 +31,33 @@ export const trust = settings.trust;
 // WHMCS Node is 6, Python 7, Go 8 and 9 doesn't exist, so two of the three
 // links ordered the wrong thing and one ordered nothing. `runtimes` is only
 // the names the copy shows, the panel's picker has the full list.
-export const botHosting = {
-  monthly: 4,
-  pid: 6,
-  runtimes: ["Node.js", "Python", "Go", "Elixir"],
-};
+export const botHosting = siteData.botHosting;
 
 // read-only demo server on the panel. nothing renders until url is set.
 // credentials are public on purpose, it's a demo account with no power
-export const demoPanel = {
-  url: null as string | null,
-  user: "",
-  password: "",
-};
+export const demoPanel = siteData.demoPanel;
 
-export const links = {
-  billing: "https://billing.lumixsolutions.org",
-  ticket: "https://billing.lumixsolutions.org/submitticket.php",
-  email: "support@lumixsolutions.org",
-  panel: "https://panel.lumixsolutions.org",
-  docs: "https://docs.lumixsolutions.org",
-  careers: "https://careers.lumixsolutions.org/",
-  discord: "https://discord.com/invite/uaNYBJQtvn",
-  x: "https://x.com/LumixSolutions",
-  // youtube handle has been a 404 since july. put it back here AND in social
-  // once it resolves
-  instagram: "https://www.instagram.com/lumixsolutionsllc/",
-  tiktok: "https://tiktok.com/@lumix.solutions",
-  github: "https://github.com/lumixsolutions",
+// youtube handle has been a 404 since july. put it back in links (site.json) AND
+// in social (navigation.json) once it resolves
+export const links = siteData.links;
+
+// hrefs in navigation.json can be "@discord" etc: the link of that name above,
+// so a link changed once changes everywhere. unknown names fail the build
+const href = (h: string): string => {
+  if (!h.startsWith("@")) return h;
+  const v = (links as Record<string, string>)[h.slice(1)];
+  if (!v) throw new Error(`navigation.json: "${h}" is not a link in site.json`);
+  return v;
 };
+const resolve = <T extends { href: string }>(rows: T[]): T[] => rows.map((r) => ({ ...r, href: href(r.href) }));
 
 // four items, the old header had six. contact went to the footer, discord is
 // the answer to "where's live chat" so it gets the slot
-export const nav = [
-  { label: "Game Hosting", href: "/games/" },
-  { label: "Partners", href: "/partners/" },
-  { label: "Status", href: "/status/" },
-  { label: "Discord", href: links.discord },
-];
+export const nav = resolve(navData.nav);
 
 // the More drawer. still four destinations plus a drawer, not five items
-export const moreNav = [
-  { label: "Tools", href: "/tools/", note: "Free config generators" },
-  { label: "Regions", href: "/regions/", note: "Where the nodes are, and your ping" },
-  { label: "Migrate", href: "/migrate/", note: "Move a server from another host" },
-  { label: "Staff", href: "/staff/", note: "Who runs the nodes" },
-  { label: "Contact", href: "/contact/", note: "Tickets, Discord, email" },
-  { label: "Careers", href: links.careers, note: "We hire out of the community" },
-];
+export const moreNav = resolve(navData.moreNav);
 
-export const footerNav = [
-  {
-    heading: "Hosting",
-    items: [
-      { label: "Game Hosting", href: "/games/" },
-      { label: "Regions", href: "/regions/" },
-      { label: "Migrate", href: "/migrate/" },
-      { label: "Status", href: "/status/" },
-      { label: "Control Panel", href: links.panel },
-      { label: "Client Area", href: links.billing },
-    ],
-  },
-  {
-    heading: "Company",
-    items: [
-      { label: "Partners", href: "/partners/" },
-      { label: "Tools", href: "/tools/" },
-      { label: "Staff", href: "/staff/" },
-      { label: "Careers", href: links.careers },
-      { label: "Contact", href: "/contact/" },
-    ],
-  },
-  {
-    heading: "Legal",
-    items: [
-      { label: "Privacy Policy", href: "/privacy/" },
-      { label: "Terms of Service", href: "/terms/" },
-      { label: "California Privacy Rights", href: "/ccpa/" },
-    ],
-  },
-];
+export const footerNav = navData.footerNav.map((g) => ({ ...g, items: resolve(g.items) }));
 
-export const social = [
-  { label: "Discord", href: links.discord },
-  { label: "X", href: links.x },
-  { label: "Instagram", href: links.instagram },
-  { label: "TikTok", href: links.tiktok },
-  { label: "GitHub", href: links.github },
-];
+export const social = resolve(navData.social);
