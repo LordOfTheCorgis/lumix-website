@@ -2,6 +2,7 @@
 // the catalogue. the readout is generated from the collection, the old site
 // hand typed four rows and sold five games under it. nothing typed twice
 import { getCollection } from "astro:content";
+import { byFeatured } from "../../lib/gameOrder";
 import Layout from "../../layouts/Layout.astro";
 import GameTile from "../../components/GameTile.astro";
 import Terminal from "../../components/terminal/Terminal.astro";
@@ -18,10 +19,10 @@ const openRegions = HOSTING.filter((r) => !r.soldOut).map((r) => r.city);
 const all = await getCollection("games");
 const live = all
   .filter((g) => g.data.status === "live")
-  .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
+  .sort(byFeatured);
 const planned = all
   .filter((g) => g.data.status !== "live")
-  .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
+  .sort(byFeatured);
 const catalog = [...live, ...planned];
 
 const cheapest = (g: (typeof live)[number]) =>

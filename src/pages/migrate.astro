@@ -4,11 +4,12 @@
 // opens one that just says "help me move". nothing is sent from here
 import Layout from "../layouts/Layout.astro";
 import { getCollection } from "astro:content";
+import { byFeatured } from "../lib/gameOrder";
 import { links, demoPanel } from "../config";
 
 const games = (await getCollection("games"))
   .filter((g) => g.data.status === "live")
-  .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
+  .sort(byFeatured);
 
 const docs = `${links.docs}/lumi-panel/management/server-importer`;
 

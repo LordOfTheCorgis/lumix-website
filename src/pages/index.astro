@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { byFeatured } from "../lib/gameOrder";
 import Layout from "../layouts/Layout.astro";
 import GameTile from "../components/GameTile.astro";
 import LightRays from "../components/LightRays.astro";
@@ -15,7 +16,7 @@ import BotLine from "../components/BotLine.astro";
 
 const games = (await getCollection("games"))
   .filter((g) => g.data.status === "live")
-  .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
+  .sort(byFeatured);
 
 const cheapest = Math.min(
   ...games.flatMap((g) => g.data.plans.map((p) => p.pricing.monthly))

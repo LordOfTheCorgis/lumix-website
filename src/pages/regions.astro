@@ -3,6 +3,7 @@
 // region has a pingUrl in locations.ts, no status flag
 import Layout from "../layouts/Layout.astro";
 import { getCollection } from "astro:content";
+import { byFeatured } from "../lib/gameOrder";
 import PingTest from "../components/PingTest.astro";
 import Globe from "../components/Globe.astro";
 import { HOSTING, MITIGATION } from "../lib/locations";
@@ -10,7 +11,7 @@ import { links } from "../config";
 
 const games = (await getCollection("games"))
   .filter((g) => g.data.status === "live")
-  .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
+  .sort(byFeatured);
 
 // capped nodes stay on the page, they just stop taking orders
 const soldOut = HOSTING.filter((r) => r.soldOut);

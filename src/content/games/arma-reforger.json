@@ -2,11 +2,172 @@
   "slug": "arma-reforger",
   "label": "Arma Reforger Server Hosting",
   "shortLabel": "Arma Reforger",
-  "status": "planned",
-  "tagline": "Milsim-grade dedicated servers.",
-  "description": "Not orderable yet. Ask for it in Discord and it moves up the list.",
+  "status": "live",
+  "tagline": "Milsim-grade dedicated servers for Conflict, Game Master and your own scenarios.",
+  "description": "Arma Reforger servers are bound by simulation load, so tiers climb on dedicated vCores and RAM rather than slot counts. Pick a scenario, set your passwords and BattlEye from the panel, and run up to 256 players on the bigger plans. Mods load from the config on every start.",
   "logo": "../../assets/logos/arma-reforger.svg",
   "image": "../../assets/games/arma-reforger.jpg",
   "accent": "#65a30d",
-  "mark": "ARR"
+  "mark": "ARR",
+  "highlights": [
+    "Scenario, passwords and BattlEye from the panel",
+    "Mods and updates applied on every start",
+    "Dedicated vCores on RAID 1 NVMe, never oversold"
+  ],
+  "plans": [
+    {
+      "key": "starter",
+      "name": "Arma Reforger Starter Plan",
+      "pid": 97,
+      "popular": false,
+      "specs": {
+        "vcores": "2",
+        "ramGb": "4",
+        "storageGb": "30",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 11.99,
+        "quarterly": 33.99,
+        "semiannually": 65.99,
+        "annually": 128.99,
+        "biennially": 244.99,
+        "triennially": 344.99
+      }
+    },
+    {
+      "key": "budget",
+      "name": "Arma Reforger Budget Plan",
+      "pid": 98,
+      "popular": false,
+      "specs": {
+        "vcores": "3",
+        "ramGb": "6",
+        "storageGb": "40",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 15.99,
+        "quarterly": 44.99,
+        "semiannually": 87.99,
+        "annually": 172.99,
+        "biennially": 325.99,
+        "triennially": 460.99
+      }
+    },
+    {
+      "key": "standard",
+      "name": "Arma Reforger Standard Plan",
+      "pid": 99,
+      "popular": true,
+      "specs": {
+        "vcores": "3.5",
+        "ramGb": "8",
+        "storageGb": "50",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 19.99,
+        "quarterly": 55.99,
+        "semiannually": 109.99,
+        "annually": 215.99,
+        "biennially": 407.99,
+        "triennially": 575.99
+      }
+    },
+    {
+      "key": "advanced",
+      "name": "Arma Reforger Advanced Plan",
+      "pid": 100,
+      "popular": false,
+      "specs": {
+        "vcores": "4",
+        "ramGb": "12",
+        "storageGb": "65",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 27.99,
+        "quarterly": 78.99,
+        "semiannually": 154.99,
+        "annually": 301.99,
+        "biennially": 570.99,
+        "triennially": 805.99
+      }
+    },
+    {
+      "key": "premium",
+      "name": "Arma Reforger Premium Plan",
+      "pid": 101,
+      "popular": false,
+      "specs": {
+        "vcores": "5",
+        "ramGb": "16",
+        "storageGb": "80",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 35.99,
+        "quarterly": 100.99,
+        "semiannually": 198.99,
+        "annually": 388.99,
+        "biennially": 733.99,
+        "triennially": 1036.99
+      }
+    },
+    {
+      "key": "elite",
+      "name": "Arma Reforger Elite Plan",
+      "pid": 102,
+      "popular": false,
+      "specs": {
+        "vcores": "5",
+        "ramGb": "20",
+        "storageGb": "100",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 44.99,
+        "quarterly": 126.99,
+        "semiannually": 247.99,
+        "annually": 485.99,
+        "biennially": 917.99,
+        "triennially": 1295.99
+      }
+    },
+    {
+      "key": "ultimate",
+      "name": "Arma Reforger Ultimate Plan",
+      "pid": 103,
+      "popular": false,
+      "specs": {
+        "vcores": "6",
+        "ramGb": "24",
+        "storageGb": "120",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 54.99,
+        "quarterly": 154.99,
+        "semiannually": 303.99,
+        "annually": 593.99,
+        "biennially": 1121.99,
+        "triennially": 1583.99
+      }
+    }
+  ]
 }

@@ -2,6 +2,7 @@
 // no red down here, the header spends it
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
+import { byFeatured } from "../lib/gameOrder";
 import logo from "../assets/logo.png";
 import { footerNav, social, site } from "../config";
 
@@ -12,7 +13,7 @@ const external = (href: string) => href.startsWith("http");
 // socials moved up from the bottom line so the copyright could sit alone
 const games = (await getCollection("games"))
   .filter((g) => g.data.status === "live")
-  .sort((a, b) => a.data.shortLabel.localeCompare(b.data.shortLabel));
+  .sort(byFeatured);
 
 const columns = [
   footerNav[0],
