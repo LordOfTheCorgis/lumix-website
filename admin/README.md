@@ -14,23 +14,24 @@ deploys lumixsolutions.org in about two minutes. `dev` and `main` carry the same
 tree with different hashes, so the admin writes the file to each branch separately
 instead of merging.
 
-## One-time setup (cPanel, about ten minutes)
+## One-time setup (cPanel, about five minutes)
 
-1. **Token.** GitHub, Settings, Developer settings, Fine-grained tokens. This repo
-   only. Permissions: Contents read and write, Actions read. It can push to `main`,
-   and a push to `main` deploys, so it goes in one place only (step 3).
-2. **Your login hash**, on your own machine:
-   `node scripts/admin-hash.mjs evan`. It asks for a password (12 characters
-   minimum) and prints a line like `'evan' => 'pbkdf2$600000$...',`.
-3. **Config file.** In cPanel File Manager, make a folder named `lumix-admin` in your
-   home folder, **next to** `public_html`, not inside it (anything inside is public).
-   Upload `admin/config.example.php` there as `config.php`, paste the hash line into
-   `users`, and the token into `github_token`.
-4. Open `https://lumixsolutions.org/admin` and sign in. If something is off, the page
-   says what: "not set up yet" means the config file isn't where it looks
-   (`~/lumix-admin/config.php`), a red banner after login quotes what GitHub said.
+1. **GitHub token.** Settings, Developer settings, Fine-grained tokens. This repo only,
+   Contents read and write, Actions read. (The admin commits as this token, so it can't
+   work without one.)
+2. **Config file.** Open `admin/config.example.php`, change the username and password,
+   paste the token. In cPanel File Manager make a folder named `lumix-admin` in your home
+   folder **next to** `public_html`, not inside it, and upload the file there as
+   `config.php`.
+3. Open `https://lumixsolutions.org/admin` and sign in with that username and password.
 
-More people: another `'name' => 'hash'` line each. Forgot a password: make a new hash.
+If something is off the page says what: "not set up yet" means the file isn't at
+`~/lumix-admin/config.php`, and a red banner after login quotes what GitHub said.
+
+More people: another `'name' => 'password'` line each. Changed your mind on a password:
+edit the file. The password is plain text in that file, which is fine because it sits
+above the web root next to the token. If you want a hash there instead,
+`node scripts/admin-hash.mjs evan` prints one and either works.
 
 ## What it can't do
 
@@ -50,7 +51,7 @@ More people: another `'name' => 'hash'` line each. Forgot a password: make a new
   installed, skipped if not) and checks every data file round-trips unchanged.
 - `dev.lumixsolutions.org` gets the same files but the admin 404s there
   (`allowed_hosts` in the config).
-- Passwords are PBKDF2-SHA256. Five wrong passwords for one username locks that
+- Five wrong passwords for one username locks that
   username for five minutes (by username, not IP, because behind Cloudflare the IP
   can't be trusted). Sessions are HttpOnly, SameSite=Strict, 12 hours. Writes check
   the Origin header. It's `noindex` and `Disallow`ed in robots.txt.
