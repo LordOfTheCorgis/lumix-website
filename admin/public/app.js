@@ -227,7 +227,7 @@ function render() {
   if (!state.data) return renderBar();
 
   if (!T.list) {
-    list.append(h("div", { class: "card" + (state.errors.length ? " err" : "") }, h("div", { class: "body", style: "padding-top:14px" }, T.fields.map((f) => field(state.data, f, "")))));
+    list.append(h("div", { class: "card" + (state.errors.length ? " err" : "") }, h("div", { class: "body pt" }, T.fields.map((f) => field(state.data, f, "")))));
     return renderBar();
   }
 
@@ -345,7 +345,7 @@ function paintDeploys() {
     if (!run) continue;
     const cls = run.status !== "completed" ? "run" : run.conclusion === "success" ? "ok" : "bad";
     const word = run.status !== "completed" ? "building" : run.conclusion === "success" ? "deployed" : "failed";
-    el.append(h("span", { style: "margin-right:16px" }, h("span", { class: "dot " + cls }), `${branch === "main" ? "live" : branch}: `, h("a", { href: run.url, target: "_blank", rel: "noopener" }, word)));
+    el.append(h("span", { class: "dep" }, h("span", { class: "dot " + cls }), `${branch === "main" ? "live" : branch}: `, h("a", { href: run.url, target: "_blank", rel: "noopener" }, word)));
   }
 }
 function watchDeploys() {
