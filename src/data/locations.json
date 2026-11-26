@@ -38,7 +38,6 @@
   },
   {
     "city": "Miami",
-    "soldOut": true,
     "whmcsId": 3,
     "region": "Florida",
     "slug": "miami",
