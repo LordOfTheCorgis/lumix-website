@@ -47,7 +47,9 @@ export function createApp({
       "Cache-Control": "no-store",
       "X-Content-Type-Options": "nosniff",
       "X-Frame-Options": "DENY",
-      "Referrer-Policy": "same-origin", // NOT no-referrer: that makes browsers send "Origin: null" on form posts and the csrf check below eats every login,
+      // same-origin, NOT no-referrer: that makes browsers send "Origin: null" on
+      // form posts and the csrf check below eats every login
+      "Referrer-Policy": "same-origin",
       "Content-Security-Policy": "default-src 'self'; frame-ancestors 'none'; form-action 'self'",
       ...extra,
     });
