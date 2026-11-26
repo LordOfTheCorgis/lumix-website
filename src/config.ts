@@ -1,5 +1,7 @@
-// becomes settings.yaml if the admin panel ever lands. one file so header and
-// footer don't each grow a copy of the nav
+// one file so header and footer don't each grow a copy of the nav. promo and
+// trust come from src/data/settings.json, the admin edits that one
+import { settingsSchema } from "./lib/schemas.mjs";
+import settingsJson from "./data/settings.json";
 
 export const site = {
   name: "Lumix Solutions",
@@ -14,23 +16,15 @@ export const site = {
 // cart rejects. make it there first, then flip live. checked against WHMCS
 // 2026-11-25: 10% percentage, new signups only, once per client, first payment
 // only, all 28 site pids. the copy says "first order" because of that
-export const promo = {
-  code: "LUMIX10",
-  percent: 10,
-  live: true,
-};
+const settings = settingsSchema.parse(settingsJson);
+export const promo = settings.promo;
 
 // trustpilot by hand, their widgets are paid tier. score null = no rating shown.
 // reviews is deliberately null: the count is tiny right now and a small number
 // above the fold reads as "nobody's bought this" louder than the 4.6 reassures,
 // so we show the rating and not the count. put a number back when it's one worth
 // showing. bump `updated` when you change the score or this goes stale quietly.
-export const trust = {
-  score: 4.6 as number | null,
-  reviews: null as number | null,
-  updated: "2026-10-19",
-  url: "https://www.trustpilot.com/review/lumixsolutions.org",
-};
+export const trust = settings.trust;
 
 // not a game, no tile. ONE WHMCS product (pid 6, "Application Hosting"), the
 // runtime is a dropdown on the panel's Startup tab. this used to be three

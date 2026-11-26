@@ -1,0 +1,68 @@
+[
+  {
+    "city": "Dallas",
+    "soldOut": true,
+    "whmcsId": 6,
+    "region": "Texas",
+    "slug": "dallas",
+    "lat": 32.7767,
+    "lng": -96.797,
+    "serves": "Texas, the South, the Midwest, and most of Mexico. The middle of the country.",
+    "pingUrl": "https://193.31.31.102/",
+    "vms": [
+      {
+        "name": "gm-srv-03",
+        "ip": ""
+      }
+    ]
+  },
+  {
+    "city": "Ashburn",
+    "whmcsId": 5,
+    "region": "Virginia",
+    "slug": "ashburn",
+    "lat": 39.0438,
+    "lng": -77.4874,
+    "serves": "The Northeast, the Mid-Atlantic, eastern Canada, and the shortest hop from Europe.",
+    "pingUrl": "https://206.168.173.77/",
+    "vms": [
+      {
+        "name": "gm-srv-02",
+        "ip": ""
+      },
+      {
+        "name": "staff-gm-srv-01",
+        "ip": ""
+      }
+    ]
+  },
+  {
+    "city": "Miami",
+    "soldOut": true,
+    "whmcsId": 3,
+    "region": "Florida",
+    "slug": "miami",
+    "lat": 25.7617,
+    "lng": -80.1918,
+    "serves": "Florida, the Gulf, the Caribbean, and South America.",
+    "pingUrl": "https://216.173.77.231/",
+    "vms": [
+      {
+        "name": "gm-srv-01",
+        "ip": ""
+      },
+      {
+        "name": "web-srv-01",
+        "ip": ""
+      },
+      {
+        "name": "web-srv-02",
+        "ip": ""
+      },
+      {
+        "name": "dev-srv-01",
+        "ip": ""
+      }
+    ]
+  }
+]
