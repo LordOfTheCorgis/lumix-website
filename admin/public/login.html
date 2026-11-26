@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Lumix admin</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <main class="login">
+    <h1>Lumix<span style="color:var(--red)">.</span> admin</h1>
+    <p>Sign in to edit regions, partners and staff.</p>
+    <form method="post" action="/login">
+      <label class="f">Username<input type="text" name="user" autocomplete="username" autofocus required></label>
+      <label class="f">Password<input type="password" name="password" autocomplete="current-password" required
+        style="display:block;width:100%;margin-top:4px;padding:8px 10px;font:inherit;color:var(--paper);background:var(--ink);border:1px solid var(--edge);border-radius:8px"></label>
+      <p class="err" role="alert"><!--msg--></p>
+      <button class="primary" type="submit">Sign in</button>
+    </form>
+  </main>
+</body>
+</html>
