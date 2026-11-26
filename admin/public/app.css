@@ -69,7 +69,7 @@ details[open] > summary::before { content: "- "; }
 @media (max-width: 640px) { .body { grid-template-columns: 1fr; } }
 
 label.f { display: block; font-size: 13px; color: var(--fog); }
-label.f input[type="text"], label.f textarea, label.f select {
+label.f input[type="text"], label.f input[type="password"], label.f textarea, label.f select {
   display: block; width: 100%; margin-top: 4px; padding: 8px 10px; font: inherit; color: var(--paper);
   background: var(--ink); border: 1px solid var(--edge); border-radius: 8px;
 }
@@ -98,3 +98,7 @@ label.check { display: flex; align-items: center; gap: 8px; color: var(--paper);
 .login p { color: var(--fog); margin: 0 0 24px; }
 .login form { display: grid; gap: 14px; }
 .login .err { color: var(--red); min-height: 1.4em; margin: 0; font-size: 14px; }
+
+.body.pt { padding-top: 14px; }
+.dep { margin-right: 16px; }
+.dotred { color: var(--red); }
