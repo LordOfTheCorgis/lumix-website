@@ -1,0 +1,173 @@
+{
+  "slug": "ark-survival-evolved",
+  "label": "ARK: Survival Evolved Server Hosting",
+  "shortLabel": "ARK SE",
+  "status": "live",
+  "tagline": "The original ARK, modded to the ceiling, on memory that does not run out.",
+  "description": "ARK SE is heavy on RAM and disk, so tiers start at 8 GB and 60 GB of NVMe. Workshop mods install by ID from the Startup tab, and RCON is on by default. Pick a tier by map count and mod load.",
+  "logo": "../../assets/logos/ark-survival-evolved.webp",
+  "image": "../../assets/games/ark-survival-evolved.jpg",
+  "accent": "#22c55e",
+  "mark": "AK",
+  "highlights": [
+    "Workshop mods by ID, auto-managed",
+    "RCON and BattlEye toggles in the panel",
+    "Dedicated vCores on RAID 1 NVMe, never oversold"
+  ],
+  "plans": [
+    {
+      "key": "starter",
+      "name": "ARK SE Starter Plan",
+      "pid": 83,
+      "popular": false,
+      "specs": {
+        "vcores": "3",
+        "ramGb": "8",
+        "storageGb": "60",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 19.99,
+        "quarterly": 55.99,
+        "semiannually": 109.99,
+        "annually": 215.99,
+        "biennially": 407.99,
+        "triennially": 575.99
+      }
+    },
+    {
+      "key": "budget",
+      "name": "ARK SE Budget Plan",
+      "pid": 84,
+      "popular": false,
+      "specs": {
+        "vcores": "3.5",
+        "ramGb": "10",
+        "storageGb": "75",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 24.99,
+        "quarterly": 69.99,
+        "semiannually": 137.99,
+        "annually": 269.99,
+        "biennially": 509.99,
+        "triennially": 719.99
+      }
+    },
+    {
+      "key": "standard",
+      "name": "ARK SE Standard Plan",
+      "pid": 85,
+      "popular": true,
+      "specs": {
+        "vcores": "4",
+        "ramGb": "12",
+        "storageGb": "90",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 29.99,
+        "quarterly": 84.99,
+        "semiannually": 165.99,
+        "annually": 323.99,
+        "biennially": 611.99,
+        "triennially": 863.99
+      }
+    },
+    {
+      "key": "advanced",
+      "name": "ARK SE Advanced Plan",
+      "pid": 86,
+      "popular": false,
+      "specs": {
+        "vcores": "5",
+        "ramGb": "16",
+        "storageGb": "120",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 39.99,
+        "quarterly": 112.99,
+        "semiannually": 220.99,
+        "annually": 431.99,
+        "biennially": 815.99,
+        "triennially": 1151.99
+      }
+    },
+    {
+      "key": "premium",
+      "name": "ARK SE Premium Plan",
+      "pid": 87,
+      "popular": false,
+      "specs": {
+        "vcores": "5",
+        "ramGb": "20",
+        "storageGb": "150",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 49.99,
+        "quarterly": 140.99,
+        "semiannually": 275.99,
+        "annually": 539.99,
+        "biennially": 1019.99,
+        "triennially": 1439.99
+      }
+    },
+    {
+      "key": "elite",
+      "name": "ARK SE Elite Plan",
+      "pid": 88,
+      "popular": false,
+      "specs": {
+        "vcores": "6",
+        "ramGb": "24",
+        "storageGb": "180",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 59.99,
+        "quarterly": 168.99,
+        "semiannually": 330.99,
+        "annually": 647.99,
+        "biennially": 1223.99,
+        "triennially": 1727.99
+      }
+    },
+    {
+      "key": "ultimate",
+      "name": "ARK SE Ultimate Plan",
+      "pid": 89,
+      "popular": false,
+      "specs": {
+        "vcores": "6",
+        "ramGb": "32",
+        "storageGb": "220",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 79.99,
+        "quarterly": 225.99,
+        "semiannually": 441.99,
+        "annually": 863.99,
+        "biennially": 1631.99,
+        "triennially": 2303.99
+      }
+    }
+  ]
+}

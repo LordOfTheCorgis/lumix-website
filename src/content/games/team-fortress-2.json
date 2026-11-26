@@ -1,0 +1,173 @@
+{
+  "slug": "team-fortress-2",
+  "label": "Team Fortress 2 Server Hosting",
+  "shortLabel": "TF2",
+  "status": "live",
+  "tagline": "Community TF2 servers with SourceMod and your own map cycle.",
+  "description": "Install SourceMod, MetaMod and your plugin stack from the file manager. You supply a free Steam game server login token and the server lists itself. Top tiers handle heavy plugin stacks and multiple instances.",
+  "logo": "../../assets/logos/team-fortress-2.webp",
+  "image": "../../assets/games/team-fortress-2.jpg",
+  "accent": "#ef4444",
+  "mark": "TF",
+  "highlights": [
+    "SourceMod and MetaMod friendly",
+    "Custom maps and FastDL ready",
+    "Dedicated vCores on RAID 1 NVMe, never oversold"
+  ],
+  "plans": [
+    {
+      "key": "starter",
+      "name": "TF2 Starter Plan",
+      "pid": 76,
+      "popular": false,
+      "specs": {
+        "vcores": "1.5",
+        "ramGb": "2",
+        "storageGb": "20",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 4.99,
+        "quarterly": 13.99,
+        "semiannually": 27.99,
+        "annually": 53.99,
+        "biennially": 101.99,
+        "triennially": 143.99
+      }
+    },
+    {
+      "key": "budget",
+      "name": "TF2 Budget Plan",
+      "pid": 77,
+      "popular": false,
+      "specs": {
+        "vcores": "2",
+        "ramGb": "3",
+        "storageGb": "30",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 6.99,
+        "quarterly": 19.99,
+        "semiannually": 38.99,
+        "annually": 74.99,
+        "biennially": 142.99,
+        "triennially": 200.99
+      }
+    },
+    {
+      "key": "standard",
+      "name": "TF2 Standard Plan",
+      "pid": 78,
+      "popular": true,
+      "specs": {
+        "vcores": "2",
+        "ramGb": "4",
+        "storageGb": "40",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 8.99,
+        "quarterly": 24.99,
+        "semiannually": 49.99,
+        "annually": 96.99,
+        "biennially": 182.99,
+        "triennially": 258.99
+      }
+    },
+    {
+      "key": "advanced",
+      "name": "TF2 Advanced Plan",
+      "pid": 79,
+      "popular": false,
+      "specs": {
+        "vcores": "2.5",
+        "ramGb": "5",
+        "storageGb": "50",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 10.99,
+        "quarterly": 30.99,
+        "semiannually": 60.99,
+        "annually": 118.99,
+        "biennially": 223.99,
+        "triennially": 316.99
+      }
+    },
+    {
+      "key": "premium",
+      "name": "TF2 Premium Plan",
+      "pid": 80,
+      "popular": false,
+      "specs": {
+        "vcores": "3",
+        "ramGb": "6",
+        "storageGb": "60",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 12.99,
+        "quarterly": 36.99,
+        "semiannually": 71.99,
+        "annually": 139.99,
+        "biennially": 264.99,
+        "triennially": 373.99
+      }
+    },
+    {
+      "key": "elite",
+      "name": "TF2 Elite Plan",
+      "pid": 81,
+      "popular": false,
+      "specs": {
+        "vcores": "3.5",
+        "ramGb": "8",
+        "storageGb": "80",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 15.99,
+        "quarterly": 44.99,
+        "semiannually": 87.99,
+        "annually": 172.99,
+        "biennially": 325.99,
+        "triennially": 460.99
+      }
+    },
+    {
+      "key": "ultimate",
+      "name": "TF2 Ultimate Plan",
+      "pid": 82,
+      "popular": false,
+      "specs": {
+        "vcores": "4",
+        "ramGb": "10",
+        "storageGb": "100",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 19.99,
+        "quarterly": 55.99,
+        "semiannually": 109.99,
+        "annually": 215.99,
+        "biennially": 407.99,
+        "triennially": 575.99
+      }
+    }
+  ]
+}

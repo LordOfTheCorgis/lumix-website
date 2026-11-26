@@ -1,0 +1,173 @@
+{
+  "slug": "redm",
+  "label": "RedM Server Hosting",
+  "shortLabel": "RedM",
+  "status": "live",
+  "tagline": "Red Dead roleplay servers with room for a full VORP or RSG resource list.",
+  "description": "Built on the same Cfx.re stack as our FiveM hosting, so txAdmin, MySQL and the resource folder work the way you already know. Unmetered slots, dedicated vCores and NVMe storage on RAID 1, so restarts stay quick on a heavy frontier build.",
+  "logo": "../../assets/logos/redm.webp",
+  "image": "../../assets/games/redm.jpg",
+  "accent": "#c2410c",
+  "mark": "RM",
+  "highlights": [
+    "txAdmin and MySQL provisioned on deploy",
+    "VORP, RSG and RedEM:2023 ready",
+    "Dedicated vCores, never oversold"
+  ],
+  "plans": [
+    {
+      "key": "starter",
+      "name": "RedM Starter Plan",
+      "pid": 48,
+      "popular": false,
+      "specs": {
+        "vcores": "2",
+        "ramGb": "2",
+        "storageGb": "35",
+        "slots": "Unmetered",
+        "databases": "1",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 8.99,
+        "quarterly": 24.99,
+        "semiannually": 49.99,
+        "annually": 96.99,
+        "biennially": 182.99,
+        "triennially": 258.99
+      }
+    },
+    {
+      "key": "budget",
+      "name": "RedM Budget Plan",
+      "pid": 49,
+      "popular": false,
+      "specs": {
+        "vcores": "2.5",
+        "ramGb": "4",
+        "storageGb": "50",
+        "slots": "Unmetered",
+        "databases": "2",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 12.99,
+        "quarterly": 36.99,
+        "semiannually": 71.99,
+        "annually": 139.99,
+        "biennially": 264.99,
+        "triennially": 373.99
+      }
+    },
+    {
+      "key": "standard",
+      "name": "RedM Standard Plan",
+      "pid": 50,
+      "popular": true,
+      "specs": {
+        "vcores": "4",
+        "ramGb": "6",
+        "storageGb": "85",
+        "slots": "Unmetered",
+        "databases": "4",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 18.99,
+        "quarterly": 53.99,
+        "semiannually": 104.99,
+        "annually": 204.99,
+        "biennially": 386.99,
+        "triennially": 546.99
+      }
+    },
+    {
+      "key": "advanced",
+      "name": "RedM Advanced Plan",
+      "pid": 51,
+      "popular": false,
+      "specs": {
+        "vcores": "5",
+        "ramGb": "8",
+        "storageGb": "105",
+        "slots": "Unmetered",
+        "databases": "5",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 26.99,
+        "quarterly": 75.99,
+        "semiannually": 148.99,
+        "annually": 290.99,
+        "biennially": 550.99,
+        "triennially": 776.99
+      }
+    },
+    {
+      "key": "premium",
+      "name": "RedM Premium Plan",
+      "pid": 52,
+      "popular": false,
+      "specs": {
+        "vcores": "6",
+        "ramGb": "10",
+        "storageGb": "120",
+        "slots": "Unmetered",
+        "databases": "5",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 31.99,
+        "quarterly": 89.99,
+        "semiannually": 176.99,
+        "annually": 344.99,
+        "biennially": 652.99,
+        "triennially": 920.99
+      }
+    },
+    {
+      "key": "elite",
+      "name": "RedM Elite Plan",
+      "pid": 53,
+      "popular": false,
+      "specs": {
+        "vcores": "6",
+        "ramGb": "12",
+        "storageGb": "150",
+        "slots": "Unmetered",
+        "databases": "5",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 42.99,
+        "quarterly": 120.99,
+        "semiannually": 236.99,
+        "annually": 463.99,
+        "biennially": 876.99,
+        "triennially": 1237.99
+      }
+    },
+    {
+      "key": "ultimate",
+      "name": "RedM Ultimate Plan",
+      "pid": 54,
+      "popular": false,
+      "specs": {
+        "vcores": "6",
+        "ramGb": "16",
+        "storageGb": "175",
+        "slots": "Unmetered",
+        "databases": "5",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 52.99,
+        "quarterly": 148.99,
+        "semiannually": 292.99,
+        "annually": 571.99,
+        "biennially": 1080.99,
+        "triennially": 1525.99
+      }
+    }
+  ]
+}

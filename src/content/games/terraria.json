@@ -1,0 +1,173 @@
+{
+  "slug": "terraria",
+  "label": "Terraria Server Hosting",
+  "shortLabel": "Terraria",
+  "status": "live",
+  "tagline": "TShock servers that vanilla players can join, up to the 255 player cap.",
+  "description": "Runs TShock, so every vanilla Terraria client connects with no mod install. You get permissions, regions, bans and plugin support out of the box. The tModLoader modded-world version ships as its own product line.",
+  "logo": "../../assets/logos/terraria.webp",
+  "image": "../../assets/games/terraria.jpg",
+  "accent": "#4ade80",
+  "mark": "TR",
+  "highlights": [
+    "Vanilla clients join, no mods needed",
+    "Plugins, regions and bans through TShock",
+    "Dedicated vCores on RAID 1 NVMe, never oversold"
+  ],
+  "plans": [
+    {
+      "key": "starter",
+      "name": "Terraria Starter Plan",
+      "pid": 55,
+      "popular": false,
+      "specs": {
+        "vcores": "1",
+        "ramGb": "1",
+        "storageGb": "10",
+        "slots": "255",
+        "databases": "0",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 3.99,
+        "quarterly": 10.99,
+        "semiannually": 21.99,
+        "annually": 42.99,
+        "biennially": 80.99,
+        "triennially": 114.99
+      }
+    },
+    {
+      "key": "budget",
+      "name": "Terraria Budget Plan",
+      "pid": 56,
+      "popular": false,
+      "specs": {
+        "vcores": "1",
+        "ramGb": "1.5",
+        "storageGb": "15",
+        "slots": "255",
+        "databases": "0",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 4.99,
+        "quarterly": 13.99,
+        "semiannually": 27.99,
+        "annually": 53.99,
+        "biennially": 101.99,
+        "triennially": 143.99
+      }
+    },
+    {
+      "key": "standard",
+      "name": "Terraria Standard Plan",
+      "pid": 57,
+      "popular": true,
+      "specs": {
+        "vcores": "1.5",
+        "ramGb": "2",
+        "storageGb": "20",
+        "slots": "255",
+        "databases": "0",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 5.99,
+        "quarterly": 16.99,
+        "semiannually": 32.99,
+        "annually": 64.99,
+        "biennially": 121.99,
+        "triennially": 172.99
+      }
+    },
+    {
+      "key": "advanced",
+      "name": "Terraria Advanced Plan",
+      "pid": 58,
+      "popular": false,
+      "specs": {
+        "vcores": "2",
+        "ramGb": "3",
+        "storageGb": "25",
+        "slots": "255",
+        "databases": "0",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 7.99,
+        "quarterly": 22.99,
+        "semiannually": 43.99,
+        "annually": 85.99,
+        "biennially": 162.99,
+        "triennially": 229.99
+      }
+    },
+    {
+      "key": "premium",
+      "name": "Terraria Premium Plan",
+      "pid": 59,
+      "popular": false,
+      "specs": {
+        "vcores": "2",
+        "ramGb": "4",
+        "storageGb": "30",
+        "slots": "255",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 9.99,
+        "quarterly": 27.99,
+        "semiannually": 54.99,
+        "annually": 107.99,
+        "biennially": 203.99,
+        "triennially": 287.99
+      }
+    },
+    {
+      "key": "elite",
+      "name": "Terraria Elite Plan",
+      "pid": 60,
+      "popular": false,
+      "specs": {
+        "vcores": "2.5",
+        "ramGb": "6",
+        "storageGb": "40",
+        "slots": "255",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 14.99,
+        "quarterly": 41.99,
+        "semiannually": 82.99,
+        "annually": 161.99,
+        "biennially": 305.99,
+        "triennially": 431.99
+      }
+    },
+    {
+      "key": "ultimate",
+      "name": "Terraria Ultimate Plan",
+      "pid": 61,
+      "popular": false,
+      "specs": {
+        "vcores": "3",
+        "ramGb": "8",
+        "storageGb": "50",
+        "slots": "255",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 19.99,
+        "quarterly": 55.99,
+        "semiannually": 109.99,
+        "annually": 215.99,
+        "biennially": 407.99,
+        "triennially": 575.99
+      }
+    }
+  ]
+}

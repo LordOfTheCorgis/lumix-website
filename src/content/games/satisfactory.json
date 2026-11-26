@@ -2,11 +2,172 @@
   "slug": "satisfactory",
   "label": "Satisfactory Server Hosting",
   "shortLabel": "Satisfactory",
-  "status": "planned",
+  "status": "live",
   "tagline": "Factory saves that grow for months without a hitch.",
-  "description": "Not orderable yet. Ask for it in Discord and it moves up the list.",
+  "description": "Satisfactory servers grow with your factory, so these tiers scale on memory rather than player count. Autosaves, save upload and download, and updates all run from the panel, from an 8 GB starter factory up to 32 GB for a late-game megafactory.",
   "logo": "../../assets/logos/satisfactory.webp",
   "image": "../../assets/games/satisfactory.jpg",
   "accent": "#f0a030",
-  "mark": "SF"
+  "mark": "SF",
+  "highlights": [
+    "Upload your existing save from the panel",
+    "Autosave rotation you control",
+    "Dedicated vCores on RAID 1 NVMe, never oversold"
+  ],
+  "plans": [
+    {
+      "key": "starter",
+      "name": "Satisfactory Starter Plan",
+      "pid": 90,
+      "popular": false,
+      "specs": {
+        "vcores": "2",
+        "ramGb": "8",
+        "storageGb": "30",
+        "slots": "Up",
+        "databases": "0",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 9.99,
+        "quarterly": 27.99,
+        "semiannually": 54.99,
+        "annually": 107.99,
+        "biennially": 203.99,
+        "triennially": 287.99
+      }
+    },
+    {
+      "key": "budget",
+      "name": "Satisfactory Budget Plan",
+      "pid": 91,
+      "popular": false,
+      "specs": {
+        "vcores": "3",
+        "ramGb": "12",
+        "storageGb": "40",
+        "slots": "Up",
+        "databases": "0",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 14.99,
+        "quarterly": 41.99,
+        "semiannually": 82.99,
+        "annually": 161.99,
+        "biennially": 305.99,
+        "triennially": 431.99
+      }
+    },
+    {
+      "key": "standard",
+      "name": "Satisfactory Standard Plan",
+      "pid": 92,
+      "popular": true,
+      "specs": {
+        "vcores": "3.5",
+        "ramGb": "16",
+        "storageGb": "55",
+        "slots": "Up",
+        "databases": "0",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 21.99,
+        "quarterly": 61.99,
+        "semiannually": 120.99,
+        "annually": 236.99,
+        "biennially": 448.99,
+        "triennially": 632.99
+      }
+    },
+    {
+      "key": "advanced",
+      "name": "Satisfactory Advanced Plan",
+      "pid": 93,
+      "popular": false,
+      "specs": {
+        "vcores": "4",
+        "ramGb": "20",
+        "storageGb": "70",
+        "slots": "Up",
+        "databases": "0",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 29.99,
+        "quarterly": 84.99,
+        "semiannually": 165.99,
+        "annually": 323.99,
+        "biennially": 611.99,
+        "triennially": 863.99
+      }
+    },
+    {
+      "key": "premium",
+      "name": "Satisfactory Premium Plan",
+      "pid": 94,
+      "popular": false,
+      "specs": {
+        "vcores": "4.5",
+        "ramGb": "24",
+        "storageGb": "85",
+        "slots": "Up",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 38.99,
+        "quarterly": 109.99,
+        "semiannually": 214.99,
+        "annually": 420.99,
+        "biennially": 794.99,
+        "triennially": 1122.99
+      }
+    },
+    {
+      "key": "elite",
+      "name": "Satisfactory Elite Plan",
+      "pid": 95,
+      "popular": false,
+      "specs": {
+        "vcores": "5",
+        "ramGb": "28",
+        "storageGb": "100",
+        "slots": "Up",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 48.99,
+        "quarterly": 137.99,
+        "semiannually": 269.99,
+        "annually": 528.99,
+        "biennially": 998.99,
+        "triennially": 1410.99
+      }
+    },
+    {
+      "key": "ultimate",
+      "name": "Satisfactory Ultimate Plan",
+      "pid": 96,
+      "popular": false,
+      "specs": {
+        "vcores": "6",
+        "ramGb": "32",
+        "storageGb": "120",
+        "slots": "Up",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 59.99,
+        "quarterly": 168.99,
+        "semiannually": 330.99,
+        "annually": 647.99,
+        "biennially": 1223.99,
+        "triennially": 1727.99
+      }
+    }
+  ]
 }

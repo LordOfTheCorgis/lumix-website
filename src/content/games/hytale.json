@@ -1,0 +1,173 @@
+{
+  "slug": "hytale",
+  "label": "Hytale Server Hosting",
+  "shortLabel": "Hytale",
+  "status": "live",
+  "tagline": "Early-access Hytale servers on current Java, ready the minute you pay.",
+  "description": "Memory scales with view distance and plugin count, so tiers grow on RAM and vCores. Sign in with your own Hytale account from the panel console on first boot, then the server is yours. Early access, so expect the game itself to change under you.",
+  "logo": "../../assets/logos/hytale.webp",
+  "image": "../../assets/games/hytale.jpg",
+  "accent": "#38bdf8",
+  "mark": "HY",
+  "highlights": [
+    "Latest Java, updates from the Startup tab",
+    "Automatic backups on a schedule you set",
+    "Dedicated vCores on RAID 1 NVMe, never oversold"
+  ],
+  "plans": [
+    {
+      "key": "starter",
+      "name": "Hytale Starter Plan",
+      "pid": 62,
+      "popular": false,
+      "specs": {
+        "vcores": "2",
+        "ramGb": "4",
+        "storageGb": "30",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 11.99,
+        "quarterly": 33.99,
+        "semiannually": 65.99,
+        "annually": 128.99,
+        "biennially": 244.99,
+        "triennially": 344.99
+      }
+    },
+    {
+      "key": "budget",
+      "name": "Hytale Budget Plan",
+      "pid": 63,
+      "popular": false,
+      "specs": {
+        "vcores": "2.5",
+        "ramGb": "6",
+        "storageGb": "40",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 15.99,
+        "quarterly": 44.99,
+        "semiannually": 87.99,
+        "annually": 172.99,
+        "biennially": 325.99,
+        "triennially": 460.99
+      }
+    },
+    {
+      "key": "standard",
+      "name": "Hytale Standard Plan",
+      "pid": 64,
+      "popular": true,
+      "specs": {
+        "vcores": "3",
+        "ramGb": "8",
+        "storageGb": "55",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 19.99,
+        "quarterly": 55.99,
+        "semiannually": 109.99,
+        "annually": 215.99,
+        "biennially": 407.99,
+        "triennially": 575.99
+      }
+    },
+    {
+      "key": "advanced",
+      "name": "Hytale Advanced Plan",
+      "pid": 65,
+      "popular": false,
+      "specs": {
+        "vcores": "3.5",
+        "ramGb": "10",
+        "storageGb": "70",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 24.99,
+        "quarterly": 69.99,
+        "semiannually": 137.99,
+        "annually": 269.99,
+        "biennially": 509.99,
+        "triennially": 719.99
+      }
+    },
+    {
+      "key": "premium",
+      "name": "Hytale Premium Plan",
+      "pid": 66,
+      "popular": false,
+      "specs": {
+        "vcores": "4",
+        "ramGb": "12",
+        "storageGb": "85",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 29.99,
+        "quarterly": 84.99,
+        "semiannually": 165.99,
+        "annually": 323.99,
+        "biennially": 611.99,
+        "triennially": 863.99
+      }
+    },
+    {
+      "key": "elite",
+      "name": "Hytale Elite Plan",
+      "pid": 67,
+      "popular": false,
+      "specs": {
+        "vcores": "5",
+        "ramGb": "16",
+        "storageGb": "110",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 39.99,
+        "quarterly": 112.99,
+        "semiannually": 220.99,
+        "annually": 431.99,
+        "biennially": 815.99,
+        "triennially": 1151.99
+      }
+    },
+    {
+      "key": "ultimate",
+      "name": "Hytale Ultimate Plan",
+      "pid": 68,
+      "popular": false,
+      "specs": {
+        "vcores": "6",
+        "ramGb": "24",
+        "storageGb": "150",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 54.99,
+        "quarterly": 154.99,
+        "semiannually": 303.99,
+        "annually": 593.99,
+        "biennially": 1121.99,
+        "triennially": 1583.99
+      }
+    }
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "slug": "factorio",
+  "label": "Factorio Server Hosting",
+  "shortLabel": "Factorio",
+  "status": "live",
+  "tagline": "Headless Factorio servers that hold UPS when the factory gets silly.",
+  "description": "Factorio is bound by one fast core, so every tier runs on high-clock dedicated vCores. Bring a mod list and your factorio.com token and the server starts with your save. Bigger tiers keep a megabase moving.",
+  "logo": "../../assets/logos/factorio.webp",
+  "image": "../../assets/games/factorio.jpg",
+  "accent": "#f59e0b",
+  "mark": "FA",
+  "highlights": [
+    "Mod portal mods with your own token",
+    "Save slots and autosave you control",
+    "Dedicated vCores on RAID 1 NVMe, never oversold"
+  ],
+  "plans": [
+    {
+      "key": "starter",
+      "name": "Factorio Starter Plan",
+      "pid": 69,
+      "popular": false,
+      "specs": {
+        "vcores": "1.5",
+        "ramGb": "2",
+        "storageGb": "15",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 4.99,
+        "quarterly": 13.99,
+        "semiannually": 27.99,
+        "annually": 53.99,
+        "biennially": 101.99,
+        "triennially": 143.99
+      }
+    },
+    {
+      "key": "budget",
+      "name": "Factorio Budget Plan",
+      "pid": 70,
+      "popular": false,
+      "specs": {
+        "vcores": "2",
+        "ramGb": "3",
+        "storageGb": "20",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "3"
+      },
+      "pricing": {
+        "monthly": 6.49,
+        "quarterly": 17.99,
+        "semiannually": 35.99,
+        "annually": 69.99,
+        "biennially": 131.99,
+        "triennially": 186.99
+      }
+    },
+    {
+      "key": "standard",
+      "name": "Factorio Standard Plan",
+      "pid": 71,
+      "popular": true,
+      "specs": {
+        "vcores": "2",
+        "ramGb": "4",
+        "storageGb": "25",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 7.99,
+        "quarterly": 22.99,
+        "semiannually": 43.99,
+        "annually": 85.99,
+        "biennially": 162.99,
+        "triennially": 229.99
+      }
+    },
+    {
+      "key": "advanced",
+      "name": "Factorio Advanced Plan",
+      "pid": 72,
+      "popular": false,
+      "specs": {
+        "vcores": "2.5",
+        "ramGb": "6",
+        "storageGb": "35",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "4"
+      },
+      "pricing": {
+        "monthly": 10.99,
+        "quarterly": 30.99,
+        "semiannually": 60.99,
+        "annually": 118.99,
+        "biennially": 223.99,
+        "triennially": 316.99
+      }
+    },
+    {
+      "key": "premium",
+      "name": "Factorio Premium Plan",
+      "pid": 73,
+      "popular": false,
+      "specs": {
+        "vcores": "3",
+        "ramGb": "8",
+        "storageGb": "45",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 13.99,
+        "quarterly": 38.99,
+        "semiannually": 76.99,
+        "annually": 150.99,
+        "biennially": 284.99,
+        "triennially": 402.99
+      }
+    },
+    {
+      "key": "elite",
+      "name": "Factorio Elite Plan",
+      "pid": 74,
+      "popular": false,
+      "specs": {
+        "vcores": "4",
+        "ramGb": "12",
+        "storageGb": "65",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 19.99,
+        "quarterly": 55.99,
+        "semiannually": 109.99,
+        "annually": 215.99,
+        "biennially": 407.99,
+        "triennially": 575.99
+      }
+    },
+    {
+      "key": "ultimate",
+      "name": "Factorio Ultimate Plan",
+      "pid": 75,
+      "popular": false,
+      "specs": {
+        "vcores": "5",
+        "ramGb": "16",
+        "storageGb": "85",
+        "slots": "Unmetered",
+        "databases": "0",
+        "backups": "5"
+      },
+      "pricing": {
+        "monthly": 26.99,
+        "quarterly": 75.99,
+        "semiannually": 148.99,
+        "annually": 290.99,
+        "biennially": 550.99,
+        "triennially": 776.99
+      }
+    }
+  ]
+}
