@@ -49,20 +49,29 @@ function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES); }
 function cfg(): array {
     static $c = null;
     if ($c !== null) return $c;
-    $paths = [];
-    if (getenv('LUMIX_ADMIN_CONFIG')) $paths[] = getenv('LUMIX_ADMIN_CONFIG');
+    // "where is home" depends on how the host runs php (HOME env, a passwd entry, or
+    // neither), so try every way of finding the folder next to public_html
     $home = getenv('HOME');
     if (!$home && function_exists('posix_getpwuid')) $home = (posix_getpwuid(posix_geteuid())['dir'] ?? '');
-    if ($home) $paths[] = rtrim($home, '/') . '/lumix-admin/config.php';
-    foreach ($paths as $p) {
-        if (is_file($p)) { $c = require $p; return $c; }
+    $cands = [];
+    if (getenv('LUMIX_ADMIN_CONFIG')) $cands['env'] = getenv('LUMIX_ADMIN_CONFIG');
+    if ($home) $cands['home'] = rtrim($home, '/') . '/lumix-admin/config.php';
+    if (!empty($_SERVER['DOCUMENT_ROOT'])) $cands['docroot'] = dirname($_SERVER['DOCUMENT_ROOT']) . '/lumix-admin/config.php';
+    $cands['script'] = dirname(__DIR__, 3) . '/lumix-admin/config.php';
+    foreach ($cands as $p) {
+        if (is_file($p)) { $GLOBALS['lumix_cfg_path'] = $p; $c = require $p; return $c; }
     }
-    out_html(503, '<p>Admin is not set up yet: no lumix-admin/config.php next to public_html.</p>');
+    // say which lookups failed without printing paths (this page is public)
+    $yn = function ($b) { return $b ? 'yes' : 'no'; };
+    $rows = '';
+    foreach ($cands as $label => $p) $rows .= "$label: folder " . $yn(is_dir(dirname($p))) . ", config.php " . $yn(is_file($p)) . "\n";
+    $rows .= 'HOME set: ' . $yn((bool)getenv('HOME')) . ", open_basedir: " . $yn((bool)ini_get('open_basedir')) . "\n";
+    out_html(503, '<p>Admin is not set up yet: no lumix-admin/config.php next to public_html.</p><pre>' . h($rows) . '</pre>');
 }
 
 function state_dir(): string {
     $c = cfg();
-    $d = $c['state_dir'] ?? dirname(getenv('LUMIX_ADMIN_CONFIG') ?: ((getenv('HOME') ?: '') . '/lumix-admin/config.php')) . '/state';
+    $d = $c['state_dir'] ?? dirname($GLOBALS['lumix_cfg_path']) . '/state';
     if (!is_dir($d)) @mkdir($d, 0700, true);
     return $d;
 }
