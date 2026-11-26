@@ -4,6 +4,9 @@
 // one object, structural changes re-render, typing just updates state
 
 const $ = (s) => document.querySelector(s);
+// the php file that answers every call, set by the page (see app_page() in index.php)
+const API = document.currentScript.dataset.api;
+const call = (x, extra = "") => `${API}?x=${x}${extra}`;
 
 function h(tag, props = {}, ...kids) {
   const e = document.createElement(tag);
@@ -134,7 +137,7 @@ const state = { tab: "locations", data: null, orig: null, sha: null, live: null,
 async function api(path, opts) {
   const r = await fetch(path, opts);
   if (r.status === 401) {
-    location.href = "/login";
+    location.href = location.pathname; // session ran out, the page shows the login
     throw new Error("logged out");
   }
   const body = await r.json().catch(() => ({}));
@@ -147,7 +150,7 @@ async function load(tab) {
   state.errors = [];
   state.msg = null;
   state.open = new Set();
-  const { ok, body } = await api(`/api/data/${tab}`);
+  const { ok, body } = await api(call("data", `&name=${tab}`));
   if (!ok) {
     state.data = null;
     state.msg = { bad: true, text: body.error ?? "couldn't load that" };
@@ -296,8 +299,8 @@ function renderBar() {
 // ---- saving ----
 async function save(live) {
   if (live && !confirm("Push this to main? It deploys to lumixsolutions.org in about two minutes.")) return;
-  const { status, ok, body } = await api(`/api/data/${state.tab}`, {
-    method: "PUT",
+  const { status, ok, body } = await api(call("data", `&name=${state.tab}`), {
+    method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ data: state.data, sha: state.sha, live }),
   });
@@ -331,7 +334,7 @@ function soldOutFlips(before, after) {
 let deploys = null;
 let poll = null;
 async function refreshDeploys() {
-  const { ok, body } = await api("/api/deploys").catch(() => ({ ok: false }));
+  const { ok, body } = await api(call("deploys")).catch(() => ({ ok: false }));
   deploys = ok ? body : null;
   paintDeploys();
   return deploys;
@@ -364,7 +367,7 @@ window.addEventListener("beforeunload", (e) => {
 });
 
 (async () => {
-  const { body } = await api("/api/me");
+  const { body } = await api(call("me"));
   $("#who").textContent = body.user ? `Signed in as ${body.user}` : "";
   load("locations");
 })();
