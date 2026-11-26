@@ -86,7 +86,7 @@ const rig = hasPhp ? await (async () => {
   await new Promise((r) => gh.server.listen(0, "127.0.0.1", r));
   const tmp = mkdtempSync(join(tmpdir(), "lumix-admin-"));
   writeFileSync(join(tmp, "config.php"), `<?php return [
-    'users' => ['evan' => '${hashFor(PW)}', 'locky' => '${hashFor(PW)}'],
+    'users' => ['evan' => '${hashFor(PW)}', 'locky' => '${hashFor(PW)}', 'plain' => 'a plain text password'],
     'github_token' => 't', 'repo' => 'o/r', 'github_api' => 'http://127.0.0.1:${gh.server.address().port}',
     'state_dir' => '${join(tmp, "state")}',
   ];`);
@@ -125,6 +125,10 @@ test("login: walls, wrong password, lockout, logout", T, async () => {
   assert.match(locked.r.headers.get("location"), /e=locked/);
   // php hands out an anonymous session cookie either way, what matters is it isn't logged in
   assert.equal((await fetch(`${rig.base}?x=data&name=locations`, { headers: { cookie: locked.cookie } })).status, 401);
+
+  // the config can hold a plain password instead of a hash
+  assert.ok((await login("plain", "a plain text password")).r.headers.get("location").endsWith("/admin/"));
+  assert.match((await login("plain", "a plain text passwor")).r.headers.get("location"), /e=1/);
 
   const { cookie } = await login();
   assert.ok(cookie.startsWith("lxadmin="));
