@@ -1,0 +1,28 @@
+{
+  "slug": "application-hosting",
+  "label": "Application and Discord Bot Hosting",
+  "shortLabel": "Apps & Bots",
+  "status": "live",
+  "tagline": "One plan, any language, always on. Discord bots, APIs and workers.",
+  "description": "Run Node.js, Python, Go, Bun, Deno, Elixir, Rust, Java, C# or Dart on the same server and switch runtime from the Startup tab in the panel. Your files, port and limits stay put when you switch. NVMe storage, DDoS protection, and a panel that works from your phone.",
+  "logo": "../../assets/logos/application-hosting.svg",
+  "image": "../../assets/games/application-hosting.jpg",
+  "accent": "#5865f2",
+  "mark": "AP",
+  "locations": false,
+  "highlights": [
+    "Pick the language from a dropdown, change it any time",
+    "Built for Discord bots, REST APIs and background workers",
+    "NVMe storage with DDoS protection on every plan"
+  ],
+  "plans": [
+    {
+      "key": "standard",
+      "name": "Application Hosting Plan",
+      "pid": 6,
+      "popular": true,
+      "specs": { "vcores": "1", "ramGb": "1", "storageGb": "10", "slots": "Unmetered", "databases": "0", "backups": "0" },
+      "pricing": { "monthly": 4 }
+    }
+  ]
+}
